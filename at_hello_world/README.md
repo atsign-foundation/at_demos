@@ -39,7 +39,7 @@ $ sudo resolvectl status |  more
 
 Global
 
-       LLMNR setting: no
+LLMNR setting: no
 
 MulticastDNS setting: no
 
