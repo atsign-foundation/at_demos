@@ -3,9 +3,9 @@ description: A library of data that contains demo enviroment variables and
   @sign credentials that can used for demo apps and testing
 homepage: https://www.atsign.dev
 documentation: https://atsign.dev/DocsPage
-repository: https://github.com/atsign-company/at_demos
+repository: https://github.com/atsign-foundation/at_demos
 
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
