@@ -35,14 +35,14 @@ variable to the value.
 5. Set the `value` parameter to an empty string if the `List<String>` variable is empty or the first item in the list.
 6. In the `TextField` of the lookup widget, assign the `controller` parameter to the `TextEditingController` variable.
 Assign the string in the `Text` widget to the lookup value variable.
-7. Create the async _ _update_ method. Make an instance of `AtKey` and pass in the key variable to its key parameter. Assign 
-the atSign to the sharedWith parameter. Pass this `AtKey` object into the put verb and use the "await" keyword.
-8. Create the async _ _scan_ method. Call the getKeys method (with its sharedBy parameter set to atSign) and assign the returned
+7. Create the async _ _update_ method. Make an instance of `AtKey` and pass in the key variable to its `key` parameter. Assign 
+the atSign to the `sharedWith` parameter. Pass this `AtKey` object into the put verb.
+8. Create the async _ _scan_ method. Call the getKeys method (with its `sharedBy` parameter set to atSign) and assign the returned
 list to a variable. Remove the namespace, atSign, and any other unnecessary information from the retrieved keys using the replaceAll
 method (once again, use the map method to perform replaceAll on each key. Don't forget to convert the dynamic back to a list!). Set
 the `List<String>` variable to the result using setState(() {}).
-9. Create the async _ _lookup_ method. Make an instance of `AtKey` and populate key and sharedWith parameters with the lookup key variable
-and atSign. Call get with the `AtKey` object passed in, set the return value of the get method to the lookup value ariable.
+9. Create the async _ _lookup_ method. Make an instance of `AtKey` and populate `key` and `sharedWith` parameters with the lookup key variable
+and atSign. Call get with the `AtKey` object passed in, set the return value of the get method to the lookup value variable.
 10. Fill in all `onPressed` parameters with the appropriate methods.
 
 If you finish all these steps, you are done! If any of them are confusing, feel free to reach out to us or reference the complete version
