@@ -14,6 +14,7 @@ this for testing, debugging, or just trying out the app!
 1. Clone this project from the @ Company repository.
 
 2. To run the app, make sure to have your docker containers running and have your machine pointing to the local DNS server (the address is 127.0.0.1).
+
 **- For Windows:**
 Navigate to:
 
