@@ -9,9 +9,33 @@
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/flutter_keychain/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_complete/ios/.symlinks/plugins/path_provider/example/build" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/flutter_keychain/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
