@@ -2,7 +2,9 @@
 
 ### Now for a little internet optimism
 
-# @Protocol Hello World Demo (Complete Version)
+# at_hello_world
+
+# @Protocol Hello World
 
 This directory contains the complete code for the Hello World application. Feel free to use
 this for testing, debugging, or just trying out the app!

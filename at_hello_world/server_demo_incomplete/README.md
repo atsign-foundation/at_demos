@@ -1,4 +1,8 @@
-# @Protocol Hello World
+<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
+
+### Now for a little internet optimism
+
+# @Protocol Hello World Demo (Incomplete Version)
 
 This directory contains the incomplete code for the Hello World application. Complete the 
 TODOs to get it working!
