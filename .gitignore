@@ -4,7 +4,7 @@
 .dart_tool/
 .packages
 build/
-# If you're building an application, you may want to check-in your pubspec.lock
+# If you're buildin g an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
 # Directory created by dartdoc
@@ -19,3 +19,34 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+*.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.flutter-plugins
+.pub-cache/
+.pub/
+/build/
+
+# Exceptions to above rules.
