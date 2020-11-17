@@ -9,7 +9,7 @@ this for testing, debugging, or just trying out the app!
 
 ## Getting Started
 
-Clone this project from the @ Company repository. To run the app, make sure to have your docker
-containers running and have your machine pointing to the local DNS server (the address is 127.0.0.1).
-You can only use this app with one test @sign at a time (e.g. @kevin🛠). If you'd like to use a different
-test @sign, uninstall the Flutter app from your emulator and build it again.
+Clone this project from the @ Company repository. Make sure that you've completed the prequisites
+listed in the at_hello_world readme! You can only use this app with one test @sign at a time (e.g.
+@kevin🛠 or @colin🛠). To use a different test @sign, uninstall the app from your emulator and build
+it again.
