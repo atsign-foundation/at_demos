@@ -5,7 +5,7 @@ homepage: https://www.atsign.dev
 documentation: https://atsign.dev/docs.html
 repository: https://github.com/atsign-foundation/at_demos
 
-version: 0.0.2
+version: 0.0.2+1
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
