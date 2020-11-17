@@ -1,5 +1,5 @@
 # at_demo_data
-This library contains data that can be used for demo apps.
+This library contains data that can be used for demo apps and testing.
 
 ## Installation:
 To use this library in your app, first add it to your pubspec.yaml

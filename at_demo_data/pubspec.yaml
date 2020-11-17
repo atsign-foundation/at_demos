@@ -2,7 +2,7 @@ name: at_demo_data
 description: A library of data that contains demo enviroment variables and
   @sign credentials that can used for demo apps and testing
 homepage: https://www.atsign.dev
-documentation: https://atsign.dev/DocsPage
+documentation: https://atsign.dev/docs.html
 repository: https://github.com/atsign-foundation/at_demos
 
 version: 0.0.2
