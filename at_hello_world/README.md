@@ -27,33 +27,11 @@ DNS=127.0.0.1
 
 FallbackDNS=1.1.1.1
 
-**Then restart the DNS system using the command:**
+**You will need to restart your machine**
+**Then restart the DNS system using the command (in Command Prompt):**
 
-$ sudo service systemd-resolved restart
+ipconfig /flushdns
 
-**Use the below command:**
-
-$ sudo resolvectl status |  more
-
-**Check for the output below:**
-
-Global
-
-LLMNR setting: no
-
-MulticastDNS setting: no
-
-DNSOverTLS setting: no
-
-DNSSEC setting: no
-
-DNSSEC supported: no
-
-DNS Servers: 127.0.0.1
-
-Fallback DNS Servers: 1.1.1.1
-
-DNSSEC NTA: 10.in-addr.arpa
 
 ### For Mac:
 
