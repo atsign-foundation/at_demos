@@ -28,6 +28,7 @@ DNS=127.0.0.1
 FallbackDNS=1.1.1.1
 
 **You will need to restart your machine**
+
 **Then restart the DNS system using the command (in Command Prompt):**
 
 ipconfig /flushdns
