@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:newserverdemo/screens/home_screen.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 
 String atSign;
 
@@ -51,9 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         leading: Icon(Icons.person_pin, size: 70),
                         title: Text('Log In',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0
                           ),
                         ),
                         subtitle: TextField(
@@ -85,6 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  // TODO: Write _login method
+// TODO: Write _login method
 
 }

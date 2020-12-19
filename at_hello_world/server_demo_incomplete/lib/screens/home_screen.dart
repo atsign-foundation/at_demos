@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
-import '../utils/at_conf.dart' as conf;
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,11 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             //update
-            Container(
-              width: 500,
-              height: 250,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -47,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: Icon(Icons.create, size: 70),
                       title: Text('Update ',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
                         ),
                       ),
                       subtitle: ListView(
@@ -87,9 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //scan
-            Container(
-              width: 500,
-              height: 180,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -103,9 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: Icon(Icons.scanner, size: 70),
                       title: Text('Scan',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
                         ),
                       ),
                       subtitle: DropdownButton<String>(
@@ -132,9 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //lookup
-            Container(
-              width: 500,
-              height: 300,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -206,6 +203,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  // TODO: add the _scan, _update, and _lookup methods
+// TODO: add the _scan, _update, and _lookup methods
 }
-

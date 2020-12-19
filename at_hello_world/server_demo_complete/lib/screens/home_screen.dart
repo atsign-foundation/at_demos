@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
-import '../utils/at_conf.dart' as conf;
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,11 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             //update
-            Container(
-              width: 500,
-              height: 250,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -58,9 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: Icon(Icons.create, size: 70),
                       title: Text('Update ',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
                         ),
                       ),
                       subtitle: ListView(
@@ -100,9 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //scan
-            Container(
-              width: 500,
-              height: 180,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -116,21 +114,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: Icon(Icons.scanner, size: 70),
                       title: Text('Scan',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
                         ),
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
                         // TODO: complete these parameters
                         items: _scanItems.map(
-                          (String key) {
-                            return DropdownMenuItem(
-                              value: key != null ? key : null,
-                              child: Text(key),
-                            );
-                          }
+                                (String key) {
+                              return DropdownMenuItem(
+                                value: key != null ? key : null,
+                                child: Text(key),
+                              );
+                            }
                         ).toList(),
                         onChanged: (value) {
                           setState(() {
@@ -139,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                         },
                         value: _scanItems.length > 0
-                        ? _scanItems[0] : '',
+                            ? _scanItems[0] : '',
                       ),
                     ),
                     Container(
@@ -157,9 +155,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //lookup
-            Container(
-              width: 500,
-              height: 300,
+            Flexible(
+              fit: FlexFit.loose,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -249,11 +246,10 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Strip any meta data away from the retrieves keys. Store
   /// the keys into [_scanItems].
   _scan() async {
-    List<String> response = await _atClientService.getKeys(sharedBy: atSign);
+    List<AtKey> response = await _atClientService.getAtKeys(sharedBy: atSign);
     if (response.length > 0) {
       List<String> scanList =
-          response.map((key) => key.replaceAll('.' + conf.namespace +
-              atSign, '').replaceAll(atSign + ':', '')).toList();
+      response.map((atKey) => atKey.key).toList();
       setState(() {
         _scanItems = scanList;
       });
@@ -275,4 +271,3 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-

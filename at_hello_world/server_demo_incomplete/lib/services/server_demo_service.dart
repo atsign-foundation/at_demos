@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
+import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import '../utils/at_conf.dart' as conf;
 
 class ServerDemoService {
@@ -25,7 +26,8 @@ class ServerDemoService {
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..syncStrategy = SyncStrategy.IMMEDIATE
-      ..rootDomain = 'test.do-sf2.atsign.zone'
+      ..rootDomain = conf.root
+      ..privateKey = at_demo_data.pkamPrivateKeyMap[atsign]
       ..hiveStoragePath = path;
     var result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference,
@@ -61,5 +63,11 @@ class ServerDemoService {
     return await this
         .atClientInstance
         .getKeys(regex: conf.namespace, sharedBy: sharedBy);
+  }
+
+  Future<List<AtKey>> getAtKeys({String sharedBy}) async {
+    return await this
+        .atClientInstance
+        .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
   }
 }
