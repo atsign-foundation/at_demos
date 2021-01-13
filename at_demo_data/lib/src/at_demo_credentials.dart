@@ -185,6 +185,28 @@ const _sameerajaEncryptionPrivateKey =
 const _sitaramEncryptionPrivateKey =
     'MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCpnOKNPdsm5Jg44L4ezjUGpkdCufmHTZpZkBH+AO8kCL7xftFlgjQ7XrhODm03ndfTqEOnQTbQ4bf1sByEv2lDpNhVUg9nbrZutDEfaimhd4Vo5Oe+rfXQJNyy2f7V92uSPJbkuFwENAQWuYyFzm/nWf4JyN95AOcUEBoGG2xJejOrD9dbg3A0rbl4CpIRQAscPshzhavuenh0ui0DJzGCGQGkh7ondAwbNK0SFO03pCxd81Gv/Lnlfej7gyBNgkdArcquBqiK8rvoZUaBjUSh9YdlHXZPvJk7oDfIHMsGdTXgC7IWXwJhkcjRQvdIdGSFlgBMuNu4yWtq0eKFGR2fAgMBAAECggEAY2QvzhylQ5FJMmtgfaTQpejicVORyZvMCxfFs1bQzAjj+5gZFKbL/M5wqi0CC0lPpBRCMMyiVp0us6ZTz+ZqxNzgeH7xz+asuQqWjpYjdx8W6nTY6IAAP8yaF6RvFOs7+iHPOpBeO4hPrRFmKzLhmGy/1PQFIF9LChK1bUa8mgEwlZOTg2XhYcvABLScYG4eOK8GOOVkDX6KWeKC+5sGZuUA474jZLO/hExtGihpxGGvADyvWrwtkDtuyns4YxPbwIEAgxdKxmlf/cxebetyNBeChJY4H5UNndhN8bm+CqPDT+q7HjusavT7oRedyXvr0SZqqSj6W11JbtrYw8JtwQKBgQDnt+ZiWd94wcNAxS7n9ZGpK0Dapa48hmNPCJafEFqWo615JhiuYoPVh1E7cjWHnUOTj1iphTUmI4jAYopAIdpvRwIvgu/7XzNdCZI85WgMAa3u0nBaLOINBi3wwYoe5rKBnTbkX+L84koe7Jt50QRASz/H40xVWt+VwLkXJLOPRwKBgQC7Yu+W0rPoChDhzf9p3i14vzqR5OiMDRHABGkdYtPYGl1LzUkOQbsmjWjVfX4neItlhQOOLHZpChOrKGkVuRRLIlq6T6VlU7c42mwj285nGrV14fFrBcg/jrRMc5qKLarGDEo83j+VW6XL7du7bRTBdStK8i93wLSbsjo7xi2a6QKBgHx2mTcG0zRHz5sAzzsk+oKFiyZmi/pSrREMqerym9YCQPGr9uHkZK/TKVzm8b3QSTX/bz5PIMdFmvTLeTsNdAkFeTUP/dtlvW8h7vzqtEKOvGBlhJfLN/iK8y44pvoGLKfWTF/K6V+wJOQLb0+1Z7UpNi8l9iB62VHU3RaDTjeNAoGAPknn7JHDvdlCvVy1j2KMaPvgI0kdSBi8EsEkk+EbHFW/N4hYxYVyCaGt/HGHsuUuKSPrB6KeBdKUsStwqwjnxwX3dMEu8JzAZgStN8pENR+6vCHMF1BHvWDZbCRtdYsynjzNnKggKKzbUwuRJB9ha+Ff77zLrJoBL1QyaVY6KKkCgYBrp6fjLQK7G4fP9H7Ruak+vhrLug2luymFiHzJI89FLeXV6JTxsutjFAWvw6iFDFmo+se6S54n1/yUV3o1zYDraS5ZevqN9TRefi2ddmKjDdLPeXT+bRF/bv0jh9YAL33u0v5PorOJDT7bnLLb1t6lWHJGPXYP77COs2RMvk7tYA==';
 
+
+
+
+const _aliceAesKey = 'vR+w/lx9qitj/W2+SfFxbjeRM8VdaYGsxG6lxYCVQ0w=';
+const _ashishAesKey = 'xGClLauE1qGLredkswXPBKNnUzNiAwG7XL3gv0jQQN4=';
+const _barbaraAesKey = '5fwTqTnFJ6xyhTf9t70seOlbxe2KvqFO5w3UWkPDGac=';
+const _bobAesKey = 'TZHYMVJoAroWr+Yf/gPN9RNC63qvCRKXiBhWDj5un4E=';
+const _colinAesKey = 'wQjp3HXO5cIsIR7lL74ySwtjJ7VP3OLBJKsLiLuRFcM=';
+const _egBiometricAesKey ='6EI4LavFXYHC/layLd+3ouXNyEUG9gyPk/ji7C3iidA=';
+const _egCovidLabAesKey = 'ZIiuBBvtCSRlC9kEZ0K+1vCOKQ/JQvf7Vx82idT7UrA=';
+const _egCreditBureauAesKey = 'SgGiUL55OIxq+pU51g5Hn90seYS5+w5weQNVevo9Xa4=';
+const _egGovAgencyAesKey = 'zk2XLGrWXMIvgQC9vLLRn3bnsdXZ1NfROS7GAQaZbgs=';
+const _emojiAesKey = 'JYKQzePXSDT5eDGw+CCLMx7o3m+MiN3Ykkhc+2Xq1IY=';
+const _eveAesKey = 'rc98zzkVUQSB7jLffAtNI71xj0fUKidSXCwM0yknycI=';
+const _jaganAesKey = 'u7WlCn0lal6s4I7yR1sRanhfKaRQtqdVNOgI/F2izl8=';
+const _kevinAesKey = '/1wmMjcbIMYfdV09lDIysEm8KSWiVEe2UX8G9AteObc=';
+const _muraliAesKey = '7l00PvmXMD9i1z0Q72O7RNQc6D9/9k9FrqfvCZcEBqs=';
+const _nareshAesKey = 'PZBVVg6AzUdzeuj01tozYB7EoQ6N+pj/ghdu21IhnFQ=';
+const _purnimaAesKey = 'A+PLEY7DkKBUqx7Gy/Dt3P/rnehaN9td2E9sVuepiBQ=';
+const _sameerajaAesKey = 'GAnfgPgtcuHywoiZAzQTKwTPMP2T2YkPk1MjNjWvWQ0=';
+const _sitaramAesKey = 'REqkIcl9HPekt0T7+rZhkrBvpysaPOeC2QL1PVuWlus=';
+
 List<String> allAtsigns = [
   'anonymous',
   '@alice🛠',
@@ -315,4 +337,26 @@ var encryptionPublicKeyMap = {
   '@purnima🛠': _purnimaEncryptionPublicKey,
   '@sameeraja🛠': _sameerajaEncryptionPublicKey,
   '@sitaram🛠': _sitaramEncryptionPublicKey,
+};
+
+var aesKeyMap ={
+  '@alice🛠': _aliceAesKey,
+  '@ashish🛠': _ashishAesKey,
+  '@barbara🛠': _barbaraAesKey,
+  '@bob🛠': _bobAesKey,
+  '@colin🛠': _colinAesKey,
+  '@egbiometric🛠': _egBiometricAesKey,
+  '@egcovidlab🛠': _egCovidLabAesKey,
+  '@egcreditbureau🛠': _egCreditBureauAesKey,
+  '@eggovagency🛠': _egGovAgencyAesKey,
+  '@emoji🦄🛠': _emojiAesKey,
+  '@eve🛠': _eveAesKey,
+  '@jagan🛠': _jaganAesKey,
+  '@kevin🛠': _kevinAesKey,
+  '@murali🛠': _muraliAesKey,
+  '@naresh🛠': _nareshAesKey,
+  '@purnima🛠': _purnimaAesKey,
+  '@sameeraja🛠': _sameerajaAesKey,
+  '@sitaram🛠': _sitaramAesKey,
+  
 };

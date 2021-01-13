@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import '../utils/at_conf.dart' as conf;
+import 'package:at_client/src/util/encryption_util.dart';
 
 class ServerDemoService {
   static final ServerDemoService _singleton = ServerDemoService._internal();
@@ -20,14 +22,13 @@ class ServerDemoService {
   Future<bool> onboard({String atsign}) async {
     atClientServiceInstance = AtClientService();
     final appDocumentDirectory =
-    await path_provider.getApplicationDocumentsDirectory();
+        await path_provider.getApplicationDocumentsDirectory();
     String path = appDocumentDirectory.path;
     var atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..syncStrategy = SyncStrategy.IMMEDIATE
       ..rootDomain = conf.root
-      ..privateKey = at_demo_data.pkamPrivateKeyMap[atsign]
       ..hiveStoragePath = path;
     var result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference,
@@ -39,11 +40,40 @@ class ServerDemoService {
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(String atsign,
-      {String cramSecret, String privateKey}) async {
+      {String cramSecret, String privateKey,String jsonData,
+      String decryptKey,}) async {
     var result = await atClientServiceInstance.authenticate(atsign,
-        cramSecret: cramSecret);
+        cramSecret: cramSecret,jsonData: jsonData,decryptKey: decryptKey);
     atClientInstance = atClientServiceInstance.atClient;
     return result;
+  }
+
+  String encryptKeyPairs(String atsign)  {
+    var encryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+        at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+    var encryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+        at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+    var aesencryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+        at_demo_data.encryptionPublicKeyMap[atsign],
+        at_demo_data.aesKeyMap[atsign]);
+    var aesencryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+        at_demo_data.encryptionPrivateKeyMap[atsign],
+        at_demo_data.aesKeyMap[atsign]);
+    var aesEncryptedKeys = {};
+    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
+        encryptedPkamPublicKey;
+
+    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PRIVATE_KEY] =
+        encryptedPkamPrivateKey;
+
+    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PUBLIC_KEY] =
+        aesencryptedPkamPublicKey;
+
+    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
+        aesencryptedPkamPrivateKey;
+
+    var keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
+    return keyString;
   }
 
   Future<String> get(AtKey atKey) async {
@@ -70,4 +100,11 @@ class ServerDemoService {
         .atClientInstance
         .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
   }
+}
+
+class BackupKeyConstants {
+  static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
+  static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';
+  static const String AES_ENCRYPTION_PUBLIC_KEY = 'aesEncryptPublicKey';
+  static const String AES_ENCRYPTION_PRIVATE_KEY = 'aesEncryptPrivateKey';
 }
