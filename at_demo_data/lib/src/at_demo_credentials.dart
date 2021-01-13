@@ -316,3 +316,8 @@ var encryptionPublicKeyMap = {
   '@sameeraja🛠': _sameerajaEncryptionPublicKey,
   '@sitaram🛠': _sitaramEncryptionPublicKey,
 };
+
+var aesKeyMap ={
+  '@colin🛠':'wQjp3HXO5cIsIR7lL74ySwtjJ7VP3OLBJKsLiLuRFcM=',
+  '@bob🛠':'TZHYMVJoAroWr+Yf/gPN9RNC63qvCRKXiBhWDj5un4E='
+};

@@ -52,12 +52,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       ListTile(
                         leading: Icon(Icons.person_pin, size: 70),
-                        title: Text('Log In',
+                        title: Text(
+                          'Log In',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20.0
-                          ),
+                              fontSize: 20.0),
                         ),
                         subtitle: TextField(
                           decoration: InputDecoration(hintText: 'AtSign'),
@@ -96,15 +96,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       showSpinner = true;
     });
-    String cramSecret = at_demo_data.cramKeyMap[atSign];
+
+    String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
       _serverDemoService.onboard().then((value) {
-        Navigator.pushReplacementNamed(context,
-            HomeScreen.id);
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {
-        await _serverDemoService.authenticate(atSign,cramSecret:cramSecret );
-        Navigator.pushReplacementNamed(context,
-            HomeScreen.id);
+        await _serverDemoService.authenticate(atSign,
+            jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       });
     }
   }
