@@ -20,7 +20,7 @@ for the async call logic, an instance of a `TextEditingController`, and an insta
 4. Fill in the async _ _login_ method. Sets your boolean variable to true using setState(() {}).
 If atSign != null, try the onboard() method (which is called using the `ServerDemoService` object) 
 then push the Navigator to the home screen. If an error is caught, use the authenticate() method 
-(passing in values to its atSign and cramSecret parameters) then push the Navigator to the home screen.
+(passing in values to its atSign, jsonData, and decryptKey parameters) then push the Navigator to the home screen.
 
 ### Home screen:
 1. Declare and initialize variables at the top of home_screen.dart You will need two Strings to

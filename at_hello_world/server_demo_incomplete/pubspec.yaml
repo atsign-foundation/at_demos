@@ -10,10 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^1.5.1
-  at_demo_data: ^0.0.2
   at_client_mobile: ^1.0.0
   cupertino_icons: ^0.1.3
   modal_progress_hud: any
-
+  at_demo_data:
+    git:
+      url: https://github.com/atsign-foundation/at_demos.git
+      path: at_demo_data
+      ref: master
 flutter:
   uses-material-design: true
