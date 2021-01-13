@@ -16,7 +16,10 @@ dependencies:
   modal_progress_hud: any
 
   at_demo_data:
-    path: /home/oem/Documents/at_demos/at_demo_data
+    git:
+      url: https://github.com/atsign-foundation/at_demos.git
+      path: at_demo_data
+      ref: dev_env
 
 #dev_dependencies:
 #  flutter_test:
