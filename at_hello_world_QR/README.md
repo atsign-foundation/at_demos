@@ -12,7 +12,7 @@ version of the hello world application does not rely on the virtual environment,
 ## Getting Started
 
 1. Clone this project from The @ Company repository.
-2. If you've used an @sign on your emulator previously, make sure to cold boot it before 
+2. If you've used an @sign on your emulator previously, make sure to uninstall all other @protocol apps and cold boot it before 
 you run this application.  
 3. Go to your @sign portal from atsign.com and download the QR code for any one of your @signs. 
 Drag and drop this file into the emulator—you will need it for when you first sign in!
