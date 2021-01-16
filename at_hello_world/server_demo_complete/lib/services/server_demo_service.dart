@@ -100,6 +100,10 @@ class ServerDemoService {
         .atClientInstance
         .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
   }
+
+  Future<String> getAtSign() async {
+    return await atClientServiceInstance.getAtSign();
+  }
 }
 
 class BackupKeyConstants {

@@ -17,8 +17,20 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // TODO: Instantiate variables
   bool showSpinner = false;
-  TextEditingController _loginTextFieldController = TextEditingController();
+  bool displayErrorMessage = false;
+  String atSignInKeyChain = '';
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+
+  Future<bool> checkIfCorrectAtSign() async {
+    String currentAtSign = await _serverDemoService.getAtSign();
+    if (currentAtSign.compareTo(atSign) == 0) {
+      return true;
+    }
+    setState(() {
+      atSignInKeyChain = currentAtSign;
+    });
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Container(
                 width: 500,
-                height: 180,
+                height: 220,
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -59,15 +71,49 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0),
                         ),
-                        subtitle: TextField(
-                          decoration: InputDecoration(hintText: 'AtSign'),
-                          //TODO: Assign to controller
-                          controller: _loginTextFieldController,
-                          onChanged: (value) {
-                            atSign = value;
+                        subtitle: DropdownButton<String>(
+                          hint:  Text('\tPick an @sign'),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            ),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black87
+                          ),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              atSign = newValue;
+                            });
                           },
+                          value: atSign != null ? atSign : null,
+                          items: at_demo_data.allAtsigns
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
                       ),
+                      displayErrorMessage ? Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Error: Use @sign'
+                              " stored in device's keychain: "
+                              + atSignInKeyChain,
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                      : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
@@ -99,8 +145,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
-      _serverDemoService.onboard().then((value) {
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
+      _serverDemoService.onboard().then((value) async {
+        if (await checkIfCorrectAtSign()) {
+          Navigator.pushReplacementNamed(context, HomeScreen.id);
+        } else {
+          setState(() {
+            showSpinner = false;
+            displayErrorMessage = true;
+          });
+        }
       }).catchError((error) async {
         await _serverDemoService.authenticate(atSign,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);

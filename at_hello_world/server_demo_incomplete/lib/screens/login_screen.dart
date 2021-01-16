@@ -6,7 +6,6 @@ import 'package:newserverdemo/services/server_demo_service.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 
-
 String atSign;
 
 class LoginScreen extends StatefulWidget {
@@ -17,6 +16,26 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   // TODO: Instantiate variables
+  bool showSpinner = false;
+  bool displayErrorMessage = false;
+  String atSignInKeyChain = '';
+  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+
+  @override
+  initState() {
+    super.initState();
+  }
+
+  Future<bool> checkIfCorrectAtSign() async {
+    String currentAtSign = await _serverDemoService.getAtSign();
+    if (currentAtSign.compareTo(atSign) == 0) {
+      return true;
+    }
+    setState(() {
+      atSignInKeyChain = currentAtSign;
+    });
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Container(
                 width: 500,
-                height: 180,
+                height: 220,
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -50,22 +69,56 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       ListTile(
                         leading: Icon(Icons.person_pin, size: 70),
-                        title: Text('Log In',
+                        title: Text(
+                          'Log In',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20.0
-                          ),
+                              fontSize: 20.0),
                         ),
-                        subtitle: TextField(
-                          decoration: InputDecoration(hintText: 'AtSign'),
-                          //TODO: Assign to controller
-                          controller: null,
-                          onChanged: (value) {
-                            atSign = value;
+                        subtitle: DropdownButton<String>(
+                          hint:  Text('\tEnter an @sign'),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                          ),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black87
+                          ),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              atSign = newValue;
+                            });
                           },
+                          value: atSign != null ? atSign : null,
+                          items: at_demo_data.allAtsigns
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
                       ),
+                      displayErrorMessage ? Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Error: Use @sign'
+                              " stored in device's keychain: "
+                              + atSignInKeyChain,
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                      : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
@@ -73,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.blueAccent,
                           textColor: Colors.white,
                           // TODO: Assign function to onPressed
-                          onPressed: () {},
+                          onPressed: _login,
                         ),
                       ),
                     ],
@@ -86,6 +139,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-// TODO: Write _login method
 
+  // TODO: Write _login method
+  /// Use onboard() to authenticate via PKAM public/private keys.
+  _login() async {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      showSpinner = true;
+    });
+    String jsonData = _serverDemoService.encryptKeyPairs(atSign);
+    if (atSign != null) {
+      // TODO: Complete the rest of the if statement!
+    }
+  }
 }

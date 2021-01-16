@@ -7,7 +7,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../service/client_sdk_service.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 
-
 class FirstScreen extends StatefulWidget {
   static final String id = 'first';
   @override
@@ -16,21 +15,20 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
-  bool isEditing = false;
-  String atSign = '';
-  TextEditingController _loginTextFieldController = TextEditingController();
-  ClientSdkService _serverDemoService = ClientSdkService.getInstance();
+  bool displayErrorMessage = false;
+  String atSign;
+  String atSignInKeyChain = '';
+  ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
-  String _validateString(String value) {
-    value = value.trim();
-    if (_loginTextFieldController.text != null) {
-      if (value.isEmpty) {
-        return '@sign can\'t be empty';
-      } else if (value.trim().contains(' ')) {
-        return '@sign can\'t contain a space';
-      }
+  Future<bool> checkIfCorrectAtSign() async {
+    String currentAtSign = await clientSdkService.getAtSign();
+    if (currentAtSign.compareTo(atSign) == 0) {
+      return true;
     }
-    return null;
+    setState(() {
+      atSignInKeyChain = currentAtSign;
+    });
+    return false;
   }
 
   @override
@@ -46,12 +44,12 @@ class _FirstScreen extends State<FirstScreen> {
         ),
       ),
       body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
+        inAsyncCall: false,
         child: Center(
           child: ListView(
             children: <Widget>[
               Container(
-                height: 200,
+                height: 220,
                 width: 180,
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -79,36 +77,50 @@ class _FirstScreen extends State<FirstScreen> {
                               fontSize: 20.0
                           ),
                         ),
-                        subtitle: TextField(
-                          decoration: InputDecoration(
-                            hintText: '\tEnter your @sign',
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(bottom: 3.0),
-                              child: Text(
-                                '@',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                            errorText: isEditing ? _validateString(atSign) : null,
-                            errorStyle: TextStyle(
-                              fontSize: 14,
-                              color: Colors.redAccent,
-                            ),
+                        subtitle: DropdownButton<String>(
+                          hint:  Text('\tPick an @sign'),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
                           ),
-                          controller: _loginTextFieldController,
-                          onChanged: (value) {
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black87
+                          ),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String newValue) {
                             setState(() {
-                              atSign = value;
-                              isEditing = true;
+                              atSign = newValue;
                             });
                           },
+                          value: atSign != null ? atSign
+                              : null,
+                          items: at_demo_data.allAtsigns
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
                       ),
+                      displayErrorMessage ? Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Error: Use @sign'
+                              " stored in device's keychain: "
+                              + atSignInKeyChain,
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                          : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
@@ -174,6 +186,7 @@ class _FirstScreen extends State<FirstScreen> {
     });
     if (atSign != null) {
       // TODO: Complete the rest of the if statement!
+      
     }
   }
 }
