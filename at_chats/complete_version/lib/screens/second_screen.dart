@@ -1,5 +1,6 @@
 import 'package:at_chat_flutter/at_chat_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import '../service/client_sdk_service.dart';
 import 'third_screen.dart';
 import '../utils/constants.dart';
@@ -31,7 +32,7 @@ class _SecondScreenState extends State<SecondScreen> {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text('Second Screen')),
+      appBar: AppBar(title: Text('Home')),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:at_chat_flutter_example/screens/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../service/client_sdk_service.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
@@ -50,8 +51,8 @@ class _FirstScreen extends State<FirstScreen> {
           child: ListView(
             children: <Widget>[
               Container(
-                width: 500,
-                height: 220,
+                height: 200,
+                width: 180,
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -62,7 +63,14 @@ class _FirstScreen extends State<FirstScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        leading: Icon(Icons.person_pin, size: 70),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            'assets/sbhacks_logo.png',
+                            height: 50.0,
+                            width: 50.0,
+                          ),
+                        ),
                         title: Text(
                           'Log In',
                           style: TextStyle(
@@ -74,9 +82,18 @@ class _FirstScreen extends State<FirstScreen> {
                         subtitle: TextField(
                           decoration: InputDecoration(
                             hintText: '\tEnter your @sign',
-                            prefix: Text(
-                              '@'
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 3.0),
+                              child: Text(
+                                '@',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                ),
+                              ),
                             ),
+                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             errorText: isEditing ? _validateString(atSign) : null,
                             errorStyle: TextStyle(
                               fontSize: 14,
@@ -105,6 +122,42 @@ class _FirstScreen extends State<FirstScreen> {
                   ),
                 ),
               ),
+              Marquee(
+                child: Container(
+                  width: 1000,
+                  child: Image.asset(
+                    'assets/sbhacks_cloud.png',
+                    height: 125,
+                  ),
+                ),
+                direction: Axis.horizontal,
+                pauseDuration: Duration(seconds: 1),
+                animationDuration: Duration(seconds: 5),
+                directionMarguee: DirectionMarguee.oneDirection,
+              ),
+              Marquee(
+                child: Container(
+                  width: 1000,
+                  child: Image.asset(
+                    'assets/sbhacks_cloud.png',
+                    height: 40,
+                  ),
+                ),
+                direction: Axis.horizontal,
+                pauseDuration: Duration(seconds: 2),
+                animationDuration: Duration(seconds: 7),
+                directionMarguee: DirectionMarguee.oneDirection,
+                textDirection: TextDirection.rtl,
+              ),
+              Container(
+                height: 200,
+                child: FittedBox(
+                  child: Image.asset(
+                    'assets/sbhacks_island.png',
+                  ),
+                  fit: BoxFit.fitHeight,
+                ),
+              )
             ],
           ),
         ),

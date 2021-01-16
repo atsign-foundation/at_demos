@@ -31,7 +31,7 @@ class _SecondScreenState extends State<SecondScreen> {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text('Second Screen')),
+      appBar: AppBar(title: Text('Home')),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
