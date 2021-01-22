@@ -10,7 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^1.5.1
-  at_client_mobile: ^1.0.0
+  at_client_mobile: ^1.0.0+4
+  at_server_status: ^0.1.0+1
   cupertino_icons: ^0.1.3
   modal_progress_hud: any
   at_demo_data:

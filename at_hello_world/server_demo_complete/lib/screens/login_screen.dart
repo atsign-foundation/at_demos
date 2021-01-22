@@ -17,20 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // TODO: Instantiate variables
   bool showSpinner = false;
-  bool displayErrorMessage = false;
-  String atSignInKeyChain = '';
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
-
-  Future<bool> checkIfCorrectAtSign() async {
-    String currentAtSign = await _serverDemoService.getAtSign();
-    if (currentAtSign.compareTo(atSign) == 0) {
-      return true;
-    }
-    setState(() {
-      atSignInKeyChain = currentAtSign;
-    });
-    return false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,19 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           }).toList(),
                         ),
                       ),
-                      displayErrorMessage ? Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Error: Use @sign'
-                              " stored in device's keychain: "
-                              + atSignInKeyChain,
-                          style: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                      : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
@@ -145,15 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
-      _serverDemoService.onboard().then((value) async {
-        if (await checkIfCorrectAtSign()) {
+      _serverDemoService.onboard(atsign: atSign).then((value) async {
           Navigator.pushReplacementNamed(context, HomeScreen.id);
-        } else {
-          setState(() {
-            showSpinner = false;
-            displayErrorMessage = true;
-          });
-        }
       }).catchError((error) async {
         await _serverDemoService.authenticate(atSign,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);

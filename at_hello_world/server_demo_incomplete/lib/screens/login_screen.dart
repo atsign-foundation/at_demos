@@ -17,24 +17,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // TODO: Instantiate variables
   bool showSpinner = false;
-  bool displayErrorMessage = false;
-  String atSignInKeyChain = '';
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   initState() {
     super.initState();
-  }
-
-  Future<bool> checkIfCorrectAtSign() async {
-    String currentAtSign = await _serverDemoService.getAtSign();
-    if (currentAtSign.compareTo(atSign) == 0) {
-      return true;
-    }
-    setState(() {
-      atSignInKeyChain = currentAtSign;
-    });
-    return false;
   }
 
   @override
@@ -106,19 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           }).toList(),
                         ),
                       ),
-                      displayErrorMessage ? Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Error: Use @sign'
-                              " stored in device's keychain: "
-                              + atSignInKeyChain,
-                          style: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                      : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
