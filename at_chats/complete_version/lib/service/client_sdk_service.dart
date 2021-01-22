@@ -17,45 +17,50 @@ class ClientSdkService {
 
   AtClientService atClientServiceInstance;
   AtClientImpl atClientInstance;
+  AtClientPreference atClientPreference;
 
   Future<bool> onboard({String atsign}) async {
     atClientServiceInstance = AtClientService();
     final appDocumentDirectory =
-    await path_provider.getApplicationDocumentsDirectory();
+        await path_provider.getApplicationDocumentsDirectory();
     String path = appDocumentDirectory.path;
-    var atClientPreference = AtClientPreference()
+    atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..syncStrategy = SyncStrategy.IMMEDIATE
       ..rootDomain = cons.MixedConstants.ROOT_DOMAIN
       ..hiveStoragePath = path;
     var result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference,
-        atsign: atsign,
-        namespace: cons.MixedConstants.NAMESPACE);
+        atClientPreference: atClientPreference, atsign: atsign);
     atClientInstance = atClientServiceInstance.atClient;
     return result;
   }
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  Future<bool> authenticate(String atsign,
-      {String cramSecret, String privateKey,String jsonData,
-        String decryptKey,}) async {
-    var result = await atClientServiceInstance.authenticate(atsign,
-        cramSecret: cramSecret,jsonData: jsonData,decryptKey: decryptKey);
+  Future<bool> authenticate(
+    String atsign, {
+    String cramSecret,
+    String privateKey,
+    String jsonData,
+    String decryptKey,
+  }) async {
+    atClientPreference.cramSecret = cramSecret;
+    var result = await atClientServiceInstance.authenticate(
+        atsign, atClientPreference,
+        jsonData: jsonData, decryptKey: decryptKey);
     atClientInstance = atClientServiceInstance.atClient;
     return result;
   }
 
-  String encryptKeyPairs(String atsign)  {
-    var encryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+  String encryptKeyPairs(String atsign) {
+    var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var encryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPublicKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPrivateKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
     var aesEncryptedKeys = {};
