@@ -14,8 +14,11 @@ tasks:
   - command: |
       mkdir -p /home/gitpod/.android
       touch /home/gitpod/.android/repositories.cfg
-      export PATH=/usr/lib/dart/bin:$FLUTTER_HOME/bin:$ANDROID_HOME/bin:$PATH
-      /home/gitpod/android-sdk/tools/bin/sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3"
+      export PATH=/usr/lib/dart/bin:$FLUTTER_HOME/bin:$ANDROID_HOME/bin:/home/gitpod/android-sdk/platform-tools:$PATH
+      export JAVA_HOME="/home/gitpod/android-studio/jre"
+      yes | /home/gitpod/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/home/gitpod/android-sdk/ "platform-tools" "platforms;android-29" "build-tools;28.0.3"
+      yes | flutter doctor --android-licenses
 vscode:
   extensions:
-    - Dart-Code.flutter@3.5.0:/kOacEWdiDRLyN/idUiM4A==
+    - Dart-Code.flutter@3.7.1:gujVOCgsbgoN2/po8X1tfA==
+    - Dart-Code.dart-code@3.7.1:3XT4xvtPoRdNasA5smNMiA==
