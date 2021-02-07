@@ -5,7 +5,7 @@ This library contains data that can be used for demo apps and testing.
 To use this library in your app, first add it to your pubspec.yaml
 ```  
 dependencies:
-  at_demo_data: ^0.0.2
+  at_demo_data: ^0.0.3+1
 ```
 ### Add to your project 
 ```
