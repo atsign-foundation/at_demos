@@ -22,6 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0XFFF1EBE5),
+      appBar: AppBar(
+        backgroundColor: Color(0XFF7B3F00),
+        title: Text(
+          'Welcome, ' + atSign,
+        ),
+
+      ),
       body: SafeArea(
         child: Center(
           child: Column(

@@ -25,110 +25,131 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Color(0XFFF1EBE5),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      children: <Widget> [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget> [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                'Chef\'s',
-                                style: TextStyle(
-                                  fontSize: 64,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0XFF956532),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 150,
-                              width: 90,
-                              child: Hero(
-                                tag: 'chef',
-                                child: Image.asset(
-                                  'assets/chef.png',
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              'Cookbook',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0XFF956532),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]
-                    ),
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget> [
+                  Expanded(
+                    flex: 1,
+                    child: Container()
                   ),
-                ),
-              SizedBox(
-                height: 50,
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    title: Center(
-                      child: DropdownButton<String>(
-                        hint:  Text('\tPick an @sign'),
-                        icon: Icon(
-                          Icons.keyboard_arrow_down,
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: <Widget> [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget> [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(
+                                    'Chef\'s',
+                                    style: TextStyle(
+                                      fontSize: 64,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0XFF956532),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 150,
+                                  width: 90,
+                                  child: Hero(
+                                    tag: 'chef',
+                                    child: Image.asset(
+                                      'assets/chef.png',
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'Cookbook',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 64,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0XFF956532),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]
                         ),
-                        iconSize: 24,
-                        dropdownColor: Color(0XFFF1EBE5),
-                        elevation: 16,
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black87
-                        ),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            atSign = newValue;
-                          });
-                        },
-                        value: atSign != null ? atSign : null,
-                        items: at_demo_data.allAtsigns
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: RoundedButton(
-                  text: 'Login',
-                  path: _login,
+                SizedBox(
+                  height: 50,
                 ),
-              ),
-            ]
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        title: Center(
+                          child: DropdownButton<String>(
+                            hint:  Text('\tPick an @sign'),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                            ),
+                            iconSize: 24,
+                            dropdownColor: Color(0XFFF1EBE5),
+                            elevation: 16,
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.black87
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                atSign = newValue;
+                              });
+                            },
+                            value: atSign != null ? atSign : null,
+                            items: at_demo_data.allAtsigns
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: RoundedButton(
+                      text: 'Login',
+                      path: _login,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/@logo.png',
+                      height: 30,
+                    )
+                  ),
+                )
+              ]
+            ),
           ),
         ),
       ),
