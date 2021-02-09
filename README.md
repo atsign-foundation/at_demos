@@ -7,7 +7,7 @@
 Welcome! We have a collection of demo @pps written to help you get a head start on your @protocol journey. We recommend looking at the @pps in the followering order:
 
 1. `at_hello_world`: A beginner @pp that introduces the fundamental @protocol verbs.
-2. `at_chats`, `at_cookbook`: Intermediate-level applications that builds on the `at_hello_world` app to create a messaging service as well as a cookbook. 
+2. `at_chats`, `at_cookbook`: Intermediate-level applications that build on the `at_hello_world` app to create a messaging service as well as a cookbook. 
 3. `@mosphere`: A production-level application (included in a separate repo) that uses advanced @protocol verbs to stream large files across multiple @signs.
 
 ## Creating your own @protocol application
