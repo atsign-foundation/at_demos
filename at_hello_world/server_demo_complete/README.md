@@ -12,6 +12,4 @@ to use this as reference!
 ## Getting Started
 
 Clone this project from the @ Company repository. Make sure that you've completed the prequisites
-listed in the at_hello_world readme! You can only use this app with one test @sign at a time (e.g.
-@kevin🛠 or @colin🛠). To use a different test @sign, uninstall the app from your emulator and build
-it again.
+listed in the `at_hello_world` readME!
