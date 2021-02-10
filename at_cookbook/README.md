@@ -1,16 +1,13 @@
-# chefcookbook
+# at_cookbook
 
-An MVP for a chef's cookbook.
+This is an intermediate-level @protocol application that uses the verbs we learned in the `at_hello_world` application to make a working cookbook for the chef inside of us all!
+
+## Demo
+
+<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_cookbook/assets/at_cookbook_demo.gif" width=300>
+
+What you see is the home page of the application. You can add and delete dishes freely with a lot of custom content!
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Clone this application from the `at_demos` repository. If you haven't used the `at_hello_world` app yet, we highly encourage you to check that out first. Make sure that your virtual environment (i.e. Docker containers) are running whenever you use an @protocol application.
