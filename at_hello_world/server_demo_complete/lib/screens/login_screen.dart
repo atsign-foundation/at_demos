@@ -50,7 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        leading: Icon(Icons.person_pin, size: 70),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            'assets/atsign.png',
+                            height: 50.0,
+                            width: 50.0,
+                          ),
+                        ),
                         title: Text(
                           'Log In',
                           style: TextStyle(
@@ -71,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           underline: Container(
                             height: 2,
-                            color: Colors.deepPurpleAccent,
+                            color: Colors.deepOrange,
                           ),
                           onChanged: (String newValue) {
                             setState(() {
@@ -102,6 +109,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 280,
+              ),
+              Container(
+                height: 50,
+                child: FittedBox(
+                  child: Image.asset(
+                    'assets/@logo.png',
+                  ),
+                ),
+              )
             ],
           ),
         ),

@@ -17,4 +17,6 @@ dependencies:
   at_demo_data: ^0.0.3+1
 
 flutter:
+  assets:
+    - assets/
   uses-material-design: true

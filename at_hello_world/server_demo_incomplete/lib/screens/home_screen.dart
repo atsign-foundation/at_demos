@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.all(10),
                       child: FlatButton(
                         child: Text('Update'),
-                        color: Colors.blueAccent,
+                        color: Colors.deepOrange,
                         textColor: Colors.white,
                         // TODO: Complete the onPressed function
                         onPressed: () {},
@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.all(20),
                       child: FlatButton(
                         child: Text('Scan'),
-                        color: Colors.blueAccent,
+                        color: Colors.deepOrange,
                         textColor: Colors.white,
                         // TODO: Complete the onPressed function
                         onPressed: () {},
@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.all(20),
                       child: FlatButton(
                         child: Text('Lookup'),
-                        color: Colors.blueAccent,
+                        color: Colors.deepOrange,
                         textColor: Colors.white,
                         // TODO: complete the onPressed function
                         onPressed: () {},

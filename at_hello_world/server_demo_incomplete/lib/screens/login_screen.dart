@@ -20,11 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
-  initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: ModalProgressHUD(
         // TODO: Assign boolean to inAsyncCall
-        inAsyncCall: false,
+        inAsyncCall: showSpinner,
         child: Center(
           child: ListView(
             children: <Widget>[
@@ -55,7 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        leading: Icon(Icons.person_pin, size: 70),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            'assets/atsign.png',
+                            height: 50.0,
+                            width: 50.0,
+                          ),
+                        ),
                         title: Text(
                           'Log In',
                           style: TextStyle(
@@ -64,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 20.0),
                         ),
                         subtitle: DropdownButton<String>(
-                          hint:  Text('\tEnter an @sign'),
+                          hint:  Text('\tPick an @sign'),
                           icon: Icon(
                             Icons.keyboard_arrow_down,
                           ),
@@ -76,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           underline: Container(
                             height: 2,
-                            color: Colors.deepPurpleAccent,
+                            color: Colors.deepOrange,
                           ),
                           onChanged: (String newValue) {
                             setState(() {
@@ -107,6 +109,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 280,
+              ),
+              Container(
+                height: 50,
+                child: FittedBox(
+                  child: Image.asset(
+                    'assets/@logo.png',
+                  ),
+                ),
+              )
             ],
           ),
         ),
