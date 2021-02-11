@@ -15,7 +15,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   atsign_authentication_helper: ^0.0.2
   modal_progress_hud: any
-  marquee_widget: ^1.0.0
+  at_server_status: ^0.1.0+1
   at_chat_flutter: ^0.0.3
   at_demo_data: ^0.0.3+1
 

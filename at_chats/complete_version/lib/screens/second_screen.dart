@@ -69,7 +69,7 @@ class _SecondScreenState extends State<SecondScreen> {
                 ),
                 underline: Container(
                   height: 2,
-                  color: Colors.deepPurpleAccent,
+                  color: Colors.deepOrange,
                 ),
                 onChanged: isEnabled ? (String newValue) {
                   setState(() {

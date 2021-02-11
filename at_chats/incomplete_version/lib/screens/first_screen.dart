@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:at_chat_flutter_example/screens/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:marquee_widget/marquee_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../service/client_sdk_service.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
@@ -15,21 +14,8 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
-  bool displayErrorMessage = false;
   String atSign;
-  String atSignInKeyChain = '';
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
-
-  Future<bool> checkIfCorrectAtSign() async {
-    String currentAtSign = await clientSdkService.getAtSign();
-    if (currentAtSign.compareTo(atSign) == 0) {
-      return true;
-    }
-    setState(() {
-      atSignInKeyChain = currentAtSign;
-    });
-    return false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +30,7 @@ class _FirstScreen extends State<FirstScreen> {
         ),
       ),
       body: ModalProgressHUD(
-        inAsyncCall: false,
+        inAsyncCall: showSpinner,
         child: Center(
           child: ListView(
             children: <Widget>[
@@ -64,7 +50,7 @@ class _FirstScreen extends State<FirstScreen> {
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.asset(
-                            'assets/sbhacks_logo.png',
+                            'assets/atsign.png',
                             height: 50.0,
                             width: 50.0,
                           ),
@@ -90,7 +76,7 @@ class _FirstScreen extends State<FirstScreen> {
                           ),
                           underline: Container(
                             height: 2,
-                            color: Colors.deepPurpleAccent,
+                            color: Colors.deepOrange,
                           ),
                           onChanged: (String newValue) {
                             setState(() {
@@ -108,19 +94,6 @@ class _FirstScreen extends State<FirstScreen> {
                           }).toList(),
                         ),
                       ),
-                      displayErrorMessage ? Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Error: Use @sign'
-                              " stored in device's keychain: "
-                              + atSignInKeyChain,
-                          style: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                          : Container(),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: FlatButton(
@@ -134,40 +107,15 @@ class _FirstScreen extends State<FirstScreen> {
                   ),
                 ),
               ),
-              Marquee(
-                child: Container(
-                  width: 1000,
-                  child: Image.asset(
-                    'assets/sbhacks_cloud.png',
-                    height: 125,
-                  ),
-                ),
-                direction: Axis.horizontal,
-                pauseDuration: Duration(seconds: 1),
-                animationDuration: Duration(seconds: 5),
-                directionMarguee: DirectionMarguee.oneDirection,
-              ),
-              Marquee(
-                child: Container(
-                  width: 1000,
-                  child: Image.asset(
-                    'assets/sbhacks_cloud.png',
-                    height: 40,
-                  ),
-                ),
-                direction: Axis.horizontal,
-                pauseDuration: Duration(seconds: 2),
-                animationDuration: Duration(seconds: 7),
-                directionMarguee: DirectionMarguee.oneDirection,
-                textDirection: TextDirection.rtl,
+              SizedBox(
+                height: 280,
               ),
               Container(
-                height: 200,
+                height: 50,
                 child: FittedBox(
                   child: Image.asset(
-                    'assets/sbhacks_island.png',
+                    'assets/@logo.png',
                   ),
-                  fit: BoxFit.fitHeight,
                 ),
               )
             ],
