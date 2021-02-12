@@ -46,7 +46,7 @@ class ClientSdkService {
 
   Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
-    await path_provider.getApplicationSupportDirectory();
+        await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     var _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
@@ -69,8 +69,7 @@ class ClientSdkService {
     atClientServiceInstance = _getClientServiceForAtSign(atsign);
     var atClientPreference = await _getAtClientPreference();
     var result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference,
-        atsign: atsign);
+        atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign == null ? await this.getAtSign() : atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
     _sync();
@@ -78,33 +77,37 @@ class ClientSdkService {
   }
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  Future<bool> authenticate(String atsign,
-      {String privateKey,String jsonData,
-        String decryptKey,}) async {
+  Future<bool> authenticate(
+    String atsign, {
+    String privateKey,
+    String jsonData,
+    String decryptKey,
+  }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    var atClientService = _getClientServiceForAtSign(atsign);
+    // var atClientService = _getClientServiceForAtSign(atsign);
     var atClientPreference = await _getAtClientPreference();
-    var result = await atClientService.authenticate(atsign, atClientPreference,
-        jsonData: jsonData,decryptKey: decryptKey);
+    var result = await atClientServiceInstance.authenticate(
+        atsign, atClientPreference,
+        jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientService);
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
     await _sync();
     return result;
   }
 
-  String encryptKeyPairs(String atsign)  {
-    var encryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+  String encryptKeyPairs(String atsign) {
+    var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var encryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPublicKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPrivateKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
     var aesEncryptedKeys = {};
