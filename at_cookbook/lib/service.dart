@@ -5,7 +5,7 @@ import 'package:at_server_status/at_server_status.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import 'package:chefcookbook/constants.dart' as constant;
+import 'package:chefcookbook/constants.dart' as conf;
 import 'package:at_client/src/util/encryption_util.dart';
 
 class ServerDemoService {
@@ -20,7 +20,6 @@ class ServerDemoService {
   AtClientService atClientServiceInstance;
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
-  static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
   String _atsign;
 
   _sync() async {
@@ -52,15 +51,15 @@ class ServerDemoService {
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..cramSecret = cramSecret
-      ..namespace = constant.namespace
+      ..namespace = conf.namespace
       ..syncStrategy = SyncStrategy.IMMEDIATE
-      ..rootDomain = constant.root
+      ..rootDomain = conf.root
       ..hiveStoragePath = path;
     return _atClientPreference;
   }
 
   _checkAtSignStatus(String atsign) async {
-    var atStatusImpl = AtStatusImpl(rootUrl: constant.root);
+    var atStatusImpl = AtStatusImpl(rootUrl: conf.root);
     var status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
@@ -69,8 +68,7 @@ class ServerDemoService {
     atClientServiceInstance = _getClientServiceForAtSign(atsign);
     var atClientPreference = await _getAtClientPreference();
     var result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference,
-        atsign: atsign);
+        atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign == null ? await this.getAtSign() : atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
     _sync();
@@ -78,33 +76,36 @@ class ServerDemoService {
   }
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  Future<bool> authenticate(String atsign,
-      {String privateKey,String jsonData,
-        String decryptKey,}) async {
+  Future<bool> authenticate(
+      String atsign, {
+        String privateKey,
+        String jsonData,
+        String decryptKey,
+      }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    var atClientService = _getClientServiceForAtSign(atsign);
     var atClientPreference = await _getAtClientPreference();
-    var result = await atClientService.authenticate(atsign, atClientPreference,
-        jsonData: jsonData,decryptKey: decryptKey);
+    var result = await atClientServiceInstance.authenticate(
+        atsign, atClientPreference,
+        jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientService);
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
     await _sync();
     return result;
   }
 
-  String encryptKeyPairs(String atsign)  {
-    var encryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+  String encryptKeyPairs(String atsign) {
+    var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var encryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPublicKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPublicKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPrivateKey =  EncryptionUtil.encryptValue(
+    var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPrivateKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
     var aesEncryptedKeys = {};
@@ -139,11 +140,11 @@ class ServerDemoService {
 
   Future<List<AtKey>> getAtKeys({String sharedBy}) async {
     return await _getAtClientForAtsign()
-        .getAtKeys(regex: constant.namespace, sharedBy: sharedBy);
+        .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
   }
 
   Future<String> getAtSign() async {
-    return await _keyChainManager.getAtSign();
+    return _atsign;
   }
 }
 

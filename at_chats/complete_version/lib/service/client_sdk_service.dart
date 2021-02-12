@@ -20,7 +20,6 @@ class ClientSdkService {
   AtClientService atClientServiceInstance;
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
-  static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
   String _atsign;
 
   _sync() async {
@@ -88,7 +87,6 @@ class ClientSdkService {
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    // var atClientService = _getClientServiceForAtSign(atsign);
     var atClientPreference = await _getAtClientPreference();
     var result = await atClientServiceInstance.authenticate(
         atsign, atClientPreference,
