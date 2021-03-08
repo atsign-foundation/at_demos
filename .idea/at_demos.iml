@@ -36,6 +36,12 @@
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/at_hello_world/server_demo_incomplete/ios/.symlinks/plugins/path_provider/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_chats/complete_version/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_chats/complete_version/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_cookbook/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_cookbook/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_chats/incomplete_version/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_chats/incomplete_version/.pub" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
