@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:core';
+
+import 'package:at_client/src/util/encryption_util.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_server_status/at_server_status.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
+import 'package:at_server_status/at_server_status.dart';
 import 'package:chefcookbook/constants.dart' as conf;
-import 'package:at_client/src/util/encryption_util.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class ServerDemoService {
   static final ServerDemoService _singleton = ServerDemoService._internal();
@@ -45,7 +46,7 @@ class ServerDemoService {
 
   Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
-    await path_provider.getApplicationSupportDirectory();
+        await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     var _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
@@ -77,11 +78,11 @@ class ServerDemoService {
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(
-      String atsign, {
-        String privateKey,
-        String jsonData,
-        String decryptKey,
-      }) async {
+    String atsign, {
+    String privateKey,
+    String jsonData,
+    String decryptKey,
+  }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
@@ -138,9 +139,15 @@ class ServerDemoService {
     return await _getAtClientForAtsign().delete(atKey);
   }
 
-  Future<List<AtKey>> getAtKeys({String sharedBy}) async {
+  Future<List<AtKey>> getAtKeys({String regex, String sharedBy}) async {
+    regex ??= conf.namespace;
     return await _getAtClientForAtsign()
-        .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
+        .getAtKeys(regex: regex, sharedBy: sharedBy);
+  }
+
+  Future<bool> notify(
+      AtKey atKey, String value, OperationEnum operation) async {
+    return await _getAtClientForAtsign().notify(atKey, value, operation);
   }
 
   Future<String> getAtSign() async {
