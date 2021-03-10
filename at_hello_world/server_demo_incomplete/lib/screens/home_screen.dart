@@ -44,29 +44,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.create, size: 70),
-                      title: Text('Update ',
+                      title: Text(
+                        'Update ',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0
-                        ),
+                            fontSize: 20.0),
                       ),
                       subtitle: ListView(
                         shrinkWrap: true,
                         children: [
                           TextField(
-                            decoration:
-                            InputDecoration(hintText: 'Enter Key'),
+                            decoration: InputDecoration(hintText: 'Enter Key'),
                             // TODO: Assign the key
-                            onChanged: (key) {
-                            },
+                            onChanged: (key) {},
                           ),
                           TextField(
-                            decoration: InputDecoration(
-                                hintText: 'Enter Value'),
+                            decoration:
+                                InputDecoration(hintText: 'Enter Value'),
                             // TODO: Assign the value
-                            onChanged: (value) {
-                            },
+                            onChanged: (value) {},
                           )
                         ],
                       ),
@@ -99,19 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.scanner, size: 70),
-                      title: Text('Scan',
+                      title: Text(
+                        'Scan',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0
-                        ),
+                            fontSize: 20.0),
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
                         // TODO: complete these parameters
                         items: [],
-                        onChanged: (value) {
-                        },
+                        onChanged: (value) {},
                         value: '',
                       ),
                     ),
@@ -143,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.list, size: 70),
-                      title: Text('LookUp',
+                      title: Text(
+                        'LookUp',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -155,8 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
-                            decoration:
-                            InputDecoration(hintText: 'Enter Key'),
+                            decoration: InputDecoration(hintText: 'Enter Key'),
                             // TODO: Assign the controller
                             controller: null,
                           ),
@@ -174,7 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 20,
                           ),
                           // TODO: assign a String to the Text widget
-                          Text('',
+                          Text(
+                            '',
                             style: TextStyle(
                               color: Colors.teal,
                               fontSize: 15,
