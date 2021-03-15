@@ -1,10 +1,12 @@
+import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
-import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
-import 'welcome_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../components/dish_widget.dart';
+import 'welcome_screen.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget dishWidget;
@@ -32,7 +34,7 @@ class DishPage extends StatelessWidget {
       backgroundColor: Color(0XFFF1EBE5),
       body: SafeArea(
         child: Column(
-          children: <Widget> [
+          children: <Widget>[
             Expanded(
               flex: 6,
               child: Padding(
@@ -41,9 +43,9 @@ class DishPage extends StatelessWidget {
                   color: Colors.white70,
                   child: Center(
                     child: Column(
-                      children: <Widget> [
+                      children: <Widget>[
                         Row(
-                          children: <Widget> [
+                          children: <Widget>[
                             Expanded(
                               child: Text(
                                 dishWidget.title,
@@ -65,7 +67,8 @@ class DishPage extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: Divider(
                             color: Colors.black87,
                             thickness: 1,
@@ -82,22 +85,18 @@ class DishPage extends StatelessWidget {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                )
-                            )
-                        ),
+                                ))),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Ingredients: ' + dishWidget.ingredients,
-                              style: TextStyle(
-                                color: Color(0XFF7B3F00),
-                                fontSize: 18,
-                              ),
-                            )
-                          )
-                        )
+                            padding: EdgeInsets.all(8.0),
+                            child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Ingredients: ' + dishWidget.ingredients,
+                                  style: TextStyle(
+                                    color: Color(0XFF7B3F00),
+                                    fontSize: 18,
+                                  ),
+                                )))
                       ],
                     ),
                   ),
@@ -106,12 +105,24 @@ class DishPage extends StatelessWidget {
             ),
             Expanded(
               flex: 1,
-              child: RoundedButton(
-                path: () {
-                  _delete(context);
-                },
-                text: 'Remove',
-                color: Colors.redAccent,
+              child: Row(
+                children: [
+                  RoundedButton(
+                    path: () {
+                      _delete(context);
+                    },
+                    text: 'Remove',
+                    color: Colors.redAccent,
+                  ),
+                  RoundedButton(
+                    path: () {
+                      // Hard coded the atSign, Replace with text field or a drop down with available atSigns.
+                      _share(context, '@murali🛠');
+                    },
+                    text: 'Share',
+                    color: Colors.redAccent,
+                  ),
+                ],
               ),
             )
           ],
@@ -131,5 +142,23 @@ class DishPage extends StatelessWidget {
     }
     Navigator.pop(context);
   }
-}
 
+  /// Shares the recipe with the sharedWith atSign.
+  _share(BuildContext context, String sharedWith) async {
+    AtKey lookup = AtKey()
+      ..key = dishWidget.title
+      ..sharedWith = atSign;
+
+    String value = await _serverDemoService.get(lookup);
+
+    var metadata = Metadata()..ttr = -1;
+    AtKey atKey = AtKey()
+      ..key = dishWidget.title
+      ..metadata = metadata
+      ..sharedBy = atSign
+      ..sharedWith = sharedWith;
+
+    var operation = OperationEnum.update;
+    await _serverDemoService.notify(atKey, value, operation);
+  }
+}
