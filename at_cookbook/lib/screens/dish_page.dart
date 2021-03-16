@@ -1,12 +1,11 @@
-import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
+import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
-import '../components/dish_widget.dart';
 import 'welcome_screen.dart';
+import 'share_screen.dart';
+import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget dishWidget;
@@ -59,9 +58,9 @@ class DishPage extends StatelessWidget {
                             Expanded(
                               child: CircleAvatar(
                                 radius: 80.0,
-                                backgroundImage: NetworkImage(
-                                  dishWidget.imageURL,
-                                ),
+                                backgroundImage: dishWidget.imageURL == null
+                                    ? AssetImage('assets/question_mark.png')
+                                    : NetworkImage(dishWidget.imageURL),
                               ),
                             ),
                           ],
@@ -103,28 +102,30 @@ class DishPage extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
                   RoundedButton(
                     path: () {
                       _delete(context);
                     },
                     text: 'Remove',
+                    width: 180,
                     color: Colors.redAccent,
                   ),
                   RoundedButton(
                     path: () {
-                      // Hard coded the atSign, Replace with text field or a drop down with available atSigns.
-                      _share(context, '@murali🛠');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ShareScreen(dishWidget: this.dishWidget)));
                     },
                     text: 'Share',
-                    color: Colors.redAccent,
-                  ),
-                ],
-              ),
-            )
+                    width: 180,
+                    color: Color(0XFF7B3F00),
+                  )
+                ])
           ],
         ),
       ),
@@ -141,24 +142,5 @@ class DishPage extends StatelessWidget {
       await _serverDemoService.delete(atKey);
     }
     Navigator.pop(context);
-  }
-
-  /// Shares the recipe with the sharedWith atSign.
-  _share(BuildContext context, String sharedWith) async {
-    AtKey lookup = AtKey()
-      ..key = dishWidget.title
-      ..sharedWith = atSign;
-
-    String value = await _serverDemoService.get(lookup);
-
-    var metadata = Metadata()..ttr = -1;
-    AtKey atKey = AtKey()
-      ..key = dishWidget.title
-      ..metadata = metadata
-      ..sharedBy = atSign
-      ..sharedWith = sharedWith;
-
-    var operation = OperationEnum.update;
-    await _serverDemoService.notify(atKey, value, operation);
   }
 }

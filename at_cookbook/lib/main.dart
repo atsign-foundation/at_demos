@@ -1,4 +1,7 @@
+import 'package:chefcookbook/screens/add_dish_screen.dart';
 import 'package:chefcookbook/screens/home_screen.dart';
+import 'package:chefcookbook/screens/other_screen.dart';
+import 'package:chefcookbook/screens/share_screen.dart';
 import 'package:chefcookbook/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         HomeScreen.id: (context) => HomeScreen(),
+        DishScreen.id: (context) => DishScreen(),
+        OtherScreen.id: (context) => OtherScreen(),
       }
     );
   }

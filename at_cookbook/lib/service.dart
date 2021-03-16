@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-
 import 'package:at_client/src/util/encryption_util.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
@@ -46,7 +45,7 @@ class ServerDemoService {
 
   Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
-        await path_provider.getApplicationSupportDirectory();
+    await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     var _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
@@ -78,11 +77,11 @@ class ServerDemoService {
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(
-    String atsign, {
-    String privateKey,
-    String jsonData,
-    String decryptKey,
-  }) async {
+      String atsign, {
+        String privateKey,
+        String jsonData,
+        String decryptKey,
+      }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {

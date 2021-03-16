@@ -1,13 +1,12 @@
-import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
-import 'package:chefcookbook/screens/add_dish_screen.dart';
-import 'package:chefcookbook/screens/shared_dishes.dart';
+import 'add_dish_screen.dart';
+import 'other_screen.dart';
+import 'welcome_screen.dart';
+import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home';
@@ -16,14 +15,13 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = [];
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideDrawer(),
       backgroundColor: Color(0XFFF1EBE5),
       appBar: AppBar(
         backgroundColor: Color(0XFF7B3F00),
@@ -50,12 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Look up the string of attributes to a corresponding string of keys
                         List<String> attributesList =
                             attributes.split(constant.splitter);
-                        if (attributesList.length == 4) {
+                        if (attributesList.length >= 3) {
                           DishWidget dishWidget = DishWidget(
-                              title: attributesList[0],
-                              description: attributesList[1],
-                              ingredients: attributesList[2],
-                              imageURL: attributesList[3]);
+                            title: attributesList[0],
+                            description: attributesList[1],
+                            ingredients: attributesList[2],
+                            imageURL: attributesList.length == 4
+                                ? attributesList[3]
+                                : null,
+                          );
                           dishWidgets.add(dishWidget);
                         } else {
                           print('The number of attributes is incorrect');
@@ -67,14 +68,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'My Dishes',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                                color: Colors.black87,
-                              ),
-                            ),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'My Dishes',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 32,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_right,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                          context, OtherScreen.id);
+                                    },
+                                  )
+                                ]),
                           ),
                           Column(
                             children: dishWidgets,
@@ -98,79 +113,55 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
         backgroundColor: Color(0XFF7B3F00),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DishScreen()),
-          ).then((value) => setState(() {}));
+          Navigator.pushNamed(context, DishScreen.id)
+              .then((value) => setState(() {}));
         },
       ),
     );
   }
 
   _scan() async {
-    List<AtKey> response = await _serverDemoService.getAtKeys(sharedBy: atSign);
-    List<String> scanList = [];
-    if (response.length > 0) {
-      scanList = response.map((atKey) => atKey.key).toList();
+    List<String> atSignList =
+        _serverDemoService.atClientServiceMap.keys.toList();
+    print(atSignList);
+    List<AtKey> response;
+    var regex = '^(?!cached).*cookbook.*';
+    for (String atsign in atSignList) {
+      if (response == null) {
+        response = await _serverDemoService.getAtKeys(regex: regex);
+      } else {
+        response.addAll(await _serverDemoService.getAtKeys(regex: regex));
+      }
     }
+    print("response: $response");
+    //List<String> scanList = [];
+    // if (response.length > 0) {
+    //   scanList = response.map((atKey) => atKey.key).toList();
+    // }
+    // print("scanList: $scanList");
     List<String> responseList = [];
-    for (String key in scanList) {
-      String value = await _lookup(key);
+    for (AtKey atKey in response) {
+      print("key: $atKey");
+      String value = await _lookup(atKey);
+      print("value: $value");
       // Appending the title of the dish to the rest of its attributes
-      value = key + constant.splitter + value;
+      value = atKey.key + constant.splitter + value;
       responseList.add(value);
     }
     return responseList;
   }
 
-  Future<String> _lookup(String key) async {
-    if (key != null) {
-      AtKey lookup = AtKey();
-      lookup.key = key;
-      lookup.sharedWith = atSign;
-      String response = await _serverDemoService.get(lookup);
+  Future<String> _lookup(AtKey atKey) async {
+    if (atKey != null) {
+      //AtKey lookup = AtKey();
+      // lookup.key = atKey;
+      // lookup.sharedWith = atSign;
+      //atKey.key = atKey.key + "." + "cookbook";
+      print("atKey: $atKey");
+      String response = await _serverDemoService.get(atKey);
+      print("response: $response");
       return response;
     }
     return '';
-  }
-}
-
-class SideDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: <Widget>[
-          DrawerHeader(
-            child: Center(
-              child: Text(
-                'Cookbook Menu',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 25),
-              ),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.black,
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('My Dishes'),
-            onTap: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()))
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.call_received_rounded),
-            title: Text('Shared dishes'),
-            onTap: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SharedDishes()))
-            },
-          ),
-        ],
-      ),
-    );
   }
 }
