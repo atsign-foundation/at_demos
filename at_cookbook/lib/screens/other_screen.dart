@@ -5,6 +5,7 @@ import 'package:chefcookbook/service.dart';
 import 'package:flutter/material.dart';
 import 'welcome_screen.dart';
 import 'home_screen.dart';
+import 'package:at_client/at_client.dart';
 
 class OtherScreen extends StatelessWidget {
   static final String id = 'other';
@@ -90,6 +91,7 @@ class OtherScreen extends StatelessWidget {
 
   /// Returns the list of Shared Receipes keys
   _getSharedKeys() async {
+    await _serverDemoService.sync();
     return await _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
   }
 

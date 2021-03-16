@@ -22,7 +22,7 @@ class ServerDemoService {
   Map<String, AtClientService> atClientServiceMap = {};
   String _atsign;
 
-  _sync() async {
+  sync() async {
     await _getAtClientForAtsign().getSyncManager().sync();
   }
 
@@ -71,7 +71,7 @@ class ServerDemoService {
         atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign == null ? await this.getAtSign() : atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    _sync();
+    sync();
     return result;
   }
 
@@ -93,7 +93,7 @@ class ServerDemoService {
         jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    await _sync();
+    await sync();
     return result;
   }
 
