@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
-import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final String id = 'home';
+  static const String id = 'home';
+
+  final String atSign;
+
+  const HomeScreen({
+    Key key,
+    @required this.atSign,
+  })  : assert(atSign != null),
+        super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -15,12 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
   //update
   String _key;
   String _value;
+
   // lookup
   TextEditingController _lookupTextFieldController = TextEditingController();
   String _lookupKey;
   String _lookupValue = '';
+
   // scan
   List<String> _scanItems = List<String>();
+
   // service
   ServerDemoService _atClientService = ServerDemoService.getInstance();
 
@@ -57,9 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                         'Update ',
                         style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
                       subtitle: ListView(
                         shrinkWrap: true,
@@ -71,8 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                           TextField(
-                            decoration:
-                                InputDecoration(hintText: 'Enter Value'),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Value',
+                            ),
                             onChanged: (value) {
                               _value = value;
                             },
@@ -110,15 +123,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                         'Scan',
                         style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
                         items: _scanItems.map((String key) {
                           return DropdownMenuItem(
-                            value: key != null ? key : null,
+                            value: key,
                             child: Text(key),
                           );
                         }).toList(),
@@ -174,9 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: InputDecoration(hintText: 'Enter Key'),
                             controller: _lookupTextFieldController,
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Text(
                             "Lookup Result : ",
                             style: TextStyle(
@@ -184,9 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Text(
                             '$_lookupValue',
                             style: TextStyle(

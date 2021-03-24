@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
+import 'package:newserverdemo/utils/at_conf.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import '../utils/at_conf.dart' as conf;
-import 'package:at_client/src/util/encryption_util.dart';
+import 'package:at_client/src/util/encryption_util.dart'; // TODO export this file for its usage PR created
 
 class ServerDemoService {
   static final ServerDemoService _singleton = ServerDemoService._internal();
@@ -22,9 +22,7 @@ class ServerDemoService {
   Map<String, AtClientService> atClientServiceMap = {};
   String _atsign;
 
-  _sync() async {
-    await _getAtClientForAtsign().getSyncManager().sync();
-  }
+  _sync() async => await _getAtClientForAtsign().getSyncManager().sync();
 
   AtClientImpl _getAtClientForAtsign({String atsign}) {
     atsign ??= _atsign;
@@ -35,39 +33,38 @@ class ServerDemoService {
   }
 
   AtClientService _getClientServiceForAtSign(String atsign) {
-    if (atsign == null) {}
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
-    var service = AtClientService();
+    final service = AtClientService();
     return service;
   }
 
   Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
-    await path_provider.getApplicationSupportDirectory();
-    String path = appDocumentDirectory.path;
-    var _atClientPreference = AtClientPreference()
+        await path_provider.getApplicationSupportDirectory();
+    final path = appDocumentDirectory.path;
+    final _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..cramSecret = cramSecret
-      ..namespace = conf.namespace
+      ..namespace = AtConfig.namespace
       ..syncStrategy = SyncStrategy.IMMEDIATE
-      ..rootDomain = conf.root
+      ..rootDomain = AtConfig.root
       ..hiveStoragePath = path;
     return _atClientPreference;
   }
 
   _checkAtSignStatus(String atsign) async {
-    var atStatusImpl = AtStatusImpl(rootUrl: conf.root);
-    var status = await atStatusImpl.get(atsign);
+    final atStatusImpl = AtStatusImpl(rootUrl: AtConfig.root);
+    final status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
 
   Future<bool> onboard({String atsign}) async {
     atClientServiceInstance = _getClientServiceForAtSign(atsign);
-    var atClientPreference = await _getAtClientPreference();
-    var result = await atClientServiceInstance.onboard(
+    final atClientPreference = await _getAtClientPreference();
+    final result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign == null ? await this.getAtSign() : atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
@@ -77,18 +74,18 @@ class ServerDemoService {
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(
-      String atsign, {
-        String privateKey,
-        String jsonData,
-        String decryptKey,
-      }) async {
-    var atsignStatus = await _checkAtSignStatus(atsign);
+    String atsign, {
+    String privateKey,
+    String jsonData,
+    String decryptKey,
+  }) async {
+    final atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    var atClientPreference = await _getAtClientPreference();
-    var result = await atClientServiceInstance.authenticate(
+    final atClientPreference = await _getAtClientPreference();
+    final result = await atClientServiceInstance.authenticate(
         atsign, atClientPreference,
         jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
@@ -98,14 +95,14 @@ class ServerDemoService {
   }
 
   String encryptKeyPairs(String atsign) {
-    var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
+    final encryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
+    final encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
+    final aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPublicKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
+    final aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
         at_demo_data.encryptionPrivateKeyMap[atsign],
         at_demo_data.aesKeyMap[atsign]);
     var aesEncryptedKeys = {};
@@ -121,31 +118,26 @@ class ServerDemoService {
     aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
         aesencryptedPkamPrivateKey;
 
-    var keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
+    final keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
     return keyString;
   }
 
   Future<String> get(AtKey atKey) async {
-    var result = await _getAtClientForAtsign().get(atKey);
+    final result = await _getAtClientForAtsign().get(atKey);
     return result.value;
   }
 
-  Future<bool> put(AtKey atKey, String value) async {
-    return await _getAtClientForAtsign().put(atKey, value);
-  }
+  Future<bool> put(AtKey atKey, String value) async =>
+      await _getAtClientForAtsign().put(atKey, value);
 
-  Future<bool> delete(AtKey atKey) async {
-    return await _getAtClientForAtsign().delete(atKey);
-  }
+  Future<bool> delete(AtKey atKey) async =>
+      await _getAtClientForAtsign().delete(atKey);
 
-  Future<List<AtKey>> getAtKeys({String sharedBy}) async {
-    return await _getAtClientForAtsign()
-        .getAtKeys(regex: conf.namespace, sharedBy: sharedBy);
-  }
+  Future<List<AtKey>> getAtKeys({String sharedBy}) async =>
+      await _getAtClientForAtsign()
+          .getAtKeys(regex: AtConfig.namespace, sharedBy: sharedBy);
 
-  Future<String> getAtSign() async {
-    return _atsign;
-  }
+  Future<String> getAtSign() async => _atsign;
 }
 
 class BackupKeyConstants {
