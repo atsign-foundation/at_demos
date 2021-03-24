@@ -4,6 +4,7 @@ import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'welcome_screen.dart';
+import 'share_screen.dart';
 import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
@@ -32,7 +33,7 @@ class DishPage extends StatelessWidget {
       backgroundColor: Color(0XFFF1EBE5),
       body: SafeArea(
         child: Column(
-          children: <Widget> [
+          children: <Widget>[
             Expanded(
               flex: 6,
               child: Padding(
@@ -41,9 +42,9 @@ class DishPage extends StatelessWidget {
                   color: Colors.white70,
                   child: Center(
                     child: Column(
-                      children: <Widget> [
+                      children: <Widget>[
                         Row(
-                          children: <Widget> [
+                          children: <Widget>[
                             Expanded(
                               child: Text(
                                 dishWidget.title,
@@ -57,15 +58,16 @@ class DishPage extends StatelessWidget {
                             Expanded(
                               child: CircleAvatar(
                                 radius: 80.0,
-                                backgroundImage: NetworkImage(
-                                  dishWidget.imageURL,
-                                ),
+                                backgroundImage: dishWidget.imageURL == null
+                                    ? AssetImage('assets/question_mark.png')
+                                    : NetworkImage(dishWidget.imageURL),
                               ),
                             ),
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: Divider(
                             color: Colors.black87,
                             thickness: 1,
@@ -82,38 +84,48 @@ class DishPage extends StatelessWidget {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                )
-                            )
-                        ),
+                                ))),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Ingredients: ' + dishWidget.ingredients,
-                              style: TextStyle(
-                                color: Color(0XFF7B3F00),
-                                fontSize: 18,
-                              ),
-                            )
-                          )
-                        )
+                            padding: EdgeInsets.all(8.0),
+                            child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Ingredients: ' + dishWidget.ingredients,
+                                  style: TextStyle(
+                                    color: Color(0XFF7B3F00),
+                                    fontSize: 18,
+                                  ),
+                                )))
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: RoundedButton(
-                path: () {
-                  _delete(context);
-                },
-                text: 'Remove',
-                color: Colors.redAccent,
-              ),
-            )
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  RoundedButton(
+                    path: () {
+                      _delete(context);
+                    },
+                    text: 'Remove',
+                    width: 180,
+                    color: Colors.redAccent,
+                  ),
+                  RoundedButton(
+                    path: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ShareScreen(dishWidget: this.dishWidget)));
+                    },
+                    text: 'Share',
+                    width: 180,
+                    color: Color(0XFF7B3F00),
+                  )
+                ])
           ],
         ),
       ),
@@ -132,4 +144,3 @@ class DishPage extends StatelessWidget {
     Navigator.pop(context);
   }
 }
-

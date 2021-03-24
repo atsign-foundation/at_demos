@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
-  at_client_mobile: ^1.0.0+4
+  at_client_mobile: ^1.0.0+8
   at_server_status: ^0.1.0+1
   path_provider: ^1.5.1
   at_demo_data: ^0.0.3+1

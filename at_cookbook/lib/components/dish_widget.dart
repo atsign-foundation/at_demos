@@ -23,7 +23,9 @@ class DishWidget extends StatelessWidget {
       child: Card(
         child: ListTile(
           leading: SizedBox(
-            child: Image.network(
+            child: this.imageURL == null ? Image.asset(
+                'assets/question_mark.png'
+            ) : Image.network(
               this.imageURL
             ),
             height: 80,
