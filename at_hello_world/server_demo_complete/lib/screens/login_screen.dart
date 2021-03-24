@@ -15,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // TODO: Instantiate variables
   bool showSpinner = false;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
@@ -32,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       body: ModalProgressHUD(
-        // TODO: Assign boolean to inAsyncCall
         inAsyncCall: showSpinner,
         child: Center(
           child: ListView(
@@ -66,16 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 20.0),
                         ),
                         subtitle: DropdownButton<String>(
-                          hint:  Text('\tPick an @sign'),
+                          hint: Text('\tPick an @sign'),
                           icon: Icon(
                             Icons.keyboard_arrow_down,
-                            ),
+                          ),
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.black87
-                          ),
+                          style:
+                              TextStyle(fontSize: 20.0, color: Colors.black87),
                           underline: Container(
                             height: 2,
                             color: Colors.deepOrange,
@@ -101,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text('Login'),
                           color: Colors.blueAccent,
                           textColor: Colors.white,
-                          // TODO: Assign function to onPressed
                           onPressed: _login,
                         ),
                       ),
@@ -138,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
       _serverDemoService.onboard(atsign: atSign).then((value) async {
-          Navigator.pushReplacementNamed(context, HomeScreen.id);
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {
         await _serverDemoService.authenticate(atSign,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);

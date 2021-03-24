@@ -12,7 +12,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // TODO: Instantiate variables
+  //update
+  String _key;
+  String _value;
+  // lookup
+  TextEditingController _lookupTextFieldController = TextEditingController();
+  String _lookupKey;
+  String _lookupValue = '';
+  // scan
+  List<String> _scanItems = List<String>();
+  // service
+  ServerDemoService _atClientService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -44,28 +54,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.create, size: 70),
-                      title: Text('Update ',
+                      title: Text(
+                        'Update ',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0
-                        ),
+                            fontSize: 20.0),
                       ),
                       subtitle: ListView(
                         shrinkWrap: true,
                         children: [
                           TextField(
-                            decoration:
-                            InputDecoration(hintText: 'Enter Key'),
-                            // TODO: Assign the key
+                            decoration: InputDecoration(hintText: 'Enter Key'),
                             onChanged: (key) {
+                              _key = key;
                             },
                           ),
                           TextField(
-                            decoration: InputDecoration(
-                                hintText: 'Enter Value'),
-                            // TODO: Assign the value
+                            decoration:
+                                InputDecoration(hintText: 'Enter Value'),
                             onChanged: (value) {
+                              _value = value;
                             },
                           )
                         ],
@@ -77,8 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text('Update'),
                         color: Colors.deepOrange,
                         textColor: Colors.white,
-                        // TODO: Complete the onPressed function
-                        onPressed: () {},
+                        onPressed: _update,
                       ),
                     ),
                   ],
@@ -99,20 +107,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.scanner, size: 70),
-                      title: Text('Scan',
+                      title: Text(
+                        'Scan',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0
-                        ),
+                            fontSize: 20.0),
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
-                        // TODO: complete these parameters
-                        items: [],
+                        items: _scanItems.map((String key) {
+                          return DropdownMenuItem(
+                            value: key != null ? key : null,
+                            child: Text(key),
+                          );
+                        }).toList(),
                         onChanged: (value) {
+                          setState(() {
+                            _lookupKey = value;
+                            _lookupTextFieldController.text = value;
+                          });
                         },
-                        value: '',
+                        value: _scanItems.length > 0 ? _scanItems[0] : '',
                       ),
                     ),
                     Container(
@@ -121,8 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text('Scan'),
                         color: Colors.deepOrange,
                         textColor: Colors.white,
-                        // TODO: Complete the onPressed function
-                        onPressed: () {},
+                        onPressed: _scan,
                       ),
                     ),
                   ],
@@ -143,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.list, size: 70),
-                      title: Text('LookUp',
+                      title: Text(
+                        'LookUp',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -155,10 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
-                            decoration:
-                            InputDecoration(hintText: 'Enter Key'),
-                            // TODO: Assign the controller
-                            controller: null,
+                            decoration: InputDecoration(hintText: 'Enter Key'),
+                            controller: _lookupTextFieldController,
                           ),
                           SizedBox(
                             height: 20,
@@ -173,8 +187,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(
                             height: 20,
                           ),
-                          // TODO: assign a String to the Text widget
-                          Text('',
+                          Text(
+                            '$_lookupValue',
                             style: TextStyle(
                               color: Colors.teal,
                               fontSize: 15,
@@ -190,8 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text('Lookup'),
                         color: Colors.deepOrange,
                         textColor: Colors.white,
-                        // TODO: complete the onPressed function
-                        onPressed: () {},
+                        onPressed: _lookup,
                       ),
                     ),
                   ],
@@ -203,5 +216,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-// TODO: add the _scan, _update, and _lookup methods
 }
+
+// TODO: add the _scan, _update, and _lookup methods
+_update() async {}
+
+_scan() async {}
+
+_lookup() async {}

@@ -1,4 +1,5 @@
 import 'package:chefcookbook/components/rounded_button.dart';
+import 'package:chefcookbook/screens/home_screen.dart';
 import 'package:chefcookbook/service.dart';
 import 'welcome_screen.dart';
 import 'package:at_commons/at_commons.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class DishScreen extends StatelessWidget {
+  static final String id = "add_dish";
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _title;
   String _ingredients;
@@ -39,10 +41,13 @@ class DishScreen extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 120,
-                        child: Image.asset(
-                          'assets/chef.png',
+                      child: Hero(
+                        tag: 'choice chef',
+                        child: SizedBox(
+                          height: 120,
+                          child: Image.asset(
+                            'assets/chef.png',
+                          ),
                         ),
                       ),
                     ),
@@ -89,14 +94,12 @@ class DishScreen extends StatelessWidget {
                     TextFormField(
                       decoration: InputDecoration(
                         icon: Icon(Icons.approval),
-                        hintText: 'Link to an image of the cuisine',
+                        hintText: 'Optional: link to an image of the cuisine',
                         labelText: 'Image',
                       ),
                       onChanged: (value) {
                         _imageURL = value;
                       },
-                      validator: (value) =>
-                      value.isEmpty ? 'Paste an image URL' : null,
                     ),
                     SizedBox(
                       height: 50,
@@ -120,12 +123,15 @@ class DishScreen extends StatelessWidget {
     final FormState form = _formKey.currentState;
     if (form.validate()) {
       String _values = _description + constant.splitter
-          + _ingredients + constant.splitter + _imageURL;
+          + _ingredients;
+      if (_imageURL != null) {
+        _values +=  constant.splitter + _imageURL;
+      }
       AtKey atKey = AtKey();
       atKey.key = _title;
       atKey.sharedWith = atSign;
       await _serverDemoService.put(atKey, _values);
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
     } else {
       print('Not all text fields have been completed!');
     }
