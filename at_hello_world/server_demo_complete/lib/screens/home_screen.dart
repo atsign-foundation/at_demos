@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
-import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final String id = 'home';
+  static const String id = 'home';
+
+  final String atSign;
+
+  const HomeScreen({
+    Key key,
+    @required this.atSign,
+  })  : assert(atSign != null),
+        super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -16,12 +24,15 @@ class _HomeScreenState extends State<HomeScreen> {
   //update
   String _key;
   String _value;
+
   // lookup
   TextEditingController _lookupTextFieldController = TextEditingController();
   String _lookupKey;
   String _lookupValue = '';
+
   // scan
   List<String> _scanItems = List<String>();
+
   // service
   ServerDemoService _atClientService = ServerDemoService.getInstance();
 
@@ -31,10 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           'Home',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -58,9 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                         'Update ',
                         style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
                       subtitle: ListView(
                         shrinkWrap: true,
@@ -73,8 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                           TextField(
-                            decoration:
-                                InputDecoration(hintText: 'Enter Value'),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Value',
+                            ),
                             // TODO: Assign the value
                             onChanged: (value) {
                               _value = value;
@@ -114,16 +124,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                         'Scan',
                         style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
                         // TODO: complete these parameters
                         items: _scanItems.map((String key) {
                           return DropdownMenuItem(
-                            value: key != null ? key : null,
+                            value: key, //key != null ? key : null,
                             child: Text(key),
                           );
                         }).toList(),
@@ -181,9 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             // TODO: Assign the controller
                             controller: _lookupTextFieldController,
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Text(
                             "Lookup Result : ",
                             style: TextStyle(
@@ -191,9 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           // TODO: assign a String to the Text widget
                           Text(
                             '$_lookupValue',
@@ -234,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_key != null && _value != null) {
       AtKey pair = AtKey();
       pair.key = _key;
-      pair.sharedWith = atSign;
+      pair.sharedWith = widget.atSign;
       await _atClientService.put(pair, _value);
     }
   }
@@ -243,12 +250,12 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Strip any meta data away from the retrieves keys. Store
   /// the keys into [_scanItems].
   _scan() async {
-    List<AtKey> response = await _atClientService.getAtKeys(sharedBy: atSign);
+    List<AtKey> response = await _atClientService.getAtKeys(
+      sharedBy: widget.atSign,
+    );
     if (response.length > 0) {
       List<String> scanList = response.map((atKey) => atKey.key).toList();
-      setState(() {
-        _scanItems = scanList;
-      });
+      setState(() => _scanItems = scanList);
     }
   }
 
@@ -257,12 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_lookupKey != null) {
       AtKey lookup = AtKey();
       lookup.key = _lookupKey;
-      lookup.sharedWith = atSign;
+      lookup.sharedWith = widget.atSign;
       String response = await _atClientService.get(lookup);
       if (response != null) {
-        setState(() {
-          _lookupValue = response;
-        });
+        setState(() => _lookupValue = response);
       }
     }
   }

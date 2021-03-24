@@ -17,9 +17,17 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: LoginScreen.id,
-      routes: {
-        LoginScreen.id: (context) => LoginScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
+      onGenerateRoute: (setting) {
+        switch (setting.name) {
+          case HomeScreen.id:
+            final atSign = setting.arguments;
+            return MaterialPageRoute(
+              builder: (_) => HomeScreen(atSign: atSign),
+            );
+          case LoginScreen.id:
+          default:
+            return MaterialPageRoute(builder: (_) => LoginScreen());
+        }
       },
     );
   }
