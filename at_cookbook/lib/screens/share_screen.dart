@@ -19,7 +19,22 @@ class ShareScreen extends StatefulWidget {
 
 class _ShareScreenState extends State<ShareScreen> {
   String _otherAtSign;
+  List<String> _atSigns;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+
+  initList() {
+    List<String> otherAtSigns = at_demo_data.allAtsigns;
+    otherAtSigns.remove(atSign);
+    setState(() {
+      _atSigns = otherAtSigns;
+    });
+  }
+
+  @override
+  void initState() {
+   initList();
+   super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +86,7 @@ class _ShareScreenState extends State<ShareScreen> {
                           });
                         },
                         value: _otherAtSign != null ? _otherAtSign : null,
-                        items: at_demo_data.allAtsigns
+                        items: _atSigns == null ? [] : _atSigns
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,

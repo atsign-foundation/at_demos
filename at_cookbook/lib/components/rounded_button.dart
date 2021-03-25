@@ -25,7 +25,7 @@ class RoundedButton extends StatelessWidget {
           child: Text(
             this.text,
             style: TextStyle(
-              color: this.color != Color(0XFFF1EBE5) ? Colors.white : Colors.black,
+              color: this.color == Color(0XFF7B3F00) ? Colors.white : Colors.black,
             ),
           ),
         ),

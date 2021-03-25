@@ -3,6 +3,7 @@ import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
+import 'home_screen.dart';
 import 'welcome_screen.dart';
 import 'share_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +26,10 @@ class DishPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0XFF7B3F00),
         title: Text(
           dishWidget.title,
         ),
       ),
-      backgroundColor: Color(0XFFF1EBE5),
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -59,8 +58,8 @@ class DishPage extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 80.0,
                                 backgroundImage: dishWidget.imageURL == null
-                                    ? AssetImage('assets/question_mark.png')
-                                    : NetworkImage(dishWidget.imageURL),
+                                  ? AssetImage('assets/question_mark.png')
+                                  : NetworkImage(dishWidget.imageURL),
                               ),
                             ),
                           ],
@@ -74,66 +73,75 @@ class DishPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  dishWidget.description,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ))),
+                          padding: EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              dishWidget.description,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
                         Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Ingredients: ' + dishWidget.ingredients,
-                                  style: TextStyle(
-                                    color: Color(0XFF7B3F00),
-                                    fontSize: 18,
-                                  ),
-                                )))
+                          padding: EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Ingredients: ' + dishWidget.ingredients,
+                              style: TextStyle(
+                                color: Color(0XFF7B3F00),
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
+            dishWidget.prevScreen == HomeScreen.id ?
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RoundedButton(
-                    path: () {
-                      _delete(context);
-                    },
-                    text: 'Remove',
-                    width: 180,
-                    color: Colors.redAccent,
-                  ),
-                  RoundedButton(
-                    path: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ShareScreen(dishWidget: this.dishWidget)));
-                    },
-                    text: 'Share',
-                    width: 180,
-                    color: Color(0XFF7B3F00),
-                  )
-                ])
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RoundedButton(
+                  path: () {
+                    _delete(context);
+                  },
+                  text: 'Remove',
+                  width: 180,
+                  color: Colors.redAccent,
+                ),
+                RoundedButton(
+                  path: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                            ShareScreen(dishWidget: this.dishWidget)
+                      ),
+                    );
+                  },
+                  text: 'Share',
+                  width: 180,
+                  color: Color(0XFF7B3F00),
+                ),
+              ],
+            )
+            : Container(),
           ],
         ),
       ),
     );
   }
 
-  // Work in progress. Currently, you need to hot reload
-  // the home screen for the dish to disappear.
+  /// Deletes a key/value pair in the secondary server of
+  /// the logged-in @sign.
   _delete(BuildContext context) async {
     if (dishWidget.title != null) {
       AtKey atKey = AtKey();
@@ -141,6 +149,8 @@ class DishPage extends StatelessWidget {
       atKey.sharedWith = atSign;
       await _serverDemoService.delete(atKey);
     }
-    Navigator.pop(context);
+    Navigator.of(context)
+      .pushNamedAndRemoveUntil(dishWidget.prevScreen,
+        (Route<dynamic> route) => false, arguments: true);
   }
 }

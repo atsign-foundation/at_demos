@@ -22,7 +22,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFFF1EBE5),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: SafeArea(
@@ -155,13 +154,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
+
+  /// Authenticate into one of the testable @signs.
   _login() async {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      showSpinner = true;
-    });
-    String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
+      FocusScope.of(context).unfocus();
+      setState(() {
+        showSpinner = true;
+      });
+      String jsonData = _serverDemoService.encryptKeyPairs(atSign);
       _serverDemoService.onboard(atsign: atSign).then((value) async {
         Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {

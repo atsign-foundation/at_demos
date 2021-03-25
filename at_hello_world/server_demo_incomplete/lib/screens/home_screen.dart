@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _scanItems = List<String>();
 
   // service
-  ServerDemoService _atClientService = ServerDemoService.getInstance();
+  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {

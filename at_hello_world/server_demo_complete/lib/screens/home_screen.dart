@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _scanItems = List<String>();
 
   // service
-  ServerDemoService _atClientService = ServerDemoService.getInstance();
+  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -242,15 +242,15 @@ class _HomeScreenState extends State<HomeScreen> {
       AtKey pair = AtKey();
       pair.key = _key;
       pair.sharedWith = widget.atSign;
-      await _atClientService.put(pair, _value);
+      await _serverDemoService.put(pair, _value);
     }
   }
 
-  /// getKeys() corresponding to the keys shared by [atSign].
+  /// getAtKeys() will retrieve keys shared by [atSign].
   /// Strip any meta data away from the retrieves keys. Store
   /// the keys into [_scanItems].
   _scan() async {
-    List<AtKey> response = await _atClientService.getAtKeys(
+    List<AtKey> response = await _serverDemoService.getAtKeys(
       sharedBy: widget.atSign,
     );
     if (response.length > 0) {
@@ -265,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
       AtKey lookup = AtKey();
       lookup.key = _lookupKey;
       lookup.sharedWith = widget.atSign;
-      String response = await _atClientService.get(lookup);
+      String response = await _serverDemoService.get(lookup);
       if (response != null) {
         setState(() => _lookupValue = response);
       }

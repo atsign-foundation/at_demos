@@ -1,5 +1,4 @@
 import 'package:chefcookbook/components/rounded_button.dart';
-import 'package:chefcookbook/screens/home_screen.dart';
 import 'package:chefcookbook/service.dart';
 import 'welcome_screen.dart';
 import 'package:at_commons/at_commons.dart';
@@ -21,12 +20,10 @@ class DishScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0XFF7B3F00),
         title: Text(
           'Add a dish'
         ),
       ),
-      backgroundColor: Color(0XFFF1EBE5),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -119,6 +116,7 @@ class DishScreen extends StatelessWidget {
     );
   }
 
+  /// Add a key/value pair to the logged-in secondary server.
   _update(BuildContext context) async {
     final FormState form = _formKey.currentState;
     if (form.validate()) {
@@ -131,7 +129,7 @@ class DishScreen extends StatelessWidget {
       atKey.key = _title;
       atKey.sharedWith = atSign;
       await _serverDemoService.put(atKey, _values);
-      Navigator.pushReplacementNamed(context, HomeScreen.id);
+      Navigator.pop(context);
     } else {
       print('Not all text fields have been completed!');
     }

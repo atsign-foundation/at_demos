@@ -120,14 +120,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // TODO: Write _login method
-  /// Use onboard() to authenticate via PKAM public/private keys.
+  /// Use onboard() to authenticate via PKAM public/private keys. If
+  /// onboard() fails, use authenticate() to place keys.
   _login() async {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      showSpinner = true;
-    });
-    String jsonData = _serverDemoService.encryptKeyPairs(atSign);
     if (atSign != null) {
+      FocusScope.of(context).unfocus();
+      setState(() {
+        showSpinner = true;
+      });
+      String jsonData = _serverDemoService.encryptKeyPairs(atSign);
       // TODO: Complete the rest of the if statement!
     }
   }

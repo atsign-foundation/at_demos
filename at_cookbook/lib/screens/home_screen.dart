@@ -10,6 +10,11 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home';
+  final bool shouldReload;
+
+  const HomeScreen({
+    this.shouldReload,
+  });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -19,12 +24,23 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = [];
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+
+  checkReload() {
+    if (widget.shouldReload) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    checkReload();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFFF1EBE5),
       appBar: AppBar(
-        backgroundColor: Color(0XFF7B3F00),
         title: Text(
           'Welcome, ' + atSign,
         ),
@@ -39,28 +55,25 @@ class _HomeScreenState extends State<HomeScreen>
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData) {
-                    // Returns a list of keys for each dish
+                    // Returns a list of attributes for each dish.
                     List<String> dishAttributes = snapshot.data;
                     print(snapshot.data);
                     List<DishWidget> dishWidgets = [];
-                    if (dishAttributes.length > 0) {
-                      for (String attributes in dishAttributes) {
-                        // Look up the string of attributes to a corresponding string of keys
-                        List<String> attributesList =
-                            attributes.split(constant.splitter);
-                        if (attributesList.length >= 3) {
-                          DishWidget dishWidget = DishWidget(
-                            title: attributesList[0],
-                            description: attributesList[1],
-                            ingredients: attributesList[2],
-                            imageURL: attributesList.length == 4
-                                ? attributesList[3]
-                                : null,
-                          );
-                          dishWidgets.add(dishWidget);
-                        } else {
-                          print('The number of attributes is incorrect');
-                        }
+                    for (String attributes in dishAttributes) {
+                      // Populate a DishWidget based on the attributes string.
+                      List<String> attributesList =
+                          attributes.split(constant.splitter);
+                      if (attributesList.length >= 3) {
+                        DishWidget dishWidget = DishWidget(
+                          title: attributesList[0],
+                          description: attributesList[1],
+                          ingredients: attributesList[2],
+                          imageURL: attributesList.length == 4
+                              ? attributesList[3]
+                              : null,
+                          prevScreen: HomeScreen.id,
+                        );
+                        dishWidgets.add(dishWidget);
                       }
                     }
                     return SafeArea(
@@ -120,47 +133,24 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  /// Scan for [AtKey] objects with the correct regex.
   _scan() async {
-    List<String> atSignList =
-        _serverDemoService.atClientServiceMap.keys.toList();
-    print(atSignList);
     List<AtKey> response;
-    var regex = '^(?!cached).*cookbook.*';
-    for (String atsign in atSignList) {
-      if (response == null) {
-        response = await _serverDemoService.getAtKeys(regex: regex);
-      } else {
-        response.addAll(await _serverDemoService.getAtKeys(regex: regex));
-      }
-    }
-    print("response: $response");
-    //List<String> scanList = [];
-    // if (response.length > 0) {
-    //   scanList = response.map((atKey) => atKey.key).toList();
-    // }
-    // print("scanList: $scanList");
+    String regex = '^(?!cached).*cookbook.*';
+    response = await _serverDemoService.getAtKeys(regex: regex);
     List<String> responseList = [];
     for (AtKey atKey in response) {
-      print("key: $atKey");
       String value = await _lookup(atKey);
-      print("value: $value");
-      // Appending the title of the dish to the rest of its attributes
       value = atKey.key + constant.splitter + value;
       responseList.add(value);
     }
     return responseList;
   }
 
+  /// Look up a value corresponding to an [AtKey] instance.
   Future<String> _lookup(AtKey atKey) async {
     if (atKey != null) {
-      //AtKey lookup = AtKey();
-      // lookup.key = atKey;
-      // lookup.sharedWith = atSign;
-      //atKey.key = atKey.key + "." + "cookbook";
-      print("atKey: $atKey");
-      String response = await _serverDemoService.get(atKey);
-      print("response: $response");
-      return response;
+      return await _serverDemoService.get(atKey);
     }
     return '';
   }

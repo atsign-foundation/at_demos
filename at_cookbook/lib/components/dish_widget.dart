@@ -7,12 +7,14 @@ class DishWidget extends StatelessWidget {
   final String ingredients;
   final String description;
   final String imageURL;
+  final String prevScreen;
 
   DishWidget({
     @required this.title,
     @required this.ingredients,
     @required this.description,
     @required this.imageURL,
+    @required this.prevScreen,
     });
 
 
