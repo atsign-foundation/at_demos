@@ -10,7 +10,7 @@ Welcome! We have a collection of demo apps written to help you get a head start 
 2. `at_chats`, `at_cookbook`: Intermediate-level applications that build on the `at_hello_world` app to create a messaging service as well as a cookbook. 
 3. `@mosphere`: A production-level application (included in a separate repo) that uses advanced @platform verbs to stream large files across multiple @signs.
 
-## Creating your own @protocol application
+## Creating your own @platform application
 
 Just like any Flutter app, an @platform application requires a little bit of setup before you can get started. Here are those steps:
 
