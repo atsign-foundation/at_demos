@@ -45,7 +45,7 @@ class ServerDemoService {
 
   Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
-    await path_provider.getApplicationSupportDirectory();
+        await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     var _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
@@ -77,11 +77,11 @@ class ServerDemoService {
 
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(
-      String atsign, {
-        String privateKey,
-        String jsonData,
-        String decryptKey,
-      }) async {
+    String atsign, {
+    String privateKey,
+    String jsonData,
+    String decryptKey,
+  }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {

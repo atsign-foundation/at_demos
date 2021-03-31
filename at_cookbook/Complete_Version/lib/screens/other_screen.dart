@@ -23,7 +23,7 @@ class OtherScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Expanded(
-                  child: FutureBuilder(
+                child: FutureBuilder(
                   future: _getSharedRecipes(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -35,12 +35,13 @@ class OtherScreen extends StatelessWidget {
                       List<DishWidget> dishWidgets = [];
                       dishAttributes.forEach((key, value) {
                         List<String> valueArr = value.split(constant.splitter);
-                        dishWidgets.add(DishWidget(
-                          title: key,
-                          description: valueArr[0],
-                          ingredients: valueArr[1],
-                          imageURL: valueArr.length == 3 ? valueArr[2] : null,
-                          prevScreen: OtherScreen.id,
+                        dishWidgets.add(
+                          DishWidget(
+                            title: key,
+                            description: valueArr[0],
+                            ingredients: valueArr[1],
+                            imageURL: valueArr.length == 3 ? valueArr[2] : null,
+                            prevScreen: OtherScreen.id,
                           ),
                         );
                       });
@@ -76,8 +77,8 @@ class OtherScreen extends StatelessWidget {
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return Text(
-                          'An error has occurred: ' + snapshot.error.toString());
+                      return Text('An error has occurred: ' +
+                          snapshot.error.toString());
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }

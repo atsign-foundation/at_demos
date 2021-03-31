@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-
   final Function path;
   final String text;
   final Color color;
@@ -25,7 +24,8 @@ class RoundedButton extends StatelessWidget {
           child: Text(
             this.text,
             style: TextStyle(
-              color: this.color == Color(0XFF7B3F00) ? Colors.white : Colors.black,
+              color:
+                  this.color == Color(0XFF7B3F00) ? Colors.white : Colors.black,
             ),
           ),
         ),

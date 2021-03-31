@@ -58,8 +58,8 @@ class DishPage extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 80.0,
                                 backgroundImage: dishWidget.imageURL == null
-                                  ? AssetImage('assets/question_mark.png')
-                                  : NetworkImage(dishWidget.imageURL),
+                                    ? AssetImage('assets/question_mark.png')
+                                    : NetworkImage(dishWidget.imageURL),
                               ),
                             ),
                           ],
@@ -105,35 +105,34 @@ class DishPage extends StatelessWidget {
                 ),
               ),
             ),
-            dishWidget.prevScreen == HomeScreen.id ?
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                RoundedButton(
-                  path: () {
-                    _delete(context);
-                  },
-                  text: 'Remove',
-                  width: 180,
-                  color: Colors.redAccent,
-                ),
-                RoundedButton(
-                  path: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                            ShareScreen(dishWidget: this.dishWidget)
+            dishWidget.prevScreen == HomeScreen.id
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RoundedButton(
+                        path: () {
+                          _delete(context);
+                        },
+                        text: 'Remove',
+                        width: 180,
+                        color: Colors.redAccent,
                       ),
-                    );
-                  },
-                  text: 'Share',
-                  width: 180,
-                  color: Color(0XFF7B3F00),
-                ),
-              ],
-            )
-            : Container(),
+                      RoundedButton(
+                        path: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ShareScreen(dishWidget: this.dishWidget)),
+                          );
+                        },
+                        text: 'Share',
+                        width: 180,
+                        color: Color(0XFF7B3F00),
+                      ),
+                    ],
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -149,8 +148,8 @@ class DishPage extends StatelessWidget {
       atKey.sharedWith = atSign;
       await _serverDemoService.delete(atKey);
     }
-    Navigator.of(context)
-      .pushNamedAndRemoveUntil(dishWidget.prevScreen,
-        (Route<dynamic> route) => false, arguments: true);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        dishWidget.prevScreen, (Route<dynamic> route) => false,
+        arguments: true);
   }
 }

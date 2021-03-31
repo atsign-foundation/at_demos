@@ -15,8 +15,7 @@ class DishWidget extends StatelessWidget {
     @required this.description,
     @required this.imageURL,
     @required this.prevScreen,
-    });
-
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,36 +24,29 @@ class DishWidget extends StatelessWidget {
       child: Card(
         child: ListTile(
           leading: SizedBox(
-            child: this.imageURL == null ? Image.asset(
-                'assets/question_mark.png'
-            ) : Image.network(
-              this.imageURL
-            ),
+            child: this.imageURL == null
+                ? Image.asset('assets/question_mark.png')
+                : Image.network(this.imageURL),
             height: 80,
             width: 80,
           ),
           title: Text(
             this.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            this.description.length >= 20 ?
-            this.description.substring(0, 20) + '...'
+            this.description.length >= 20
+                ? this.description.substring(0, 20) + '...'
                 : this.description.substring(0, this.description.length),
-            style: TextStyle(
-                color: Colors.grey
-            ),
+            style: TextStyle(color: Colors.grey),
           ),
           trailing: IconButton(
             icon: Icon(Icons.arrow_forward),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return DishPage(dishWidget: this);
-                }
-              ));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                return DishPage(dishWidget: this);
+              }));
             },
           ),
         ),
