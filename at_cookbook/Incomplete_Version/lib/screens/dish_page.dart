@@ -143,4 +143,6 @@ class DishPage extends StatelessWidget {
   /// the logged-in @sign.
   _delete(BuildContext context) async {
     //TODO: implement _delete func
+
+  }
 }
