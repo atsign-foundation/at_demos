@@ -4,7 +4,7 @@ This is an intermediate-level @protocol application that uses the verbs we learn
 
 ## Demo
 
-<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_cookbook/assets/at_cookbook_demo.gif" width=300>
+<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_cookbook/Complete_Version/assets/at_cookbook_demo.gif" width=300>
 
 What you see is the home page of the application. You can add and delete dishes freely with a lot of custom content!
 
