@@ -1,13 +1,16 @@
 # at_cookbook
 
-This is an intermediate-level @protocol application that uses the verbs we learned in the `at_hello_world` application to make a working cookbook for the chef inside of us all!
+This directory contains the incomplete version of the at_cookbook application. Complete the TODOs to get it working!
 
-## Demo
+## Other Screen
 
-<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_cookbook/assets/at_cookbook_demo.gif" width=300>
+1. Complete the `_getSharedKeys()` function to retrieve a list of keys for dishes that are shared with you.
+2. Complete the  `_getSharedRecipes()` function so that it returns a `Map` of a dish's title to its attributes.
 
-What you see is the home page of the application. You can add and delete dishes freely with a lot of custom content!
+## Dish Page
 
-## Getting Started
+1. Implement the `_delete()` verb so that a user can remove dishes from their feed. Pay close attention to the constructor of the `home_screen.dart` class.
 
-Clone this application from the `at_demos` repository. If you haven't used the `at_hello_world` app yet, we highly encourage you to check that out first. Make sure that your virtual environment (i.e. Docker containers) are running whenever you use an @protocol application.
+## Share Screen
+
+1. Complete the `_share()` function so that it notifies another @sign's secondary server of a shared recipe.
