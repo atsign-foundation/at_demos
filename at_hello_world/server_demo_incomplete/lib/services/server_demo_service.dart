@@ -137,7 +137,10 @@ class ServerDemoService {
       await _getAtClientForAtsign()
           .getAtKeys(regex: AtConfig.namespace, sharedBy: sharedBy);
 
-  Future<String> getAtSign() async => _atsign;
+  ///Fetches atsign from device keychain.
+  Future<String> getAtSign() async {
+    return await atClientServiceInstance.getAtSign();
+  }
 }
 
 class BackupKeyConstants {

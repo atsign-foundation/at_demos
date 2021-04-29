@@ -164,10 +164,21 @@ class _SecondScreenState extends State<SecondScreen> {
   }
   // TODO: Write function to initialize the chatting service
   getAtSignAndInitializeChat() async {
-
+    String currentAtSign = await clientSdkService.getAtSign();
+    setState(() {
+      activeAtSign = currentAtSign;
+    });
+    List<String> allAtSigns = at_demo_data.allAtsigns;
+    allAtSigns.remove(currentAtSign);
+    setState(() {
+      atSigns = allAtSigns;
+    });
+    initializeChatService(
+      clientSdkService.atClientServiceInstance.atClient, currentAtSign,
+      rootDomain: MixedConstants.ROOT_DOMAIN);
   }
   // TODO: Write function that determines whom you are chatting with
   setAtsignToChatWith() {
-
+    setChatWithAtSign(chatWithAtSign);
   }
 }

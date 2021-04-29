@@ -149,8 +149,9 @@ class ServerDemoService {
     return await _getAtClientForAtsign().notify(atKey, value, operation);
   }
 
+  ///Fetches atsign from device keychain.
   Future<String> getAtSign() async {
-    return _atsign;
+    return await atClientServiceInstance.getAtSign();
   }
 }
 

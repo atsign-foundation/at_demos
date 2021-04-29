@@ -129,6 +129,16 @@ class _LoginScreenState extends State<LoginScreen> {
         showSpinner = true;
       });
       String jsonData = _serverDemoService.encryptKeyPairs(atSign);
+      _serverDemoService.onboard(atsign: atSign).then((value) async {
+        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+      }).catchError((error) async {
+        await _serverDemoService.authenticate(
+          atSign,
+          jsonData: jsonData,
+          decryptKey: at_demo_data.aesKeyMap[atSign]
+        );
+        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+      });
       // TODO: Complete the rest of the if statement!
     }
   }

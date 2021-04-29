@@ -143,8 +143,9 @@ class ClientSdkService {
         .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
   }
 
+  ///Fetches atsign from device keychain.
   Future<String> getAtSign() async {
-    return _atsign;
+    return await atClientServiceInstance.getAtSign();
   }
 }
 

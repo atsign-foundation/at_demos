@@ -95,10 +95,25 @@ class OtherScreen extends StatelessWidget {
   /// Returns the list of Shared Recipes keys.
   _getSharedKeys() async {
     //TODO: _getSharedKeys func
+    await _serverDemoService.sync();
+    return await _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
   }
 
   /// Returns a map of Shared recipes key and values.
   _getSharedRecipes() async {
     //TODO: implement _getSharedRecipes() func
+    List<AtKey> sharedKeysList = await _getSharedKeys();
+    Map recipesMap = {};
+    AtKey atKey = AtKey();
+    Metadata metadata = Metadata()..isCached = true;
+    sharedKeysList.forEach((element) async {
+      atKey.key = element.key;
+      atKey.sharedWith = element.sharedWith;
+      atKey.sharedBy = element.sharedBy;
+      atKey.metadata = metadata;
+      String response = await _serverDemoService.get(atKey);
+      recipesMap.putIfAbsent('${element.key}', () => response);
+    });
+    return recipesMap;
   }
 }

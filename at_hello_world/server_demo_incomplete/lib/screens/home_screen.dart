@@ -226,11 +226,35 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  // TODO: add the _scan, _update, and _lookup methods
+  _update() async {
+    if (_key != null && _value != null) {
+      AtKey pair = AtKey();
+      pair.key = _key;
+      pair.sharedWith = widget.atSign;
+      await _serverDemoService.put(pair, _value);
+    }
+  }
+
+  _scan() async {
+    List<AtKey> response = await _serverDemoService.getAtKeys(
+      sharedBy: widget.atSign,
+    );
+    if (response.length > 0) {
+      List<String> scanList = response.map((atKey) => atKey.key).toList();
+      setState(() => _scanItems = scanList);
+    }
+  }
+
+  _lookup() async {
+    if (_lookupKey != null) {
+      AtKey lookup = AtKey();
+      lookup.key = _lookupKey;
+      lookup.sharedWith = widget.atSign;
+      String response = await _serverDemoService.get(lookup);
+      if (response != null) {
+        setState(() => _lookupValue = response);
+      }
+    }
+  }
 }
-
-// TODO: add the _scan, _update, and _lookup methods
-_update() async {}
-
-_scan() async {}
-
-_lookup() async {}

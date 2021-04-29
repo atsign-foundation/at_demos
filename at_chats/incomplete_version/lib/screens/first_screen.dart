@@ -128,13 +128,20 @@ class _FirstScreen extends State<FirstScreen> {
   // TODO: Write _login method
   /// Use onboard() to authenticate via PKAM public/private keys.
   _login() async {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      showSpinner = true;
-    });
     if (atSign != null) {
+      FocusScope.of(context).unfocus();
+      setState(() {
+        showSpinner = true;
+      });
+      String jsonData = clientSdkService.encryptKeyPairs(atSign);
+      clientSdkService.onboard(atsign: atSign).then((value) async {
+        Navigator.pushReplacementNamed(context, SecondScreen.id);
+      }).catchError((error) async {
+        await clientSdkService.authenticate(atSign,
+        jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
+        Navigator.pushReplacementNamed(context, SecondScreen.id);
+      });
       // TODO: Complete the rest of the if statement!
-      
     }
   }
 }

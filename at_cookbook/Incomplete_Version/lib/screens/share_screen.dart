@@ -117,5 +117,19 @@ class _ShareScreenState extends State<ShareScreen> {
 
   _share(BuildContext context, String sharedWith) async {
     //TODO: implement the _share func
+    if (sharedWith != null) {
+      AtKey lookup = AtKey();
+      lookup.key = widget.dishWidget.title;
+      lookup.sharedWith = atSign;
+      String value = await _serverDemoService.get(lookup);
+      var metadata = Metadata()..ttr = -1;
+      AtKey atKey = AtKey();
+      atKey.key = widget.dishWidget.title;
+      atKey.metadata = metadata;
+      atKey.sharedBy = atSign;
+      atKey.sharedWith = _otherAtSign;
+      var operation = OperationEnum.update;
+      await _serverDemoService.notify(atKey, value, operation);
+    }
   }
 }

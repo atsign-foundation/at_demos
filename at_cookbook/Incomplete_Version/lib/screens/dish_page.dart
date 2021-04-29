@@ -143,6 +143,14 @@ class DishPage extends StatelessWidget {
   /// the logged-in @sign.
   _delete(BuildContext context) async {
     //TODO: implement _delete func
-
+    if (dishWidget.title != null) {
+      AtKey atKey = AtKey();
+      atKey.key = dishWidget.title;
+      atKey.sharedWith = atSign;
+      await _serverDemoService.delete(atKey);
+    }
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      dishWidget.prevScreen, (Route<dynamic> route) => false,
+      arguments: true);
   }
 }
