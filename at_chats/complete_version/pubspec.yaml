@@ -1,0 +1,29 @@
+name: at_chat_flutter_example
+description: Welcome to our SB Hacks workshop session! This app
+  demonstrates how to use the at_chat_flutter plugin.
+version: 0.0.1
+homepage: https://atsign.com/
+
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.0
+  atsign_authentication_helper: ^0.0.2
+  modal_progress_hud: any
+  at_server_status: ^0.1.0+1
+  at_chat_flutter: ^0.0.3
+  at_demo_data: ^0.0.3+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  assets:
+    - assets/
+  uses-material-design: true

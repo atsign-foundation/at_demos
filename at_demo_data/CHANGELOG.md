@@ -6,3 +6,6 @@
 
 ## 0.0.2+1
 - changes to ensure example gets found by pub.dev
+
+## 0.0.3+1
+- adding aesKeyMap to pub.dev

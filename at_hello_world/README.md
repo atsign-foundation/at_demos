@@ -4,45 +4,17 @@
 
 # at_hello_world
 
-# @Protocol Hello World
-
 This directory contains the complete code for the Hello World application. Feel free to use
 this for testing, debugging, or just trying out the app!
+
+## Demo
+
+<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_hello_world/assets/hello_world_demo.gif" width=300>
+
+A brief demo of this starter app. You can add, scan, and lookup key/value pairs!
 
 ## Getting Started
 
 1. Clone this project from the @ Company repository.
 
-2. To run the app, make sure to have your docker containers running and have your machine pointing to the local DNS server (the address is 127.0.0.1).
-
-### For Windows:
-
-Navigate to:
-
-Settings > Network & Internet > Change Adapter Settings > Select adapter, Properties >  Internet version 4 (TCP/IPv4). 
-
-Then use the following DNS server addresses:
-
-DNS=127.0.0.1
-
-FallbackDNS=1.1.1.1
-
-**You will need to restart your machine**
-
-**Then restart the DNS system using the command (in Command Prompt):**
-
-ipconfig /flushdns
-
-
-### For Mac:
-
-Navigate to:
-
-System Preferences > Network > Advanced > DNS. 
-
-From here add 127.0.0.1 at the top by clicking on the "+" icon.
-
-
-
-**Side Note:** You can only use this app with one test @sign at a time (e.g. @kevin🛠). If you'd like to use a different
-test @sign, uninstall the Flutter app from your emulator and build it again.
+2. To run the app, make sure to have your docker containers running!
