@@ -1,6 +1,9 @@
 import 'dart:ui';
+import 'package:at_onboarding_flutter/screens/onboarding_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:newserverdemo/utils/at_conf.dart';
 import 'package:newserverdemo/screens/home_screen.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -131,25 +134,23 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         showSpinner = true;
       });
-      String jsonData = _serverDemoService.encryptKeyPairs(atSign);
-      _serverDemoService.onboard(atsign: atSign).then((value) async {
-        Navigator.pushReplacementNamed(
-          context,
-          HomeScreen.id,
-          arguments: atSign,
-        );
-      }).catchError((error) async {
-        await _serverDemoService.authenticate(
-          atSign,
-          jsonData: jsonData,
-          decryptKey: at_demo_data.aesKeyMap[atSign],
-        );
-        Navigator.pushReplacementNamed(
-          context,
-          HomeScreen.id,
-          arguments: atSign,
-        );
-      });
+      return Onboarding(
+          context: context,
+          logo: Icon(Icons.ac_unit),
+          atClientPreference: await _serverDemoService.getAtClientPreference(),
+          atsign: atSign,
+          domain: AtConfig.root,
+          appColor: Color.fromARGB(255, 240, 94, 62),
+          onboard: (atClientServiceMap, atsign) {
+            _serverDemoService.atClientServiceMap = atClientServiceMap;
+            _serverDemoService.atSign = atsign;
+            //assign this atClientServiceMap in the app.
+          },
+          onError: (error) {
+            print(error);
+          },
+          nextScreen: HomeScreen(atSign: atSign),
+      );
     }
   }
 }
