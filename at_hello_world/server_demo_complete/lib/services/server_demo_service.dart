@@ -18,19 +18,19 @@ class ServerDemoService {
   AtClientService atClientServiceInstance;
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
-  String _atsign;
+  String atSign;
 
-  _sync() async => await _getAtClientForAtsign().getSyncManager().sync();
+  sync() async => await getAtClientForAtsign().getSyncManager().sync();
 
-  AtClientImpl _getAtClientForAtsign({String atsign}) {
-    atsign ??= _atsign;
+  AtClientImpl getAtClientForAtsign({String atsign}) {
+    atsign ??= atSign;
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign].atClient;
     }
     return null;
   }
 
-  AtClientService _getClientServiceForAtSign(String atsign) {
+  AtClientService getClientServiceForAtSign(String atsign) {
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
@@ -38,7 +38,7 @@ class ServerDemoService {
     return service;
   }
 
-  Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
+  Future<AtClientPreference> getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
         await path_provider.getApplicationSupportDirectory();
     final path = appDocumentDirectory.path;
@@ -53,20 +53,20 @@ class ServerDemoService {
     return _atClientPreference;
   }
 
-  _checkAtSignStatus(String atsign) async {
+  checkAtSignStatus(String atsign) async {
     final atStatusImpl = AtStatusImpl(rootUrl: AtConfig.root);
     final status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
 
   Future<bool> onboard({String atsign}) async {
-    atClientServiceInstance = _getClientServiceForAtSign(atsign);
-    final atClientPreference = await _getAtClientPreference();
+    atClientServiceInstance = getClientServiceForAtSign(atsign);
+    final atClientPreference = await getAtClientPreference();
     final result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference, atsign: atsign);
-    _atsign = atsign == null ? await this.getAtSign() : atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    _sync();
+    atSign = atsign == null ? await this.getAtSign() : atsign;
+    atClientServiceMap.putIfAbsent(atSign, () => atClientServiceInstance);
+    sync();
     return result;
   }
 
@@ -77,18 +77,18 @@ class ServerDemoService {
     String jsonData,
     String decryptKey,
   }) async {
-    final atsignStatus = await _checkAtSignStatus(atsign);
+    final atsignStatus = await checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    final atClientPreference = await _getAtClientPreference();
+    final atClientPreference = await getAtClientPreference();
     final result = await atClientServiceInstance.authenticate(
         atsign, atClientPreference,
         jsonData: jsonData, decryptKey: decryptKey);
-    _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    await _sync();
+    atSign = atsign;
+    atClientServiceMap.putIfAbsent(atSign, () => atClientServiceInstance);
+    await sync();
     return result;
   }
 
@@ -121,18 +121,18 @@ class ServerDemoService {
   }
 
   Future<String> get(AtKey atKey) async {
-    final result = await _getAtClientForAtsign().get(atKey);
+    final result = await getAtClientForAtsign().get(atKey);
     return result.value;
   }
 
   Future<bool> put(AtKey atKey, String value) async =>
-      await _getAtClientForAtsign().put(atKey, value);
+      await getAtClientForAtsign().put(atKey, value);
 
   Future<bool> delete(AtKey atKey) async =>
-      await _getAtClientForAtsign().delete(atKey);
+      await getAtClientForAtsign().delete(atKey);
 
   Future<List<AtKey>> getAtKeys({String sharedBy}) async =>
-      await _getAtClientForAtsign().getAtKeys(
+      await getAtClientForAtsign().getAtKeys(
         regex: AtConfig.namespace,
         sharedBy: sharedBy,
       );

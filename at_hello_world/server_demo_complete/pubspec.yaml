@@ -6,10 +6,13 @@ version: 0.1.0+1
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
+# Before using this application, ensure that your Flutter SDK, Dart SDK, and
+# Android Studio are up to date.
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: ^1.5.1
+  path_provider: ^2.0.1
+  at_onboarding_flutter: ^1.0.0+4
   at_client_mobile: ^1.0.0+4
   at_server_status: ^0.1.0+1
   cupertino_icons: ^0.1.3
