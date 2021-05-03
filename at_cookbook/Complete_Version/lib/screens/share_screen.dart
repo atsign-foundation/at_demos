@@ -32,8 +32,8 @@ class _ShareScreenState extends State<ShareScreen> {
 
   @override
   void initState() {
-   initList();
-   super.initState();
+    initList();
+    super.initState();
   }
 
   @override
@@ -86,13 +86,15 @@ class _ShareScreenState extends State<ShareScreen> {
                           });
                         },
                         value: _otherAtSign != null ? _otherAtSign : null,
-                        items: _atSigns == null ? [] : _atSigns
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                        items: _atSigns == null
+                            ? []
+                            : _atSigns
+                                .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
                       ),
                     ),
                   ),
@@ -113,23 +115,50 @@ class _ShareScreenState extends State<ShareScreen> {
     );
   }
 
+  // The _share function will pass the dishWidget values (The entire recipe) to a specified atsign
   _share(BuildContext context, String sharedWith) async {
+    // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
+      // Create an AtKey object called lookup to act as
+      // a buffer for the recipe itself
       AtKey lookup = AtKey()
+        // Specifying the attributes of lookup, such as the title
+        // of the recipe and the atsign we are authenticated in as
         ..key = widget.dishWidget.title
         ..sharedWith = atSign;
 
+      // getting the values of the recipe as a string to
+      // pass through the secondary servers
       String value = await _serverDemoService.get(lookup);
 
+      // Instanstiating the Time To Refresh (ttr) metadata attribute
+      // as -1 to cache on the secondary server that has received the recipe.
+      // Defining it as -1 will tell the secondary server that the cached key will
+      // not have a change in value at any point in time
       var metadata = Metadata()..ttr = -1;
+
+      // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()
+        // Specifying the attributes of the AtKey object, such as the title of the
+        // recipe, the metadata value we defined earlier, the atsign that will be
+        // sending the recipe, and which atsign will be receiving the recipe
         ..key = widget.dishWidget.title
         ..metadata = metadata
         ..sharedBy = atSign
         ..sharedWith = _otherAtSign;
 
+      // Instantiating the operation value as an update notification.
+      // The atsign who is receiving the notification will cache the value
+      // sent in either an already pre-existing version of the key
+      // and update the value with the new value sent,
+      // or create an entirely new key to store the value in
       var operation = OperationEnum.update;
+
+      // Pass the correct variables through the notify verb to send to the specified
+      // secondary server
       await _serverDemoService.notify(atKey, value, operation);
+
+      // This will take the user from the share screen back to the recipe screen
       Navigator.pop(context);
     }
   }

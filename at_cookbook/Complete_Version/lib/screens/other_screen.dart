@@ -95,24 +95,51 @@ class OtherScreen extends StatelessWidget {
   /// Returns the list of Shared Recipes keys.
   _getSharedKeys() async {
     await _serverDemoService.sync();
+
+    // This regex is defined for searching for an AtKey object that carries the
+    // namespace of cookbook from the authenticated atsign's secondary server
+    // This regex is also specified to get any recipe that has been shared with
+    // the currently authenticated atsign
     return await _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
   }
 
   /// Returns a map of Shared recipes key and values.
   _getSharedRecipes() async {
+    // Instantiate a list of AtKey objects to store all of the retrieved
+    // recipes that have been shared with the current authenticated atsign
     List<AtKey> sharedKeysList = await _getSharedKeys();
+
+    // Instantiate a map for the recipes
     Map recipesMap = {};
+
+    // Instantiate an AtKey object
     AtKey atKey = AtKey();
+
+    // Specifying the isCached metadata attribute as true to cache the recipe
+    // that was shared with the current authenticated atsign on its own
+    // secondary server
     Metadata metadata = Metadata()..isCached = true;
+
+    // Specifying the values (i.e. the description, ingredients, and image URL)
+    // of each recipe in the list of recipes
     sharedKeysList.forEach((element) async {
       atKey
         ..key = element.key
         ..sharedWith = element.sharedWith
         ..sharedBy = element.sharedBy
         ..metadata = metadata;
+
+      // Get the recipe
       String response = await _serverDemoService.get(atKey);
+
+      // Adds all key/value pairs of [other] to this map.
+      // If a key of [other] is already in this map, its value is overwritten.
+      // The operation is equivalent to doing `this[key] = value` for each key
+      // and associated value in other. It iterates over [other], which must
+      // therefore not change during the iteration.
       recipesMap.putIfAbsent('${element.key}', () => response);
     });
+    // Return the entire map of shared recipes
     return recipesMap;
   }
 }
