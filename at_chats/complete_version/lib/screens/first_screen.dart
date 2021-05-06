@@ -60,20 +60,17 @@ class _FirstScreen extends State<FirstScreen> {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20.0
-                          ),
+                              fontSize: 20.0),
                         ),
                         subtitle: DropdownButton<String>(
-                          hint:  Text('\tPick an @sign'),
+                          hint: Text('\tPick an @sign'),
                           icon: Icon(
                             Icons.keyboard_arrow_down,
                           ),
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.black87
-                          ),
+                          style:
+                              TextStyle(fontSize: 20.0, color: Colors.black87),
                           underline: Container(
                             height: 2,
                             color: Colors.deepOrange,
@@ -83,8 +80,7 @@ class _FirstScreen extends State<FirstScreen> {
                               atSign = newValue;
                             });
                           },
-                          value: atSign != null ? atSign
-                            : null,
+                          value: atSign != null ? atSign : null,
                           items: at_demo_data.allAtsigns
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
@@ -128,17 +124,36 @@ class _FirstScreen extends State<FirstScreen> {
   // TODO: Write _login method
   /// Use onboard() to authenticate via PKAM public/private keys.
   _login() async {
+    // Re-running the build method
     FocusScope.of(context).unfocus();
     setState(() {
+      // Shows the spinning icon until the atsign is successfully authenticated
       showSpinner = true;
     });
     if (atSign != null) {
+      // a json string necessary to authenticate for the first time
+      // and key pairs are stored within this string
       String jsonData = clientSdkService.encryptKeyPairs(atSign);
+
+      // Utilizing the onboard method, passing in the atsign that has been
+      // selected to authenticate
       clientSdkService.onboard(atsign: atSign).then((value) async {
+        // Push navigator to home screen and also preventing authenticated atsign
+        // from returning to login screen
         Navigator.pushReplacementNamed(context, SecondScreen.id);
       }).catchError((error) async {
+        // First time authenticating with atsign will throw
+        // 'atsign not found' error
+        // onboard method looks for cached keys within device.
+        // Authenticate will embed the necessary keys within the key chain
         await clientSdkService.authenticate(atSign,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
+        // Passing the key pairs retrieved earlier in addition to the decrypt
+        // key which is retireved from the at_demo_data file's list of
+        // keys
+
+        // Push navigator to home screen and also preventing authenticated atsign
+        // from returning to login screen
         Navigator.pushReplacementNamed(context, SecondScreen.id);
       });
     }

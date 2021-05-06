@@ -135,21 +135,27 @@ class _LoginScreenState extends State<LoginScreen> {
         showSpinner = true;
       });
       return Onboarding(
-          context: context,
-          logo: Icon(Icons.ac_unit),
-          atClientPreference: await _serverDemoService.getAtClientPreference(),
-          atsign: atSign,
-          domain: AtConfig.root,
-          appColor: Color.fromARGB(255, 240, 94, 62),
-          onboard: (atClientServiceMap, atsign) {
-            _serverDemoService.atClientServiceMap = atClientServiceMap;
-            _serverDemoService.atSign = atsign;
-            //assign this atClientServiceMap in the app.
-          },
-          onError: (error) {
-            print(error);
-          },
-          nextScreen: HomeScreen(atSign: atSign),
+        context: context,
+        logo: Icon(Icons.ac_unit),
+        atClientPreference: await _serverDemoService.getAtClientPreference(),
+        atsign: atSign,
+        domain: AtConfig.root,
+        appColor: Color.fromARGB(255, 240, 94, 62),
+        onboard: (atClientServiceMap, atsign) {
+          _serverDemoService.atClientServiceMap = atClientServiceMap;
+          _serverDemoService.atSign = atsign;
+          //assign this atClientServiceMap in the app.
+        },
+        onError: (error) async {
+          print(error);
+          String jsonData = _serverDemoService.encryptKeyPairs(atSign);
+          await _serverDemoService.authenticate(
+            atSign,
+            jsonData: jsonData,
+            decryptKey: at_demo_data.aesKeyMap[atSign],
+          );
+        },
+        nextScreen: HomeScreen(atSign: atSign),
       );
     }
   }

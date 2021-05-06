@@ -142,12 +142,21 @@ class DishPage extends StatelessWidget {
   /// Deletes a key/value pair in the secondary server of
   /// the logged-in @sign.
   _delete(BuildContext context) async {
+    // If the recipe has a name
     if (dishWidget.title != null) {
+      // Instantiate an AtKey object and specify its attributes by passing
+      // the name of the recipe and the authenticated atsign
       AtKey atKey = AtKey();
       atKey.key = dishWidget.title;
       atKey.sharedWith = atSign;
+
+      // Utilizing the delete method, after passing the recipe, the object
+      // cached on the secondary server will be deleted
       await _serverDemoService.delete(atKey);
     }
+    // This will force the authenticated atsign back to the previous screen
+    // without the capability of returning to the screen of the recipe that was
+    // just deleted as this would cause a major error
     Navigator.of(context).pushNamedAndRemoveUntil(
         dishWidget.prevScreen, (Route<dynamic> route) => false,
         arguments: true);

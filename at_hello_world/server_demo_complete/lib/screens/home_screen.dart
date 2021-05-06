@@ -239,9 +239,16 @@ class _HomeScreenState extends State<HomeScreen> {
   /// _value string.
   _update() async {
     if (_key != null && _value != null) {
+      // Intialize an AtKey object as pair
       AtKey pair = AtKey();
+      // Defining the AtKey object attributes such as;
+      // title (key), the current authenticated atsign
       pair.key = _key;
       pair.sharedWith = widget.atSign;
+      // Utilizing the put method from the serverDemoService file,
+      // we are passing the AtKey object and the data
+      // (the text inputted by the user) alongside with it and simply
+      // 'putting' it on the current authenticated atsign's secondary server
       await _serverDemoService.put(pair, _value);
     }
   }
@@ -250,11 +257,21 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Strip any meta data away from the retrieves keys. Store
   /// the keys into [_scanItems].
   _scan() async {
+    // Initialize a list of AtKey objects and populate this list with all of the
+    // AtKey objects that already exist on the current authenticated atsign's
+    // secondary server
+    // Anything that the current authenticated atsign has already successfully
+    // put on their server will be assigned an index in the list
     List<AtKey> response = await _serverDemoService.getAtKeys(
       sharedBy: widget.atSign,
     );
+    // If there are any AtKey objects that are within the list intialized above
     if (response.length > 0) {
+      // Initialize a list of strings that is populated with a map of AtKey
+      // objects that have been converted to a list of values
       List<String> scanList = response.map((atKey) => atKey.key).toList();
+      // setState is re-running the build method and displaying all of the
+      // AtKey objects retrieved from the scan
       setState(() => _scanItems = scanList);
     }
   }
@@ -262,11 +279,18 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Create instance of an AtKey and call get() on it.
   _lookup() async {
     if (_lookupKey != null) {
+      // Initialize an AtKey object titled lookup
       AtKey lookup = AtKey();
+      // Declare the attribute values such as its title (key) and the atsign
+      // that created it
       lookup.key = _lookupKey;
       lookup.sharedWith = widget.atSign;
+      // Initialize a string and populate it with an AtKey object
+      // obtained from the serverDemoService's get method
       String response = await _serverDemoService.get(lookup);
       if (response != null) {
+        // If an AtKey object exists, re-run the build method with the AtKey
+        // object that was retrieved utilizing the get method
         setState(() => _lookupValue = response);
       }
     }

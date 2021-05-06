@@ -148,17 +148,39 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   /// Authenticate into one of the testable @signs.
   _login() async {
+    // If an atsign has been chosen to authenticate
     if (atSign != null) {
+      // Re-running the build method
       FocusScope.of(context).unfocus();
       setState(() {
+        // Shows the spinning icon until the atsign is successfully authenticated
         showSpinner = true;
       });
+
+      // a json string necessary to authenticate for the first time
+      // and key pairs are stored within this string
       String jsonData = _serverDemoService.encryptKeyPairs(atSign);
+
+      // Utilizing the onboard method, passing in the atsign that has been
+      // selected to authenticate
       _serverDemoService.onboard(atsign: atSign).then((value) async {
+        // Push navigator to home screen and also preventing authenticated atsign
+        // from returning to login screen
         Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {
+        // First time authenticating with atsign will throw
+        // 'atsign not found' error
+        // onboard method looks for cached keys within device.
+        // Authenticate will embed the necessary keys within the key chain
         await _serverDemoService.authenticate(atSign,
-            jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
+            // Passing the key pairs retrieved earlier in addition to the decrypt
+            // key which is retireved from the at_demo_data file's list of
+            // keys
+            jsonData: jsonData,
+            decryptKey: at_demo_data.aesKeyMap[atSign]);
+
+        // Push navigator to home screen and also preventing authenticated atsign
+        // from returning to login screen
         Navigator.pushReplacementNamed(context, HomeScreen.id);
       });
     }

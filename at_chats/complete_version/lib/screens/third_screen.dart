@@ -13,6 +13,17 @@ class _ThirdScreenState extends State<ThirdScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Chat')),
       // TODO: Fill in the body parameter of the Scaffold
+      // All that is needed here is simply body: ChatScreen()
+      // Anything added within the parameters of ChatScreen is simply
+      // design features, some including:
+      // final double height;
+      // final bool isScreen;
+      // final Color outgoingMessageColor;
+      // final Color incomingMessageColor;
+      // final Color senderAvatarColor;
+      // final Color receiverAvatarColor;
+      // final String title;
+      // final String hintText;
       body: ChatScreen(
         height: MediaQuery.of(context).size.height,
         incomingMessageColor: Colors.blue[100],
