@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
@@ -6,7 +5,6 @@ import 'package:newserverdemo/utils/at_conf.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import 'package:at_client/src/util/encryption_util.dart'; // TODO export this file for its usage PR created
 
 class ServerDemoService {
   static final ServerDemoService _singleton = ServerDemoService._internal();
@@ -19,6 +17,8 @@ class ServerDemoService {
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
   String atSign;
+
+  static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
 
   sync() async => await getAtClientForAtsign().getSyncManager().sync();
 
@@ -59,65 +59,28 @@ class ServerDemoService {
     return status.serverStatus;
   }
 
-  Future<bool> onboard({String atsign}) async {
-    atClientServiceInstance = getClientServiceForAtSign(atsign);
-    final atClientPreference = await getAtClientPreference();
-    final result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference, atsign: atsign);
-    atSign = atsign == null ? await this.getAtSign() : atsign;
-    atClientServiceMap.putIfAbsent(atSign, () => atClientServiceInstance);
-    sync();
-    return result;
-  }
+  Future<void> storeDemoDataToKeychain(String atsign) async {
+    const String KEYCHAIN_ENCRYPTION_PRIVATE_KEY = '_encryption_private_key';
+    const String KEYCHAIN_ENCRYPTION_PUBLIC_KEY = '_encryption_public_key';
+    const String KEYCHAIN_SELF_ENCRYPTION_KEY = '_aesKey';
+    var decryptKey = at_demo_data.aesKeyMap[atsign];
+    var pkamPublicKey = at_demo_data.pkamPublicKeyMap[atsign];
 
-  ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  Future<bool> authenticate(
-    String atsign, {
-    String privateKey,
-    String jsonData,
-    String decryptKey,
-  }) async {
-    final atsignStatus = await checkAtSignStatus(atsign);
-    if (atsignStatus != ServerStatus.teapot &&
-        atsignStatus != ServerStatus.activated) {
-      throw atsignStatus;
-    }
-    final atClientPreference = await getAtClientPreference();
-    final result = await atClientServiceInstance.authenticate(
-        atsign, atClientPreference,
-        jsonData: jsonData, decryptKey: decryptKey);
-    atSign = atsign;
-    atClientServiceMap.putIfAbsent(atSign, () => atClientServiceInstance);
-    await sync();
-    return result;
-  }
+    var pkamPrivateKey = at_demo_data.pkamPrivateKeyMap[atsign];
 
-  String encryptKeyPairs(String atsign) {
-    final encryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    final encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    final aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPublicKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
-    final aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPrivateKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
-    var aesEncryptedKeys = {};
-    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
-        encryptedPkamPublicKey;
+    // Save pkam public/private key pair in keychain
+    await _keyChainManager.storeCredentialToKeychain(atsign,
+        privateKey: pkamPrivateKey, publicKey: pkamPublicKey);
 
-    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PRIVATE_KEY] =
-        encryptedPkamPrivateKey;
+    var encryptionPublicKey = at_demo_data.encryptionPublicKeyMap[atsign];
+    await _keyChainManager.putValue(
+        atsign, KEYCHAIN_ENCRYPTION_PUBLIC_KEY, encryptionPublicKey);
 
-    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PUBLIC_KEY] =
-        aesencryptedPkamPublicKey;
-
-    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
-        aesencryptedPkamPrivateKey;
-
-    final keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
-    return keyString;
+    var encryptionPrivateKey = at_demo_data.encryptionPrivateKeyMap[atsign];
+    await _keyChainManager.putValue(
+        atsign, KEYCHAIN_ENCRYPTION_PRIVATE_KEY, encryptionPrivateKey);
+    await _keyChainManager.putValue(
+        atsign, KEYCHAIN_SELF_ENCRYPTION_KEY, decryptKey);
   }
 
   Future<String> get(AtKey atKey) async {

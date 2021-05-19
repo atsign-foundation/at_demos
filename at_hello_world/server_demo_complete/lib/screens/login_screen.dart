@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:at_onboarding_flutter/screens/onboarding_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:newserverdemo/utils/at_conf.dart';
 import 'package:newserverdemo/screens/home_screen.dart';
 import 'package:newserverdemo/services/server_demo_service.dart';
@@ -82,8 +81,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 2,
                             color: Colors.deepOrange,
                           ),
-                          onChanged: (String newValue) {
-                            setState(() => atSign = newValue);
+                          onChanged: (String newValue) async {
+                            setState(() {
+                              showSpinner = true;
+                              atSign = newValue;
+                            });
+                            await _serverDemoService
+                                .storeDemoDataToKeychain(newValue);
+                            setState(() {
+                              showSpinner = false;
+                            });
                           },
                           value: atSign,
                           //!= null ? atSign : null,
@@ -100,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Container(
                         margin: EdgeInsets.all(20),
-                        child: FlatButton(
+                        child: MaterialButton(
                           child: Text('Login'),
                           color: Colors.blueAccent,
                           textColor: Colors.white,
@@ -125,31 +132,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // TODO: Write _login method
   /// Use onboard() to authenticate via PKAM public/private keys. If
   /// onboard() fails, use authenticate() to place keys.
   _login() async {
     if (atSign != null) {
       FocusScope.of(context).unfocus();
-      setState(() {
-        showSpinner = true;
-      });
       return Onboarding(
-          context: context,
-          logo: Icon(Icons.ac_unit),
-          atClientPreference: await _serverDemoService.getAtClientPreference(),
-          atsign: atSign,
-          domain: AtConfig.root,
-          appColor: Color.fromARGB(255, 240, 94, 62),
-          onboard: (atClientServiceMap, atsign) {
-            _serverDemoService.atClientServiceMap = atClientServiceMap;
-            _serverDemoService.atSign = atsign;
-            //assign this atClientServiceMap in the app.
-          },
-          onError: (error) {
-            print(error);
-          },
-          nextScreen: HomeScreen(atSign: atSign),
+        context: context,
+        atClientPreference: await _serverDemoService.getAtClientPreference(),
+        atsign: atSign,
+        domain: AtConfig.root,
+        appColor: Color.fromARGB(255, 240, 94, 62),
+        onboard: (atClientServiceMap, atsign) {
+          _serverDemoService.atClientServiceMap = atClientServiceMap;
+          _serverDemoService.atSign = atsign;
+          //assign this atClientServiceMap in the app.
+        },
+        onError: (error) {
+          print(error);
+        },
+        nextScreen: HomeScreen(atSign: atSign),
       );
     }
   }
