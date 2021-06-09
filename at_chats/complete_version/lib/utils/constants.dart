@@ -11,5 +11,6 @@ class AppStrings {
   static String appNamespace = 'at_chat_demo';
   static String regex = '.$appNamespace@';
   static const String scan_qr = "Let's Go!";
+  static const String reset_keychain = "Reset Keychain";
   static const String atsign_error = 'ATSIGN_NOT_FOUND';
 }

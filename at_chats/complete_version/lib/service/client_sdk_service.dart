@@ -22,6 +22,13 @@ class ClientSdkService {
   Map<String, AtClientService> atClientServiceMap = {};
   String _atsign;
 
+  _reset() {
+    atClientServiceInstance = null;
+    atClientInstance = null;
+    atClientServiceMap = {};
+    _atsign = null;
+  }
+
   _sync() async {
     await _getAtClientForAtsign().getSyncManager().sync();
   }
@@ -39,7 +46,7 @@ class ClientSdkService {
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
-    return null;
+    return AtClientService();
     // var service = AtClientService();
     // return service;
   }
@@ -66,7 +73,10 @@ class ClientSdkService {
   }
 
   Future<bool> onboard({String atsign}) async {
+    // atClientServiceInstance = AtClientService();
     atClientServiceInstance = _getClientServiceForAtSign(atsign);
+    // atClientServiceInstance = _getClientServiceForAtSign(atClientServiceInstance.);
+
     var atClientPreference = await getAtClientPreference();
     var result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference, atsign: atsign);
@@ -147,6 +157,29 @@ class ClientSdkService {
   ///Fetches atsign from device keychain.
   Future<String> getAtSign() async {
     return await atClientServiceInstance.getAtSign();
+  }
+
+  // static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+  // Future<List<String>> getAtsignList() async {
+  //   var atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+  //   return atSignsList;
+  // }
+
+  deleteAtSignFromKeyChain() async {
+    // List<String> atSignList = await getAtsignList();
+    String _atsign = atClientServiceInstance.atClient.currentAtSign;
+
+    await atClientServiceMap[_atsign].deleteAtSignFromKeychain(_atsign);
+
+    _reset();
+
+    // if (atSignList != null) {
+    //   atSignList
+    //       .removeWhere((element) => element == atClientInstance.currentAtSign);
+    // }
+
+    // var atClientPrefernce;
+    // await getAtClientPreference().then((value) => atClientPrefernce = value);
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../service/client_sdk_service.dart';
 import 'third_screen.dart';
 import '../utils/constants.dart';
+import 'package:at_chat_flutter_example/screens/first_screen.dart';
 
 class SecondScreen extends StatefulWidget {
   static final String id = 'second';
@@ -50,6 +51,41 @@ class _SecondScreenState extends State<SecondScreen> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
+            ElevatedButton(
+              onPressed: () async {
+                showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Row(
+                          children: [Text('Delete $activeAtSign')],
+                        ),
+                        content: Text('Press Yes to confirm'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () async {
+                              await ClientSdkService.getInstance()
+                                  .deleteAtSignFromKeyChain();
+                              await Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  FirstScreen.id,
+                                  (Route<dynamic> route) => false);
+                            },
+                            child: Text('Yes'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('No'),
+                          )
+                        ],
+                      );
+                    });
+              },
+              child: Text('Remove $activeAtSign'),
+            ),
             SizedBox(
               height: 20.0,
             ),
@@ -60,7 +96,8 @@ class _SecondScreenState extends State<SecondScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: TextField(
-                decoration: InputDecoration(hintText: 'Enter an @sign to chat with'),
+                decoration:
+                    InputDecoration(hintText: 'Enter an @sign to chat with'),
                 onChanged: (value) {
                   chatWithAtSign = value;
                 },
@@ -102,76 +139,113 @@ class _SecondScreenState extends State<SecondScreen> {
             SizedBox(
               height: 50.0,
             ),
-            showOptions ? Column(
-              children: [
-                SizedBox(height: 20.0),
-                TextButton(
-                  onPressed: () {
-                    scaffoldKey.currentState
-                        .showBottomSheet((context) => ChatScreen());
-                  },
-                  child: Container(
-                    height: 40,
-                    child: Text('Open chat in bottom sheet'),
+            showOptions
+                ? Column(
+                    children: [
+                      SizedBox(height: 20.0),
+                      TextButton(
+                        onPressed: () {
+                          var _res = checkForValidAtsignAndSet();
+                          if (_res == true)
+                            scaffoldKey.currentState
+                                .showBottomSheet((context) => ChatScreen());
+                        },
+                        child: Container(
+                          height: 40,
+                          child: Text('Open chat in bottom sheet'),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          var _res = checkForValidAtsignAndSet();
+                          if (_res == true)
+                            Navigator.pushNamed(context, ThirdScreen.id);
+                        },
+                        child: Container(
+                          height: 40,
+                          child: Text('Navigate to chat screen'),
+                        ),
+                      )
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          if (chatWithAtSign != null &&
+                              chatWithAtSign.trim() != '') {
+                            // TODO: Call function to set receiver's @sign
+                            setAtsignToChatWith();
+                            setState(() {
+                              showOptions = true;
+                            });
+                          } else {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Row(
+                                      children: [Text('@sign Missing!')],
+                                    ),
+                                    content: Text('Please enter an @sign'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Close'),
+                                      )
+                                    ],
+                                  );
+                                });
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          child: Text('Chat options'),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, ThirdScreen.id);
-                  },
-                  child: Container(
-                    height: 40,
-                    child: Text('Navigate to chat screen'),
-                  ),
-                )
-              ],
-            )
-            : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    if (chatWithAtSign != null &&
-                        chatWithAtSign.trim() != '') {
-                      // TODO: Call function to set receiver's @sign
-                      setAtsignToChatWith();
-                      setState(() {
-                        showOptions = true;
-                      });
-                    } else {
-                      showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Row(
-                              children: [Text('@sign Missing!')],
-                            ),
-                            content: Text('Please enter an @sign'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Close'),
-                              )
-                            ],
-                          );
-                        });
-                      }
-                  },
-                  child: Container(
-                    height: 40,
-                    child: Text('Chat options'),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
   }
+
+  checkForValidAtsignAndSet() {
+    if (chatWithAtSign != null && chatWithAtSign.trim() != '') {
+      // TODO: Call function to set receiver's @sign
+      setAtsignToChatWith();
+      setState(() {
+        showOptions = true;
+      });
+      return true;
+    } else {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                children: [Text('@sign Missing!')],
+              ),
+              content: Text('Please enter an @sign'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Close'),
+                )
+              ],
+            );
+          });
+    }
+  }
+
   // TODO: Write function to initialize the chatting service
   getAtSignAndInitializeChat() async {
     String currentAtSign = await clientSdkService.getAtSign();
@@ -187,8 +261,11 @@ class _SecondScreenState extends State<SecondScreen> {
         clientSdkService.atClientServiceInstance.atClient, activeAtSign,
         rootDomain: MixedConstants.ROOT_DOMAIN);
   }
+
   // TODO: Write function that determines whom you are chatting with
   setAtsignToChatWith() {
+    print(activeAtSign);
+    print(chatWithAtSign);
     setChatWithAtSign(chatWithAtSign);
   }
 }

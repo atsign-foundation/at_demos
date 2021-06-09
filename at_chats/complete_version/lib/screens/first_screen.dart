@@ -22,6 +22,7 @@ class _FirstScreen extends State<FirstScreen> {
   var _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
+    ClientSdkService.getInstance().onboard();
     ClientSdkService.getInstance()
         .getAtClientPreference()
         .then((value) => atClientPreference = value);
@@ -35,32 +36,62 @@ class _FirstScreen extends State<FirstScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.deepOrange,
-            title: Text('Home'),
+          title: Text('Home'),
         ),
         // appBar: AppBar(
         //   title: const Text('Plugin example app'),
         // ),
         body: Builder(
-          builder: (context) => Center(
-            child: TextButton(
-                onPressed: () async {
-                  // TODO: Add in at_onboarding_flutter
-                  Onboarding(
-                    context: context,
-                    atClientPreference: atClientPreference,
-                    domain: MixedConstants.ROOT_DOMAIN,
-                    appColor: Color.fromARGB(255, 240, 94, 62),
-                    onboard: (value, atsign) {
-                      ClientSdkService.getInstance().atClientServiceMap = value;
-                      _logger.finer('Successfully onboarded $atsign');
+          builder: (context) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: TextButton(
+                    onPressed: () async {
+                      // TODO: Add in at_onboarding_flutter
+                      Onboarding(
+                        context: context,
+                        atClientPreference: atClientPreference,
+                        domain: MixedConstants.ROOT_DOMAIN,
+                        appColor: Color.fromARGB(255, 240, 94, 62),
+                        onboard: (value, atsign) {
+                          ClientSdkService.getInstance().atClientServiceMap =
+                              value;
+                          ClientSdkService.getInstance()
+                              .atClientServiceInstance = value[atsign];
+                          _logger.finer('Successfully onboarded $atsign');
+                        },
+                        onError: (error) {
+                          _logger.severe('Onboarding throws $error error');
+                        },
+                        nextScreen: SecondScreen(),
+                      );
                     },
-                    onError: (error) {
-                      _logger.severe('Onboarding throws $error error');
-                    },
-                    nextScreen: SecondScreen(),
-                  );
-                },
-                child: Text(AppStrings.scan_qr)),
+                    child: Text(AppStrings.scan_qr)),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                  onPressed: () async {
+                    KeyChainManager _keyChainManager =
+                        KeyChainManager.getInstance();
+                    var _atSignsList =
+                        await _keyChainManager.getAtSignListFromKeychain();
+                    _atSignsList?.forEach((element) {
+                      _keyChainManager.deleteAtSignFromKeychain(element);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                      'Keychain cleaned',
+                      textAlign: TextAlign.center,
+                    )));
+                  },
+                  child: Text(
+                    AppStrings.reset_keychain,
+                    style: TextStyle(color: Colors.blueGrey),
+                  ))
+            ],
           ),
         ),
       ),
