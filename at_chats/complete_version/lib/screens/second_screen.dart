@@ -1,6 +1,7 @@
 import 'package:at_chat_flutter/at_chat_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
+import 'package:flutter/services.dart';
 import '../service/client_sdk_service.dart';
 import 'third_screen.dart';
 import '../utils/constants.dart';
@@ -19,6 +20,8 @@ class _SecondScreenState extends State<SecondScreen> {
   String chatWithAtSign;
   bool showOptions = false;
   bool isEnabled = true;
+
+  TextEditingController _chatSignController = TextEditingController();
 
   @override
   void initState() {
@@ -56,38 +59,45 @@ class _SecondScreenState extends State<SecondScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: DropdownButton<String>(
-                hint:  Text('\tPick an @sign'),
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                ),
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.black87
-                ),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepOrange,
-                ),
-                onChanged: isEnabled ? (String newValue) {
-                  setState(() {
-                    chatWithAtSign = newValue;
-                    isEnabled = false;
-                  });
-                } : null,
-                disabledHint: chatWithAtSign != null ? Text(chatWithAtSign)
-                  : null,
-                value: chatWithAtSign != null ? chatWithAtSign : null,
-                items: atSigns == null ? null : atSigns
-                  .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                }).toList(),
+              child: TextField(
+                decoration: InputDecoration(hintText: 'Enter an @sign to chat with'),
+                onChanged: (value) {
+                  chatWithAtSign = value;
+                },
               ),
+
+              // child: DropdownButton<String>(
+              //   hint:  Text('\tPick an @sign'),
+              //   icon: Icon(
+              //     Icons.keyboard_arrow_down,
+              //   ),
+              //   iconSize: 24,
+              //   elevation: 16,
+              //   style: TextStyle(
+              //       fontSize: 20.0,
+              //       color: Colors.black87
+              //   ),
+              //   underline: Container(
+              //     height: 2,
+              //     color: Colors.deepOrange,
+              //   ),
+              //   onChanged: isEnabled ? (String newValue) {
+              //     setState(() {
+              //       chatWithAtSign = newValue;
+              //       isEnabled = false;
+              //     });
+              //   } : null,
+              //   disabledHint: chatWithAtSign != null ? Text(chatWithAtSign)
+              //     : null,
+              //   value: chatWithAtSign != null ? chatWithAtSign : null,
+              //   items: atSigns == null ? null : atSigns
+              //     .map<DropdownMenuItem<String>>((String value) {
+              //       return DropdownMenuItem<String>(
+              //         value: value,
+              //         child: Text(value),
+              //       );
+              //   }).toList(),
+              // ),
             ),
             SizedBox(
               height: 50.0,
