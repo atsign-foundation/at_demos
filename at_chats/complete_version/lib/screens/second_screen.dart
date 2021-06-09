@@ -95,7 +95,7 @@ class _SecondScreenState extends State<SecondScreen> {
             showOptions ? Column(
               children: [
                 SizedBox(height: 20.0),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     scaffoldKey.currentState
                         .showBottomSheet((context) => ChatScreen());
@@ -105,7 +105,7 @@ class _SecondScreenState extends State<SecondScreen> {
                     child: Text('Open chat in bottom sheet'),
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, ThirdScreen.id);
                   },
@@ -119,7 +119,7 @@ class _SecondScreenState extends State<SecondScreen> {
             : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     if (chatWithAtSign != null &&
                         chatWithAtSign.trim() != '') {
@@ -139,7 +139,7 @@ class _SecondScreenState extends State<SecondScreen> {
                             ),
                             content: Text('Please enter an @sign'),
                             actions: <Widget>[
-                              FlatButton(
+                              TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
