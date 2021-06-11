@@ -1,12 +1,12 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
+// import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import '../utils/constants.dart' as conf;
-import 'package:at_client/src/util/encryption_util.dart';
+// import 'package:at_client/src/util/encryption_util.dart';
 
 class ClientSdkService {
   static final ClientSdkService _singleton = ClientSdkService._internal();
@@ -21,6 +21,13 @@ class ClientSdkService {
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
   String _atsign;
+
+  _reset() {
+    atClientServiceInstance = null;
+    atClientInstance = null;
+    atClientServiceMap = {};
+    _atsign = null;
+  }
 
   _sync() async {
     await _getAtClientForAtsign().getSyncManager().sync();
@@ -39,11 +46,12 @@ class ClientSdkService {
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
-    var service = AtClientService();
-    return service;
+    return AtClientService();
+    // var service = AtClientService();
+    // return service;
   }
 
-  Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
+  Future<AtClientPreference> getAtClientPreference({String cramSecret}) async {
     final appDocumentDirectory =
         await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
@@ -65,8 +73,11 @@ class ClientSdkService {
   }
 
   Future<bool> onboard({String atsign}) async {
+    // atClientServiceInstance = AtClientService();
     atClientServiceInstance = _getClientServiceForAtSign(atsign);
-    var atClientPreference = await _getAtClientPreference();
+    // atClientServiceInstance = _getClientServiceForAtSign(atClientServiceInstance.);
+
+    var atClientPreference = await getAtClientPreference();
     var result = await atClientServiceInstance.onboard(
         atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign == null ? await this.getAtSign() : atsign;
@@ -87,7 +98,7 @@ class ClientSdkService {
         atsignStatus != ServerStatus.activated) {
       throw atsignStatus;
     }
-    var atClientPreference = await _getAtClientPreference();
+    var atClientPreference = await getAtClientPreference();
     var result = await atClientServiceInstance.authenticate(
         atsign, atClientPreference,
         jsonData: jsonData, decryptKey: decryptKey);
@@ -97,33 +108,33 @@ class ClientSdkService {
     return result;
   }
 
-  String encryptKeyPairs(String atsign) {
-    var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPublicKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
-    var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPrivateKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
-    var aesEncryptedKeys = {};
-    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
-        encryptedPkamPublicKey;
-
-    aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PRIVATE_KEY] =
-        encryptedPkamPrivateKey;
-
-    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PUBLIC_KEY] =
-        aesencryptedPkamPublicKey;
-
-    aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
-        aesencryptedPkamPrivateKey;
-
-    var keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
-    return keyString;
-  }
+  // String encryptKeyPairs(String atsign) {
+  //   var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
+  //       at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+  //   var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
+  //       at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+  //   var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
+  //       at_demo_data.encryptionPublicKeyMap[atsign],
+  //       at_demo_data.aesKeyMap[atsign]);
+  //   var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
+  //       at_demo_data.encryptionPrivateKeyMap[atsign],
+  //       at_demo_data.aesKeyMap[atsign]);
+  //   var aesEncryptedKeys = {};
+  //   aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
+  //       encryptedPkamPublicKey;
+  //
+  //   aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PRIVATE_KEY] =
+  //       encryptedPkamPrivateKey;
+  //
+  //   aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PUBLIC_KEY] =
+  //       aesencryptedPkamPublicKey;
+  //
+  //   aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
+  //       aesencryptedPkamPrivateKey;
+  //
+  //   var keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
+  //   return keyString;
+  // }
 
   Future<String> get(AtKey atKey) async {
     var result = await _getAtClientForAtsign().get(atKey);
@@ -147,11 +158,34 @@ class ClientSdkService {
   Future<String> getAtSign() async {
     return await atClientServiceInstance.getAtSign();
   }
+
+  // static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+  // Future<List<String>> getAtsignList() async {
+  //   var atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+  //   return atSignsList;
+  // }
+
+  deleteAtSignFromKeyChain() async {
+    // List<String> atSignList = await getAtsignList();
+    String _atsign = atClientServiceInstance.atClient.currentAtSign;
+
+    await atClientServiceMap[_atsign].deleteAtSignFromKeychain(_atsign);
+
+    _reset();
+
+    // if (atSignList != null) {
+    //   atSignList
+    //       .removeWhere((element) => element == atClientInstance.currentAtSign);
+    // }
+
+    // var atClientPrefernce;
+    // await getAtClientPreference().then((value) => atClientPrefernce = value);
+  }
 }
 
-class BackupKeyConstants {
-  static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
-  static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';
-  static const String AES_ENCRYPTION_PUBLIC_KEY = 'aesEncryptPublicKey';
-  static const String AES_ENCRYPTION_PRIVATE_KEY = 'aesEncryptPrivateKey';
-}
+// class BackupKeyConstants {
+//   static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
+//   static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';
+//   static const String AES_ENCRYPTION_PUBLIC_KEY = 'aesEncryptPublicKey';
+//   static const String AES_ENCRYPTION_PRIVATE_KEY = 'aesEncryptPrivateKey';
+// }
