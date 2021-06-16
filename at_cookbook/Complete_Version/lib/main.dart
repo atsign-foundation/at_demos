@@ -34,10 +34,10 @@ class MyApp extends StatelessWidget {
           accentColor: Color(0XFF7B3F00),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: WelcomeScreen.id,
+        initialRoute: OnboardingScreen.id,
         routes: {
-          WelcomeScreen.id: (context) => WelcomeScreen(),
-          HomeScreen.id: (context) => HomeScreen(shouldReload: false),
+          OnboardingScreen.id: (context) => OnboardingScreen(),
+          HomeScreen.id: (context) => HomeScreen(),
           DishScreen.id: (context) => DishScreen(),
           OtherScreen.id: (context) => OtherScreen(),
         });

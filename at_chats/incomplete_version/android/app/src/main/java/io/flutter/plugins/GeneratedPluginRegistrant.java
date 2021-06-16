@@ -20,8 +20,7 @@ public final class GeneratedPluginRegistrant {
     flutterEngine.getPlugins().add(new com.mr.flutter.plugin.filepicker.FilePickerPlugin());
       be.appmire.flutterkeychain.FlutterKeychainPlugin.registerWith(shimPluginRegistry.registrarFor("be.appmire.flutterkeychain.FlutterKeychainPlugin"));
     flutterEngine.getPlugins().add(new io.flutter.plugins.flutter_plugin_android_lifecycle.FlutterAndroidLifecyclePlugin());
-      me.hetian.flutter_qr_reader.FlutterQrReaderPlugin.registerWith(shimPluginRegistry.registrarFor("me.hetian.flutter_qr_reader.FlutterQrReaderPlugin"));
-    flutterEngine.getPlugins().add(new io.flutter.plugins.imagepicker.ImagePickerPlugin());
+    flutterEngine.getPlugins().add(new me.hetian.flutter_qr_reader.FlutterQrReaderPlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.pathprovider.PathProviderPlugin());
     flutterEngine.getPlugins().add(new com.baseflow.permissionhandler.PermissionHandlerPlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.share.SharePlugin());

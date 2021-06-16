@@ -1,21 +1,20 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
-import 'package:chefcookbook/service.dart';
+import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
 import 'home_screen.dart';
+import 'dart:core';
 
 class OtherScreen extends StatelessWidget {
   static final String id = 'other';
-  final _serverDemoService = ServerDemoService.getInstance();
-
+  String atSign = ClientSdkService.getInstance().getAtSign().toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + atSign,
+          'Welcome, $atSign!',
         ),
       ),
       body: SafeArea(
@@ -94,17 +93,20 @@ class OtherScreen extends StatelessWidget {
 
   /// Returns the list of Shared Recipes keys.
   _getSharedKeys() async {
-    await _serverDemoService.sync();
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
+    //await ClientSdkService.getInstance().t_sync();
     // This regex is defined for searching for an AtKey object that carries the
     // namespace of cookbook from the authenticated atsign's secondary server
     // This regex is also specified to get any recipe that has been shared with
     // the currently authenticated atsign
-    return await _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
+    return await clientSdkService.getAtKeys('cached.*cookbook');
+    // Took regex: 'cached.*cookbook' out of getatkeys
   }
 
   /// Returns a map of Shared recipes key and values.
   _getSharedRecipes() async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to store all of the retrieved
     // recipes that have been shared with the current authenticated atsign
     List<AtKey> sharedKeysList = await _getSharedKeys();
@@ -130,7 +132,7 @@ class OtherScreen extends StatelessWidget {
         ..metadata = metadata;
 
       // Get the recipe
-      String response = await _serverDemoService.get(atKey);
+      String response = await clientSdkService.get(atKey);
 
       // Adds all key/value pairs of [other] to this map.
       // If a key of [other] is already in this map, its value is overwritten.

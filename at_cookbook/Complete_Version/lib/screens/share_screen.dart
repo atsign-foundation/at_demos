@@ -1,11 +1,9 @@
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:at_commons/at_commons.dart';
-import 'welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import '../service.dart';
+import '../service/client_sdk_service.dart';
 
 class ShareScreen extends StatefulWidget {
   static final String id = 'share';
@@ -19,20 +17,9 @@ class ShareScreen extends StatefulWidget {
 
 class _ShareScreenState extends State<ShareScreen> {
   String _otherAtSign;
-  List<String> _atSigns;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
-
-  initList() {
-    List<String> otherAtSigns = at_demo_data.allAtsigns;
-    otherAtSigns.remove(atSign);
-    setState(() {
-      _atSigns = otherAtSigns;
-    });
-  }
 
   @override
   void initState() {
-    initList();
     super.initState();
   }
 
@@ -69,34 +56,12 @@ class _ShareScreenState extends State<ShareScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  ListTile(
-                    title: Center(
-                      child: DropdownButton<String>(
-                        hint: Text('\tPick an @sign'),
-                        icon: Icon(
-                          Icons.keyboard_arrow_down,
-                        ),
-                        iconSize: 24,
-                        dropdownColor: Color(0XFFF1EBE5),
-                        elevation: 16,
-                        style: TextStyle(fontSize: 20.0, color: Colors.black87),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            _otherAtSign = newValue;
-                          });
-                        },
-                        value: _otherAtSign != null ? _otherAtSign : null,
-                        items: _atSigns == null
-                            ? []
-                            : _atSigns
-                                .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                      ),
-                    ),
+                  TextField(
+                    decoration: InputDecoration(
+                        hintText: 'Enter an @sign to chat with'),
+                    onChanged: (value) {
+                      _otherAtSign = value;
+                    },
                   ),
                   SizedBox(
                     height: 20,
@@ -119,6 +84,7 @@ class _ShareScreenState extends State<ShareScreen> {
   _share(BuildContext context, String sharedWith) async {
     // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
+      String atSign = await ClientSdkService.getInstance().getAtSign();
       // Create an AtKey object called lookup to act as
       // a buffer for the recipe itself
       AtKey lookup = AtKey()
@@ -129,13 +95,15 @@ class _ShareScreenState extends State<ShareScreen> {
 
       // getting the values of the recipe as a string to
       // pass through the secondary servers
-      String value = await _serverDemoService.get(lookup);
+      String value = await ClientSdkService.getInstance().get(lookup);
 
       // Instanstiating the Time To Refresh (ttr) metadata attribute
       // as -1 to cache on the secondary server that has received the recipe.
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
-      var metadata = Metadata()..ttr = -1;
+      var metadata = Metadata()
+        ..ttr = -1
+        ..isPublic = true;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()
@@ -156,7 +124,7 @@ class _ShareScreenState extends State<ShareScreen> {
 
       // Pass the correct variables through the notify verb to send to the specified
       // secondary server
-      await _serverDemoService.notify(atKey, value, operation);
+      await ClientSdkService.getInstance().notify(atKey, value, operation);
 
       // This will take the user from the share screen back to the recipe screen
       Navigator.pop(context);

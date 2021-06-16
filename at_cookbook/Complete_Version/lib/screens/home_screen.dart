@@ -2,19 +2,18 @@ import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
 import 'add_dish_screen.dart';
 import 'other_screen.dart';
-import 'welcome_screen.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:chefcookbook/service.dart';
+import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home';
-  final bool shouldReload;
+  // final bool shouldReload;
 
-  const HomeScreen({
-    this.shouldReload,
-  });
+  // const HomeScreen({
+  //   this.shouldReload,
+  // });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -23,26 +22,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = [];
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  String atSign = ClientSdkService.getInstance().getAtSign().toString();
 
-  checkReload() {
-    if (widget.shouldReload) {
-      setState(() {});
-    }
-  }
+  // checkReload() {
+  //   if (widget.shouldReload) {
+  //     setState(() {});
+  //   }
+  // }
 
-  @override
-  void initState() {
-    checkReload();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   checkReload();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + atSign,
+          'Welcome, ' + ClientSdkService.getInstance().getAtSign().toString(),
         ),
       ),
       body: SafeArea(
@@ -135,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   /// Scan for [AtKey] objects with the correct regex.
   _scan() async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to house each cached recipe from
     // the secondary server of the authenticated atsign
     List<AtKey> response;
@@ -146,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier
-    response = await _serverDemoService.getAtKeys(regex: regex);
+    response = await clientSdkService.getAtKeys(regex);
 
     // Instantiating a list of strings
     List<String> responseList = [];
@@ -173,10 +174,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   /// Look up a value corresponding to an [AtKey] instance.
   Future<String> _lookup(AtKey atKey) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // If an AtKey object exists
     if (atKey != null) {
       // Simply get the AtKey object utilizing the serverDemoService's get method
-      return await _serverDemoService.get(atKey);
+      return await clientSdkService.get(atKey);
     }
     return '';
   }

@@ -1,10 +1,10 @@
 import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:chefcookbook/service.dart';
-import 'welcome_screen.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:chefcookbook/constants.dart' as constant;
 import 'package:flutter/material.dart';
+import 'package:chefcookbook/service/client_sdk_service.dart';
 
 // ignore: must_be_immutable
 class DishScreen extends StatelessWidget {
@@ -116,6 +116,8 @@ class DishScreen extends StatelessWidget {
   // Add a key/value pair to the logged-in secondary server.
   // Passing multiple key values to be cached in a secondary server
   _update(BuildContext context) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    String atSign = ClientSdkService.getInstance().getAtSign().toString();
     // If all of the necessary text form fields have been properly
     // populated
     final FormState form = _formKey.currentState;

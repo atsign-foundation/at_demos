@@ -1,16 +1,15 @@
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:chefcookbook/service.dart';
+import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'home_screen.dart';
-import 'welcome_screen.dart';
 import 'share_screen.dart';
 import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget dishWidget;
-  final _serverDemoService = ServerDemoService.getInstance();
+  ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   DishPage({@required this.dishWidget});
 
@@ -142,6 +141,8 @@ class DishPage extends StatelessWidget {
   /// Deletes a key/value pair in the secondary server of
   /// the logged-in @sign.
   _delete(BuildContext context) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    String atSign = ClientSdkService.getInstance().getAtSign().toString();
     // If the recipe has a name
     if (dishWidget.title != null) {
       // Instantiate an AtKey object and specify its attributes by passing
@@ -152,7 +153,7 @@ class DishPage extends StatelessWidget {
 
       // Utilizing the delete method, after passing the recipe, the object
       // cached on the secondary server will be deleted
-      await _serverDemoService.delete(atKey);
+      await clientSdkService.delete(atKey);
     }
     // This will force the authenticated atsign back to the previous screen
     // without the capability of returning to the screen of the recipe that was
