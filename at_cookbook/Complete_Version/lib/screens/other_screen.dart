@@ -8,7 +8,7 @@ import 'dart:core';
 
 class OtherScreen extends StatelessWidget {
   static final String id = 'other';
-  String atSign = ClientSdkService.getInstance().getAtSign().toString();
+  String atSign = ClientSdkService.getInstance().atsign;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +139,8 @@ class OtherScreen extends StatelessWidget {
       // The operation is equivalent to doing `this[key] = value` for each key
       // and associated value in other. It iterates over [other], which must
       // therefore not change during the iteration.
-      recipesMap.putIfAbsent('${element.key}', () => response);
+      if (response != null)
+        recipesMap.putIfAbsent('${element.key}', () => response);
     });
     // Return the entire map of shared recipes
     return recipesMap;

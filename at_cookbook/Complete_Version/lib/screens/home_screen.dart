@@ -25,24 +25,12 @@ class _HomeScreenState extends State<HomeScreen>
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   String atSign = ClientSdkService.getInstance().getAtSign().toString();
 
-  // checkReload() {
-  //   if (widget.shouldReload) {
-  //     setState(() {});
-  //   }
-  // }
-
-  // @override
-  // void initState() {
-  //   checkReload();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + ClientSdkService.getInstance().getAtSign().toString(),
+          'Welcome, ' + ClientSdkService.getInstance().atsign,
         ),
       ),
       body: SafeArea(
@@ -148,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen>
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier
     response = await clientSdkService.getAtKeys(regex);
+    response.retainWhere((element) => !element.metadata.isCached);
 
     // Instantiating a list of strings
     List<String> responseList = [];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String root = 'vip.ve.atsign.zone';
+String root = 'root.atsign.org';
 int rootPort = 64;
 String namespace = 'cookbook';
 bool debug = true;

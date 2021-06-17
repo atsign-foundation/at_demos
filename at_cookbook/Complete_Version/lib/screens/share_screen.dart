@@ -84,7 +84,7 @@ class _ShareScreenState extends State<ShareScreen> {
   _share(BuildContext context, String sharedWith) async {
     // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
-      String atSign = await ClientSdkService.getInstance().getAtSign();
+      String atSign = await ClientSdkService.getInstance().atsign;
       // Create an AtKey object called lookup to act as
       // a buffer for the recipe itself
       AtKey lookup = AtKey()
@@ -102,8 +102,7 @@ class _ShareScreenState extends State<ShareScreen> {
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
       var metadata = Metadata()
-        ..ttr = -1
-        ..isPublic = true;
+        ..ttr = -1;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()

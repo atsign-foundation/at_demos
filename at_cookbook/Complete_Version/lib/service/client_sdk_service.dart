@@ -20,13 +20,13 @@ class ClientSdkService {
   AtClientService atClientServiceInstance;
   AtClientImpl atClientInstance;
   Map<String, AtClientService> atClientServiceMap = {};
-  String _atsign;
+  String atsign;
 
   _reset() {
     atClientServiceInstance = null;
     atClientInstance = null;
     atClientServiceMap = {};
-    _atsign = null;
+    atsign = null;
   }
 
   _sync() async {
@@ -34,7 +34,7 @@ class ClientSdkService {
   }
 
   AtClientImpl _getAtClientForAtsign({String atsign}) {
-    atsign ??= _atsign;
+    atsign ??= this.atsign;
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign].atClient;
     }
@@ -42,13 +42,10 @@ class ClientSdkService {
   }
 
   AtClientService _getClientServiceForAtSign(String atsign) {
-    if (atsign == null) {}
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
     return AtClientService();
-    // var service = AtClientService();
-    // return service;
   }
 
   Future<AtClientPreference> getAtClientPreference({String cramSecret}) async {
@@ -72,41 +69,8 @@ class ClientSdkService {
     return status.serverStatus;
   }
 
-  Future<bool> onboard({String atsign}) async {
-    // atClientServiceInstance = AtClientService();
-    atClientServiceInstance = _getClientServiceForAtSign(atsign);
-    // atClientServiceInstance = _getClientServiceForAtSign(atClientServiceInstance.);
-
-    var atClientPreference = await getAtClientPreference();
-    var result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference, atsign: atsign);
-    _atsign = atsign == null ? await this.getAtSign() : atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    _sync();
-    return result;
-  }
-
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  Future<bool> authenticate(
-    String atsign, {
-    String privateKey,
-    String jsonData,
-    String decryptKey,
-  }) async {
-    var atsignStatus = await _checkAtSignStatus(atsign);
-    if (atsignStatus != ServerStatus.teapot &&
-        atsignStatus != ServerStatus.activated) {
-      throw atsignStatus;
-    }
-    var atClientPreference = await getAtClientPreference();
-    var result = await atClientServiceInstance.authenticate(
-        atsign, atClientPreference,
-        jsonData: jsonData, decryptKey: decryptKey);
-    _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
-    await _sync();
-    return result;
-  }
+  //
 
   // String encryptKeyPairs(String atsign) {
   //   var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
@@ -159,27 +123,13 @@ class ClientSdkService {
     return await atClientServiceInstance.getAtSign();
   }
 
-  // static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
-  // Future<List<String>> getAtsignList() async {
-  //   var atSignsList = await _keyChainManager.getAtSignListFromKeychain();
-  //   return atSignsList;
-  // }
-
   deleteAtSignFromKeyChain() async {
     // List<String> atSignList = await getAtsignList();
-    String _atsign = atClientServiceInstance.atClient.currentAtSign;
+    String atsign = atClientServiceInstance.atClient.currentAtSign;
 
-    await atClientServiceMap[_atsign].deleteAtSignFromKeychain(_atsign);
+    await atClientServiceMap[atsign].deleteAtSignFromKeychain(atsign);
 
     _reset();
-
-    // if (atSignList != null) {
-    //   atSignList
-    //       .removeWhere((element) => element == atClientInstance.currentAtSign);
-    // }
-
-    // var atClientPrefernce;
-    // await getAtClientPreference().then((value) => atClientPrefernce = value);
   }
 
   Future<bool> notify(
@@ -187,10 +137,3 @@ class ClientSdkService {
     return await _getAtClientForAtsign().notify(atKey, value, operation);
   }
 }
-
-// class BackupKeyConstants {
-//   static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
-//   static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';
-//   static const String AES_ENCRYPTION_PUBLIC_KEY = 'aesEncryptPublicKey';
-//   static const String AES_ENCRYPTION_PRIVATE_KEY = 'aesEncryptPrivateKey';
-// }

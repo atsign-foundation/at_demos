@@ -22,7 +22,6 @@ class _OnboardingScreen extends State<OnboardingScreen> {
   var _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
-    ClientSdkService.getInstance().onboard();
     ClientSdkService.getInstance()
         .getAtClientPreference()
         .then((value) => atClientPreference = value);
@@ -38,9 +37,6 @@ class _OnboardingScreen extends State<OnboardingScreen> {
           backgroundColor: Colors.deepOrange,
           title: Text('Home'),
         ),
-        // appBar: AppBar(
-        //   title: const Text('Plugin example app'),
-        // ),
         body: Builder(
           builder: (context) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -48,13 +44,13 @@ class _OnboardingScreen extends State<OnboardingScreen> {
               Center(
                 child: TextButton(
                     onPressed: () async {
-                      // TODO: Add in at_onboarding_flutter
                       Onboarding(
                         context: context,
                         atClientPreference: atClientPreference,
                         domain: MixedConstants.ROOT_DOMAIN,
                         appColor: Color.fromARGB(255, 240, 94, 62),
                         onboard: (value, atsign) {
+                          ClientSdkService.getInstance().atsign = atsign;
                           ClientSdkService.getInstance().atClientServiceMap =
                               value;
                           ClientSdkService.getInstance()
