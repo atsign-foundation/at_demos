@@ -2,18 +2,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:newserverdemo/services/server_demo_service.dart';
+import '../utils/constants.dart';
+import '../service/client_sdk_service.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home';
 
-  final String atSign;
+  String atSign;
 
-  const HomeScreen({
-    Key key,
-    @required this.atSign,
-  })  : assert(atSign != null),
-        super(key: key);
+  // const HomeScreen({
+  //   Key key,
+  //   @required this.atSign,
+  // })  : assert(atSign != null),
+  //       super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _scanItems = List<String>();
 
   // service
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  ClientSdkService _serverDemoService = ClientSdkService.getInstance();
 
   @override
   Widget build(BuildContext context) {
