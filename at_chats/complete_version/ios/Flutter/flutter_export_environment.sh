@@ -1,12 +1,11 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/tylermcnierney/Desktop/Flutter/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/tylermcnierney/Desktop/at_chat_flutter/example"
-export "FLUTTER_TARGET=lib/main.dart"
+export "FLUTTER_ROOT=D:\FlutterSDKUpdate\flutter_windows_1.22.2-stable\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\at_demos_mar30\dess\at_demos\at_chats\complete_version"
+export "COCOAPODS_PARALLEL_CODE_SIGN=true"
+export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
-export "SYMROOT=${SOURCE_ROOT}/../build/ios"
-export "OTHER_LDFLAGS=$(inherited) -framework Flutter"
-export "FLUTTER_FRAMEWORK_DIR=/Users/tylermcnierney/Desktop/Flutter/flutter/bin/cache/artifacts/engine/ios"
+export "SYMROOT=${SOURCE_ROOT}/../build\ios"
 export "FLUTTER_BUILD_NAME=0.0.1"
 export "FLUTTER_BUILD_NUMBER=0.0.1"
 export "DART_OBFUSCATION=false"
