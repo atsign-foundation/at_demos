@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         subtitle: DropdownButton<String>(
+                          key: Key('dropdown'),
                           hint: Text('\tPick an @sign'),
                           icon: Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
@@ -93,21 +94,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                           value: atSign,
+                          items: [DropdownMenuItem<String>(value: '@alice🛠',
+                                key: Key('@alice🛠'),
+                                child: Text('@alice🛠'))],
                           //!= null ? atSign : null,
-                          items: at_demo_data.allAtsigns
-                              .map<DropdownMenuItem<String>>(
-                            (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            },
-                          ).toList(),
+                          // items: at_demo_data.allAtsigns
+                          //     .map<DropdownMenuItem<String>>(
+                          //   (String value) {
+                          //     return DropdownMenuItem<String>(
+                          //       value: value,
+                          //       key: Key(value),
+                          //       child: Text(value),
+                          //     );
+                          //   },
+                          // ).toList(),
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.all(20),
                         child: MaterialButton(
+                          key: Key('Login'),
                           child: Text('Login'),
                           color: Colors.blueAccent,
                           textColor: Colors.white,

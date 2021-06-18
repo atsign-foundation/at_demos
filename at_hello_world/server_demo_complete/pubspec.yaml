@@ -23,3 +23,14 @@ flutter:
   assets:
     - assets/
   uses-material-design: true
+
+dependency_overrides: 
+  archive: 2.0.13
+  crypto: 2.1.5
+  args: 1.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.9.4
+  integration_test: ^1.0.1

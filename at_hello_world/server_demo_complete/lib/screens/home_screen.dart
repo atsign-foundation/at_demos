@@ -76,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           TextField(
                             decoration: InputDecoration(hintText: 'Enter Key'),
+                            key: Key('UpdateKey'),
                             // TODO: Assign the key
                             onChanged: (key) {
                               _key = key;
@@ -85,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter Value',
                             ),
+                            key: Key('UpdateValue'),
                             // TODO: Assign the value
                             onChanged: (value) {
                               _value = value;
@@ -130,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       subtitle: DropdownButton<String>(
+                        key: Key('scanDropdown'),
                         hint: Text('Select Key'),
                         // TODO: complete these parameters
                         items: _scanItems.map((String key) {
@@ -150,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       margin: EdgeInsets.all(20),
                       child: FlatButton(
+                        key: Key('Scan'),
                         child: Text('Scan'),
                         color: Colors.deepOrange,
                         textColor: Colors.white,
@@ -189,6 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           TextField(
                             decoration: InputDecoration(hintText: 'Enter Key'),
+                            key: Key('lookupField'),
                             // TODO: Assign the controller
                             controller: _lookupTextFieldController,
                           ),
@@ -204,6 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           // TODO: assign a String to the Text widget
                           Text(
                             '$_lookupValue',
+                            key: Key('lookupValue'),
                             style: TextStyle(
                               color: Colors.teal,
                               fontSize: 15,
@@ -216,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       margin: EdgeInsets.all(20),
                       child: FlatButton(
+                        key: Key('LookupButton'),
                         child: Text('Lookup'),
                         color: Colors.deepOrange,
                         textColor: Colors.white,
