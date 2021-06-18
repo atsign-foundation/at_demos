@@ -1,10 +1,9 @@
 import 'package:chefcookbook/components/rounded_button.dart';
-import 'package:chefcookbook/service.dart';
-import 'welcome_screen.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:chefcookbook/constants.dart' as constant;
 import 'package:flutter/material.dart';
+import 'package:chefcookbook/service/client_sdk_service.dart';
 
 // ignore: must_be_immutable
 class DishScreen extends StatelessWidget {
@@ -14,7 +13,6 @@ class DishScreen extends StatelessWidget {
   String _ingredients;
   String _description;
   String _imageURL;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +114,8 @@ class DishScreen extends StatelessWidget {
   // Add a key/value pair to the logged-in secondary server.
   // Passing multiple key values to be cached in a secondary server
   _update(BuildContext context) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    String atSign = clientSdkService.atsign;
     // If all of the necessary text form fields have been properly
     // populated
     final FormState form = _formKey.currentState;
@@ -143,7 +143,7 @@ class DishScreen extends StatelessWidget {
       // Utilizing the put method to take the AtKey object and its values
       // and 'put' it on the secondary server of the authenticated atsign
       // (the atsign currently logged in)
-      await _serverDemoService.put(atKey, _values);
+      await clientSdkService.put(atKey, _values);
 
       // This will take the authenticated atsign from the add_dish page back
       // to the home screen

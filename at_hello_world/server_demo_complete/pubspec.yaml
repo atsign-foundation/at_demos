@@ -6,20 +6,22 @@ version: 0.1.0+1
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
-# Before using this application, ensure that your Flutter SDK, Dart SDK, and
-# Android Studio are up to date.
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: ^2.0.1
-  at_onboarding_flutter: ^1.0.0+4
-  at_client_mobile: ^1.0.0+4
+  cupertino_icons: ^1.0.0
+  at_client_mobile: ^1.0.0+8
   at_server_status: ^0.1.0+1
-  cupertino_icons: ^0.1.3
-  modal_progress_hud: any
   at_demo_data: ^0.0.3+1
+  modal_progress_hud: any
+  at_onboarding_flutter: ^1.0.0+4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 flutter:
   assets:
     - assets/
   uses-material-design: true
+

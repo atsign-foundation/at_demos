@@ -1,158 +1,97 @@
 import 'dart:ui';
-import 'package:at_onboarding_flutter/screens/onboarding_widget.dart';
+// import 'package:newserverdemo/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:newserverdemo/utils/at_conf.dart';
-import 'package:newserverdemo/screens/home_screen.dart';
-import 'package:newserverdemo/services/server_demo_service.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
+import '../service/client_sdk_service.dart';
+import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
+import 'package:at_utils/at_logger.dart';
+import '../utils/constants.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String id = 'login';
-
-  const LoginScreen({Key key}) : super(key: key);
-
+  static final String id = 'LoginScreen';
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginScreen createState() => _LoginScreen();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  String atSign;
+class _LoginScreen extends State<LoginScreen> {
   bool showSpinner = false;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  String atSign;
+  // ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  var atClientPreference;
+  var _logger = AtSignLogger('Plugin example app');
+  @override
+  void initState() {
+    ClientSdkService.getInstance()
+        .getAtClientPreference()
+        .then((value) => atClientPreference = value);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Login',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+    return MaterialApp(
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.deepOrange,
+          title: Text('Home'),
         ),
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Center(
-          child: ListView(
-            children: <Widget>[
-              Container(
-                width: 500,
-                height: 220,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  color: Colors.white,
-                  elevation: 10,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset(
-                            'assets/atsign.png',
-                            height: 50.0,
-                            width: 50.0,
-                          ),
-                        ),
-                        title: Text(
-                          'Log In',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        subtitle: DropdownButton<String>(
-                          hint: Text('\tPick an @sign'),
-                          icon: Icon(Icons.keyboard_arrow_down),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black87,
-                          ),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.deepOrange,
-                          ),
-                          onChanged: (String newValue) async {
-                            setState(() {
-                              showSpinner = true;
-                              atSign = newValue;
-                            });
-                            await _serverDemoService
-                                .storeDemoDataToKeychain(newValue);
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                          value: atSign,
-                          //!= null ? atSign : null,
-                          items: at_demo_data.allAtsigns
-                              .map<DropdownMenuItem<String>>(
-                            (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(20),
-                        child: MaterialButton(
-                          child: Text('Login'),
-                          color: Colors.blueAccent,
-                          textColor: Colors.white,
-                          onPressed: _login,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+        body: Builder(
+          builder: (context) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: TextButton(
+                    onPressed: () async {
+                      Onboarding(
+                        context: context,
+                        atClientPreference: atClientPreference,
+                        domain: MixedConstants.ROOT_DOMAIN,
+                        appColor: Color.fromARGB(255, 240, 94, 62),
+                        onboard: (value, atsign) {
+                          atSign = atsign;
+                          ClientSdkService.getInstance().atsign = atsign;
+                          ClientSdkService.getInstance().atClientServiceMap =
+                              value;
+                          ClientSdkService.getInstance()
+                              .atClientServiceInstance = value[atsign];
+                          _logger.finer('Successfully onboarded $atsign');
+                        },
+                        onError: (error) {
+                          _logger.severe('Onboarding throws $error error');
+                        },
+                        nextScreen: HomeScreen(),
+                      );
+                    },
+                    child: Text(AppStrings.scan_qr)),
               ),
-              SizedBox(height: 280),
-              Container(
-                height: 50,
-                child: FittedBox(
-                  child: Image.asset('assets/@logo.png'),
-                ),
-              )
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                  onPressed: () async {
+                    KeyChainManager _keyChainManager =
+                        KeyChainManager.getInstance();
+                    var _atSignsList =
+                        await _keyChainManager.getAtSignListFromKeychain();
+                    _atSignsList?.forEach((element) {
+                      _keyChainManager.deleteAtSignFromKeychain(element);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                      'Keychain cleaned',
+                      textAlign: TextAlign.center,
+                    )));
+                  },
+                  child: Text(
+                    AppStrings.reset_keychain,
+                    style: TextStyle(color: Colors.blueGrey),
+                  ))
             ],
           ),
         ),
       ),
     );
-  }
-
-  /// Use onboard() to authenticate via PKAM public/private keys. If
-  /// onboard() fails, use authenticate() to place keys.
-  _login() async {
-    if (atSign != null) {
-      FocusScope.of(context).unfocus();
-      return Onboarding(
-        context: context,
-        atClientPreference: await _serverDemoService.getAtClientPreference(),
-        atsign: atSign,
-        domain: AtConfig.root,
-        appColor: Color.fromARGB(255, 240, 94, 62),
-        onboard: (atClientServiceMap, atsign) {
-          _serverDemoService.atClientServiceMap = atClientServiceMap;
-          _serverDemoService.atSign = atsign;
-          //assign this atClientServiceMap in the app.
-        },
-        onError: (error) {
-          print(error);
-        },
-        nextScreen: HomeScreen(atSign: atSign),
-      );
-    }
   }
 }
