@@ -7,11 +7,11 @@ import 'package:newserverdemo/services/server_demo_service.dart';
 class HomeScreen extends StatefulWidget {
   static const String id = 'home';
 
-  final String atSign;
+  final atSign;
 
   const HomeScreen({
-    Key key,
-    @required this.atSign,
+    Key? key,
+    this.atSign,
   })  : assert(atSign != null),
         super(key: key);
 
@@ -21,16 +21,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //update
-  String _key;
-  String _value;
+  String? _key;
+  String? _value;
 
   // lookup
   TextEditingController _lookupTextFieldController = TextEditingController();
-  String _lookupKey;
+  String? _lookupKey;
   String _lookupValue = '';
 
   // scan
-  List<String> _scanItems = List<String>();
+  List<String?> _scanItems = [];
 
   // service
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
@@ -130,16 +130,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
-                        items: _scanItems.map((String key) {
+                        items: _scanItems.map((String? key) {
                           return DropdownMenuItem(
                             value: key,
-                            child: Text(key),
+                            child: Text(key!),
                           );
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
                             _lookupKey = value;
-                            _lookupTextFieldController.text = value;
+                            _lookupTextFieldController.text = value!;
                           });
                         },
                         value: _scanItems.length > 0 ? _scanItems[0] : '',
@@ -226,13 +226,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   // TODO: add the _scan, _update, and _lookup methods
   _update() async {
     if (_key != null && _value != null) {
       AtKey pair = AtKey();
       pair.key = _key;
       pair.sharedWith = widget.atSign;
-      await _serverDemoService.put(pair, _value);
+      await _serverDemoService.put(pair, _value!);
     }
   }
 
@@ -241,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sharedBy: widget.atSign,
     );
     if (response.length > 0) {
-      List<String> scanList = response.map((atKey) => atKey.key).toList();
+      List<String?> scanList = response.map((atKey) => atKey.key).toList();
       setState(() => _scanItems = scanList);
     }
   }

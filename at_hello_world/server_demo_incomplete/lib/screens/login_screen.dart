@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String atSign;
+  String? atSign;
   bool showSpinner = false;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 2,
                             color: Colors.deepOrange,
                           ),
-                          onChanged: (String newValue) {
+                          onChanged: (String? newValue) {
                             setState(() => atSign = newValue);
                           },
                           value: atSign,
@@ -128,16 +128,15 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         showSpinner = true;
       });
-      String jsonData = _serverDemoService.encryptKeyPairs(atSign);
-      _serverDemoService.onboard(atsign: atSign).then((value) async {
-        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+      String jsonData = _serverDemoService.encryptKeyPairs(atSign!);
+      _serverDemoService.onboard(atsign: atSign!).then((value) async {
+        Navigator.pushReplacementNamed(context, HomeScreen.id,
+            arguments: atSign);
       }).catchError((error) async {
-        await _serverDemoService.authenticate(
-          atSign,
-          jsonData: jsonData,
-          decryptKey: at_demo_data.aesKeyMap[atSign]
-        );
-        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+        await _serverDemoService.authenticate(atSign!,
+            jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]!);
+        Navigator.pushReplacementNamed(context, HomeScreen.id,
+            arguments: atSign);
       });
       // TODO: Complete the rest of the if statement!
     }

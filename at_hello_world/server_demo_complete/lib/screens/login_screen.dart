@@ -1,5 +1,6 @@
 import 'dart:ui';
 // import 'package:newserverdemo/screens/home_screen.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../service/client_sdk_service.dart';
@@ -16,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreen extends State<LoginScreen> {
   bool showSpinner = false;
-  String atSign;
+  String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   var atClientPreference;
   var _logger = AtSignLogger('Plugin example app');
@@ -55,7 +56,7 @@ class _LoginScreen extends State<LoginScreen> {
                           ClientSdkService.getInstance().atClientServiceMap =
                               value;
                           ClientSdkService.getInstance()
-                              .atClientServiceInstance = value[atsign];
+                              .atClientServiceInstance = value[atsign]!;
                           _logger.finer('Successfully onboarded $atsign');
                         },
                         onError: (error) {
@@ -75,7 +76,7 @@ class _LoginScreen extends State<LoginScreen> {
                         KeyChainManager.getInstance();
                     var _atSignsList =
                         await _keyChainManager.getAtSignListFromKeychain();
-                    _atSignsList?.forEach((element) {
+                    _atSignsList!.forEach((element) {
                       _keyChainManager.deleteAtSignFromKeychain(element);
                     });
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
