@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home';
-  final bool shouldReload;
+  final bool? shouldReload;
 
   const HomeScreen({
     this.shouldReload,
@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen>
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   checkReload() {
-    if (widget.shouldReload) {
+    if (widget.shouldReload!) {
       setState(() {});
     }
   }
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + atSign,
+          'Welcome, ' + atSign!,
         ),
       ),
       body: SafeArea(
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen>
     List<String> responseList = [];
     for (AtKey atKey in response) {
       String value = await _lookup(atKey);
-      value = atKey.key + constant.splitter + value;
+      value = atKey.key! + constant.splitter + value;
       responseList.add(value);
     }
     return responseList;

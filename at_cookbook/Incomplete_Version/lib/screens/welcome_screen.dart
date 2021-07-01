@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'home_screen.dart';
 
-String atSign;
+String? atSign;
 
 class WelcomeScreen extends StatefulWidget {
   static final String id = 'welcome';
@@ -101,7 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               elevation: 16,
                               style: TextStyle(
                                   fontSize: 20.0, color: Colors.black87),
-                              onChanged: (String newValue) {
+                              onChanged: (String? newValue) {
                                 setState(() {
                                   atSign = newValue;
                                 });
@@ -153,11 +153,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       setState(() {
         showSpinner = true;
       });
-      String jsonData = _serverDemoService.encryptKeyPairs(atSign);
+      String jsonData = _serverDemoService.encryptKeyPairs(atSign!);
       _serverDemoService.onboard(atsign: atSign).then((value) async {
         Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {
-        await _serverDemoService.authenticate(atSign,
+        await _serverDemoService.authenticate(atSign!,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
         Navigator.pushReplacementNamed(context, HomeScreen.id);
       });

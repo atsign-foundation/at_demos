@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final Function path;
-  final String text;
-  final Color color;
-  final double width;
+  final VoidCallback path;
+  final String? text;
+  final Color? color;
+  final double? width;
 
-  RoundedButton({@required this.path, this.color, this.text, this.width});
+  RoundedButton({required this.path, this.color, this.text, this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class RoundedButton extends StatelessWidget {
           minWidth: this.width == null ? 200 : this.width,
           height: 42,
           child: Text(
-            this.text,
+            this.text!,
             style: TextStyle(
               color:
                   this.color == Color(0XFF7B3F00) ? Colors.white : Colors.black,

@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DishWidget extends StatelessWidget {
-  final String title;
-  final String ingredients;
-  final String description;
-  final String imageURL;
-  final String prevScreen;
+  final String? title;
+  final String? ingredients;
+  final String? description;
+  final String? imageURL;
+  final String? prevScreen;
 
   DishWidget({
     @required this.title,
@@ -26,18 +26,18 @@ class DishWidget extends StatelessWidget {
           leading: SizedBox(
             child: this.imageURL == null
                 ? Image.asset('assets/question_mark.png')
-                : Image.network(this.imageURL),
+                : Image.network(this.imageURL!),
             height: 80,
             width: 80,
           ),
           title: Text(
-            this.title,
+            this.title!,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            this.description.length >= 20
-                ? this.description.substring(0, 20) + '...'
-                : this.description.substring(0, this.description.length),
+            this.description!.length >= 20
+                ? this.description!.substring(0, 20) + '...'
+                : this.description!.substring(0, this.description!.length),
             style: TextStyle(color: Colors.grey),
           ),
           trailing: IconButton(

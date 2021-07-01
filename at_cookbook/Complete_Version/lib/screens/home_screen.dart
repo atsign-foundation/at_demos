@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + ClientSdkService.getInstance().atsign,
+          'Welcome, ' + ClientSdkService.getInstance().atsign!,
         ),
       ),
       body: SafeArea(
@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen>
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier
     response = await clientSdkService.getAtKeys(regex);
-    response.retainWhere((element) => !element.metadata.isCached);
+    response.retainWhere((element) => !element.metadata!.isCached);
 
     // Instantiating a list of strings
     List<String> responseList = [];
@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen>
       // In addition to the object we are on, we add the name of the recipe,
       // the constant splitter to segregate the fields, and again, the value of
       // the recipe which includes; description, ingredients, and image URL
-      value = atKey.key + constant.splitter + value;
+      value = atKey.key! + constant.splitter + value;
 
       // Add current AtKey object to our list of strings defined earlier before
       // for loop

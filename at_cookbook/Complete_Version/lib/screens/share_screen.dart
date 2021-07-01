@@ -7,7 +7,7 @@ import '../service/client_sdk_service.dart';
 
 class ShareScreen extends StatefulWidget {
   static final String id = 'share';
-  final DishWidget dishWidget;
+  final DishWidget? dishWidget;
 
   ShareScreen({@required this.dishWidget});
 
@@ -16,7 +16,7 @@ class ShareScreen extends StatefulWidget {
 }
 
 class _ShareScreenState extends State<ShareScreen> {
-  String _otherAtSign;
+  String? _otherAtSign;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _ShareScreenState extends State<ShareScreen> {
                   RoundedButton(
                     text: 'Share Cuisine',
                     color: Color(0XFF7B3F00),
-                    path: () async => await _share(context, _otherAtSign),
+                    path: () async => await _share(context, _otherAtSign!),
                   )
                 ],
               ),
@@ -84,13 +84,13 @@ class _ShareScreenState extends State<ShareScreen> {
   _share(BuildContext context, String sharedWith) async {
     // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
-      String atSign = await ClientSdkService.getInstance().atsign;
+      String? atSign = await ClientSdkService.getInstance().atsign;
       // Create an AtKey object called lookup to act as
       // a buffer for the recipe itself
       AtKey lookup = AtKey()
         // Specifying the attributes of lookup, such as the title
         // of the recipe and the atsign we are authenticated in as
-        ..key = widget.dishWidget.title
+        ..key = widget.dishWidget!.title
         ..sharedWith = atSign;
 
       // getting the values of the recipe as a string to
@@ -101,15 +101,14 @@ class _ShareScreenState extends State<ShareScreen> {
       // as -1 to cache on the secondary server that has received the recipe.
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
-      var metadata = Metadata()
-        ..ttr = -1;
+      var metadata = Metadata()..ttr = -1;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()
         // Specifying the attributes of the AtKey object, such as the title of the
         // recipe, the metadata value we defined earlier, the atsign that will be
         // sending the recipe, and which atsign will be receiving the recipe
-        ..key = widget.dishWidget.title
+        ..key = widget.dishWidget!.title
         ..metadata = metadata
         ..sharedBy = atSign
         ..sharedWith = _otherAtSign;
