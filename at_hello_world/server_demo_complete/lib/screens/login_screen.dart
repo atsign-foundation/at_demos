@@ -63,7 +63,7 @@ class _LoginScreen extends State<LoginScreen> {
                           _logger.severe('Onboarding throws $error error');
                         },
                         nextScreen: HomeScreen(),
-                        appAPIKey: MixedConstants.devAPIKey,
+                        appAPIKey: MixedConstants.prodapikey,
                       );
                     },
                     child: Text(AppStrings.scan_qr)),
