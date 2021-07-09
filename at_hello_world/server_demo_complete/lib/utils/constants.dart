@@ -5,6 +5,7 @@ class MixedConstants {
   static const String NAMESPACE = 'at_hello_world';
   static const String TERMS_CONDITIONS = 'https://atsign.com/terms-conditions/';
   static const String PRIVACY_POLICY = 'https://atsign.com/privacy-policy/';
+  static String devAPIKey = '400b-806u-bzez-z42z-6a3p';
 }
 
 class AppStrings {
