@@ -8,7 +8,7 @@ import '../service/client_sdk_service.dart';
 class HomeScreen extends StatefulWidget {
   static const String id = 'home';
 
-  String atSign;
+  String? atSign;
 
   // const HomeScreen({
   //   Key key,
@@ -23,16 +23,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // TODO: Instantiate variables
   //update
-  String _key;
-  String _value;
+  String? _key;
+  String? _value;
 
   // lookup
   TextEditingController _lookupTextFieldController = TextEditingController();
-  String _lookupKey;
+  String? _lookupKey;
   String _lookupValue = '';
 
   // scan
-  List<String> _scanItems = List<String>();
+  List<String?> _scanItems = <String>[];
+  //List<String> _scanItems = List<String>();
 
   // service
   ClientSdkService _serverDemoService = ClientSdkService.getInstance();
@@ -133,16 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: DropdownButton<String>(
                         hint: Text('Select Key'),
                         // TODO: complete these parameters
-                        items: _scanItems.map((String key) {
+                        items: _scanItems.map((String? key) {
                           return DropdownMenuItem(
                             value: key, //key != null ? key : null,
-                            child: Text(key),
+                            child: Text(key!),
                           );
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
                             _lookupKey = value;
-                            _lookupTextFieldController.text = value;
+                            _lookupTextFieldController.text = value!;
                           });
                         },
                         value: _scanItems.length > 0 ? _scanItems[0] : '',
@@ -243,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
       AtKey pair = AtKey();
       pair.key = _key;
       pair.sharedWith = widget.atSign;
-      await _serverDemoService.put(pair, _value);
+      await _serverDemoService.put(pair, _value!);
     }
   }
 
@@ -255,7 +256,8 @@ class _HomeScreenState extends State<HomeScreen> {
       sharedBy: widget.atSign,
     );
     if (response.length > 0) {
-      List<String> scanList = response.map((atKey) => atKey.key).toList();
+      List<String?> scanList = response.map((atKey) => atKey.key).toList();
+      //List<String> scanList = response.map((atKey) => atKey.key).toList();
       setState(() => _scanItems = scanList);
     }
   }

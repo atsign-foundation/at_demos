@@ -1,5 +1,6 @@
 import 'dart:ui';
 // import 'package:newserverdemo/screens/home_screen.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../service/client_sdk_service.dart';
@@ -16,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreen extends State<LoginScreen> {
   bool showSpinner = false;
-  String atSign;
+  String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   var atClientPreference;
   var _logger = AtSignLogger('Plugin example app');
@@ -51,7 +52,7 @@ class _LoginScreen extends State<LoginScreen> {
                         appColor: Color.fromARGB(255, 240, 94, 62),
                         onboard: (value, atsign) {
                           atSign = atsign;
-                          ClientSdkService.getInstance().atsign = atsign;
+                          ClientSdkService.getInstance().atsign = atsign!;
                           ClientSdkService.getInstance().atClientServiceMap =
                               value;
                           ClientSdkService.getInstance()
@@ -62,6 +63,7 @@ class _LoginScreen extends State<LoginScreen> {
                           _logger.severe('Onboarding throws $error error');
                         },
                         nextScreen: HomeScreen(),
+                        appAPIKey: MixedConstants.prodapikey,
                       );
                     },
                     child: Text(AppStrings.scan_qr)),
@@ -72,17 +74,17 @@ class _LoginScreen extends State<LoginScreen> {
               TextButton(
                   onPressed: () async {
                     KeyChainManager _keyChainManager =
-                        KeyChainManager.getInstance();
+                    KeyChainManager.getInstance();
                     var _atSignsList =
-                        await _keyChainManager.getAtSignListFromKeychain();
+                    await _keyChainManager.getAtSignListFromKeychain();
                     _atSignsList?.forEach((element) {
                       _keyChainManager.deleteAtSignFromKeychain(element);
                     });
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
-                      'Keychain cleaned',
-                      textAlign: TextAlign.center,
-                    )));
+                          'Keychain cleaned',
+                          textAlign: TextAlign.center,
+                        )));
                   },
                   child: Text(
                     AppStrings.reset_keychain,
