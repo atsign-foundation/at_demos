@@ -221,8 +221,10 @@
       <excludeFolder url="file://$MODULE_DIR$/at_chats/incomplete_version/build" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Complete_Version/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Complete_Version/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Complete_Version/build" />
+      <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Incomplete_Version/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Incomplete_Version/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/Incomplete_Version/build" />
       <excludeFolder url="file://$MODULE_DIR$/at_cookbook/build" />
