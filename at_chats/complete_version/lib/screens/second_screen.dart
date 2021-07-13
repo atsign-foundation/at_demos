@@ -1,7 +1,5 @@
 import 'package:at_chat_flutter/at_chat_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import 'package:flutter/services.dart';
 import '../service/client_sdk_service.dart';
 import 'third_screen.dart';
 import '../utils/constants.dart';
@@ -16,13 +14,12 @@ class SecondScreen extends StatefulWidget {
 class _SecondScreenState extends State<SecondScreen> {
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   String activeAtSign = '';
-  GlobalKey<ScaffoldState> scaffoldKey;
-  List<String> atSigns;
-  String chatWithAtSign;
+  GlobalKey<ScaffoldState>? scaffoldKey;
+  List<String>?  atSigns;
+  String?  chatWithAtSign;
   bool showOptions = false;
   bool isEnabled = true;
 
-  TextEditingController _chatSignController = TextEditingController();
 
   @override
   void initState() {
@@ -147,7 +144,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         onPressed: () {
                           var _res = checkForValidAtsignAndSet();
                           if (_res == true)
-                            scaffoldKey.currentState
+                            scaffoldKey!.currentState!
                                 .showBottomSheet((context) => ChatScreen());
                         },
                         child: Container(
@@ -174,7 +171,7 @@ class _SecondScreenState extends State<SecondScreen> {
                       TextButton(
                         onPressed: () {
                           if (chatWithAtSign != null &&
-                              chatWithAtSign.trim() != '') {
+                              chatWithAtSign!.trim() != '') {
                             // TODO: Call function to set receiver's @sign
                             setAtsignToChatWith();
                             setState(() {
@@ -216,7 +213,7 @@ class _SecondScreenState extends State<SecondScreen> {
   }
 
   checkForValidAtsignAndSet() {
-    if (chatWithAtSign != null && chatWithAtSign.trim() != '') {
+    if (chatWithAtSign != null && chatWithAtSign!.trim() != '') {
       // TODO: Call function to set receiver's @sign
       setAtsignToChatWith();
       setState(() {
@@ -248,9 +245,9 @@ class _SecondScreenState extends State<SecondScreen> {
 
   // TODO: Write function to initialize the chatting service
   getAtSignAndInitializeChat() async {
-    String currentAtSign = await clientSdkService.getAtSign();
+    String? currentAtSign = await clientSdkService.getAtSign();
     setState(() {
-      activeAtSign = currentAtSign;
+      activeAtSign = currentAtSign!;
     });
     // List<String> allAtSigns = at_demo_data.allAtsigns;
     // allAtSigns.remove(activeAtSign);
@@ -258,7 +255,7 @@ class _SecondScreenState extends State<SecondScreen> {
     //   atSigns = allAtSigns;
     // });
     initializeChatService(
-        clientSdkService.atClientServiceInstance.atClient, activeAtSign,
+        clientSdkService.atClientServiceInstance!.atClient!, activeAtSign,
         rootDomain: MixedConstants.ROOT_DOMAIN);
   }
 

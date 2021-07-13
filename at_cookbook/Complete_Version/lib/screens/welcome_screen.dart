@@ -46,6 +46,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                 child: TextButton(
                     onPressed: () async {
                       Onboarding(
+                        appAPIKey: '477b-876u-bcez-c42z-6a3d',
                         context: context,
                         atClientPreference: atClientPreference,
                         domain: MixedConstants.ROOT_DOMAIN,

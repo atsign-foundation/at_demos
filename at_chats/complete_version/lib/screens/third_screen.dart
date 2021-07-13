@@ -15,8 +15,8 @@ class _ThirdScreenState extends State<ThirdScreen> {
       // TODO: Fill in the body parameter of the Scaffold
       body: ChatScreen(
         height: MediaQuery.of(context).size.height,
-        incomingMessageColor: Colors.blue[100],
-        outgoingMessageColor: Colors.green[100],
+        incomingMessageColor: Colors.blue[100]!,
+        outgoingMessageColor: Colors.green[100]!,
         isScreen: true,
       ),
     );
