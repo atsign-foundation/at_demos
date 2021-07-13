@@ -8,7 +8,7 @@ import 'dart:core';
 
 class OtherScreen extends StatelessWidget {
   static final String id = 'other';
-  String atSign = ClientSdkService.getInstance().atsign;
+  String? atSign = ClientSdkService.getInstance().atsign;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

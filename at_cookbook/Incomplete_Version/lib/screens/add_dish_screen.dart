@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 class DishScreen extends StatelessWidget {
   static final String id = "add_dish";
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  String _title;
-  String _ingredients;
-  String _description;
-  String _imageURL;
+  String? _title;
+  String? _ingredients;
+  String? _description;
+  String? _imageURL;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
@@ -56,7 +56,7 @@ class DishScreen extends StatelessWidget {
                           labelText: 'Name',
                         ),
                         validator: (value) =>
-                            value.isEmpty ? 'Specify name of the dish' : null,
+                            value!.isEmpty ? 'Specify name of the dish' : null,
                         onChanged: (value) {
                           _title = value;
                         },
@@ -69,7 +69,7 @@ class DishScreen extends StatelessWidget {
                         ),
                         maxLines: 3,
                         validator: (value) =>
-                            value.isEmpty ? 'Provide a description' : null,
+                            value!.isEmpty ? 'Provide a description' : null,
                         onChanged: (value) {
                           _description = value;
                         },
@@ -81,7 +81,7 @@ class DishScreen extends StatelessWidget {
                           labelText: 'Ingredients',
                         ),
                         validator: (value) =>
-                            value.isEmpty ? 'Add some ingredients' : null,
+                            value!.isEmpty ? 'Add some ingredients' : null,
                         onChanged: (value) {
                           _ingredients = value;
                         },
@@ -116,11 +116,11 @@ class DishScreen extends StatelessWidget {
   /// Add a key/value pair to the logged-in secondary server.
   _update(BuildContext context) async {
     //TODO: implement the _update func
-    final FormState form = _formKey.currentState;
-    if (form.validate()) {
-      String _values = _description + constant.splitter + _ingredients;
+    final FormState? form = _formKey.currentState;
+    if (form!.validate()) {
+      String _values = _description! + constant.splitter + _ingredients!;
       if (_imageURL != null) {
-        _values += constant.splitter + _imageURL;
+        _values += constant.splitter + _imageURL!;
       }
       AtKey atKey = AtKey();
       atKey.key = _title;

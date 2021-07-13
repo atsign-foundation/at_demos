@@ -3,15 +3,15 @@ description: An MVP for a chef's cookbook.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.0
-  at_client_mobile: ^1.0.0+8
-  at_server_status: ^0.1.0+1
-  path_provider: ^1.5.1
+  cupertino_icons: ^1.0.3
+  at_client_mobile: ^2.0.0
+  at_server_status: ^1.0.0
+  path_provider: ^2.0.2
   at_demo_data: ^0.0.3+1
   modal_progress_hud: any
 

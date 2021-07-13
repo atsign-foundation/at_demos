@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:chefcookbook/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +17,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreen extends State<OnboardingScreen> {
   bool showSpinner = false;
-  String atSign;
+  String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   var atClientPreference;
   var _logger = AtSignLogger('Plugin example app');
@@ -45,6 +46,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                 child: TextButton(
                     onPressed: () async {
                       Onboarding(
+                        appAPIKey: '477b-876u-bcez-c42z-6a3d',
                         context: context,
                         atClientPreference: atClientPreference,
                         domain: MixedConstants.ROOT_DOMAIN,

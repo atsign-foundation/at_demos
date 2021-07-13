@@ -8,7 +8,7 @@ import 'share_screen.dart';
 import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
-  final DishWidget dishWidget;
+  final DishWidget? dishWidget;
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   DishPage({@required this.dishWidget});
@@ -26,7 +26,7 @@ class DishPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          dishWidget.title,
+          dishWidget!.title!,
         ),
       ),
       body: SafeArea(
@@ -45,7 +45,7 @@ class DishPage extends StatelessWidget {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                dishWidget.title,
+                                dishWidget!.title!,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 36,
@@ -56,9 +56,10 @@ class DishPage extends StatelessWidget {
                             Expanded(
                               child: CircleAvatar(
                                 radius: 80.0,
-                                backgroundImage: dishWidget.imageURL == null
+                                backgroundImage: dishWidget!.imageURL == null
                                     ? AssetImage('assets/question_mark.png')
-                                    : NetworkImage(dishWidget.imageURL),
+                                    : NetworkImage(dishWidget!.imageURL!)
+                                        as ImageProvider,
                               ),
                             ),
                           ],
@@ -76,7 +77,7 @@ class DishPage extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              dishWidget.description,
+                              dishWidget!.description!,
                               style: TextStyle(
                                 color: Colors.black87,
                                 fontSize: 18,
@@ -90,7 +91,7 @@ class DishPage extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Ingredients: ' + dishWidget.ingredients,
+                              'Ingredients: ' + dishWidget!.ingredients!,
                               style: TextStyle(
                                 color: Color(0XFF7B3F00),
                                 fontSize: 18,
@@ -104,7 +105,7 @@ class DishPage extends StatelessWidget {
                 ),
               ),
             ),
-            dishWidget.prevScreen == HomeScreen.id
+            dishWidget!.prevScreen == HomeScreen.id
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -144,11 +145,11 @@ class DishPage extends StatelessWidget {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String atSign = ClientSdkService.getInstance().getAtSign().toString();
     // If the recipe has a name
-    if (dishWidget.title != null) {
+    if (dishWidget!.title != null) {
       // Instantiate an AtKey object and specify its attributes by passing
       // the name of the recipe and the authenticated atsign
       AtKey atKey = AtKey();
-      atKey.key = dishWidget.title;
+      atKey.key = dishWidget!.title;
       atKey.sharedWith = atSign;
 
       // Utilizing the delete method, after passing the recipe, the object
@@ -159,7 +160,7 @@ class DishPage extends StatelessWidget {
     // without the capability of returning to the screen of the recipe that was
     // just deleted as this would cause a major error
     Navigator.of(context).pushNamedAndRemoveUntil(
-        dishWidget.prevScreen, (Route<dynamic> route) => false,
+        dishWidget!.prevScreen!, (Route<dynamic> route) => false,
         arguments: true);
   }
 }

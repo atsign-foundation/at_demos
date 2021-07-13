@@ -17,24 +17,24 @@ class ServerDemoService {
     return _singleton;
   }
 
-  AtClientService atClientServiceInstance;
-  AtClientImpl atClientInstance;
-  Map<String, AtClientService> atClientServiceMap = {};
-  String _atsign;
+  AtClientService? atClientServiceInstance;
+  AtClientImpl? atClientInstance;
+  Map<String?, AtClientService> atClientServiceMap = {};
+  String? _atsign;
 
   sync() async {
-    await _getAtClientForAtsign().getSyncManager().sync();
+    await _getAtClientForAtsign()!.getSyncManager()!.sync();
   }
 
-  AtClientImpl _getAtClientForAtsign({String atsign}) {
+  AtClientImpl? _getAtClientForAtsign({String? atsign}) {
     atsign ??= _atsign;
     if (atClientServiceMap.containsKey(atsign)) {
-      return atClientServiceMap[atsign].atClient;
+      return atClientServiceMap[atsign]!.atClient;
     }
     return null;
   }
 
-  AtClientService _getClientServiceForAtSign(String atsign) {
+  AtClientService? _getClientServiceForAtSign(String atsign) {
     if (atsign == null) {}
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
@@ -43,7 +43,8 @@ class ServerDemoService {
     return service;
   }
 
-  Future<AtClientPreference> _getAtClientPreference({String cramSecret}) async {
+  Future<AtClientPreference> _getAtClientPreference(
+      {String? cramSecret}) async {
     final appDocumentDirectory =
         await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
@@ -64,13 +65,13 @@ class ServerDemoService {
     return status.serverStatus;
   }
 
-  Future<bool> onboard({String atsign}) async {
-    atClientServiceInstance = _getClientServiceForAtSign(atsign);
+  Future<bool> onboard({String? atsign}) async {
+    atClientServiceInstance = _getClientServiceForAtSign(atsign!);
     var atClientPreference = await _getAtClientPreference();
-    var result = await atClientServiceInstance.onboard(
-        atClientPreference: atClientPreference, atsign: atsign);
-    _atsign = atsign == null ? await this.getAtSign() : atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
+    var result = await atClientServiceInstance!
+        .onboard(atClientPreference: atClientPreference, atsign: atsign);
+    _atsign = (atsign == null ? await this.getAtSign() : atsign)!;
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
     sync();
     return result;
   }
@@ -78,9 +79,9 @@ class ServerDemoService {
   ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
   Future<bool> authenticate(
     String atsign, {
-    String privateKey,
-    String jsonData,
-    String decryptKey,
+    String? privateKey,
+    String? jsonData,
+    String? decryptKey,
   }) async {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
@@ -88,26 +89,28 @@ class ServerDemoService {
       throw atsignStatus;
     }
     var atClientPreference = await _getAtClientPreference();
-    var result = await atClientServiceInstance.authenticate(
+    var result = await atClientServiceInstance!.authenticate(
         atsign, atClientPreference,
         jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
     await sync();
     return result;
   }
 
   String encryptKeyPairs(String atsign) {
     var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+        at_demo_data.pkamPublicKeyMap[atsign]!,
+        at_demo_data.aesKeyMap[atsign]!);
     var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
+        at_demo_data.pkamPrivateKeyMap[atsign]!,
+        at_demo_data.aesKeyMap[atsign]!);
     var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPublicKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
+        at_demo_data.encryptionPublicKeyMap[atsign]!,
+        at_demo_data.aesKeyMap[atsign]!);
     var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-        at_demo_data.encryptionPrivateKeyMap[atsign],
-        at_demo_data.aesKeyMap[atsign]);
+        at_demo_data.encryptionPrivateKeyMap[atsign]!,
+        at_demo_data.aesKeyMap[atsign]!);
     var aesEncryptedKeys = {};
     aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
         encryptedPkamPublicKey;
@@ -126,32 +129,32 @@ class ServerDemoService {
   }
 
   Future<String> get(AtKey atKey) async {
-    var result = await _getAtClientForAtsign().get(atKey);
+    var result = await _getAtClientForAtsign()!.get(atKey);
     return result.value;
   }
 
   Future<bool> put(AtKey atKey, String value) async {
-    return await _getAtClientForAtsign().put(atKey, value);
+    return await _getAtClientForAtsign()!.put(atKey, value);
   }
 
   Future<bool> delete(AtKey atKey) async {
-    return await _getAtClientForAtsign().delete(atKey);
+    return await _getAtClientForAtsign()!.delete(atKey);
   }
 
-  Future<List<AtKey>> getAtKeys({String regex, String sharedBy}) async {
+  Future<List<AtKey>> getAtKeys({String? regex, String? sharedBy}) async {
     regex ??= conf.namespace;
-    return await _getAtClientForAtsign()
+    return await _getAtClientForAtsign()!
         .getAtKeys(regex: regex, sharedBy: sharedBy);
   }
 
   Future<bool> notify(
       AtKey atKey, String value, OperationEnum operation) async {
-    return await _getAtClientForAtsign().notify(atKey, value, operation);
+    return await _getAtClientForAtsign()!.notify(atKey, value, operation);
   }
 
   ///Fetches atsign from device keychain.
-  Future<String> getAtSign() async {
-    return await atClientServiceInstance.getAtSign();
+  Future<String?> getAtSign() async {
+    return await atClientServiceInstance!.getAtSign();
   }
 }
 
