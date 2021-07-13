@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:at_chat_flutter_example/screens/second_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/widgets.dart';
 import '../service/client_sdk_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
@@ -16,7 +17,7 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
-  String atSign;
+  String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   var atClientPreference;
   var _logger = AtSignLogger('Plugin example app');
@@ -50,6 +51,7 @@ class _FirstScreen extends State<FirstScreen> {
                     onPressed: () async {
                       // TODO: Add in at_onboarding_flutter
                       Onboarding(
+                        appAPIKey: AppStrings.API_KEY,
                         context: context,
                         atClientPreference: atClientPreference,
                         domain: MixedConstants.ROOT_DOMAIN,

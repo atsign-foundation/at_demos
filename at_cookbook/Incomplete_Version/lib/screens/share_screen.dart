@@ -9,7 +9,7 @@ import '../service.dart';
 
 class ShareScreen extends StatefulWidget {
   static final String id = 'share';
-  final DishWidget dishWidget;
+  final DishWidget? dishWidget;
 
   ShareScreen({@required this.dishWidget});
 
@@ -18,8 +18,8 @@ class ShareScreen extends StatefulWidget {
 }
 
 class _ShareScreenState extends State<ShareScreen> {
-  String _otherAtSign;
-  List<String> _atSigns;
+  String? _otherAtSign;
+  List<String>? _atSigns;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   initList() {
@@ -80,7 +80,7 @@ class _ShareScreenState extends State<ShareScreen> {
                         dropdownColor: Color(0XFFF1EBE5),
                         elevation: 16,
                         style: TextStyle(fontSize: 20.0, color: Colors.black87),
-                        onChanged: (String newValue) {
+                        onChanged: (String? newValue) {
                           setState(() {
                             _otherAtSign = newValue;
                           });
@@ -88,7 +88,7 @@ class _ShareScreenState extends State<ShareScreen> {
                         value: _otherAtSign != null ? _otherAtSign : null,
                         items: _atSigns == null
                             ? []
-                            : _atSigns
+                            : _atSigns!
                                 .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -104,7 +104,7 @@ class _ShareScreenState extends State<ShareScreen> {
                   RoundedButton(
                     text: 'Share Cuisine',
                     color: Color(0XFF7B3F00),
-                    path: () async => await _share(context, _otherAtSign),
+                    path: () async => await _share(context, _otherAtSign!),
                   )
                 ],
               ),
@@ -119,12 +119,12 @@ class _ShareScreenState extends State<ShareScreen> {
     //TODO: implement the _share func
     if (sharedWith != null) {
       AtKey lookup = AtKey();
-      lookup.key = widget.dishWidget.title;
+      lookup.key = widget.dishWidget!.title;
       lookup.sharedWith = atSign;
       String value = await _serverDemoService.get(lookup);
       var metadata = Metadata()..ttr = -1;
       AtKey atKey = AtKey();
-      atKey.key = widget.dishWidget.title;
+      atKey.key = widget.dishWidget!.title;
       atKey.metadata = metadata;
       atKey.sharedBy = atSign;
       atKey.sharedWith = _otherAtSign;

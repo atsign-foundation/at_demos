@@ -9,10 +9,10 @@ import 'package:chefcookbook/service/client_sdk_service.dart';
 class DishScreen extends StatelessWidget {
   static final String id = "add_dish";
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  String _title;
-  String _ingredients;
-  String _description;
-  String _imageURL;
+  String? _title;
+  String? _ingredients;
+  String? _description;
+  String? _imageURL;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class DishScreen extends StatelessWidget {
                           labelText: 'Name',
                         ),
                         validator: (value) =>
-                            value.isEmpty ? 'Specify name of the dish' : null,
+                            value!.isEmpty ? 'Specify name of the dish' : null,
                         onChanged: (value) {
                           _title = value;
                         },
@@ -67,7 +67,7 @@ class DishScreen extends StatelessWidget {
                         ),
                         maxLines: 3,
                         validator: (value) =>
-                            value.isEmpty ? 'Provide a description' : null,
+                            value!.isEmpty ? 'Provide a description' : null,
                         onChanged: (value) {
                           _description = value;
                         },
@@ -79,7 +79,7 @@ class DishScreen extends StatelessWidget {
                           labelText: 'Ingredients',
                         ),
                         validator: (value) =>
-                            value.isEmpty ? 'Add some ingredients' : null,
+                            value!.isEmpty ? 'Add some ingredients' : null,
                         onChanged: (value) {
                           _ingredients = value;
                         },
@@ -115,23 +115,23 @@ class DishScreen extends StatelessWidget {
   // Passing multiple key values to be cached in a secondary server
   _update(BuildContext context) async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    String atSign = clientSdkService.atsign;
+    String? atSign = clientSdkService.atsign;
     // If all of the necessary text form fields have been properly
     // populated
-    final FormState form = _formKey.currentState;
-    if (form.validate()) {
+    final FormState? form = _formKey.currentState;
+    if (form!.validate()) {
       // The information inputted by the authenticated atsign
       // Each field's value is separated by a constant.splitter
       // which is defined as @_@ so when a recipe is shared and received by
       // another secondary server, the at_cookbook app will understand how to
       // distribute the values correctly into their respectful fields
-      String _values = _description + constant.splitter + _ingredients;
+      String _values = _description! + constant.splitter + _ingredients!;
 
       // If the authenticated atsign did not provide an image URL,
       // we automatically add the image with the question mark as
       // an image is required to be passed through
       if (_imageURL != null) {
-        _values += constant.splitter + _imageURL;
+        _values += constant.splitter + _imageURL!;
       }
 
       // Instantiating an AtKey object and specifying its attributes with the

@@ -14,7 +14,7 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
-  String atSign;
+  String? atSign;
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   @override
@@ -78,7 +78,7 @@ class _FirstScreen extends State<FirstScreen> {
                             height: 2,
                             color: Colors.deepOrange,
                           ),
-                          onChanged: (String newValue) {
+                          onChanged: (String? newValue) {
                             setState(() {
                               atSign = newValue;
                             });
@@ -133,7 +133,7 @@ class _FirstScreen extends State<FirstScreen> {
       setState(() {
         showSpinner = true;
       });
-      String jsonData = clientSdkService.encryptKeyPairs(atSign);
+      String jsonData = clientSdkService.encryptKeyPairs(atSign!);
       clientSdkService.onboard(atsign: atSign).then((value) async {
         Navigator.pushReplacementNamed(context, SecondScreen.id);
       }).catchError((error) async {
