@@ -13,10 +13,10 @@ class SecondScreen extends StatefulWidget {
 
 class _SecondScreenState extends State<SecondScreen> {
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
-  String activeAtSign = '';
-  GlobalKey<ScaffoldState> scaffoldKey;
-  List<String> atSigns;
-  String chatWithAtSign;
+  String? activeAtSign = '';
+  GlobalKey<ScaffoldState>? scaffoldKey;
+  List<String>? atSigns;
+  String? chatWithAtSign;
   bool showOptions = false;
   bool isEnabled = true;
 
@@ -71,16 +71,16 @@ class _SecondScreenState extends State<SecondScreen> {
                   height: 2,
                   color: Colors.deepPurpleAccent,
                 ),
-                onChanged: isEnabled ? (String newValue) {
+                onChanged: isEnabled ? (String? newValue) {
                   setState(() {
                     chatWithAtSign = newValue;
                     isEnabled = false;
                   });
                 } : null,
-                disabledHint: chatWithAtSign != null ? Text(chatWithAtSign)
+                disabledHint: chatWithAtSign != null ? Text(chatWithAtSign!)
                     : null,
                 value: chatWithAtSign != null ? chatWithAtSign : null,
-                items: atSigns == null ? null : atSigns
+                items: atSigns == null ? null : atSigns!
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -97,7 +97,7 @@ class _SecondScreenState extends State<SecondScreen> {
                 SizedBox(height: 20.0),
                 FlatButton(
                   onPressed: () {
-                    scaffoldKey.currentState
+                    scaffoldKey!.currentState!
                         .showBottomSheet((context) => ChatScreen());
                   },
                   child: Container(
@@ -122,7 +122,7 @@ class _SecondScreenState extends State<SecondScreen> {
                 FlatButton(
                   onPressed: () {
                     if (chatWithAtSign != null &&
-                        chatWithAtSign.trim() != '') {
+                        chatWithAtSign!.trim() != '') {
                       // TODO: Call function to set receiver's @sign
                       setAtsignToChatWith();
                       setState(() {
@@ -164,7 +164,7 @@ class _SecondScreenState extends State<SecondScreen> {
   }
   // TODO: Write function to initialize the chatting service
   getAtSignAndInitializeChat() async {
-    String currentAtSign = await clientSdkService.getAtSign();
+    String? currentAtSign = await clientSdkService.getAtSign();
     setState(() {
       activeAtSign = currentAtSign;
     });
@@ -174,7 +174,7 @@ class _SecondScreenState extends State<SecondScreen> {
       atSigns = allAtSigns;
     });
     initializeChatService(
-      clientSdkService.atClientServiceInstance.atClient, currentAtSign,
+      clientSdkService.atClientServiceInstance!.atClient!, currentAtSign!,
       rootDomain: MixedConstants.ROOT_DOMAIN);
   }
   // TODO: Write function that determines whom you are chatting with

@@ -51,7 +51,7 @@ class _FirstScreen extends State<FirstScreen> {
                     onPressed: () async {
                       // TODO: Add in at_onboarding_flutter
                       Onboarding(
-                        appAPIKey:'477b-876u-bcez-c42z-6a3d' ,
+                        appAPIKey: AppStrings.API_KEY,
                         context: context,
                         atClientPreference: atClientPreference,
                         domain: MixedConstants.ROOT_DOMAIN,
