@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 String root = 'root.atsign.org';
 int rootPort = 64;
-String namespace = 'cookbook';
+String namespace = 'at_cookbook';
 bool debug = true;
 bool verbose = true;
 String splitter = '@_@';
