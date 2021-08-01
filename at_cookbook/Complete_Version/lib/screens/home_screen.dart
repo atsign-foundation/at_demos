@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  final List<DishWidget> sortedWidgets = [];
+  final List<DishWidget> sortedWidgets = <DishWidget>[];
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   String atSign = ClientSdkService.getInstance().getAtSign().toString();
 
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
           child: Column(
             children: <Widget>[
               Expanded(
-                  child: FutureBuilder(
+                  child: FutureBuilder<List<String>>(
                 future: _scan(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
                     // Returns a list of attributes for each dish.
                     List<String> dishAttributes = snapshot.data;
                     print(snapshot.data);
-                    List<DishWidget> dishWidgets = [];
+                    List<DishWidget> dishWidgets = <DishWidget>[];
                     for (String attributes in dishAttributes) {
                       // Populate a DishWidget based on the attributes string.
                       List<String> attributesList =
@@ -68,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen>
                       child: ListView(
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text(
+                                  const Text(
                                     'My Dishes',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.keyboard_arrow_right,
                                     ),
                                     onPressed: () {
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen>
                     return Text(
                         'An error has occurred: ' + snapshot.error.toString());
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                 },
               )),
@@ -111,18 +111,18 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Color(0XFF7B3F00),
+        child: const Icon(Icons.add),
+        backgroundColor: const Color(0XFF7B3F00),
         onPressed: () {
           Navigator.pushNamed(context, DishScreen.id)
-              .then((value) => setState(() {}));
+              .then((Object? value) => setState(() {}));
         },
       ),
     );
   }
 
   /// Scan for [AtKey] objects with the correct regex.
-  _scan() async {
+  Future<List<String>> _scan() async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to house each cached recipe from
     // the secondary server of the authenticated atsign
@@ -136,20 +136,20 @@ class _HomeScreenState extends State<HomeScreen>
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier
     response = await clientSdkService.getAtKeys(regex);
-    response.retainWhere((element) => !element.metadata!.isCached);
+    response.retainWhere((AtKey element) => !element.metadata!.isCached);
 
     // Instantiating a list of strings
-    List<String> responseList = [];
+    List<String> responseList = <String>[];
 
     // Looping through every instance of an AtKey object
     for (AtKey atKey in response) {
       // We get the current AtKey object that we are looping on
-      String value = await _lookup(atKey);
+      String? value = await _lookup(atKey);
 
       // In addition to the object we are on, we add the name of the recipe,
       // the constant splitter to segregate the fields, and again, the value of
       // the recipe which includes; description, ingredients, and image URL
-      value = atKey.key! + constant.splitter + value;
+      value = atKey.key! + constant.splitter + value!;
 
       // Add current AtKey object to our list of strings defined earlier before
       // for loop
@@ -162,13 +162,13 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   /// Look up a value corresponding to an [AtKey] instance.
-  Future<String> _lookup(AtKey atKey) async {
+  Future<dynamic> _lookup(AtKey? atKey) async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // If an AtKey object exists
     if (atKey != null) {
       // Simply get the AtKey object utilizing the serverDemoService's get method
-      return await clientSdkService.get(atKey);
+      return clientSdkService.get(atKey);
     }
-    return '';
+    return null;
   }
 }

@@ -9,7 +9,10 @@ import 'package:at_utils/at_logger.dart';
 import '../utils/constants.dart';
 import 'home_screen.dart';
 
+/// User Login screen
 class LoginScreen extends StatefulWidget {
+  /// Login screen id.
+  /// This helps to navigate from one screen to another screen.
   static final String id = 'LoginScreen';
   @override
   _LoginScreen createState() => _LoginScreen();
@@ -18,80 +21,96 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreen extends State<LoginScreen> {
   bool showSpinner = false;
   String? atSign;
-  // ClientSdkService clientSdkService = ClientSdkService.getInstance();
-  var atClientPreference;
-  var _logger = AtSignLogger('Plugin example app');
+
+  /// atClientPreference is a late variable cause
+  /// it is being fetched and assigned in the [initState] method.
+  late AtClientPreference atClientPreference;
+  final AtSignLogger _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
     ClientSdkService.getInstance()
         .getAtClientPreference()
-        .then((value) => atClientPreference = value);
+        .then((AtClientPreference value) => atClientPreference = value);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.deepOrange,
-          title: Text('Home'),
-        ),
-        body: Builder(
-          builder: (context) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: TextButton(
-                    onPressed: () async {
-                      Onboarding(
-                        context: context,
-                        atClientPreference: atClientPreference,
-                        domain: MixedConstants.ROOT_DOMAIN,
-                        appColor: Color.fromARGB(255, 240, 94, 62),
-                        onboard: (value, atsign) {
-                          atSign = atsign;
-                          ClientSdkService.getInstance().atsign = atsign!;
-                          ClientSdkService.getInstance().atClientServiceMap =
-                              value;
-                          ClientSdkService.getInstance()
-                              .atClientServiceInstance = value[atsign];
-                          _logger.finer('Successfully onboarded $atsign');
-                        },
-                        onError: (error) {
-                          _logger.severe('Onboarding throws $error error');
-                        },
-                        nextScreen: HomeScreen(),
-                        appAPIKey: MixedConstants.prodapikey,
-                      );
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        title: const Text('Home'),
+      ),
+      body: Builder(
+        builder: (BuildContext context) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  Onboarding(
+                    context: context,
+                    atClientPreference: atClientPreference,
+                    domain: MixedConstants.ROOT_DOMAIN,
+                    appColor: const Color(0xFFF05E3E),
+                    onboard:
+                        (Map<String?, AtClientService> value, String? atsign) {
+                      atSign = atsign;
+                      ClientSdkService.getInstance().atsign = atsign!;
+                      ClientSdkService.getInstance().atClientServiceMap = value;
+                      ClientSdkService.getInstance().atClientServiceInstance =
+                          value[atsign];
+                      _logger.finer('Successfully onboarded $atsign');
                     },
-                    child: Text(AppStrings.scan_qr)),
+                    onError: (Object? error) {
+                      _logger.severe('Onboarding throws $error error');
+                    },
+                    nextScreen: HomeScreen(),
+                    appAPIKey: MixedConstants.prodAPIKey,
+                  );
+                },
+                child: const Text(AppStrings.scanQr),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                  onPressed: () async {
-                    KeyChainManager _keyChainManager =
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () async {
+                KeyChainManager _keyChainManager =
                     KeyChainManager.getInstance();
-                    var _atSignsList =
+                List<String>? _atSignsList =
                     await _keyChainManager.getAtSignListFromKeychain();
-                    _atSignsList?.forEach((element) {
-                      _keyChainManager.deleteAtSignFromKeychain(element);
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                          'Keychain cleaned',
-                          textAlign: TextAlign.center,
-                        )));
-                  },
-                  child: Text(
-                    AppStrings.reset_keychain,
-                    style: TextStyle(color: Colors.blueGrey),
-                  ))
-            ],
-          ),
+                if (_atSignsList == null || _atSignsList.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        '@sign list is empty.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                } else {
+                  for (String element in _atSignsList) {
+                    await _keyChainManager.deleteAtSignFromKeychain(element);
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Keychain cleaned',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text(
+                AppStrings.resetKeychain,
+                style: TextStyle(color: Colors.blueGrey),
+              ),
+            ),
+          ],
         ),
       ),
     );

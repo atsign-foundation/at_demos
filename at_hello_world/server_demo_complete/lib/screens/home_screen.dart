@@ -2,55 +2,50 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:at_commons/at_commons.dart';
-import '../utils/constants.dart';
 import '../service/client_sdk_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String id = 'home';
-
-  String? atSign;
-
-  // const HomeScreen({
-  //   Key key,
-  //   @required this.atSign,
-  // })  : assert(atSign != null),
-  //       super(key: key);
-
+  static final String id = 'home';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // TODO: Instantiate variables
-  //update
+  String? atSign;
+  // TODO: Instantiate variables update
+  final TextEditingController? _keyController = TextEditingController();
+  final TextEditingController? _valueController = TextEditingController();
   String? _key;
   String? _value;
 
   // lookup
-  TextEditingController _lookupTextFieldController = TextEditingController();
+  final TextEditingController _lookupTextFieldController =
+      TextEditingController();
   String? _lookupKey;
-  String _lookupValue = '';
+  String? _lookupValue;
 
   // scan
   List<String?> _scanItems = <String>[];
-  //List<String> _scanItems = List<String>();
 
   // service
-  ClientSdkService _serverDemoService = ClientSdkService.getInstance();
+  final ClientSdkService _serverDemoService = ClientSdkService.getInstance();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Home',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             //update
             Flexible(
               fit: FlexFit.loose,
@@ -64,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.create, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.create, size: 70),
+                      title: const Text(
                         'Update ',
                         style: TextStyle(
                           color: Colors.black,
@@ -75,32 +70,41 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       subtitle: ListView(
                         shrinkWrap: true,
-                        children: [
+                        children: <Widget>[
                           TextField(
-                            decoration: InputDecoration(hintText: 'Enter Key'),
+                            decoration:
+                                const InputDecoration(hintText: 'Enter Key'),
                             // TODO: Assign the key
-                            onChanged: (key) {
+                            onChanged: (String key) {
                               _key = key;
                             },
+                            controller: _keyController,
                           ),
                           TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Value',
                             ),
                             // TODO: Assign the value
-                            onChanged: (value) {
+                            onChanged: (String value) {
                               _value = value;
                             },
+                            controller: _valueController,
                           )
                         ],
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(10),
-                      child: FlatButton(
-                        child: Text('Update'),
-                        color: Colors.deepOrange,
-                        textColor: Colors.white,
+                      margin: const EdgeInsets.all(10),
+                      child: TextButton(
+                        child: const Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.deepOrange,
+                        ),
                         // TODO: Complete the onPressed function
                         onPressed: _update,
                       ),
@@ -122,8 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.scanner, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.scanner, size: 70),
+                      title: const Text(
                         'Scan',
                         style: TextStyle(
                           color: Colors.black,
@@ -132,29 +136,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       subtitle: DropdownButton<String>(
-                        hint: Text('Select Key'),
+                        hint: const Text('Select Key'),
                         // TODO: complete these parameters
                         items: _scanItems.map((String? key) {
-                          return DropdownMenuItem(
+                          return DropdownMenuItem<String>(
                             value: key, //key != null ? key : null,
                             child: Text(key!),
                           );
                         }).toList(),
-                        onChanged: (value) {
+                        onChanged: (String? value) {
                           setState(() {
                             _lookupKey = value;
                             _lookupTextFieldController.text = value!;
                           });
                         },
-                        value: _scanItems.length > 0 ? _scanItems[0] : '',
+                        value: _lookupTextFieldController.text,
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(20),
-                      child: FlatButton(
-                        child: Text('Scan'),
+                      margin: const EdgeInsets.all(20),
+                      child: MaterialButton(
+                        child: const Text(
+                          'Scan',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                         color: Colors.deepOrange,
-                        textColor: Colors.white,
                         // TODO: Complete the onPressed function
                         onPressed: _scan,
                       ),
@@ -176,8 +184,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.list, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.list, size: 70),
+                      title: const Text(
                         'LookUp',
                         style: TextStyle(
                           color: Colors.black,
@@ -188,25 +196,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           TextField(
-                            decoration: InputDecoration(hintText: 'Enter Key'),
+                            decoration:
+                                const InputDecoration(hintText: 'Enter Key'),
                             // TODO: Assign the controller
                             controller: _lookupTextFieldController,
                           ),
-                          SizedBox(height: 20),
-                          Text(
-                            "Lookup Result : ",
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Lookup Result : ',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           // TODO: assign a String to the Text widget
                           Text(
-                            '$_lookupValue',
-                            style: TextStyle(
+                            _lookupValue ?? '',
+                            style: const TextStyle(
                               color: Colors.teal,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -216,11 +225,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(20),
-                      child: FlatButton(
-                        child: Text('Lookup'),
-                        color: Colors.deepOrange,
-                        textColor: Colors.white,
+                      margin: const EdgeInsets.all(20),
+                      child: TextButton(
+                        child: const Text(
+                          'Lookup',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepOrange),
                         // TODO: complete the onPressed function
                         onPressed: _lookup,
                       ),
@@ -239,39 +253,47 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Create instance of an AtKey and pass that
   /// into the put() method with the corresponding
   /// _value string.
-  _update() async {
+  Future<void> _update() async {
     if (_key != null && _value != null) {
       AtKey pair = AtKey();
       pair.key = _key;
-      pair.sharedWith = widget.atSign;
+      pair.sharedWith = atSign;
       await _serverDemoService.put(pair, _value!);
     }
   }
 
-  /// getAtKeys() will retrieve keys shared by [atSign].
+  /// getAtKeys() will retrieve keys shared by [widget.atSign].
   /// Strip any meta data away from the retrieves keys. Store
   /// the keys into [_scanItems].
-  _scan() async {
+  Future<void> _scan() async {
     List<AtKey> response = await _serverDemoService.getAtKeys(
-      sharedBy: widget.atSign,
+      sharedBy: atSign,
     );
-    if (response.length > 0) {
-      List<String?> scanList = response.map((atKey) => atKey.key).toList();
-      //List<String> scanList = response.map((atKey) => atKey.key).toList();
-      setState(() => _scanItems = scanList);
+    if (response.isNotEmpty) {
+      List<String?> scanList =
+          response.map((AtKey atKey) => atKey.key).toList();
+      _keyController!.clear();
+      _valueController!.clear();
+      setState(() {
+        _scanItems = scanList;
+      });
     }
   }
 
   /// Create instance of an AtKey and call get() on it.
-  _lookup() async {
-    if (_lookupKey != null) {
+  Future<void> _lookup() async {
+    if (_lookupKey == null) {
+      setState(() => _lookupValue = 'The key is empty.');
+    } else {
       AtKey lookup = AtKey();
       lookup.key = _lookupKey;
-      lookup.sharedWith = widget.atSign;
+      lookup.sharedWith = atSign;
       String response = await _serverDemoService.get(lookup);
-      if (response != null) {
-        setState(() => _lookupValue = response);
-      }
+      _keyController!.clear();
+      _valueController!.clear();
+      setState(() {
+        _lookupValue = response;
+      });
     }
   }
 }

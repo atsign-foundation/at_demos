@@ -4,7 +4,7 @@ import 'package:chefcookbook/screens/other_screen.dart';
 import 'package:chefcookbook/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() async {
+Future<void> main() async {
   runApp(MyApp());
 }
 
@@ -15,31 +15,31 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: MaterialColor(
+          primarySwatch: const MaterialColor(
             0XFF7B3F00,
-            const <int, Color>{
-              50: const Color(0XFF7B3F00),
-              100: const Color(0XFF7B3F00),
-              200: const Color(0XFF7B3F00),
-              300: const Color(0XFF7B3F00),
-              400: const Color(0XFF7B3F00),
-              500: const Color(0XFF7B3F00),
-              600: const Color(0XFF7B3F00),
-              700: const Color(0XFF7B3F00),
-              800: const Color(0XFF7B3F00),
-              900: const Color(0XFF7B3F00),
+            <int, Color>{
+              50: Color(0XFF7B3F00),
+              100: Color(0XFF7B3F00),
+              200: Color(0XFF7B3F00),
+              300: Color(0XFF7B3F00),
+              400: Color(0XFF7B3F00),
+              500: Color(0XFF7B3F00),
+              600: Color(0XFF7B3F00),
+              700: Color(0XFF7B3F00),
+              800: Color(0XFF7B3F00),
+              900: Color(0XFF7B3F00),
             },
           ),
-          scaffoldBackgroundColor: Color(0XFFF1EBE5),
-          accentColor: Color(0XFF7B3F00),
+          scaffoldBackgroundColor: const Color(0XFFF1EBE5),
+          accentColor: const Color(0XFF7B3F00),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: OnboardingScreen.id,
-        routes: {
-          OnboardingScreen.id: (context) => OnboardingScreen(),
-          HomeScreen.id: (context) => HomeScreen(),
-          DishScreen.id: (context) => DishScreen(),
-          OtherScreen.id: (context) => OtherScreen(),
+        routes: <String, Widget Function(BuildContext)>{
+          OnboardingScreen.id: (BuildContext context) => OnboardingScreen(),
+          HomeScreen.id: (BuildContext context) => HomeScreen(),
+          DishScreen.id: (BuildContext context) => DishScreen(),
+          OtherScreen.id: (BuildContext context) => OtherScreen(),
         });
   }
 }

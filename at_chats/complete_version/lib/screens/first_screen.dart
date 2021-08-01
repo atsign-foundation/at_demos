@@ -19,14 +19,14 @@ class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
   String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
-  var atClientPreference;
-  var _logger = AtSignLogger('Plugin example app');
+  late AtClientPreference atClientPreference;
+  final AtSignLogger _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
     ClientSdkService.getInstance().onboard();
     ClientSdkService.getInstance()
         .getAtClientPreference()
-        .then((value) => atClientPreference = value);
+        .then((AtClientPreference value) => atClientPreference = value);
     super.initState();
   }
 
@@ -37,59 +37,77 @@ class _FirstScreen extends State<FirstScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.deepOrange,
-          title: Text('Home'),
+          title: const Text('Home'),
         ),
         // appBar: AppBar(
         //   title: const Text('Plugin example app'),
         // ),
         body: Builder(
-          builder: (context) => Column(
+          builder: (BuildContext context) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               Center(
                 child: TextButton(
-                    onPressed: () async {
-                      // TODO: Add in at_onboarding_flutter
-                      Onboarding(
-                        appAPIKey: AppStrings.API_KEY,
-                        context: context,
-                        atClientPreference: atClientPreference,
-                        domain: MixedConstants.ROOT_DOMAIN,
-                        appColor: Color.fromARGB(255, 240, 94, 62),
-                        onboard: (value, atsign) {
-                          ClientSdkService.getInstance().atClientServiceMap =
-                              value;
-                          ClientSdkService.getInstance()
-                              .atClientServiceInstance = value[atsign];
-                          _logger.finer('Successfully onboarded $atsign');
-                        },
-                        onError: (error) {
-                          _logger.severe('Onboarding throws $error error');
-                        },
-                        nextScreen: SecondScreen(),
-                      );
-                    },
-                    child: Text(AppStrings.scan_qr)),
+                  onPressed: () async {
+                    // TODO: Add in at_onboarding_flutter
+                    Onboarding(
+                      appAPIKey: AppStrings.API_KEY,
+                      context: context,
+                      atClientPreference: atClientPreference,
+                      domain: MixedConstants.ROOT_DOMAIN,
+                      appColor: const Color.fromARGB(255, 240, 94, 62),
+                      onboard: (Map<String?, AtClientService> value,
+                          String? atsign) {
+                        ClientSdkService.getInstance().atClientServiceMap =
+                            value;
+                        ClientSdkService.getInstance().atClientServiceInstance =
+                            value[atsign];
+                        _logger.finer('Successfully onboarded $atsign');
+                      },
+                      onError: (Object? error) {
+                        _logger.severe(
+                            'Onboarding throws ${error.toString()} error');
+                      },
+                      nextScreen: SecondScreen(),
+                    );
+                  },
+                  child: const Text(AppStrings.scan_qr),
+                ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextButton(
                   onPressed: () async {
                     KeyChainManager _keyChainManager =
                         KeyChainManager.getInstance();
-                    var _atSignsList =
+                    List<String>? _atSignsList =
                         await _keyChainManager.getAtSignListFromKeychain();
-                    _atSignsList?.forEach((element) {
-                      _keyChainManager.deleteAtSignFromKeychain(element);
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                      'Keychain cleaned',
-                      textAlign: TextAlign.center,
-                    )));
+                    if (_atSignsList == null || _atSignsList.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            '@sign list is empty.',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    } else {
+                      for (String element in _atSignsList) {
+                        await _keyChainManager
+                            .deleteAtSignFromKeychain(element);
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Keychain cleaned',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
                   },
-                  child: Text(
+                  child: const Text(
                     AppStrings.reset_keychain,
                     style: TextStyle(color: Colors.blueGrey),
                   ))

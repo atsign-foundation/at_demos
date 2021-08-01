@@ -7,7 +7,7 @@ bool debug = true;
 bool verbose = true;
 String splitter = '@_@';
 
-const kTextFieldDecoration = InputDecoration(
+const InputDecoration kTextFieldDecoration = InputDecoration(
   hintText: 'Enter a value',
   fillColor: Color(0XFFF1EBE5),
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),

@@ -3,7 +3,9 @@ import 'package:newserverdemo/screens/home_screen.dart';
 import 'package:newserverdemo/screens/login_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,9 +18,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: LoginScreen.id,
-      routes: {
-        LoginScreen.id: (context) => LoginScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
+      routes: <String, Widget Function(BuildContext)>{
+        LoginScreen.id: (BuildContext context) => LoginScreen(),
+        HomeScreen.id: (BuildContext context) => HomeScreen(),
       },
     );
   }

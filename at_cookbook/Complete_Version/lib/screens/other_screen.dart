@@ -8,7 +8,7 @@ import 'dart:core';
 
 class OtherScreen extends StatelessWidget {
   static final String id = 'other';
-  String? atSign = ClientSdkService.getInstance().atsign;
+  final String? atSign = ClientSdkService.getInstance().atsign;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,18 +22,18 @@ class OtherScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: FutureBuilder(
+                child: FutureBuilder<Map<String?, String>>(
                   future: _getSharedRecipes(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       // Returns a map that has a dish's title as its key and
                       // a dish's attributes for its value.
-                      Map dishAttributes = snapshot.data;
+                      Map<String?, String?> dishAttributes = snapshot.data;
                       print(snapshot.data);
-                      List<DishWidget> dishWidgets = [];
-                      dishAttributes.forEach((key, value) {
-                        List<String> valueArr = value.split(constant.splitter);
+                      List<DishWidget> dishWidgets = <DishWidget>[];
+                      dishAttributes.forEach((String? key, String? value) {
+                        List<String> valueArr = value!.split(constant.splitter);
                         dishWidgets.add(
                           DishWidget(
                             title: key,
@@ -48,10 +48,10 @@ class OtherScreen extends StatelessWidget {
                         child: ListView(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Row(children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.keyboard_arrow_left,
                                   ),
                                   onPressed: () {
@@ -59,7 +59,7 @@ class OtherScreen extends StatelessWidget {
                                         context, HomeScreen.id);
                                   },
                                 ),
-                                Text(
+                                const Text(
                                   'Shared Dishes',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -79,7 +79,7 @@ class OtherScreen extends StatelessWidget {
                       return Text('An error has occurred: ' +
                           snapshot.error.toString());
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   },
                 ),
@@ -92,7 +92,7 @@ class OtherScreen extends StatelessWidget {
   }
 
   /// Returns the list of Shared Recipes keys.
-  _getSharedKeys() async {
+  Future<List<AtKey>> _getSharedKeys() async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
     //await ClientSdkService.getInstance().t_sync();
@@ -100,19 +100,19 @@ class OtherScreen extends StatelessWidget {
     // namespace of cookbook from the authenticated atsign's secondary server
     // This regex is also specified to get any recipe that has been shared with
     // the currently authenticated atsign
-    return await clientSdkService.getAtKeys('cached.*cookbook');
+    return clientSdkService.getAtKeys('cached.*cookbook');
     // Took regex: 'cached.*cookbook' out of getatkeys
   }
 
   /// Returns a map of Shared recipes key and values.
-  _getSharedRecipes() async {
+  Future<Map<String?, String>> _getSharedRecipes() async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to store all of the retrieved
     // recipes that have been shared with the current authenticated atsign
     List<AtKey> sharedKeysList = await _getSharedKeys();
 
     // Instantiate a map for the recipes
-    Map recipesMap = {};
+    Map<String?, String> recipesMap = <String?, String>{};
 
     // Instantiate an AtKey object
     AtKey atKey = AtKey();
@@ -124,7 +124,7 @@ class OtherScreen extends StatelessWidget {
 
     // Specifying the values (i.e. the description, ingredients, and image URL)
     // of each recipe in the list of recipes
-    sharedKeysList.forEach((element) async {
+    for (AtKey element in sharedKeysList) {
       atKey
         ..key = element.key
         ..sharedWith = element.sharedWith
@@ -132,16 +132,17 @@ class OtherScreen extends StatelessWidget {
         ..metadata = metadata;
 
       // Get the recipe
-      String response = await clientSdkService.get(atKey);
+      String? response = await clientSdkService.get(atKey);
 
       // Adds all key/value pairs of [other] to this map.
       // If a key of [other] is already in this map, its value is overwritten.
       // The operation is equivalent to doing `this[key] = value` for each key
       // and associated value in other. It iterates over [other], which must
       // therefore not change during the iteration.
-      if (response != null)
-        recipesMap.putIfAbsent('${element.key}', () => response);
-    });
+      if (response != null) {
+        recipesMap.putIfAbsent(element.key, () => response);
+      }
+    }
     // Return the entire map of shared recipes
     return recipesMap;
   }
