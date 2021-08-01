@@ -18,6 +18,7 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
   String? atSign;
+  bool isOnboarding = true;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   late AtClientPreference atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
@@ -49,27 +50,29 @@ class _FirstScreen extends State<FirstScreen> {
               Center(
                 child: TextButton(
                   onPressed: () async {
-                    // TODO: Add in at_onboarding_flutter
-                    Onboarding(
-                      appAPIKey: AppStrings.API_KEY,
-                      context: context,
-                      atClientPreference: atClientPreference,
-                      domain: MixedConstants.ROOT_DOMAIN,
-                      appColor: const Color.fromARGB(255, 240, 94, 62),
-                      onboard: (Map<String?, AtClientService> value,
-                          String? atsign) {
-                        ClientSdkService.getInstance().atClientServiceMap =
-                            value;
-                        ClientSdkService.getInstance().atClientServiceInstance =
-                            value[atsign];
-                        _logger.finer('Successfully onboarded $atsign');
-                      },
-                      onError: (Object? error) {
-                        _logger.severe(
-                            'Onboarding throws ${error.toString()} error');
-                      },
-                      nextScreen: SecondScreen(),
-                    );
+                    if (isOnboarding) {
+                      setState(() => isOnboarding = false);
+                      Onboarding(
+                        appAPIKey: AppStrings.API_KEY,
+                        context: context,
+                        atClientPreference: atClientPreference,
+                        domain: MixedConstants.ROOT_DOMAIN,
+                        appColor: const Color.fromARGB(255, 240, 94, 62),
+                        onboard: (Map<String?, AtClientService> value,
+                            String? atsign) {
+                          ClientSdkService.getInstance().atClientServiceMap =
+                              value;
+                          ClientSdkService.getInstance()
+                              .atClientServiceInstance = value[atsign];
+                          _logger.finer('Successfully onboarded $atsign');
+                        },
+                        onError: (Object? error) {
+                          _logger.severe(
+                              'Onboarding throws ${error.toString()} error');
+                        },
+                        nextScreen: SecondScreen(),
+                      );
+                    }
                   },
                   child: const Text(AppStrings.scan_qr),
                 ),

@@ -17,6 +17,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreen extends State<OnboardingScreen> {
   bool showSpinner = false;
+  bool isOnboarding = true;
   String? atSign;
   // ClientSdkService clientSdkService = ClientSdkService.getInstance();
   AtClientPreference? atClientPreference;
@@ -45,26 +46,29 @@ class _OnboardingScreen extends State<OnboardingScreen> {
               Center(
                 child: TextButton(
                     onPressed: () async {
-                      Onboarding(
-                        appAPIKey: '477b-876u-bcez-c42z-6a3d',
-                        context: context,
-                        atClientPreference: atClientPreference!,
-                        domain: MixedConstants.ROOT_DOMAIN,
-                        appColor: const Color.fromARGB(255, 240, 94, 62),
-                        onboard: (Map<String?, AtClientService> value,
-                            String? atsign) {
-                          ClientSdkService.getInstance().atsign = atsign;
-                          ClientSdkService.getInstance().atClientServiceMap =
-                              value;
-                          ClientSdkService.getInstance()
-                              .atClientServiceInstance = value[atsign];
-                          _logger.finer('Successfully onboarded $atsign');
-                        },
-                        onError: (Object? error) {
-                          _logger.severe('Onboarding throws $error error');
-                        },
-                        nextScreen: HomeScreen(),
-                      );
+                      if (isOnboarding) {
+                        setState(() => isOnboarding = false);
+                        Onboarding(
+                          appAPIKey: AppStrings.API_KEY,
+                          context: context,
+                          atClientPreference: atClientPreference!,
+                          domain: MixedConstants.ROOT_DOMAIN,
+                          appColor: const Color.fromARGB(255, 240, 94, 62),
+                          onboard: (Map<String?, AtClientService> value,
+                              String? atsign) {
+                            ClientSdkService.getInstance().atsign = atsign;
+                            ClientSdkService.getInstance().atClientServiceMap =
+                                value;
+                            ClientSdkService.getInstance()
+                                .atClientServiceInstance = value[atsign];
+                            _logger.finer('Successfully onboarded $atsign');
+                          },
+                          onError: (Object? error) {
+                            _logger.severe('Onboarding throws $error error');
+                          },
+                          nextScreen: HomeScreen(),
+                        );
+                      }
                     },
                     child: const Text(AppStrings.scan_qr)),
               ),
