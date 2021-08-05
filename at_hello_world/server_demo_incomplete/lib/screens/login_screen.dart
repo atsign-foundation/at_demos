@@ -16,13 +16,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String atSign;
   bool showSpinner = false;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Login',
           style: TextStyle(
             fontSize: 20,
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 50.0,
                           ),
                         ),
-                        title: Text(
+                        title: const Text(
                           'Log In',
                           style: TextStyle(
                             color: Colors.black,
@@ -65,11 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         subtitle: DropdownButton<String>(
-                          hint: Text('\tPick an @sign'),
-                          icon: Icon(Icons.keyboard_arrow_down),
+                          hint: const Text('\tPick an @sign'),
+                          icon: const Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20.0,
                             color: Colors.black87,
                           ),
@@ -93,11 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.all(20),
-                        child: FlatButton(
-                          child: Text('Login'),
-                          color: Colors.blueAccent,
-                          textColor: Colors.white,
+                        margin: const EdgeInsets.all(20),
+                        child: TextButton(
+                          child: const Text('Login'),
                           onPressed: _login,
                         ),
                       ),
@@ -105,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 280),
+              const SizedBox(height: 280),
               Container(
                 height: 50,
                 child: FittedBox(
@@ -122,22 +120,20 @@ class _LoginScreenState extends State<LoginScreen> {
   // TODO: Write _login method
   /// Use onboard() to authenticate via PKAM public/private keys. If
   /// onboard() fails, use authenticate() to place keys.
-  _login() async {
+  Future<void> _login() async {
     if (atSign != null) {
       FocusScope.of(context).unfocus();
-      setState(() {
-        showSpinner = true;
-      });
+      setState(() => showSpinner = true);
       String jsonData = _serverDemoService.encryptKeyPairs(atSign);
-      _serverDemoService.onboard(atsign: atSign).then((value) async {
-        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+      await _serverDemoService.onboard(atsign: atSign).then((value) async {
+        await Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
       }).catchError((error) async {
         await _serverDemoService.authenticate(
           atSign,
           jsonData: jsonData,
           decryptKey: at_demo_data.aesKeyMap[atSign]
         );
-        Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
+        await Navigator.pushReplacementNamed(context, HomeScreen.id, arguments: atSign);
       });
       // TODO: Complete the rest of the if statement!
     }

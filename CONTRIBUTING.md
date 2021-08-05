@@ -28,7 +28,7 @@ describe.
 
 ### Prerequisites
 
-   ``` sh
+   ```bash
    # show how to install the tools needed to work with the code here
    ```
 
@@ -41,7 +41,7 @@ To prepare your dedicated GitHub repository:
 2. Clone *your forked repository* (e.g., `git clone git@github.com:yourname/at_demos`)
 3. Set your remotes as follows:
 
-   ```sh
+   ```bash
    cd at_demos
    git remote add upstream git@github.com:atsign-foundation/at_demos.git
    git remote set-url upstream --push DISABLED
@@ -49,7 +49,7 @@ To prepare your dedicated GitHub repository:
 
    Running `git remote -v` should give something similar to:
 
-   ```text
+   ```bash
    origin  git@github.com:yourname/at_demos.git (fetch)
    origin  git@github.com:yourname/at_demos.git (push)
    upstream        git@github.com:atsign-foundation/at_demos.git (fetch)
@@ -64,13 +64,13 @@ To prepare your dedicated GitHub repository:
 
 1. Fetch latest changes from main repository:
 
-   ```sh
+   ```bash
    git fetch upstream
    ```
 
 1. Reset your fork's `trunk` branch to exactly match upstream `trunk`:
 
-   ```sh
+   ```bash
    git checkout trunk
    git reset --hard upstream/trunk
    git push --force
@@ -80,7 +80,7 @@ To prepare your dedicated GitHub repository:
    the commands above will completely overwrite any local changes in `trunk` content.
 1. Edit, edit, edit, and commit your changes to Git:
 
-   ```sh
+   ```bash
    # edit, edit, edit
    git add *
    git commit -m 'A useful commit message'
@@ -89,7 +89,7 @@ To prepare your dedicated GitHub repository:
 
 1. How to run tests:
 
-   ``` sh
+   ```bash
    # explain tests here
    ```
 

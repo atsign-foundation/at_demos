@@ -6,8 +6,10 @@ import 'package:at_server_status/at_server_status.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import '../utils/constants.dart' as conf;
+import 'package:at_utils/at_logger.dart';
 
 class ClientSdkService {
+  final AtSignLogger _logger = AtSignLogger('Plugin example app');
   static final ClientSdkService _singleton = ClientSdkService._internal();
 
   ClientSdkService._internal();
@@ -23,10 +25,10 @@ class ClientSdkService {
   String? atsign;
 
   void _reset() {
-    atClientServiceInstance;
-    atClientInstance;
+    atClientServiceInstance = null;
+    atClientInstance = null;
     atClientServiceMap = <String?, AtClientService>{};
-    atsign;
+    atsign = null;
   }
 
   Future<void> _sync() async =>
@@ -69,53 +71,54 @@ class ClientSdkService {
     return status.serverStatus;
   }
 
-  ///Returns `false` if fails in authenticating [atsign] with [cramSecret]/[privateKey].
-  //
-
-  // String encryptKeyPairs(String atsign) {
-  //   var encryptedPkamPublicKey = EncryptionUtil.encryptValue(
-  //       at_demo_data.pkamPublicKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-  //   var encryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-  //       at_demo_data.pkamPrivateKeyMap[atsign], at_demo_data.aesKeyMap[atsign]);
-  //   var aesencryptedPkamPublicKey = EncryptionUtil.encryptValue(
-  //       at_demo_data.encryptionPublicKeyMap[atsign],
-  //       at_demo_data.aesKeyMap[atsign]);
-  //   var aesencryptedPkamPrivateKey = EncryptionUtil.encryptValue(
-  //       at_demo_data.encryptionPrivateKeyMap[atsign],
-  //       at_demo_data.aesKeyMap[atsign]);
-  //   var aesEncryptedKeys = {};
-  //   aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PUBLIC_KEY] =
-  //       encryptedPkamPublicKey;
-  //
-  //   aesEncryptedKeys[BackupKeyConstants.AES_PKAM_PRIVATE_KEY] =
-  //       encryptedPkamPrivateKey;
-  //
-  //   aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PUBLIC_KEY] =
-  //       aesencryptedPkamPublicKey;
-  //
-  //   aesEncryptedKeys[BackupKeyConstants.AES_ENCRYPTION_PRIVATE_KEY] =
-  //       aesencryptedPkamPrivateKey;
-  //
-  //   var keyString = jsonEncode(Map<String, String>.from(aesEncryptedKeys));
-  //   return keyString;
-  // }
-
-  Future<String> get(AtKey atKey) async {
-    AtValue result = await _getAtClientForAtsign()!.get(atKey);
-    return result.value;
+  /// Gets [AtValue] and returns [AtValue.value].
+  /// It may be null when it throws an exception.
+  Future<String?> get(AtKey atKey) async {
+    try {
+      AtValue? result = await _getAtClientForAtsign()!.get(atKey);
+      return result.value;
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return null;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return null;
+    }
   }
 
-  Future<bool> put(AtKey atKey, String value) async =>
-      _getAtClientForAtsign()!.put(atKey, value);
+  /// Creates or updates [AtKey.key] with it's
+  /// [AtValue.value] and returns Future bool value.
+  Future<bool> put(AtKey atKey, String value) async {
+    try {
+      return _getAtClientForAtsign()!.put(atKey, value);
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return false;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return false;
+    }
+  }
 
-  Future<bool> delete(AtKey atKey) async =>
-      _getAtClientForAtsign()!.delete(atKey);
+  /// Deletes [AtKey.atKey], so that it's values also
+  /// will be deleted and returns Future bool value.
+  Future<bool> delete(AtKey atKey) async {
+    try {
+      return _getAtClientForAtsign()!.delete(atKey);
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return false;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return false;
+    }
+  }
 
   Future<List<AtKey>> getAtKeys({String? regex, String? sharedBy}) async =>
       _getAtClientForAtsign()!
           .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
 
-  ///Fetches atsign from device keychain.
+  /// Fetches atsign from device keychain.
   Future<String?> getAtSign() async => atClientServiceInstance!.getAtSign();
 
   Future<void> deleteAtSignFromKeyChain() async {

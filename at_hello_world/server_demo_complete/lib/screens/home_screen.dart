@@ -12,14 +12,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? atSign;
-  // TODO: Instantiate variables update
-  final TextEditingController? _keyController = TextEditingController();
-  final TextEditingController? _valueController = TextEditingController();
   String? _key;
   String? _value;
 
   // lookup
-  final TextEditingController _lookupTextFieldController =
+  final TextEditingController? _lookupTextFieldController =
       TextEditingController();
   String? _lookupKey;
   String? _lookupValue;
@@ -74,21 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           TextField(
                             decoration:
                                 const InputDecoration(hintText: 'Enter Key'),
-                            // TODO: Assign the key
                             onChanged: (String key) {
                               _key = key;
                             },
-                            controller: _keyController,
                           ),
                           TextField(
                             decoration: const InputDecoration(
                               hintText: 'Enter Value',
                             ),
-                            // TODO: Assign the value
                             onChanged: (String value) {
                               _value = value;
                             },
-                            controller: _valueController,
                           )
                         ],
                       ),
@@ -105,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.deepOrange,
                         ),
-                        // TODO: Complete the onPressed function
                         onPressed: _update,
                       ),
                     ),
@@ -137,7 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       subtitle: DropdownButton<String>(
                         hint: const Text('Select Key'),
-                        // TODO: complete these parameters
                         items: _scanItems.map((String? key) {
                           return DropdownMenuItem<String>(
                             value: key, //key != null ? key : null,
@@ -147,23 +138,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         onChanged: (String? value) {
                           setState(() {
                             _lookupKey = value;
-                            _lookupTextFieldController.text = value!;
+                            _lookupTextFieldController!.text = value!;
                           });
                         },
-                        value: _lookupTextFieldController.text,
+                        value: _scanItems.isNotEmpty
+                            ? _lookupTextFieldController!.text.isEmpty
+                                ? _scanItems[0]
+                                : _lookupTextFieldController!.text
+                            : '',
                       ),
                     ),
                     Container(
                       margin: const EdgeInsets.all(20),
-                      child: MaterialButton(
+                      child: TextButton(
                         child: const Text(
                           'Scan',
                           style: TextStyle(
                             color: Colors.white,
                           ),
                         ),
-                        color: Colors.deepOrange,
-                        // TODO: Complete the onPressed function
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepOrange),
                         onPressed: _scan,
                       ),
                     ),
@@ -200,7 +195,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           TextField(
                             decoration:
                                 const InputDecoration(hintText: 'Enter Key'),
-                            // TODO: Assign the controller
                             controller: _lookupTextFieldController,
                           ),
                           const SizedBox(height: 20),
@@ -212,7 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          // TODO: assign a String to the Text widget
                           Text(
                             _lookupValue ?? '',
                             style: const TextStyle(
@@ -235,7 +228,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.deepOrange),
-                        // TODO: complete the onPressed function
                         onPressed: _lookup,
                       ),
                     ),
@@ -249,7 +241,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // TODO: add the _scan, _update, and _lookup methods
   /// Create instance of an AtKey and pass that
   /// into the put() method with the corresponding
   /// _value string.
@@ -272,11 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.isNotEmpty) {
       List<String?> scanList =
           response.map((AtKey atKey) => atKey.key).toList();
-      _keyController!.clear();
-      _valueController!.clear();
-      setState(() {
-        _scanItems = scanList;
-      });
+      setState(() => _scanItems = scanList);
     }
   }
 
@@ -288,12 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
       AtKey lookup = AtKey();
       lookup.key = _lookupKey;
       lookup.sharedWith = atSign;
-      String response = await _serverDemoService.get(lookup);
-      _keyController!.clear();
-      _valueController!.clear();
-      setState(() {
-        _lookupValue = response;
-      });
+      String? response = await _serverDemoService.get(lookup);
+      setState(() => _lookupValue = response);
     }
   }
 }

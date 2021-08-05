@@ -21,17 +21,18 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreen extends State<LoginScreen> {
   bool showSpinner = false;
   String? atSign;
-  bool isOnboarding = true;
-
-  /// atClientPreference is a late variable cause
-  /// it is being fetched and assigned in the [initState] method.
-  late AtClientPreference atClientPreference;
+  ClientSdkService clientSDKInstance = ClientSdkService.getInstance();
+  AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
+  Future<void> call() async {
+    await clientSDKInstance
+        .getAtClientPreference()
+        .then((AtClientPreference? value) => atClientPreference = value);
+  }
+
   @override
   void initState() {
-    ClientSdkService.getInstance()
-        .getAtClientPreference()
-        .then((AtClientPreference value) => atClientPreference = value);
+    call();
     super.initState();
   }
 
@@ -50,30 +51,25 @@ class _LoginScreen extends State<LoginScreen> {
             Center(
               child: TextButton(
                 onPressed: () async {
-                  if (isOnboarding) {
-                    setState(() => isOnboarding = false);
-                    Onboarding(
-                      context: context,
-                      atClientPreference: atClientPreference,
-                      domain: MixedConstants.ROOT_DOMAIN,
-                      appColor: const Color(0xFFF05E3E),
-                      onboard: (Map<String?, AtClientService> value,
-                          String? atsign) {
-                        atSign = atsign;
-                        ClientSdkService.getInstance().atsign = atsign!;
-                        ClientSdkService.getInstance().atClientServiceMap =
-                            value;
-                        ClientSdkService.getInstance().atClientServiceInstance =
-                            value[atsign];
-                        _logger.finer('Successfully onboarded $atsign');
-                      },
-                      onError: (Object? error) {
-                        _logger.severe('Onboarding throws $error error');
-                      },
-                      nextScreen: HomeScreen(),
-                      appAPIKey: MixedConstants.prodAPIKey,
-                    );
-                  }
+                  Onboarding(
+                    context: context,
+                    atClientPreference: atClientPreference!,
+                    domain: MixedConstants.ROOT_DOMAIN,
+                    appColor: const Color(0xFFF05E3E),
+                    onboard:
+                        (Map<String?, AtClientService> value, String? atsign) {
+                      atSign = atsign;
+                      clientSDKInstance.atsign = atsign!;
+                      clientSDKInstance.atClientServiceMap = value;
+                      clientSDKInstance.atClientServiceInstance = value[atsign];
+                      _logger.finer('Successfully onboarded $atsign');
+                    },
+                    onError: (Object? error) {
+                      _logger.severe('Onboarding throws $error error');
+                    },
+                    nextScreen: HomeScreen(),
+                    appAPIKey: MixedConstants.prodAPIKey,
+                  );
                 },
                 child: const Text(AppStrings.scanQr),
               ),

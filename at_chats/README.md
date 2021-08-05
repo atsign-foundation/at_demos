@@ -9,7 +9,7 @@ this for testing, debugging, or just trying out the app!
 
 ## Demo
 
-<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_chats/assets/at_chats_demo.gif" width=300>
+<img src="https://raw.githubusercontent.com/atsign-foundation/at_demos/master/at_chats/assets/at_chats_demo.gif" width=300>
 
 A brief demo of this at_chats app. It currently offers one-to-one messaging!
 
