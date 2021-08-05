@@ -1,3 +1,7 @@
+<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
+
+### Now for a little internet optimism
+
 # at_demo_data
 This library contains data that can be used for demo apps and testing.
 
