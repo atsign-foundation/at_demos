@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget? dishWidget;
-  ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  final ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   DishPage({@required this.dishWidget});
 
-  convertStringsToWidgets(List<dynamic> ingredients) {
-    List<Text> ingredientList = [];
+  List<Text> convertStringsToWidgets(List<dynamic> ingredients) {
+    List<Text> ingredientList = <Text>[];
     for (dynamic ingredient in ingredients) {
       ingredientList.add(Text((ingredient.toString())));
     }
@@ -35,7 +35,7 @@ class DishPage extends StatelessWidget {
             Expanded(
               flex: 6,
               child: Padding(
-                padding: EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(5.0),
                 child: Card(
                   color: Colors.white70,
                   child: Center(
@@ -46,7 +46,7 @@ class DishPage extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 dishWidget!.title!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 36,
                                   color: Colors.black87,
@@ -57,14 +57,15 @@ class DishPage extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 80.0,
                                 backgroundImage: dishWidget!.imageURL == null
-                                    ? AssetImage('assets/question_mark.png')
+                                    ? const AssetImage(
+                                        'assets/question_mark.png')
                                     : NetworkImage(dishWidget!.imageURL!)
                                         as ImageProvider,
                               ),
                             ),
                           ],
                         ),
-                        Padding(
+                        const Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: Divider(
@@ -73,12 +74,12 @@ class DishPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               dishWidget!.description!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -87,12 +88,12 @@ class DishPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Ingredients: ' + dishWidget!.ingredients!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Color(0XFF7B3F00),
                                 fontSize: 18,
                               ),
@@ -121,14 +122,15 @@ class DishPage extends StatelessWidget {
                         path: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ShareScreen(dishWidget: this.dishWidget)),
+                            MaterialPageRoute<dynamic>(
+                              builder: (BuildContext context) =>
+                                  ShareScreen(dishWidget: dishWidget),
+                            ),
                           );
                         },
                         text: 'Share',
                         width: 180,
-                        color: Color(0XFF7B3F00),
+                        color: const Color(0XFF7B3F00),
                       ),
                     ],
                   )
@@ -141,7 +143,7 @@ class DishPage extends StatelessWidget {
 
   /// Deletes a key/value pair in the secondary server of
   /// the logged-in @sign.
-  _delete(BuildContext context) async {
+  Future<void> _delete(BuildContext context) async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String atSign = ClientSdkService.getInstance().getAtSign().toString();
     // If the recipe has a name
@@ -159,7 +161,7 @@ class DishPage extends StatelessWidget {
     // This will force the authenticated atsign back to the previous screen
     // without the capability of returning to the screen of the recipe that was
     // just deleted as this would cause a major error
-    Navigator.of(context).pushNamedAndRemoveUntil(
+    await Navigator.of(context).pushNamedAndRemoveUntil(
         dishWidget!.prevScreen!, (Route<dynamic> route) => false,
         arguments: true);
   }

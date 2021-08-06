@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: FirstScreen.id,
-      routes: {
-        FirstScreen.id: (context) => FirstScreen(),
-        SecondScreen.id: (context) => SecondScreen(),
-        ThirdScreen.id: (context) => ThirdScreen(),
+      routes: <String, Widget Function(BuildContext)>{
+        FirstScreen.id: (BuildContext context) => FirstScreen(),
+        SecondScreen.id: (BuildContext context) => SecondScreen(),
+        ThirdScreen.id: (BuildContext context) => ThirdScreen(),
       },
     );
   }

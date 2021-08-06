@@ -7,8 +7,8 @@ import 'package:chefcookbook/service/client_sdk_service.dart';
 
 // ignore: must_be_immutable
 class DishScreen extends StatelessWidget {
-  static final String id = "add_dish";
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  static final String id = 'add_dish';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _title;
   String? _ingredients;
   String? _description;
@@ -18,7 +18,7 @@ class DishScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a dish'),
+        title: const Text('Add a dish'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -26,14 +26,14 @@ class DishScreen extends StatelessWidget {
             child: Form(
                 key: _formKey,
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
-                    children: [
-                      SizedBox(
+                    children: <Widget>[
+                      const SizedBox(
                         height: 10,
                       ),
                       Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Hero(
                           tag: 'choice chef',
                           child: SizedBox(
@@ -44,62 +44,62 @@ class DishScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Name of the dish',
                           labelText: 'Name',
                         ),
-                        validator: (value) =>
+                        validator: (String? value) =>
                             value!.isEmpty ? 'Specify name of the dish' : null,
-                        onChanged: (value) {
+                        onChanged: (String value) {
                           _title = value;
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Short description for your dish',
                           labelText: 'Description',
                         ),
                         maxLines: 3,
-                        validator: (value) =>
+                        validator: (String? value) =>
                             value!.isEmpty ? 'Provide a description' : null,
-                        onChanged: (value) {
+                        onChanged: (String value) {
                           _description = value;
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Separate ingredients by commas',
                           labelText: 'Ingredients',
                         ),
-                        validator: (value) =>
+                        validator: (String? value) =>
                             value!.isEmpty ? 'Add some ingredients' : null,
-                        onChanged: (value) {
+                        onChanged: (String value) {
                           _ingredients = value;
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Optional: link to an image of the cuisine',
                           labelText: 'Image',
                         ),
-                        onChanged: (value) {
+                        onChanged: (String value) {
                           _imageURL = value;
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
                       RoundedButton(
                         text: 'Add Cuisine',
-                        color: Color(0XFF7B3F00),
+                        color: const Color(0XFF7B3F00),
                         path: () => _update(context),
                       )
                     ],
@@ -113,12 +113,12 @@ class DishScreen extends StatelessWidget {
 
   // Add a key/value pair to the logged-in secondary server.
   // Passing multiple key values to be cached in a secondary server
-  _update(BuildContext context) async {
+  Future<void> _update(BuildContext context) async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String? atSign = clientSdkService.atsign;
     // If all of the necessary text form fields have been properly
     // populated
-    final FormState? form = _formKey.currentState;
+    FormState? form = _formKey.currentState;
     if (form!.validate()) {
       // The information inputted by the authenticated atsign
       // Each field's value is separated by a constant.splitter
@@ -143,11 +143,20 @@ class DishScreen extends StatelessWidget {
       // Utilizing the put method to take the AtKey object and its values
       // and 'put' it on the secondary server of the authenticated atsign
       // (the atsign currently logged in)
-      await clientSdkService.put(atKey, _values);
+      bool successPut = await clientSdkService.put(atKey, _values);
 
       // This will take the authenticated atsign from the add_dish page back
       // to the home screen
-      Navigator.pop(context);
+      successPut
+          ? Navigator.pop(context)
+          : ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Failed to put data',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
     } else {
       // If the authenticated atsign has not properly populated the
       // text form fields, this statement will be printed

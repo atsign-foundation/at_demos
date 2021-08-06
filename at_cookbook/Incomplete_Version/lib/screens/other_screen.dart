@@ -49,10 +49,10 @@ class OtherScreen extends StatelessWidget {
                         child: ListView(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Row(children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.keyboard_arrow_left,
                                   ),
                                   onPressed: () {
@@ -60,7 +60,7 @@ class OtherScreen extends StatelessWidget {
                                         context, HomeScreen.id);
                                   },
                                 ),
-                                Text(
+                                const Text(
                                   'Shared Dishes',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class OtherScreen extends StatelessWidget {
                       return Text('An error has occurred: ' +
                           snapshot.error.toString());
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   },
                 ),
@@ -93,17 +93,17 @@ class OtherScreen extends StatelessWidget {
   }
 
   /// Returns the list of Shared Recipes keys.
-  _getSharedKeys() async {
+  Future<List<AtKey>> _getSharedKeys() async {
     //TODO: _getSharedKeys func
     await _serverDemoService.sync();
-    return await _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
+    return _serverDemoService.getAtKeys(regex: 'cached.*cookbook');
   }
 
   /// Returns a map of Shared recipes key and values.
-  _getSharedRecipes() async {
+  Future<Map<String, dynamic>> _getSharedRecipes() async {
     //TODO: implement _getSharedRecipes() func
     List<AtKey> sharedKeysList = await _getSharedKeys();
-    Map recipesMap = {};
+    Map<String, dynamic> recipesMap = <String, dynamic>{};
     AtKey atKey = AtKey();
     Metadata metadata = Metadata()..isCached = true;
     sharedKeysList.forEach((element) async {

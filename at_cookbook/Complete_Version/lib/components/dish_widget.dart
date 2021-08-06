@@ -20,31 +20,31 @@ class DishWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Card(
         child: ListTile(
           leading: SizedBox(
-            child: this.imageURL == null
+            child: imageURL == null
                 ? Image.asset('assets/question_mark.png')
-                : Image.network(this.imageURL!),
+                : Image.network(imageURL!),
             height: 80,
             width: 80,
           ),
           title: Text(
-            this.title!,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            title!,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            this.description!.length >= 20
-                ? this.description!.substring(0, 20) + '...'
-                : this.description!.substring(0, this.description!.length),
-            style: TextStyle(color: Colors.grey),
+            description!.length >= 20
+                ? description!.substring(0, 20) + '...'
+                : description!.substring(0, description!.length),
+            style: const TextStyle(color: Colors.grey),
           ),
           trailing: IconButton(
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) {
+                  MaterialPageRoute<dynamic>(builder: (BuildContext context) {
                 return DishPage(dishWidget: this);
               }));
             },

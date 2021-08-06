@@ -27,22 +27,22 @@ class _ShareScreenState extends State<ShareScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0XFF7B3F00),
-        title: Text('Add a dish'),
+        backgroundColor: const Color(0XFF7B3F00),
+        title: const Text('Add a dish'),
       ),
-      backgroundColor: Color(0XFFF1EBE5),
+      backgroundColor: const Color(0XFFF1EBE5),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
-                children: [
-                  SizedBox(
+                children: <Widget>[
+                  const SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Hero(
                       tag: 'choice chef',
                       child: SizedBox(
@@ -53,23 +53,23 @@ class _ShareScreenState extends State<ShareScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'Enter an @sign to chat with'),
-                    onChanged: (value) {
+                    onChanged: (String value) {
                       _otherAtSign = value;
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   RoundedButton(
                     text: 'Share Cuisine',
-                    color: Color(0XFF7B3F00),
-                    path: () async => await _share(context, _otherAtSign!),
+                    color: const Color(0XFF7B3F00),
+                    path: () async => _share(context, _otherAtSign!),
                   )
                 ],
               ),
@@ -81,10 +81,10 @@ class _ShareScreenState extends State<ShareScreen> {
   }
 
   // The _share function will pass the dishWidget values (The entire recipe) to a specified atsign
-  _share(BuildContext context, String sharedWith) async {
+  Future<void> _share(BuildContext context, String? sharedWith) async {
     // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
-      String? atSign = await ClientSdkService.getInstance().atsign;
+      String? atSign = ClientSdkService.getInstance().atsign;
       // Create an AtKey object called lookup to act as
       // a buffer for the recipe itself
       AtKey lookup = AtKey()
@@ -101,7 +101,7 @@ class _ShareScreenState extends State<ShareScreen> {
       // as -1 to cache on the secondary server that has received the recipe.
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
-      var metadata = Metadata()..ttr = -1;
+      Metadata metadata = Metadata()..ttr = -1;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()
@@ -111,21 +111,29 @@ class _ShareScreenState extends State<ShareScreen> {
         ..key = widget.dishWidget!.title
         ..metadata = metadata
         ..sharedBy = atSign
-        ..sharedWith = _otherAtSign;
+        ..sharedWith = sharedWith;
 
       // Instantiating the operation value as an update notification.
       // The atsign who is receiving the notification will cache the value
       // sent in either an already pre-existing version of the key
       // and update the value with the new value sent,
       // or create an entirely new key to store the value in
-      var operation = OperationEnum.update;
-
+      OperationEnum operation = OperationEnum.update;
       // Pass the correct variables through the notify verb to send to the specified
       // secondary server
-      await ClientSdkService.getInstance().notify(atKey, value, operation);
-
+      bool isNotified =
+          await ClientSdkService.getInstance().notify(atKey, value, operation);
       // This will take the user from the share screen back to the recipe screen
-      Navigator.pop(context);
+      isNotified
+          ? Navigator.pop(context)
+          : ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Failed to notify',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
     }
   }
 }

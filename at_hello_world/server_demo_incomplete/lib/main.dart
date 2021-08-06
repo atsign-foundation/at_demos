@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (setting) {
         switch (setting.name) {
           case HomeScreen.id:
-            final atSign = setting.arguments;
+            Object atSign = setting.arguments;
             return MaterialPageRoute(
               builder: (_) => HomeScreen(atSign: atSign),
             );

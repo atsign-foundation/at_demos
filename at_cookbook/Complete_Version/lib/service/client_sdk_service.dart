@@ -1,5 +1,6 @@
 // import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -19,17 +20,18 @@ class ClientSdkService {
 
   AtClientService? atClientServiceInstance;
   AtClientImpl? atClientInstance;
-  Map<String?, AtClientService> atClientServiceMap = {};
+  Map<String?, AtClientService> atClientServiceMap =
+      <String?, AtClientService>{};
   String? atsign;
 
-  _reset() {
+  void _reset() {
     atClientServiceInstance = null;
     atClientInstance = null;
-    atClientServiceMap = {};
+    atClientServiceMap = <String?, AtClientService>{};
     atsign = null;
   }
 
-  _sync() async {
+  Future<void> _sync() async {
     await _getAtClientForAtsign()!.getSyncManager()!.sync();
   }
 
@@ -49,10 +51,10 @@ class ClientSdkService {
   }
 
   Future<AtClientPreference> getAtClientPreference({String? cramSecret}) async {
-    final appDocumentDirectory =
+    Directory appDocumentDirectory =
         await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
-    var _atClientPreference = AtClientPreference()
+    AtClientPreference _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..cramSecret = cramSecret
@@ -63,9 +65,10 @@ class ClientSdkService {
     return _atClientPreference;
   }
 
-  _checkAtSignStatus(String atsign) async {
-    var atStatusImpl = AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
-    var status = await atStatusImpl.get(atsign);
+  Future<ServerStatus?> _checkAtSignStatus(String atsign) async {
+    AtStatusImpl atStatusImpl =
+        AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
+    AtStatus status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
 
@@ -100,30 +103,30 @@ class ClientSdkService {
   //   return keyString;
   // }
 
-  Future<String> get(AtKey atKey) async {
-    var result = await _getAtClientForAtsign()!.get(atKey);
+  Future<dynamic> get(AtKey atKey) async {
+    AtValue result = await _getAtClientForAtsign()!.get(atKey);
     return result.value;
   }
 
   Future<bool> put(AtKey atKey, String value) async {
-    return await _getAtClientForAtsign()!.put(atKey, value);
+    return _getAtClientForAtsign()!.put(atKey, value);
   }
 
   Future<bool> delete(AtKey atKey) async {
-    return await _getAtClientForAtsign()!.delete(atKey);
+    return _getAtClientForAtsign()!.delete(atKey);
   }
 
   Future<List<AtKey>> getAtKeys(String regex, {String? sharedBy}) async {
-    return await _getAtClientForAtsign()!
+    return _getAtClientForAtsign()!
         .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
   }
 
   ///Fetches atsign from device keychain.
   Future<String?> getAtSign() async {
-    return await atClientServiceInstance!.getAtSign();
+    return atClientServiceInstance!.getAtSign();
   }
 
-  deleteAtSignFromKeyChain() async {
+  Future<void> deleteAtSignFromKeyChain() async {
     // List<String> atSignList = await getAtsignList();
     String atsign = atClientServiceInstance!.atClient!.currentAtSign!;
 
@@ -134,6 +137,13 @@ class ClientSdkService {
 
   Future<bool> notify(
       AtKey atKey, String value, OperationEnum operation) async {
-    return await _getAtClientForAtsign()!.notify(atKey, value, operation);
+    try {
+      bool notified =
+          await _getAtClientForAtsign()!.notify(atKey, value, operation);
+      return notified;
+    } on AtClientException catch (e) {
+      print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
+      return false;
+    }
   }
 }

@@ -25,21 +25,22 @@ class _HomeScreenState extends State<HomeScreen> {
   String _value;
 
   // lookup
-  TextEditingController _lookupTextFieldController = TextEditingController();
+  final TextEditingController _lookupTextFieldController =
+      TextEditingController();
   String _lookupKey;
   String _lookupValue = '';
 
   // scan
-  List<String> _scanItems = List<String>();
+  List<String> _scanItems = <String>[];
 
   // service
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Home',
           style: TextStyle(
             fontSize: 20,
@@ -64,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.create, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.create, size: 70),
+                      title: const Text(
                         'Update ',
                         style: TextStyle(
                           color: Colors.black,
@@ -77,13 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         shrinkWrap: true,
                         children: [
                           TextField(
-                            decoration: InputDecoration(hintText: 'Enter Key'),
+                            decoration:
+                                const InputDecoration(hintText: 'Enter Key'),
                             onChanged: (key) {
                               _key = key;
                             },
                           ),
                           TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Value',
                             ),
                             onChanged: (value) {
@@ -94,11 +96,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(10),
-                      child: FlatButton(
-                        child: Text('Update'),
-                        color: Colors.deepOrange,
-                        textColor: Colors.white,
+                      margin: const EdgeInsets.all(10),
+                      child: TextButton(
+                        child: const Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.deepOrange,
+                        ),
                         onPressed: _update,
                       ),
                     ),
@@ -119,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.scanner, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.scanner, size: 70),
+                      title: const Text(
                         'Scan',
                         style: TextStyle(
                           color: Colors.black,
@@ -129,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       subtitle: DropdownButton<String>(
-                        hint: Text('Select Key'),
+                        hint: const Text('Select Key'),
                         items: _scanItems.map((String key) {
                           return DropdownMenuItem(
                             value: key,
@@ -142,15 +150,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             _lookupTextFieldController.text = value;
                           });
                         },
-                        value: _scanItems.length > 0 ? _scanItems[0] : '',
+                        value: _scanItems.isNotEmpty ? _scanItems[0] : '',
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(20),
-                      child: FlatButton(
-                        child: Text('Scan'),
-                        color: Colors.deepOrange,
-                        textColor: Colors.white,
+                      margin: const EdgeInsets.all(20),
+                      child: TextButton(
+                        child: const Text(
+                          'Scan',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepOrange),
                         onPressed: _scan,
                       ),
                     ),
@@ -171,8 +184,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.list, size: 70),
-                      title: Text(
+                      leading: const Icon(Icons.list, size: 70),
+                      title: const Text(
                         'LookUp',
                         style: TextStyle(
                           color: Colors.black,
@@ -181,25 +194,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       subtitle: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
+                            // ignore: prefer_const_constructors
                             decoration: InputDecoration(hintText: 'Enter Key'),
                             controller: _lookupTextFieldController,
                           ),
-                          SizedBox(height: 20),
-                          Text(
-                            "Lookup Result : ",
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Lookup Result : ',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
-                            '$_lookupValue',
-                            style: TextStyle(
+                            _lookupValue,
+                            style: const TextStyle(
                               color: Colors.teal,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -209,11 +222,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(20),
-                      child: FlatButton(
-                        child: Text('Lookup'),
-                        color: Colors.deepOrange,
-                        textColor: Colors.white,
+                      margin: const EdgeInsets.all(20),
+                      child: TextButton(
+                        child: const Text(
+                          'Lookup',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepOrange),
                         onPressed: _lookup,
                       ),
                     ),
@@ -226,8 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   // TODO: add the _scan, _update, and _lookup methods
-  _update() async {
+  Future<void> _update() async {
     if (_key != null && _value != null) {
       AtKey pair = AtKey();
       pair.key = _key;
@@ -236,17 +255,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  _scan() async {
+  Future<void>  _scan() async {
     List<AtKey> response = await _serverDemoService.getAtKeys(
       sharedBy: widget.atSign,
     );
-    if (response.length > 0) {
+    if (response.isNotEmpty) {
       List<String> scanList = response.map((atKey) => atKey.key).toList();
       setState(() => _scanItems = scanList);
     }
   }
 
-  _lookup() async {
+  Future<void> _lookup() async {
     if (_lookupKey != null) {
       AtKey lookup = AtKey();
       lookup.key = _lookupKey;

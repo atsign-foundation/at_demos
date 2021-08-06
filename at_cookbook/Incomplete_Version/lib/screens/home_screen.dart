@@ -23,9 +23,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = [];
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
-  checkReload() {
+  void checkReload() {
     if (widget.shouldReload!) {
       setState(() {});
     }
@@ -80,12 +80,12 @@ class _HomeScreenState extends State<HomeScreen>
                       child: ListView(
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text(
+                                  const Text(
                                     'My Dishes',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.keyboard_arrow_right,
                                     ),
                                     onPressed: () {
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen>
                     return Text(
                         'An error has occurred: ' + snapshot.error.toString());
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                 },
               )),
@@ -123,35 +123,32 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Color(0XFF7B3F00),
+        backgroundColor: const Color(0xff7b3f00),
         onPressed: () {
           Navigator.pushNamed(context, DishScreen.id)
               .then((value) => setState(() {}));
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   /// Scan for [AtKey] objects with the correct regex.
-  _scan() async {
+  Future<List<String>>_scan() async {
     List<AtKey> response;
     String regex = '^(?!cached).*cookbook.*';
     response = await _serverDemoService.getAtKeys(regex: regex);
     List<String> responseList = [];
     for (AtKey atKey in response) {
-      String value = await _lookup(atKey);
-      value = atKey.key! + constant.splitter + value;
+      String? value = await _lookup(atKey);
+      value = atKey.key! + constant.splitter + value!;
       responseList.add(value);
     }
     return responseList;
   }
 
   /// Look up a value corresponding to an [AtKey] instance.
-  Future<String> _lookup(AtKey atKey) async {
-    if (atKey != null) {
-      return await _serverDemoService.get(atKey);
-    }
-    return '';
+  Future<String?> _lookup(AtKey? atKey) async {
+    return _serverDemoService.get(atKey!);
   }
 }

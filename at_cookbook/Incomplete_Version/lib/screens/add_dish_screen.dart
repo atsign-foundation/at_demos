@@ -8,19 +8,19 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class DishScreen extends StatelessWidget {
-  static final String id = "add_dish";
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  static final String id = 'add_dish';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _title;
   String? _ingredients;
   String? _description;
   String? _imageURL;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a dish'),
+        title: const Text('Add a dish'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -28,14 +28,14 @@ class DishScreen extends StatelessWidget {
             child: Form(
                 key: _formKey,
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Hero(
                           tag: 'choice chef',
                           child: SizedBox(
@@ -46,11 +46,11 @@ class DishScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Name of the dish',
                           labelText: 'Name',
@@ -62,7 +62,7 @@ class DishScreen extends StatelessWidget {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Short description for your dish',
                           labelText: 'Description',
@@ -75,7 +75,7 @@ class DishScreen extends StatelessWidget {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Separate ingredients by commas',
                           labelText: 'Ingredients',
@@ -87,7 +87,7 @@ class DishScreen extends StatelessWidget {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           icon: Icon(Icons.approval),
                           hintText: 'Optional: link to an image of the cuisine',
                           labelText: 'Image',
@@ -96,12 +96,12 @@ class DishScreen extends StatelessWidget {
                           _imageURL = value;
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
                       RoundedButton(
                         text: 'Add Cuisine',
-                        color: Color(0XFF7B3F00),
+                        color: const Color(0xff7b3f00),
                         path: () => _update(context),
                       )
                     ],
@@ -114,9 +114,9 @@ class DishScreen extends StatelessWidget {
   }
 
   /// Add a key/value pair to the logged-in secondary server.
-  _update(BuildContext context) async {
+  Future<void> _update(BuildContext context) async {
     //TODO: implement the _update func
-    final FormState? form = _formKey.currentState;
+    FormState? form = _formKey.currentState;
     if (form!.validate()) {
       String _values = _description! + constant.splitter + _ingredients!;
       if (_imageURL != null) {

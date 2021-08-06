@@ -9,7 +9,7 @@ this for testing, debugging, or just trying out the app!
 
 ## Demo
 
-<img src="https://github.com/atsign-foundation/at_demos/blob/master/at_hello_world/assets/hello_world_demo.gif" width=300>
+<img src="https://raw.githubusercontent.com/atsign-foundation/at_demos/master/at_hello_world/assets/hello_world_demo.gif" width=300>
 
 A brief demo of this starter app. You can add, scan, and lookup key/value pairs!
 

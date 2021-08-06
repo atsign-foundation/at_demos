@@ -15,11 +15,10 @@ class _SecondScreenState extends State<SecondScreen> {
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   String activeAtSign = '';
   GlobalKey<ScaffoldState>? scaffoldKey;
-  List<String>?  atSigns;
-  String?  chatWithAtSign;
+  List<String>? atSigns;
+  String? chatWithAtSign;
   bool showOptions = false;
   bool isEnabled = true;
-
 
   @override
   void initState() {
@@ -34,31 +33,35 @@ class _SecondScreenState extends State<SecondScreen> {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
       body: Center(
         child: Column(
-          children: [
-            SizedBox(
+          children: <Widget>[
+            const SizedBox(
               height: 20.0,
             ),
             Container(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
               child: Text(
                 'Welcome $activeAtSign!',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ),
             ElevatedButton(
               onPressed: () async {
-                showDialog(
+                await showDialog(
                     barrierDismissible: true,
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Row(
-                          children: [Text('Delete $activeAtSign')],
+                          children: <Widget>[
+                            Text('Delete $activeAtSign'),
+                          ],
                         ),
-                        content: Text('Press Yes to confirm'),
+                        content: const Text('Press Yes to confirm'),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () async {
@@ -69,13 +72,13 @@ class _SecondScreenState extends State<SecondScreen> {
                                   FirstScreen.id,
                                   (Route<dynamic> route) => false);
                             },
-                            child: Text('Yes'),
+                            child: const Text('Yes'),
                           ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text('No'),
+                            child: const Text('No'),
                           )
                         ],
                       );
@@ -83,19 +86,19 @@ class _SecondScreenState extends State<SecondScreen> {
               },
               child: Text('Remove $activeAtSign'),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20.0,
             ),
-            Text('Choose an @sign to chat with'),
-            SizedBox(
+            const Text('Choose an @sign to chat with'),
+            const SizedBox(
               height: 10.0,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: TextField(
-                decoration:
-                    InputDecoration(hintText: 'Enter an @sign to chat with'),
-                onChanged: (value) {
+                decoration: const InputDecoration(
+                    hintText: 'Enter an @sign to chat with'),
+                onChanged: (String value) {
                   chatWithAtSign = value;
                 },
               ),
@@ -133,41 +136,44 @@ class _SecondScreenState extends State<SecondScreen> {
               //   }).toList(),
               // ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50.0,
             ),
             showOptions
                 ? Column(
-                    children: [
-                      SizedBox(height: 20.0),
+                    children: <Widget>[
+                      const SizedBox(height: 20.0),
                       TextButton(
-                        onPressed: () {
-                          var _res = checkForValidAtsignAndSet();
-                          if (_res == true)
-                            scaffoldKey!.currentState!
-                                .showBottomSheet((context) => ChatScreen());
+                        onPressed: () async {
+                          bool _res = await checkForValidAtsignAndSet();
+                          if (_res) {
+                            scaffoldKey!.currentState!.showBottomSheet(
+                              (BuildContext context) => const ChatScreen(),
+                            );
+                          }
                         },
                         child: Container(
                           height: 40,
-                          child: Text('Open chat in bottom sheet'),
+                          child: const Text('Open chat in bottom sheet'),
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                          var _res = checkForValidAtsignAndSet();
-                          if (_res == true)
-                            Navigator.pushNamed(context, ThirdScreen.id);
+                        onPressed: () async {
+                          dynamic _res = await checkForValidAtsignAndSet();
+                          if (_res) {
+                            await Navigator.pushNamed(context, ThirdScreen.id);
+                          }
                         },
                         child: Container(
                           height: 40,
-                          child: Text('Navigate to chat screen'),
+                          child: const Text('Navigate to chat screen'),
                         ),
                       )
                     ],
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       TextButton(
                         onPressed: () {
                           if (chatWithAtSign != null &&
@@ -184,15 +190,18 @@ class _SecondScreenState extends State<SecondScreen> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Row(
-                                      children: [Text('@sign Missing!')],
+                                      children: <Widget>[
+                                        const Text('@sign Missing!'),
+                                      ],
                                     ),
-                                    content: Text('Please enter an @sign'),
+                                    content:
+                                        const Text('Please enter an @sign'),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Close'),
+                                        child: const Text('Close'),
                                       )
                                     ],
                                   );
@@ -201,7 +210,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         },
                         child: Container(
                           height: 40,
-                          child: Text('Chat options'),
+                          child: const Text('Chat options'),
                         ),
                       ),
                     ],
@@ -212,7 +221,7 @@ class _SecondScreenState extends State<SecondScreen> {
     );
   }
 
-  checkForValidAtsignAndSet() {
+  Future<bool> checkForValidAtsignAndSet() async {
     if (chatWithAtSign != null && chatWithAtSign!.trim() != '') {
       // TODO: Call function to set receiver's @sign
       setAtsignToChatWith();
@@ -221,30 +230,33 @@ class _SecondScreenState extends State<SecondScreen> {
       });
       return true;
     } else {
-      showDialog(
+      await showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Row(
-                children: [Text('@sign Missing!')],
+                children: <Widget>[
+                  const Text('@sign Missing!'),
+                ],
               ),
-              content: Text('Please enter an @sign'),
+              content: const Text('Please enter an @sign'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 )
               ],
             );
           });
+      return false;
     }
   }
 
   // TODO: Write function to initialize the chatting service
-  getAtSignAndInitializeChat() async {
+  Future<void> getAtSignAndInitializeChat() async {
     String? currentAtSign = await clientSdkService.getAtSign();
     setState(() {
       activeAtSign = currentAtSign!;
@@ -260,7 +272,7 @@ class _SecondScreenState extends State<SecondScreen> {
   }
 
   // TODO: Write function that determines whom you are chatting with
-  setAtsignToChatWith() {
+  void setAtsignToChatWith() {
     // print(activeAtSign);
     // print(chatWithAtSign);
     setChatWithAtSign(chatWithAtSign);

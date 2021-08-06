@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
+// ignore: implementation_imports
 import 'package:at_client/src/util/encryption_util.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import 'package:at_server_status/at_server_status.dart';
 import 'package:chefcookbook/constants.dart' as conf;
@@ -22,7 +25,7 @@ class ServerDemoService {
   Map<String?, AtClientService> atClientServiceMap = {};
   String? _atsign;
 
-  sync() async {
+  Future<void> sync() async {
     await _getAtClientForAtsign()!.getSyncManager()!.sync();
   }
 
@@ -34,7 +37,7 @@ class ServerDemoService {
     return null;
   }
 
-  AtClientService? _getClientServiceForAtSign(String atsign) {
+  AtClientService? _getClientServiceForAtSign(String? atsign) {
     if (atsign == null) {}
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
@@ -45,7 +48,7 @@ class ServerDemoService {
 
   Future<AtClientPreference> _getAtClientPreference(
       {String? cramSecret}) async {
-    final appDocumentDirectory =
+    Directory appDocumentDirectory =
         await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     var _atClientPreference = AtClientPreference()
@@ -59,7 +62,7 @@ class ServerDemoService {
     return _atClientPreference;
   }
 
-  _checkAtSignStatus(String atsign) async {
+  Future<ServerStatus?> _checkAtSignStatus(String atsign) async {
     var atStatusImpl = AtStatusImpl(rootUrl: conf.root);
     var status = await atStatusImpl.get(atsign);
     return status.serverStatus;
@@ -70,9 +73,9 @@ class ServerDemoService {
     var atClientPreference = await _getAtClientPreference();
     var result = await atClientServiceInstance!
         .onboard(atClientPreference: atClientPreference, atsign: atsign);
-    _atsign = (atsign == null ? await this.getAtSign() : atsign)!;
+    _atsign = (await getAtSign() ?? atsign);
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
-    sync();
+    await sync();
     return result;
   }
 
@@ -86,7 +89,7 @@ class ServerDemoService {
     var atsignStatus = await _checkAtSignStatus(atsign);
     if (atsignStatus != ServerStatus.teapot &&
         atsignStatus != ServerStatus.activated) {
-      throw atsignStatus;
+      throw atsignStatus!;
     }
     var atClientPreference = await _getAtClientPreference();
     var result = await atClientServiceInstance!.authenticate(
@@ -133,29 +136,21 @@ class ServerDemoService {
     return result.value;
   }
 
-  Future<bool> put(AtKey atKey, String value) async {
-    return await _getAtClientForAtsign()!.put(atKey, value);
-  }
+  Future<bool> put(AtKey atKey, String value) async => _getAtClientForAtsign()!.put(atKey, value);
 
-  Future<bool> delete(AtKey atKey) async {
-    return await _getAtClientForAtsign()!.delete(atKey);
-  }
+  Future<bool> delete(AtKey atKey) async => _getAtClientForAtsign()!.delete(atKey);
 
   Future<List<AtKey>> getAtKeys({String? regex, String? sharedBy}) async {
     regex ??= conf.namespace;
-    return await _getAtClientForAtsign()!
+    return  _getAtClientForAtsign()!
         .getAtKeys(regex: regex, sharedBy: sharedBy);
   }
 
   Future<bool> notify(
-      AtKey atKey, String value, OperationEnum operation) async {
-    return await _getAtClientForAtsign()!.notify(atKey, value, operation);
-  }
+      AtKey atKey, String value, OperationEnum operation) async => _getAtClientForAtsign()!.notify(atKey, value, operation);
 
   ///Fetches atsign from device keychain.
-  Future<String?> getAtSign() async {
-    return await atClientServiceInstance!.getAtSign();
-  }
+  Future<String?> getAtSign() async => atClientServiceInstance!.getAtSign();
 }
 
 class BackupKeyConstants {

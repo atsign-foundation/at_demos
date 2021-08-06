@@ -1,8 +1,10 @@
 import 'package:chefcookbook/components/rounded_button.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import 'package:chefcookbook/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'home_screen.dart';
 
@@ -16,7 +18,7 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool showSpinner = false;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +34,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Expanded(
                     flex: 5,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         child: Column(children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16),
                                 child: Text(
                                   'Chef\'s',
                                   style: TextStyle(
                                     fontSize: 64,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0XFF956532),
+                                    color: Color(0xff956532),
                                   ),
                                 ),
                               ),
@@ -64,7 +66,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             ],
                           ),
                           Container(
-                            child: Padding(
+                            child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
                                 'Cookbook',
@@ -72,7 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 style: TextStyle(
                                   fontSize: 64,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0XFF956532),
+                                  color: Color(0xff956532),
                                 ),
                               ),
                             ),
@@ -81,7 +83,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   Expanded(
@@ -92,21 +94,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ListTile(
                           title: Center(
                             child: DropdownButton<String>(
-                              hint: Text('\tPick an @sign'),
-                              icon: Icon(
+                              hint: const Text('\tPick an @sign'),
+                              icon: const Icon(
                                 Icons.keyboard_arrow_down,
                               ),
                               iconSize: 24,
-                              dropdownColor: Color(0XFFF1EBE5),
+                              dropdownColor: const Color(0xfff1ebe5),
                               elevation: 16,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20.0, color: Colors.black87),
                               onChanged: (String? newValue) {
                                 setState(() {
                                   atSign = newValue;
                                 });
                               },
-                              value: atSign != null ? atSign : null,
+                              value: atSign,
                               items: at_demo_data.allAtsigns
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
@@ -124,7 +126,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Expanded(
                     flex: 2,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: RoundedButton(
                         text: 'Login',
                         path: _login,
@@ -147,19 +149,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   /// Authenticate into one of the testable @signs.
-  _login() async {
+  Future<void> _login() async {
     if (atSign != null) {
       FocusScope.of(context).unfocus();
       setState(() {
         showSpinner = true;
       });
       String jsonData = _serverDemoService.encryptKeyPairs(atSign!);
-      _serverDemoService.onboard(atsign: atSign).then((value) async {
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
+      await _serverDemoService.onboard(atsign: atSign).then((value) async {
+        await Navigator.pushReplacementNamed(context, HomeScreen.id);
       }).catchError((error) async {
         await _serverDemoService.authenticate(atSign!,
             jsonData: jsonData, decryptKey: at_demo_data.aesKeyMap[atSign]);
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
+        await Navigator.pushReplacementNamed(context, HomeScreen.id);
       });
     }
   }

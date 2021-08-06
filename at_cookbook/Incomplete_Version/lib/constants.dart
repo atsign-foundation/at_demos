@@ -9,17 +9,17 @@ String splitter = '@_@';
 
 const kTextFieldDecoration = InputDecoration(
   hintText: 'Enter a value',
-  fillColor: Color(0XFFF1EBE5),
+  fillColor: Color(0xfff1ebe5),
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color(0XFFAF8B66), width: 1.0),
+    borderSide: BorderSide(color: Color(0xffaf8b66), width: 1.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color(0XFFAF8B66), width: 2.0),
+    borderSide: BorderSide(color: Color(0xffaf8b66), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );

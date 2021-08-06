@@ -17,5 +17,6 @@ public final class GeneratedPluginRegistrant {
     ShimPluginRegistry shimPluginRegistry = new ShimPluginRegistry(flutterEngine);
     flutterEngine.getPlugins().add(new com.atsign.at_chat_flutter.AtChatFlutterPlugin());
       be.appmire.flutterkeychain.FlutterKeychainPlugin.registerWith(shimPluginRegistry.registrarFor("be.appmire.flutterkeychain.FlutterKeychainPlugin"));
+    flutterEngine.getPlugins().add(new io.flutter.plugins.pathprovider.PathProviderPlugin());
   }
 }

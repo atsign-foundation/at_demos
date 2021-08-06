@@ -12,4 +12,4 @@ to use this as reference!
 ## Getting Started
 
 Clone this project from the @ Company repository. Make sure that you've completed the prequisites
-listed in the `at_hello_world` readME!
+listed in the `at_hello_world` README!

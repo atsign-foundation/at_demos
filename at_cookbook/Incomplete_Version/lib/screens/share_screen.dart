@@ -4,6 +4,7 @@ import 'package:at_commons/at_commons.dart';
 import 'welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import '../service.dart';
 
@@ -20,9 +21,9 @@ class ShareScreen extends StatefulWidget {
 class _ShareScreenState extends State<ShareScreen> {
   String? _otherAtSign;
   List<String>? _atSigns;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
-  initList() {
+  void initList() {
     List<String> otherAtSigns = at_demo_data.allAtsigns;
     otherAtSigns.remove(atSign);
     setState(() {
@@ -40,22 +41,22 @@ class _ShareScreenState extends State<ShareScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0XFF7B3F00),
-        title: Text('Add a dish'),
+        backgroundColor: const Color(0xff7b3f00),
+        title: const Text('Add a dish'),
       ),
-      backgroundColor: Color(0XFFF1EBE5),
+      backgroundColor: const Color(0xfff1ebe5),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Hero(
                       tag: 'choice chef',
                       child: SizedBox(
@@ -66,26 +67,26 @@ class _ShareScreenState extends State<ShareScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   ListTile(
                     title: Center(
                       child: DropdownButton<String>(
-                        hint: Text('\tPick an @sign'),
-                        icon: Icon(
+                        hint: const Text('\tPick an @sign'),
+                        icon: const Icon(
                           Icons.keyboard_arrow_down,
                         ),
                         iconSize: 24,
-                        dropdownColor: Color(0XFFF1EBE5),
+                        dropdownColor: const Color(0xfff1ebe5),
                         elevation: 16,
-                        style: TextStyle(fontSize: 20.0, color: Colors.black87),
+                        style: const TextStyle(fontSize: 20.0, color: Colors.black87),
                         onChanged: (String? newValue) {
                           setState(() {
                             _otherAtSign = newValue;
                           });
                         },
-                        value: _otherAtSign != null ? _otherAtSign : null,
+                        value: _otherAtSign,
                         items: _atSigns == null
                             ? []
                             : _atSigns!
@@ -98,13 +99,13 @@ class _ShareScreenState extends State<ShareScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   RoundedButton(
                     text: 'Share Cuisine',
-                    color: Color(0XFF7B3F00),
-                    path: () async => await _share(context, _otherAtSign!),
+                    color: const Color(0xff7b3f00),
+                    path: () async => _share(context, _otherAtSign!),
                   )
                 ],
               ),
@@ -115,7 +116,7 @@ class _ShareScreenState extends State<ShareScreen> {
     );
   }
 
-  _share(BuildContext context, String sharedWith) async {
+  Future<void> _share(BuildContext context, String? sharedWith) async {
     //TODO: implement the _share func
     if (sharedWith != null) {
       AtKey lookup = AtKey();
