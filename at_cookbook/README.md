@@ -1,3 +1,7 @@
+<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
+
+### Now for a little internet optimism
+
 # at_cookbook
 
 This is an intermediate-level @protocol application that uses the verbs we learned in the `at_hello_world` application to make a working cookbook for the chef inside of us all!
