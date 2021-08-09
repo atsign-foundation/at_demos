@@ -1,10 +1,10 @@
 name: at_demo_data
 description: A Dart library that contains test data, testable @‎sign credentials and demo environment variables that can be used for writing demo apps and testing with the local test environment.
 homepage: https://www.atsign.dev
-documentation: https://atsign.dev/docs.html
+documentation: https://atsign.dev/docs/
 repository: https://github.com/atsign-foundation/at_demos
 
-version: 0.0.3+1
+version: 0.0.4
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
