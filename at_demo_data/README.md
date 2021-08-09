@@ -7,19 +7,24 @@ This library contains data that can be used for demo apps and testing.
 
 ## Installation:
 To use this library in your app, first add it to your pubspec.yaml
+
 ```yaml
 dependencies:
-  at_demo_data: ^0.0.3+1
+  at_demo_data: ^0.0.4
 ```
+
 ### Add to your project 
 ```bash
 pub get 
 ```
+
 ### Import in your application code
 ```dart
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 ```
+
 ## Usage
+
 ### How to retrieve test environment values
 ```dart
 // Production environment
