@@ -3,25 +3,14 @@
 ### Now for a little internet optimism
 
 # at_demo_data
-This library contains data that can be used for demo apps and testing.
+This library contains data that can be used for demo apps and testing when using
+[The Virtual Environment (VE)](https://atsign.dev/docs/get-started/the-virtual-environment/)
+which provides a full stack private @ enviroment to build and test applications offline. 
+A number of preset @signs are included in the VE and the secrets and keys are provided in this repo
+for those test @signs.
 
-## Installation:
-To use this library in your app, first add it to your pubspec.yaml
 
-```yaml
-dependencies:
-  at_demo_data: ^0.0.4
-```
 
-### Add to your project 
-```bash
-pub get 
-```
-
-### Import in your application code
-```dart
-import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-```
 
 ## Usage
 
