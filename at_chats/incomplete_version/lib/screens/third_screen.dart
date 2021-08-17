@@ -11,9 +11,8 @@ class _ThirdScreenState extends State<ThirdScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
-      // TODO: Fill in the body parameter of the Scaffold
-      body: const ChatScreen()
-    );
+        appBar: AppBar(title: const Text('Chat')),
+        // TODO: Fill in the body parameter of the Scaffold
+        body: const ChatScreen());
   }
 }
