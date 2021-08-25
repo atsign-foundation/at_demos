@@ -10,7 +10,8 @@ class MixedConstants {
 }
 
 class AppStrings {
-  static String API_KEY = '477b-876u-bcez-c42z-6a3d';
+  static const String devAPIKey = '477b-876u-bcez-c42z-6a3d';
+  static const String prodAPIKey = '400b-806u-bzez-z42z-6a3p';
   static String appNamespace = 'at_chat_demo';
   static String regex = '.$appNamespace@';
   static const String scan_qr = "Let's Go!";

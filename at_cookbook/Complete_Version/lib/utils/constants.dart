@@ -9,13 +9,15 @@ class MixedConstants {
 }
 
 class AppStrings {
-  static String API_KEY = '477b-876u-bcez-c42z-6a3d';
+  static const String devAPIKey = '477b-876u-bcez-c42z-6a3d';
+  static const String prodAPIKey = '400b-806u-bzez-z42z-6a3p';
   static String appNamespace = 'at_cookbook_demo';
   static String regex = '.$appNamespace@';
   static const String scan_qr = "Let's Go!";
   static const String reset_keychain = 'Reset Keychain';
   static const String atsign_error = 'ATSIGN_NOT_FOUND';
 }
+
 class BackupKeyConstants {
   static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
   static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';

@@ -20,8 +20,7 @@ class ClientSdkService {
 
   AtClientService? atClientServiceInstance;
   AtClientImpl? atClientInstance;
-  Map<String?, AtClientService> atClientServiceMap =
-      <String?, AtClientService>{};
+  Map<String?, AtClientService> atClientServiceMap = <String?, AtClientService>{};
   String? atsign;
 
   void _reset() {
@@ -51,8 +50,7 @@ class ClientSdkService {
   }
 
   Future<AtClientPreference> getAtClientPreference({String? cramSecret}) async {
-    Directory appDocumentDirectory =
-        await path_provider.getApplicationSupportDirectory();
+    Directory appDocumentDirectory = await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     AtClientPreference _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
@@ -66,8 +64,7 @@ class ClientSdkService {
   }
 
   Future<ServerStatus?> _checkAtSignStatus(String atsign) async {
-    AtStatusImpl atStatusImpl =
-        AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
+    AtStatusImpl atStatusImpl = AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
     AtStatus status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
@@ -113,12 +110,12 @@ class ClientSdkService {
   }
 
   Future<bool> delete(AtKey atKey) async {
-    return _getAtClientForAtsign()!.delete(atKey);
+    bool isDeleted = await _getAtClientForAtsign()!.delete(atKey);
+    return isDeleted;
   }
 
   Future<List<AtKey>> getAtKeys(String regex, {String? sharedBy}) async {
-    return _getAtClientForAtsign()!
-        .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
+    return _getAtClientForAtsign()!.getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
   }
 
   ///Fetches atsign from device keychain.
@@ -135,11 +132,9 @@ class ClientSdkService {
     _reset();
   }
 
-  Future<bool> notify(
-      AtKey atKey, String value, OperationEnum operation) async {
+  Future<bool> notify(AtKey atKey, String value, OperationEnum operation) async {
     try {
-      bool notified =
-          await _getAtClientForAtsign()!.notify(atKey, value, operation);
+      bool notified = await _getAtClientForAtsign()!.notify(atKey, value, operation);
       return notified;
     } on AtClientException catch (e) {
       print('AtClientException : ${e.errorCode} - ${e.errorMessage}');

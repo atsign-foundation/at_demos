@@ -16,6 +16,7 @@ class OtherScreen extends StatelessWidget {
         title: Text(
           'Welcome, $atSign!',
         ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Center(
@@ -24,8 +25,7 @@ class OtherScreen extends StatelessWidget {
               Expanded(
                 child: FutureBuilder<Map<String?, String>>(
                   future: _getSharedRecipes(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       // Returns a map that has a dish's title as its key and
                       // a dish's attributes for its value.
@@ -55,8 +55,7 @@ class OtherScreen extends StatelessWidget {
                                     Icons.keyboard_arrow_left,
                                   ),
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(
-                                        context, HomeScreen.id);
+                                    Navigator.pushReplacementNamed(context, HomeScreen.id);
                                   },
                                 ),
                                 const Text(
@@ -76,8 +75,7 @@ class OtherScreen extends StatelessWidget {
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return Text('An error has occurred: ' +
-                          snapshot.error.toString());
+                      return Text('An error has occurred: ' + snapshot.error.toString());
                     } else {
                       return const Center(child: CircularProgressIndicator());
                     }

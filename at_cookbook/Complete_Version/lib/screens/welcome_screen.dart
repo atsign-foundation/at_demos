@@ -49,7 +49,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                       if (isOnboarding) {
                         setState(() => isOnboarding = false);
                         Onboarding(
-                          appAPIKey: AppStrings.API_KEY,
+                          appAPIKey: AppStrings.prodAPIKey,
                           context: context,
                           atClientPreference: atClientPreference!,
                           domain: MixedConstants.ROOT_DOMAIN,
