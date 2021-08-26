@@ -1,5 +1,6 @@
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
+import 'package:chefcookbook/constants.dart';
 import 'add_dish_screen.dart';
 import 'other_screen.dart';
 import 'package:at_commons/at_commons.dart';
@@ -121,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     // This regex is defined for searching for an AtKey object that carries the
     // namespace of cookbook and that have been created by the authenticated
     // atsign (the currently logged in atsign)
-    String regex = '^(?!cached).*cookbook.*';
 
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier

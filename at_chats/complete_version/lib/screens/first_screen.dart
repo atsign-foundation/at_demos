@@ -18,16 +18,13 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreen extends State<FirstScreen> {
   bool showSpinner = false;
   String? atSign;
-  bool isOnboarding = true;
-  // ClientSdkService clientSdkService = ClientSdkService.getInstance();
-  late AtClientPreference atClientPreference;
+  ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
-    ClientSdkService.getInstance().onboard();
-    ClientSdkService.getInstance()
-        .getAtClientPreference()
-        .then((AtClientPreference value) => atClientPreference = value);
+    clientSdkService.onboard();
+    clientSdkService.getAtClientPreference().then((AtClientPreference value) => atClientPreference = value);
     super.initState();
   }
 
@@ -50,29 +47,22 @@ class _FirstScreen extends State<FirstScreen> {
               Center(
                 child: TextButton(
                   onPressed: () async {
-                    if (isOnboarding) {
-                      setState(() => isOnboarding = false);
-                      Onboarding(
-                        appAPIKey: AppStrings.prodAPIKey,
-                        context: context,
-                        atClientPreference: atClientPreference,
-                        domain: MixedConstants.ROOT_DOMAIN,
-                        appColor: const Color.fromARGB(255, 240, 94, 62),
-                        onboard: (Map<String?, AtClientService> value,
-                            String? atsign) {
-                          ClientSdkService.getInstance().atClientServiceMap =
-                              value;
-                          ClientSdkService.getInstance()
-                              .atClientServiceInstance = value[atsign];
-                          _logger.finer('Successfully onboarded $atsign');
-                        },
-                        onError: (Object? error) {
-                          _logger.severe(
-                              'Onboarding throws ${error.toString()} error');
-                        },
-                        nextScreen: SecondScreen(),
-                      );
-                    }
+                    Onboarding(
+                      appAPIKey: AppStrings.prodAPIKey,
+                      context: context,
+                      atClientPreference: atClientPreference!,
+                      domain: MixedConstants.ROOT_DOMAIN,
+                      appColor: const Color.fromARGB(255, 240, 94, 62),
+                      onboard: (Map<String?, AtClientService> value, String? atsign) {
+                        clientSdkService.atClientServiceMap = value;
+                        clientSdkService.atClientServiceInstance = value[atsign];
+                        _logger.finer('Successfully onboarded $atsign');
+                      },
+                      onError: (Object? error) {
+                        _logger.severe('Onboarding throws ${error.toString()} error');
+                      },
+                      nextScreen: SecondScreen(),
+                    );
                   },
                   child: const Text(AppStrings.scan_qr),
                 ),
@@ -82,10 +72,8 @@ class _FirstScreen extends State<FirstScreen> {
               ),
               TextButton(
                   onPressed: () async {
-                    KeyChainManager _keyChainManager =
-                        KeyChainManager.getInstance();
-                    List<String>? _atSignsList =
-                        await _keyChainManager.getAtSignListFromKeychain();
+                    KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+                    List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
                     if (_atSignsList == null || _atSignsList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -97,8 +85,7 @@ class _FirstScreen extends State<FirstScreen> {
                       );
                     } else {
                       for (String element in _atSignsList) {
-                        await _keyChainManager
-                            .deleteAtSignFromKeychain(element);
+                        await _keyChainManager.deleteAtSignFromKeychain(element);
                       }
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

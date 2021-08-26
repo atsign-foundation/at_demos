@@ -56,21 +56,16 @@ class _SecondScreenState extends State<SecondScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Row(
-                          children: <Widget>[
-                            Text('Delete $activeAtSign'),
-                          ],
+                        title: FittedBox(
+                          child: Text('Delete $activeAtSign'),
                         ),
                         content: const Text('Press Yes to confirm'),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () async {
-                              await ClientSdkService.getInstance()
-                                  .deleteAtSignFromKeyChain();
+                              await ClientSdkService.getInstance().deleteAtSignFromKeyChain();
                               await Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  FirstScreen.id,
-                                  (Route<dynamic> route) => false);
+                                  context, FirstScreen.id, (Route<dynamic> route) => false);
                             },
                             child: const Text('Yes'),
                           ),
@@ -96,8 +91,7 @@ class _SecondScreenState extends State<SecondScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: TextField(
-                decoration: const InputDecoration(
-                    hintText: 'Enter an @sign to chat with'),
+                decoration: const InputDecoration(hintText: 'Enter an @sign to chat with'),
                 onChanged: (String value) {
                   chatWithAtSign = value;
                 },
@@ -176,8 +170,7 @@ class _SecondScreenState extends State<SecondScreen> {
                     children: <Widget>[
                       TextButton(
                         onPressed: () {
-                          if (chatWithAtSign != null &&
-                              chatWithAtSign!.trim() != '') {
+                          if (chatWithAtSign != null && chatWithAtSign!.trim() != '') {
                             // TODO: Call function to set receiver's @sign
                             setAtsignToChatWith();
                             setState(() {
@@ -194,8 +187,7 @@ class _SecondScreenState extends State<SecondScreen> {
                                         const Text('@sign Missing!'),
                                       ],
                                     ),
-                                    content:
-                                        const Text('Please enter an @sign'),
+                                    content: const Text('Please enter an @sign'),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
@@ -266,8 +258,7 @@ class _SecondScreenState extends State<SecondScreen> {
     // setState(() {
     //   atSigns = allAtSigns;
     // });
-    initializeChatService(
-        clientSdkService.atClientServiceInstance!.atClient!, activeAtSign,
+    initializeChatService(clientSdkService.atClientServiceInstance!.atClient!, activeAtSign,
         rootDomain: MixedConstants.ROOT_DOMAIN);
   }
 
