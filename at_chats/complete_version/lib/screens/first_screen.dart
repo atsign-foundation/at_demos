@@ -21,10 +21,13 @@ class _FirstScreen extends State<FirstScreen> {
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
+  Future<void> _getAtClientPreference() async {
+    atClientPreference = await clientSdkService.getAtClientPreference();
+  }
+
   @override
   void initState() {
-    clientSdkService.onboard();
-    clientSdkService.getAtClientPreference().then((AtClientPreference value) => atClientPreference = value);
+    _getAtClientPreference();
     super.initState();
   }
 
