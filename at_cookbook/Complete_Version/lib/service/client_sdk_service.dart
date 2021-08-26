@@ -139,6 +139,9 @@ class ClientSdkService {
     } on AtClientException catch (e) {
       print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
       return false;
+    } catch (e) {
+      print('Exception : $e');
+      return false;
     }
   }
 }

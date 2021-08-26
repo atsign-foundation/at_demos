@@ -100,9 +100,7 @@ class _ShareScreenState extends State<ShareScreen> {
       // as -1 to cache on the secondary server that has received the recipe.
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
-      Metadata metadata = Metadata()
-        ..ttr = -1
-        ..ccd = true;
+      Metadata metadata = Metadata()..ttr = 1;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()

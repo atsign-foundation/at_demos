@@ -147,10 +147,10 @@ class DishPage extends StatelessWidget {
       // Instantiate an AtKey object and specify its attributes by passing
       // the name of the recipe and the authenticated atsign
       AtKey atKey = AtKey();
-      Metadata metadata = Metadata();
+      Map metaJson = Metadata().toJson();
+      Metadata metadata = Metadata.fromJson(metaJson);
       atKey.key = dishWidget!.title;
       atKey.metadata = metadata;
-      atKey.metadata!.ccd = true;
       atKey.sharedWith = atSign;
 
       // Utilizing the delete method, after passing the recipe, the object
