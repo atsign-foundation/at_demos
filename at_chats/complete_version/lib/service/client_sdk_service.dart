@@ -81,7 +81,7 @@ class ClientSdkService {
     bool result = await atClientServiceInstance!
         .onboard(atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign ?? await getAtSign();
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
     await _sync();
     return result;
   }
@@ -103,7 +103,7 @@ class ClientSdkService {
         atsign, atClientPreference,
         jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
-    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance);
+    atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
     await _sync();
     return result;
   }

@@ -57,8 +57,7 @@ class _ShareScreenState extends State<ShareScreen> {
                     height: 20,
                   ),
                   TextField(
-                    decoration: const InputDecoration(
-                        hintText: 'Enter an @sign to chat with'),
+                    decoration: const InputDecoration(hintText: 'Enter an @sign to chat with'),
                     onChanged: (String value) {
                       _otherAtSign = value;
                     },
@@ -101,7 +100,7 @@ class _ShareScreenState extends State<ShareScreen> {
       // as -1 to cache on the secondary server that has received the recipe.
       // Defining it as -1 will tell the secondary server that the cached key will
       // not have a change in value at any point in time
-      Metadata metadata = Metadata()..ttr = -1;
+      Metadata metadata = Metadata()..ttr = 1;
 
       // create an AtKey object to pass through the secondary server
       AtKey atKey = AtKey()
@@ -121,19 +120,27 @@ class _ShareScreenState extends State<ShareScreen> {
       OperationEnum operation = OperationEnum.update;
       // Pass the correct variables through the notify verb to send to the specified
       // secondary server
-      bool isNotified =
-          await ClientSdkService.getInstance().notify(atKey, value, operation);
+      bool isNotified = await ClientSdkService.getInstance().notify(atKey, value, operation);
       // This will take the user from the share screen back to the recipe screen
-      isNotified
-          ? Navigator.pop(context)
-          : ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Failed to notify',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
+      if (isNotified) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Shared successfully',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      } else
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Failed to notify',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
     }
   }
 }

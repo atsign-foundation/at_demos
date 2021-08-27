@@ -6,6 +6,7 @@ String namespace = 'at_cookbook';
 bool debug = true;
 bool verbose = true;
 String splitter = '@_@';
+String regex = '^(?!cached).*cookbook.*';
 
 const InputDecoration kTextFieldDecoration = InputDecoration(
   hintText: 'Enter a value',

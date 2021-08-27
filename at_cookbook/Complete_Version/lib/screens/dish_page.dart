@@ -57,17 +57,14 @@ class DishPage extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 80.0,
                                 backgroundImage: dishWidget!.imageURL == null
-                                    ? const AssetImage(
-                                        'assets/question_mark.png')
-                                    : NetworkImage(dishWidget!.imageURL!)
-                                        as ImageProvider,
+                                    ? const AssetImage('assets/question_mark.png')
+                                    : NetworkImage(dishWidget!.imageURL!) as ImageProvider,
                               ),
                             ),
                           ],
                         ),
                         const Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: Divider(
                             color: Colors.black87,
                             thickness: 1,
@@ -123,8 +120,7 @@ class DishPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) =>
-                                  ShareScreen(dishWidget: dishWidget),
+                              builder: (BuildContext context) => ShareScreen(dishWidget: dishWidget),
                             ),
                           );
                         },
@@ -145,24 +141,37 @@ class DishPage extends StatelessWidget {
   /// the logged-in @sign.
   Future<void> _delete(BuildContext context) async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    String atSign = ClientSdkService.getInstance().getAtSign().toString();
+    String? atSign = await clientSdkService.getAtSign();
     // If the recipe has a name
     if (dishWidget!.title != null) {
       // Instantiate an AtKey object and specify its attributes by passing
       // the name of the recipe and the authenticated atsign
       AtKey atKey = AtKey();
+      Map metaJson = Metadata().toJson();
+      Metadata metadata = Metadata.fromJson(metaJson);
       atKey.key = dishWidget!.title;
+      atKey.metadata = metadata;
       atKey.sharedWith = atSign;
 
       // Utilizing the delete method, after passing the recipe, the object
       // cached on the secondary server will be deleted
-      await clientSdkService.delete(atKey);
+      bool isDeleted = await clientSdkService.delete(atKey);
+      print(isDeleted);
+      isDeleted
+          ?
+          // This will force the authenticated atsign back to the previous screen
+          // without the capability of returning to the screen of the recipe that was
+          // just deleted as this would cause a major error
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(dishWidget!.prevScreen!, (Route<dynamic> route) => false, arguments: true)
+          : ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Failed to delete data',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
     }
-    // This will force the authenticated atsign back to the previous screen
-    // without the capability of returning to the screen of the recipe that was
-    // just deleted as this would cause a major error
-    await Navigator.of(context).pushNamedAndRemoveUntil(
-        dishWidget!.prevScreen!, (Route<dynamic> route) => false,
-        arguments: true);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
+import 'package:chefcookbook/constants.dart';
 import 'add_dish_screen.dart';
 import 'other_screen.dart';
 import 'package:at_commons/at_commons.dart';
@@ -19,8 +20,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = <DishWidget>[];
   ClientSdkService clientSdkService = ClientSdkService.getInstance();
   String atSign = ClientSdkService.getInstance().getAtSign().toString();
@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
         title: Text(
           'Welcome, ' + ClientSdkService.getInstance().atsign!,
         ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Center(
@@ -40,8 +41,7 @@ class _HomeScreenState extends State<HomeScreen>
               Expanded(
                   child: FutureBuilder<List<String>>(
                 future: _scan(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData) {
                     // Returns a list of attributes for each dish.
                     List<String> dishAttributes = snapshot.data;
@@ -49,16 +49,13 @@ class _HomeScreenState extends State<HomeScreen>
                     List<DishWidget> dishWidgets = <DishWidget>[];
                     for (String attributes in dishAttributes) {
                       // Populate a DishWidget based on the attributes string.
-                      List<String> attributesList =
-                          attributes.split(constant.splitter);
+                      List<String> attributesList = attributes.split(constant.splitter);
                       if (attributesList.length >= 3) {
                         DishWidget dishWidget = DishWidget(
                           title: attributesList[0],
                           description: attributesList[1],
                           ingredients: attributesList[2],
-                          imageURL: attributesList.length == 4
-                              ? attributesList[3]
-                              : null,
+                          imageURL: attributesList.length == 4 ? attributesList[3] : null,
                           prevScreen: HomeScreen.id,
                         );
                         dishWidgets.add(dishWidget);
@@ -69,28 +66,24 @@ class _HomeScreenState extends State<HomeScreen>
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Text(
-                                    'My Dishes',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 32,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.keyboard_arrow_right,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushReplacementNamed(
-                                          context, OtherScreen.id);
-                                    },
-                                  )
-                                ]),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                              const Text(
+                                'My Dishes',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_right,
+                                ),
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(context, OtherScreen.id);
+                                },
+                              )
+                            ]),
                           ),
                           Column(
                             children: dishWidgets,
@@ -99,8 +92,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
-                        'An error has occurred: ' + snapshot.error.toString());
+                    return Text('An error has occurred: ' + snapshot.error.toString());
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -114,8 +106,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: const Icon(Icons.add),
         backgroundColor: const Color(0XFF7B3F00),
         onPressed: () {
-          Navigator.pushNamed(context, DishScreen.id)
-              .then((Object? value) => setState(() {}));
+          Navigator.pushNamed(context, DishScreen.id).then((Object? value) => setState(() {}));
         },
       ),
     );
@@ -131,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen>
     // This regex is defined for searching for an AtKey object that carries the
     // namespace of cookbook and that have been created by the authenticated
     // atsign (the currently logged in atsign)
-    String regex = '^(?!cached).*cookbook.*';
 
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier

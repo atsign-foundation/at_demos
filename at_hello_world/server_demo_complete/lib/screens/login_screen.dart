@@ -25,9 +25,7 @@ class _LoginScreen extends State<LoginScreen> {
   AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
   Future<void> call() async {
-    await clientSDKInstance
-        .getAtClientPreference()
-        .then((AtClientPreference? value) => atClientPreference = value);
+    await clientSDKInstance.getAtClientPreference().then((AtClientPreference? value) => atClientPreference = value);
   }
 
   @override
@@ -56,8 +54,7 @@ class _LoginScreen extends State<LoginScreen> {
                     atClientPreference: atClientPreference!,
                     domain: MixedConstants.ROOT_DOMAIN,
                     appColor: const Color(0xFFF05E3E),
-                    onboard:
-                        (Map<String?, AtClientService> value, String? atsign) {
+                    onboard: (Map<String?, AtClientService> value, String? atsign) {
                       atSign = atsign;
                       clientSDKInstance.atsign = atsign!;
                       clientSDKInstance.atClientServiceMap = value;
@@ -79,10 +76,8 @@ class _LoginScreen extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () async {
-                KeyChainManager _keyChainManager =
-                    KeyChainManager.getInstance();
-                List<String>? _atSignsList =
-                    await _keyChainManager.getAtSignListFromKeychain();
+                KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+                List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
                 if (_atSignsList == null || _atSignsList.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

@@ -62,7 +62,7 @@ To prepare your dedicated GitHub repository:
    
 ### Development Process
 
-1. Fetch latest changes from main repository:
+1. Fetch the latest changes from the main repository:
 
    ```bash
    git fetch upstream
@@ -76,7 +76,7 @@ To prepare your dedicated GitHub repository:
    git push --force
    ```
 
-   **IMPORTANT**: Do this only once, when you start working on new feature as
+   **IMPORTANT**: Do this only once, when you start working on a new feature as
    the commands above will completely overwrite any local changes in `trunk` content.
 1. Edit, edit, edit, and commit your changes to Git:
 
