@@ -1,6 +1,8 @@
-<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
+<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
 
 ### Now for a little internet optimism
+
+[![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
 
 # at_demos
 
