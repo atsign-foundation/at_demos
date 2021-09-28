@@ -66,6 +66,7 @@ class _LoginScreen extends State<LoginScreen> {
                     },
                     nextScreen: HomeScreen(),
                     appAPIKey: MixedConstants.prodAPIKey,
+                    rootEnvironment: RootEnvironment.Production,
                   );
                 },
                 child: const Text(AppStrings.scanQr),

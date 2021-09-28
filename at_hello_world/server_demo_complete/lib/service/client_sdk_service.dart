@@ -9,6 +9,7 @@ import '../utils/constants.dart' as conf;
 import 'package:at_utils/at_logger.dart';
 
 class ClientSdkService {
+  static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
   static final ClientSdkService _singleton = ClientSdkService._internal();
 
@@ -19,14 +20,13 @@ class ClientSdkService {
   }
 
   AtClientService? atClientServiceInstance;
-  AtClientImpl? atClientInstance;
+  final AtClientManager atClientInstance = AtClientManager.getInstance();
   Map<String?, AtClientService> atClientServiceMap =
       <String?, AtClientService>{};
   String? atsign;
 
   void _reset() {
     atClientServiceInstance = null;
-    atClientInstance = null;
     atClientServiceMap = <String?, AtClientService>{};
     atsign = null;
   }
@@ -34,12 +34,8 @@ class ClientSdkService {
   Future<void> _sync() async =>
       _getAtClientForAtsign()!.getSyncManager()!.sync();
 
-  AtClientImpl? _getAtClientForAtsign({String? atsign}) {
-    atsign ??= this.atsign;
-    if (atClientServiceMap.containsKey(atsign)) {
-      return atClientServiceMap[atsign]!.atClient;
-    }
-    return null;
+  AtClient? _getAtClientForAtsign() {
+      return AtClientManager.getInstance().atClient;
   }
 
   AtClientService? _getClientServiceForAtSign(String atsign) {
@@ -119,13 +115,13 @@ class ClientSdkService {
           .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
 
   /// Fetches atsign from device keychain.
-  Future<String?> getAtSign() async => atClientServiceInstance!.getAtSign();
+  Future<String?> getAtSign() async => _keyChainManager.getAtSign();
 
   Future<void> deleteAtSignFromKeyChain() async {
     // List<String> atSignList = await getAtsignList();
-    String? atsign = atClientServiceInstance!.atClient!.currentAtSign;
+    String? atsign = atClientInstance.atClient.getCurrentAtSign();
 
-    await atClientServiceMap[atsign]!.deleteAtSignFromKeychain(atsign!);
+    await _keyChainManager.deleteAtSignFromKeychain(atsign!);
 
     _reset();
   }
