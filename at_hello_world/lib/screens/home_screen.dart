@@ -16,8 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _value;
 
   // lookup
-  final TextEditingController? _lookupTextFieldController =
-      TextEditingController();
+  final TextEditingController? _lookupTextFieldController = TextEditingController();
   String? _lookupKey;
   String? _lookupValue;
 
@@ -69,8 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shrinkWrap: true,
                         children: <Widget>[
                           TextField(
-                            decoration:
-                                const InputDecoration(hintText: 'Enter Key'),
+                            decoration: const InputDecoration(hintText: 'Enter Key'),
                             onChanged: (String key) {
                               _key = key;
                             },
@@ -157,8 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrange),
+                        style: TextButton.styleFrom(backgroundColor: Colors.deepOrange),
                         onPressed: _scan,
                       ),
                     ),
@@ -193,8 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           TextField(
-                            decoration:
-                                const InputDecoration(hintText: 'Enter Key'),
+                            decoration: const InputDecoration(hintText: 'Enter Key'),
                             controller: _lookupTextFieldController,
                           ),
                           const SizedBox(height: 20),
@@ -226,8 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrange),
+                        style: TextButton.styleFrom(backgroundColor: Colors.deepOrange),
                         onPressed: _lookup,
                       ),
                     ),
@@ -250,6 +245,14 @@ class _HomeScreenState extends State<HomeScreen> {
       pair.key = _key;
       pair.sharedWith = atSign;
       await _serverDemoService.put(pair, _value!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${pair.key} value updated',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
     }
   }
 
@@ -261,10 +264,17 @@ class _HomeScreenState extends State<HomeScreen> {
       sharedBy: atSign,
     );
     if (response.isNotEmpty) {
-      List<String?> scanList =
-          response.map((AtKey atKey) => atKey.key).toList();
+      List<String?> scanList = response.map((AtKey atKey) => atKey.key).toList();
       setState(() => _scanItems = scanList);
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Scanning keys and values done.',
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 
   /// Create instance of an AtKey and call get() on it.
