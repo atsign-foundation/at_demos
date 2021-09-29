@@ -7,6 +7,7 @@ import 'package:at_commons/at_commons.dart';
 import '../utils/constants.dart' as conf;
 
 class ClientSdkService {
+  static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
   static final ClientSdkService _singleton = ClientSdkService._internal();
 
   ClientSdkService._internal();
@@ -16,14 +17,13 @@ class ClientSdkService {
   }
 
   AtClientService? atClientServiceInstance;
-  AtClientImpl? atClientInstance;
+  final AtClientManager atClientInstance = AtClientManager.getInstance();
   Map<String?, AtClientService?> atClientServiceMap =
       <String?, AtClientService?>{};
   String? _atsign;
 
   void _reset() {
     atClientServiceInstance = null;
-    atClientInstance = null;
     atClientServiceMap = <String?, AtClientService?>{};
     _atsign = null;
   }
@@ -31,13 +31,8 @@ class ClientSdkService {
   Future<void> _sync() async {
     await _getAtClientForAtsign()!.getSyncManager()!.sync();
   }
-
-  AtClientImpl? _getAtClientForAtsign({String? atsign}) {
-    atsign ??= _atsign;
-    if (atClientServiceMap.containsKey(atsign)) {
-      return atClientServiceMap[atsign]!.atClient;
-    }
-    return null;
+  AtClient? _getAtClientForAtsign() {
+    return AtClientManager.getInstance().atClient;
   }
 
   AtClientService? _getClientServiceForAtSign(String? atsign) {
@@ -152,7 +147,7 @@ class ClientSdkService {
           .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
 
   ///Fetches atsign from device keychain.
-  Future<String?> getAtSign() async => atClientServiceInstance!.getAtSign();
+  Future<String?> getAtSign() async => _keyChainManager.getAtSign();
 
   // static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
   // Future<List<String>> getAtsignList() async {
@@ -162,9 +157,9 @@ class ClientSdkService {
 
   Future<void> deleteAtSignFromKeyChain() async {
     // List<String> atSignList = await getAtsignList();
-    String? _atsign = atClientServiceInstance!.atClient!.currentAtSign;
+    String? _atsign = atClientInstance.atClient.getCurrentAtSign();
 
-    await atClientServiceMap[_atsign]!.deleteAtSignFromKeychain(_atsign!);
+    await _keyChainManager.deleteAtSignFromKeychain(_atsign!);
 
     _reset();
 

@@ -64,7 +64,7 @@ class _FirstScreen extends State<FirstScreen> {
                       onError: (Object? error) {
                         _logger.severe('Onboarding throws ${error.toString()} error');
                       },
-                      nextScreen: SecondScreen(),
+                      nextScreen: SecondScreen(), rootEnvironment: RootEnvironment.Production,
                     );
                   },
                   child: const Text(AppStrings.scan_qr),
