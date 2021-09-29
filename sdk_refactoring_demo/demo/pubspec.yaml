@@ -1,0 +1,26 @@
+name: verbsTesting
+description: Flutter application to test verbs.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+# Before using this application, ensure that your Flutter SDK, Dart SDK, and
+# Android Studio are up to date.
+dependencies:
+  at_client_mobile: ^3.0.3
+  at_demo_data: ^1.0.0
+  at_onboarding_flutter: ^3.0.0
+  cupertino_icons: ^1.0.3
+  flutter:
+    sdk: flutter
+  fluttertoast: ^8.0.8
+  intl: ^0.17.0
+  modal_progress_hud: ^0.1.3
+  path_provider: ^2.0.5
+
+flutter:
+  assets:
+    - assets/
+  uses-material-design: true

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "343678425121",
+    "project_id": "chef-s-cookbook",
+    "storage_bucket": "chef-s-cookbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343678425121:android:62871dd7816a5340a8eb60",
+        "android_client_info": {
+          "package_name": "com.example.chefcookbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343678425121-dur2533rj55emqlobsv8ll14kc42l59p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA98aikFroVQ9sv2YMQuK9ZtkR7IbtI22g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343678425121-dur2533rj55emqlobsv8ll14kc42l59p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
