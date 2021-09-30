@@ -29,10 +29,10 @@ class ClientSdkService {
   }
 
   Future<void> _sync() async {
-    await _getAtClientForAtsign()!.getSyncManager()!.sync();
+    await atClientInstance.syncService.sync;
   }
   AtClient? _getAtClientForAtsign() {
-    return AtClientManager.getInstance().atClient;
+    return atClientInstance.atClient;
   }
 
   AtClientService? _getClientServiceForAtSign(String? atsign) {
@@ -54,7 +54,6 @@ class ClientSdkService {
       ..commitLogPath = path
       ..cramSecret = cramSecret
       ..namespace = conf.MixedConstants.NAMESPACE
-      ..syncStrategy = SyncStrategy.IMMEDIATE
       ..rootDomain = conf.MixedConstants.ROOT_DOMAIN
       ..hiveStoragePath = path;
     return _atClientPreference;

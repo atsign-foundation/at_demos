@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-// ignore: implementation_imports
+import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_client/src/util/encryption_util.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import 'package:at_server_status/at_server_status.dart';
 import 'package:chefcookbook/constants.dart' as conf;
@@ -27,7 +26,7 @@ class ServerDemoService {
   Map<String?, AtClientService> atClientServiceMap = <String?, AtClientService>{};
   String? _atsign;
 
-  Future<void> sync() async => atClientInstance.syncService.sync();
+  Future<void> sync() async => atClientInstance.syncService.sync;
 
   AtClient _getAtClientForAtsign() {
     return atClientInstance.atClient;
@@ -131,8 +130,15 @@ class ServerDemoService {
     return _getAtClientForAtsign().getAtKeys(regex: regex, sharedBy: sharedBy);
   }
 
-  Future<bool> notify(AtKey atKey, String value, OperationEnum operation) async {
-    return _getAtClientForAtsign().notify(atKey, value, operation);
+  Future<void> notify(AtKey atKey, String value, OperationEnum operation) async {
+    if (operation == OperationEnum.update) {
+      atClientInstance.notificationService.notify(
+        NotificationParams.forUpdate(
+          atKey,
+          value: value,
+        ),
+      );
+    }
   }
 
   ///Fetches atsign from device keychain.

@@ -2,6 +2,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_server_status/at_server_status.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
@@ -21,8 +22,7 @@ class ClientSdkService {
 
   AtClientService? atClientServiceInstance;
   final AtClientManager atClientInstance = AtClientManager.getInstance();
-  Map<String?, AtClientService> atClientServiceMap =
-      <String?, AtClientService>{};
+  Map<String?, AtClientService> atClientServiceMap = <String?, AtClientService>{};
   String? atsign;
 
   void _reset() {
@@ -31,12 +31,9 @@ class ClientSdkService {
     atsign = null;
   }
 
-  Future<void> _sync() async =>
-      _getAtClientForAtsign()!.getSyncManager()!.sync();
+  Future<void> _sync() async => atClientInstance.syncService.sync;
 
-  AtClient? _getAtClientForAtsign() {
-      return AtClientManager.getInstance().atClient;
-  }
+  AtClient? _getAtClientForAtsign() => atClientInstance.atClient;
 
   AtClientService? _getClientServiceForAtSign(String atsign) {
     if (atClientServiceMap.containsKey(atsign)) {
@@ -46,23 +43,20 @@ class ClientSdkService {
   }
 
   Future<AtClientPreference> getAtClientPreference({String? cramSecret}) async {
-    Directory appDocumentDirectory =
-        await path_provider.getApplicationSupportDirectory();
+    Directory appDocumentDirectory = await path_provider.getApplicationSupportDirectory();
     String path = appDocumentDirectory.path;
     AtClientPreference _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
       ..cramSecret = cramSecret
       ..namespace = conf.MixedConstants.NAMESPACE
-      ..syncStrategy = SyncStrategy.IMMEDIATE
       ..rootDomain = conf.MixedConstants.ROOT_DOMAIN
       ..hiveStoragePath = path;
     return _atClientPreference;
   }
 
   Future<ServerStatus?> _checkAtSignStatus(String atsign) async {
-    AtStatusImpl atStatusImpl =
-        AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
+    AtStatusImpl atStatusImpl = AtStatusImpl(rootUrl: conf.MixedConstants.ROOT_DOMAIN);
     AtStatus status = await atStatusImpl.get(atsign);
     return status.serverStatus;
   }
@@ -111,8 +105,7 @@ class ClientSdkService {
   }
 
   Future<List<AtKey>> getAtKeys({String? regex, String? sharedBy}) async =>
-      _getAtClientForAtsign()!
-          .getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
+      _getAtClientForAtsign()!.getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
 
   /// Fetches atsign from device keychain.
   Future<String?> getAtSign() async => _keyChainManager.getAtSign();
@@ -126,7 +119,14 @@ class ClientSdkService {
     _reset();
   }
 
-  Future<bool> notify(
-          AtKey atKey, String value, OperationEnum operation) async =>
-      _getAtClientForAtsign()!.notify(atKey, value, operation);
+  Future<void> notify(AtKey atKey, String value, OperationEnum operation) async {
+    if (operation == OperationEnum.update) {
+      atClientInstance.notificationService.notify(
+        NotificationParams.forUpdate(
+          atKey,
+          value: value,
+        ),
+      );
+    }
+  }
 }

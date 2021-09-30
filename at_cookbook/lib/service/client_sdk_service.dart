@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
@@ -78,8 +79,16 @@ class ClientSdkService {
 
   Future<bool> notify(AtKey atKey, String value, OperationEnum operation) async {
     try {
-      bool notified = await _getAtClientForAtsign()!.notify(atKey, value, operation);
-      return notified;
+      if (operation == OperationEnum.update) {
+        await atClientInstance.notificationService.notify(
+          NotificationParams.forUpdate(
+            atKey,
+            value: value,
+          ),
+        );
+        return true;
+      }
+      return true;
     } on AtClientException catch (e) {
       print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
       return false;
