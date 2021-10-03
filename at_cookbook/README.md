@@ -1,16 +1,6 @@
-<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
-
-### Now for a little internet optimism
-
 # at_cookbook
 
-This is an intermediate-level @protocol application that uses the verbs we learned in the `at_hello_world` application to make a working cookbook for the chef inside of us all!
-
-## Demo
-
-<img src="https://raw.githubusercontent.com/atsign-foundation/at_demos/master/at_cookbook/Complete_Version/assets/at_cookbook_demo.gif" width=300>
-
-What you see is the home page of the application. You can add and delete dishes freely with a lot of custom content!
+This is the complete version of the at_cookbook application. Feel free to use the code here as a starting template for your own projects.
 
 ## Getting Started
 
