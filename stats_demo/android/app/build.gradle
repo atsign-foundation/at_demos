@@ -38,12 +38,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.chefcookbook"
+        applicationId "com.example.newserverdemo"
         minSdkVersion 24
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        multiDexEnabled true
     }
 
     buildTypes {

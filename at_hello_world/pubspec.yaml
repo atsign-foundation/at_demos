@@ -9,7 +9,7 @@ environment:
 dependencies:
   at_client_mobile: ^3.0.3
   at_demo_data: ^1.0.0
-  at_onboarding_flutter: ^3.0.0
+  at_onboarding_flutter: ^3.0.4
   at_server_status: ^1.0.3
   cupertino_icons: ^1.0.3
   flutter:
