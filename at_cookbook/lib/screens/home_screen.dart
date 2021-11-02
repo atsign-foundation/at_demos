@@ -1,10 +1,10 @@
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
 import 'package:chefcookbook/constants.dart';
 import 'add_dish_screen.dart';
 import 'other_screen.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,17 +20,20 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = <DishWidget>[];
-  ClientSdkService clientSdkService = ClientSdkService.getInstance();
-  String atSign = ClientSdkService.getInstance().getAtSign().toString();
+  //ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  String atSign =
+      AtClientManager.getInstance().atClient.getCurrentAtSign().toString();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ' + ClientSdkService.getInstance().atsign!,
+          'Welcome, ' +
+              AtClientManager.getInstance().atClient.getCurrentAtSign()!,
         ),
         automaticallyImplyLeading: false,
       ),
@@ -41,7 +44,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               Expanded(
                   child: FutureBuilder<List<String>>(
                 future: _scan(),
-                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData) {
                     // Returns a list of attributes for each dish.
                     List<String> dishAttributes = snapshot.data;
@@ -49,13 +53,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     List<DishWidget> dishWidgets = <DishWidget>[];
                     for (String attributes in dishAttributes) {
                       // Populate a DishWidget based on the attributes string.
-                      List<String> attributesList = attributes.split(constant.splitter);
+                      List<String> attributesList =
+                          attributes.split(constant.splitter);
                       if (attributesList.length >= 3) {
                         DishWidget dishWidget = DishWidget(
                           title: attributesList[0],
                           description: attributesList[1],
                           ingredients: attributesList[2],
-                          imageURL: attributesList.length == 4 ? attributesList[3] : null,
+                          imageURL: attributesList.length == 4
+                              ? attributesList[3]
+                              : null,
                           prevScreen: HomeScreen.id,
                         );
                         dishWidgets.add(dishWidget);
@@ -66,24 +73,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                              const Text(
-                                'My Dishes',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 32,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_right,
-                                ),
-                                onPressed: () {
-                                  Navigator.pushReplacementNamed(context, OtherScreen.id);
-                                },
-                              )
-                            ]),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    'My Dishes',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 32,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.keyboard_arrow_right,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                          context, OtherScreen.id);
+                                    },
+                                  )
+                                ]),
                           ),
                           Column(
                             children: dishWidgets,
@@ -92,7 +103,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('An error has occurred: ' + snapshot.error.toString());
+                    return Text(
+                        'An error has occurred: ' + snapshot.error.toString());
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -105,8 +117,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         backgroundColor: const Color(0XFF7B3F00),
-        onPressed: () {
-          Navigator.pushNamed(context, DishScreen.id).then((Object? value) => setState(() {}));
+        onPressed: () async {
+          Navigator.pushNamed(context, DishScreen.id)
+              .then((Object? value) => setState(() {}));
         },
       ),
     );
@@ -114,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   /// Scan for [AtKey] objects with the correct regex.
   Future<List<String>> _scan() async {
-    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to house each cached recipe from
     // the secondary server of the authenticated atsign
     List<AtKey> response;
@@ -125,7 +138,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     // Getting the recipes that are cached on the authenticated atsign's secondary
     // server utilizing the regex expression defined earlier
-    response = await clientSdkService.getAtKeys(regex);
+    response =
+        await AtClientManager.getInstance().atClient.getAtKeys(regex: regex);
     response.retainWhere((AtKey element) => !element.metadata!.isCached);
 
     // Instantiating a list of strings
@@ -133,13 +147,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     // Looping through every instance of an AtKey object
     for (AtKey atKey in response) {
+      //AtClientManager.getInstance().atClient.delete(atKey);
+      // print(atKey.key);
+      // print('atKey.sharedBy => ${atKey.sharedBy}');
+      // print('atKey.sharedWith => ${atKey.sharedWith}');
+      if (formatAtsign(atKey.sharedWith) !=
+          formatAtsign(
+              AtClientManager.getInstance().atClient.getCurrentAtSign())) {
+        continue;
+      }
+
       // We get the current AtKey object that we are looping on
-      String? value = await _lookup(atKey);
+      String? value = (await _lookup(atKey)).value;
 
       // In addition to the object we are on, we add the name of the recipe,
       // the constant splitter to segregate the fields, and again, the value of
       // the recipe which includes; description, ingredients, and image URL
-      value = atKey.key! + constant.splitter + value!;
+      value = atKey.key! + constant.splitter + (value ?? "");
 
       // Add current AtKey object to our list of strings defined earlier before
       // for loop
@@ -153,12 +177,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   /// Look up a value corresponding to an [AtKey] instance.
   Future<dynamic> _lookup(AtKey? atKey) async {
-    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // If an AtKey object exists
     if (atKey != null) {
       // Simply get the AtKey object utilizing the serverDemoService's get method
-      return clientSdkService.get(atKey);
+      return AtClientManager.getInstance().atClient.get(atKey);
     }
     return null;
+  }
+
+  String? formatAtsign(String? atSign) {
+    return atSign?.trim().replaceFirst("@", "");
   }
 }

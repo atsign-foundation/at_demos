@@ -1,7 +1,7 @@
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'home_screen.dart';
 import 'share_screen.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget? dishWidget;
-  final ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  //final ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   DishPage({@required this.dishWidget});
 
@@ -57,14 +57,17 @@ class DishPage extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 80.0,
                                 backgroundImage: dishWidget!.imageURL == null
-                                    ? const AssetImage('assets/question_mark.png')
-                                    : NetworkImage(dishWidget!.imageURL!) as ImageProvider,
+                                    ? const AssetImage(
+                                        'assets/question_mark.png')
+                                    : NetworkImage(dishWidget!.imageURL!)
+                                        as ImageProvider,
                               ),
                             ),
                           ],
                         ),
                         const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: Divider(
                             color: Colors.black87,
                             thickness: 1,
@@ -120,7 +123,8 @@ class DishPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) => ShareScreen(dishWidget: dishWidget),
+                              builder: (BuildContext context) =>
+                                  ShareScreen(dishWidget: dishWidget),
                             ),
                           );
                         },
@@ -140,8 +144,8 @@ class DishPage extends StatelessWidget {
   /// Deletes a key/value pair in the secondary server of
   /// the logged-in @sign.
   Future<void> _delete(BuildContext context) async {
-    ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    String? atSign = await clientSdkService.getAtSign();
+    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
     // If the recipe has a name
     if (dishWidget!.title != null) {
       // Instantiate an AtKey object and specify its attributes by passing
@@ -155,15 +159,17 @@ class DishPage extends StatelessWidget {
 
       // Utilizing the delete method, after passing the recipe, the object
       // cached on the secondary server will be deleted
-      bool isDeleted = await clientSdkService.delete(atKey);
+      bool isDeleted =
+          await AtClientManager.getInstance().atClient.delete(atKey);
       print(isDeleted);
       isDeleted
           ?
           // This will force the authenticated atsign back to the previous screen
           // without the capability of returning to the screen of the recipe that was
           // just deleted as this would cause a major error
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil(dishWidget!.prevScreen!, (Route<dynamic> route) => false, arguments: true)
+          await Navigator.of(context).pushNamedAndRemoveUntil(
+              dishWidget!.prevScreen!, (Route<dynamic> route) => false,
+              arguments: true)
           : ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(
