@@ -1,9 +1,10 @@
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/components/rounded_button.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../service/client_sdk_service.dart';
+import 'package:at_client/src/service/notification_service.dart';
 
 class ShareScreen extends StatefulWidget {
   static final String id = 'share';
@@ -57,7 +58,8 @@ class _ShareScreenState extends State<ShareScreen> {
                     height: 20,
                   ),
                   TextField(
-                    decoration: const InputDecoration(hintText: 'Enter an @sign to chat with'),
+                    decoration: const InputDecoration(
+                        hintText: 'Enter an @sign to chat with'),
                     onChanged: (String value) {
                       _otherAtSign = value;
                     },
@@ -83,7 +85,8 @@ class _ShareScreenState extends State<ShareScreen> {
   Future<void> _share(BuildContext context, String? sharedWith) async {
     // If an atsign has been chosen to share the recipe with
     if (sharedWith != null) {
-      String? atSign = ClientSdkService.getInstance().atsign;
+      String? atSign =
+          AtClientManager.getInstance().atClient.getCurrentAtSign();
       // Create an AtKey object called lookup to act as
       // a buffer for the recipe itself
       AtKey lookup = AtKey()
@@ -94,7 +97,8 @@ class _ShareScreenState extends State<ShareScreen> {
 
       // getting the values of the recipe as a string to
       // pass through the secondary servers
-      String value = await ClientSdkService.getInstance().get(lookup);
+      String value =
+          (await AtClientManager.getInstance().atClient.get(lookup)).value;
 
       // Instanstiating the Time To Refresh (ttr) metadata attribute
       // as -1 to cache on the secondary server that has received the recipe.
@@ -117,12 +121,19 @@ class _ShareScreenState extends State<ShareScreen> {
       // sent in either an already pre-existing version of the key
       // and update the value with the new value sent,
       // or create an entirely new key to store the value in
-      OperationEnum operation = OperationEnum.update;
+      //OperationEnum operation = OperationEnum.update;
       // Pass the correct variables through the notify verb to send to the specified
       // secondary server
-      bool isNotified = await ClientSdkService.getInstance().notify(atKey, value, operation);
+      await AtClientManager.getInstance().atClient.put(atKey, value);
+      NotificationService notificationService =
+          AtClientManager.getInstance().notificationService;
+
+      NotificationResult isNotified =
+          await notificationService.notify(NotificationParams.forUpdate(atKey));
+
       // This will take the user from the share screen back to the recipe screen
-      if (isNotified) {
+      if (isNotified.notificationStatusEnum ==
+          NotificationStatusEnum.delivered) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

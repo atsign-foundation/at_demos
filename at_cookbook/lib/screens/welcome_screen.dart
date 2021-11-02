@@ -3,11 +3,11 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:chefcookbook/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../service/client_sdk_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_utils/at_logger.dart';
 import '../utils/constants.dart';
 import 'home_screen.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class OnboardingScreen extends StatefulWidget {
   static final String id = 'first';
@@ -15,15 +15,27 @@ class OnboardingScreen extends StatefulWidget {
   _OnboardingScreen createState() => _OnboardingScreen();
 }
 
+Future<AtClientPreference> loadAtClientPreference() async {
+  var dir = await path_provider.getApplicationSupportDirectory();
+  return AtClientPreference()
+    ..rootDomain = MixedConstants.ROOT_DOMAIN
+    ..namespace = MixedConstants.NAMESPACE
+    ..hiveStoragePath = dir.path
+    ..commitLogPath = dir.path
+    ..isLocalStoreRequired = true;
+}
+
 class _OnboardingScreen extends State<OnboardingScreen> {
   bool showSpinner = false;
   String? atSign;
-  ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  AtClientManager clientManager = AtClientManager.getInstance();
+  //ClientSdkService  = ClientSdkService.getInstance();
   AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
   @override
   void initState() {
-    clientSdkService.getAtClientPreference().then((AtClientPreference value) => atClientPreference = value);
+    loadAtClientPreference()
+        .then((AtClientPreference value) => atClientPreference = value);
     super.initState();
   }
 
@@ -49,10 +61,8 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                         atClientPreference: atClientPreference!,
                         rootEnvironment: RootEnvironment.Production,
                         appColor: const Color.fromARGB(255, 240, 94, 62),
-                        onboard: (Map<String?, AtClientService> value, String? atsign) {
-                          clientSdkService.atsign = atsign;
-                          clientSdkService.atClientServiceMap = value;
-                          clientSdkService.atClientServiceInstance = value[atsign];
+                        onboard: (Map<String?, AtClientService> value,
+                            String? atsign) {
                           _logger.finer('Successfully onboarded $atsign');
                         },
                         onError: (Object? error) {
@@ -68,8 +78,10 @@ class _OnboardingScreen extends State<OnboardingScreen> {
               ),
               TextButton(
                   onPressed: () async {
-                    KeyChainManager _keyChainManager = KeyChainManager.getInstance();
-                    List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+                    KeyChainManager _keyChainManager =
+                        KeyChainManager.getInstance();
+                    List<String>? _atSignsList =
+                        await _keyChainManager.getAtSignListFromKeychain();
                     if (_atSignsList == null || _atSignsList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -81,7 +93,8 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                       );
                     } else {
                       for (String element in _atSignsList) {
-                        await _keyChainManager.deleteAtSignFromKeychain(element);
+                        await _keyChainManager
+                            .deleteAtSignFromKeychain(element);
                       }
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

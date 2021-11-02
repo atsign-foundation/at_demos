@@ -1,14 +1,49 @@
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:chefcookbook/components/dish_widget.dart';
 import 'package:chefcookbook/constants.dart' as constant;
-import 'package:chefcookbook/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'dart:core';
+import 'package:at_client/src/service/notification_service.dart';
 
-class OtherScreen extends StatelessWidget {
+class OtherScreen extends StatefulWidget {
   static final String id = 'other';
-  final String? atSign = ClientSdkService.getInstance().atsign;
+
+  @override
+  State<OtherScreen> createState() => _OtherScreenState();
+}
+
+class _OtherScreenState extends State<OtherScreen> {
+  final String? atSign =
+      AtClientManager.getInstance().atClient.getCurrentAtSign();
+
+  late Future future;
+  // Instantiate a map for the recipes
+
+  void _notificationCallback(AtNotification notification) async {
+    if (notification.operation == "update") {
+      setState(() {
+        future = _getSharedRecipes();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      future = _getSharedRecipes();
+    });
+
+    /// Listen to notifications.
+    NotificationService notificationService =
+        AtClientManager.getInstance().notificationService;
+    notificationService.subscribe().listen((notification) {
+      _notificationCallback(notification);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +60,8 @@ class OtherScreen extends StatelessWidget {
               Expanded(
                 child: FutureBuilder<Map<String?, String>>(
                   future: _getSharedRecipes(),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       // Returns a map that has a dish's title as its key and
                       // a dish's attributes for its value.
@@ -55,7 +91,8 @@ class OtherScreen extends StatelessWidget {
                                     Icons.keyboard_arrow_left,
                                   ),
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(context, HomeScreen.id);
+                                    Navigator.pushReplacementNamed(
+                                        context, HomeScreen.id);
                                   },
                                 ),
                                 const Text(
@@ -75,7 +112,8 @@ class OtherScreen extends StatelessWidget {
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return Text('An error has occurred: ' + snapshot.error.toString());
+                      return Text('An error has occurred: ' +
+                          snapshot.error.toString());
                     } else {
                       return const Center(child: CircularProgressIndicator());
                     }
@@ -91,26 +129,26 @@ class OtherScreen extends StatelessWidget {
 
   /// Returns the list of Shared Recipes keys.
   Future<List<AtKey>> _getSharedKeys() async {
-    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    //AtClientManager clientSdkService = ClientSdkService.getInstance();
 
     //await ClientSdkService.getInstance().t_sync();
     // This regex is defined for searching for an AtKey object that carries the
     // namespace of cookbook from the authenticated atsign's secondary server
     // This regex is also specified to get any recipe that has been shared with
     // the currently authenticated atsign
-    return clientSdkService.getAtKeys('cached.*cookbook');
+    return AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: 'cached.*cookbook');
     // Took regex: 'cached.*cookbook' out of getatkeys
   }
 
   /// Returns a map of Shared recipes key and values.
   Future<Map<String?, String>> _getSharedRecipes() async {
-    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    Map<String?, String> recipesMap = <String?, String>{};
+    // ClientSdkService clientSdkService = ClientSdkService.getInstance();
     // Instantiate a list of AtKey objects to store all of the retrieved
     // recipes that have been shared with the current authenticated atsign
     List<AtKey> sharedKeysList = await _getSharedKeys();
-
-    // Instantiate a map for the recipes
-    Map<String?, String> recipesMap = <String?, String>{};
 
     // Instantiate an AtKey object
     AtKey atKey = AtKey();
@@ -130,7 +168,8 @@ class OtherScreen extends StatelessWidget {
         ..metadata = metadata;
 
       // Get the recipe
-      String? response = await clientSdkService.get(atKey);
+      String? response =
+          (await AtClientManager.getInstance().atClient.get(atKey)).value;
 
       // Adds all key/value pairs of [other] to this map.
       // If a key of [other] is already in this map, its value is overwritten.
