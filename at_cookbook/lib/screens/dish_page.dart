@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 class DishPage extends StatelessWidget {
   final DishWidget? dishWidget;
-  //final ClientSdkService clientSdkService = ClientSdkService.getInstance();
 
   DishPage({@required this.dishWidget});
 
@@ -141,15 +140,10 @@ class DishPage extends StatelessWidget {
     );
   }
 
-  /// Deletes a key/value pair in the secondary server of
-  /// the logged-in @sign.
   Future<void> _delete(BuildContext context) async {
-    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
-    // If the recipe has a name
+
     if (dishWidget!.title != null) {
-      // Instantiate an AtKey object and specify its attributes by passing
-      // the name of the recipe and the authenticated atsign
       AtKey atKey = AtKey();
       Map metaJson = Metadata().toJson();
       Metadata metadata = Metadata.fromJson(metaJson);
@@ -157,17 +151,11 @@ class DishPage extends StatelessWidget {
       atKey.metadata = metadata;
       atKey.sharedWith = atSign;
 
-      // Utilizing the delete method, after passing the recipe, the object
-      // cached on the secondary server will be deleted
       bool isDeleted =
           await AtClientManager.getInstance().atClient.delete(atKey);
       print(isDeleted);
       isDeleted
-          ?
-          // This will force the authenticated atsign back to the previous screen
-          // without the capability of returning to the screen of the recipe that was
-          // just deleted as this would cause a major error
-          await Navigator.of(context).pushNamedAndRemoveUntil(
+          ? await Navigator.of(context).pushNamedAndRemoveUntil(
               dishWidget!.prevScreen!, (Route<dynamic> route) => false,
               arguments: true)
           : ScaffoldMessenger.of(context).showSnackBar(

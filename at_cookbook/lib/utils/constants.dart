@@ -1,7 +1,5 @@
-// ignore_for_file: constant_identifier_names
 class MixedConstants {
   static const String WEBSITE_URL = 'https://atsign.com/';
-  // for local server
   static const String ROOT_DOMAIN = 'root.atsign.org';
   static const String NAMESPACE = 'at_cookbook';
   static const String TERMS_CONDITIONS = 'https://atsign.com/terms-conditions/';

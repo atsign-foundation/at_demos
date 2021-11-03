@@ -5,7 +5,7 @@ import 'package:chefcookbook/constants.dart' as constant;
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'dart:core';
-import 'package:at_client/src/service/notification_service.dart';
+import 'package:at_client/src/service/sync_service.dart';
 
 class OtherScreen extends StatefulWidget {
   static final String id = 'other';
@@ -18,15 +18,12 @@ class _OtherScreenState extends State<OtherScreen> {
   final String? atSign =
       AtClientManager.getInstance().atClient.getCurrentAtSign();
 
-  late Future future;
-  // Instantiate a map for the recipes
+  late Future<Map<String?, String>> future;
 
-  void _notificationCallback(AtNotification notification) async {
-    if (notification.operation == "update") {
-      setState(() {
-        future = _getSharedRecipes();
-      });
-    }
+  void _syncCallback() async {
+    setState(() {
+      future = _getSharedRecipes();
+    });
   }
 
   @override
@@ -35,12 +32,8 @@ class _OtherScreenState extends State<OtherScreen> {
       future = _getSharedRecipes();
     });
 
-    /// Listen to notifications.
-    NotificationService notificationService =
-        AtClientManager.getInstance().notificationService;
-    notificationService.subscribe().listen((notification) {
-      _notificationCallback(notification);
-    });
+    SyncService syncService = AtClientManager.getInstance().syncService;
+    syncService.setOnDone(_syncCallback);
     super.initState();
   }
 
@@ -59,12 +52,10 @@ class _OtherScreenState extends State<OtherScreen> {
             children: <Widget>[
               Expanded(
                 child: FutureBuilder<Map<String?, String>>(
-                  future: _getSharedRecipes(),
+                  future: future,
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
-                      // Returns a map that has a dish's title as its key and
-                      // a dish's attributes for its value.
                       Map<String?, String?> dishAttributes = snapshot.data;
                       print(snapshot.data);
                       List<DishWidget> dishWidgets = <DishWidget>[];
@@ -127,39 +118,21 @@ class _OtherScreenState extends State<OtherScreen> {
     );
   }
 
-  /// Returns the list of Shared Recipes keys.
   Future<List<AtKey>> _getSharedKeys() async {
-    //AtClientManager clientSdkService = ClientSdkService.getInstance();
-
-    //await ClientSdkService.getInstance().t_sync();
-    // This regex is defined for searching for an AtKey object that carries the
-    // namespace of cookbook from the authenticated atsign's secondary server
-    // This regex is also specified to get any recipe that has been shared with
-    // the currently authenticated atsign
     return AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: 'cached.*cookbook');
-    // Took regex: 'cached.*cookbook' out of getatkeys
   }
 
-  /// Returns a map of Shared recipes key and values.
   Future<Map<String?, String>> _getSharedRecipes() async {
     Map<String?, String> recipesMap = <String?, String>{};
-    // ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    // Instantiate a list of AtKey objects to store all of the retrieved
-    // recipes that have been shared with the current authenticated atsign
+
     List<AtKey> sharedKeysList = await _getSharedKeys();
 
-    // Instantiate an AtKey object
     AtKey atKey = AtKey();
 
-    // Specifying the isCached metadata attribute as true to cache the recipe
-    // that was shared with the current authenticated atsign on its own
-    // secondary server
     Metadata metadata = Metadata()..isCached = true;
 
-    // Specifying the values (i.e. the description, ingredients, and image URL)
-    // of each recipe in the list of recipes
     for (AtKey element in sharedKeysList) {
       atKey
         ..key = element.key
@@ -167,20 +140,13 @@ class _OtherScreenState extends State<OtherScreen> {
         ..sharedBy = element.sharedBy
         ..metadata = metadata;
 
-      // Get the recipe
       String? response =
           (await AtClientManager.getInstance().atClient.get(atKey)).value;
 
-      // Adds all key/value pairs of [other] to this map.
-      // If a key of [other] is already in this map, its value is overwritten.
-      // The operation is equivalent to doing `this[key] = value` for each key
-      // and associated value in other. It iterates over [other], which must
-      // therefore not change during the iteration.
       if (response != null) {
         recipesMap.putIfAbsent(element.key, () => response);
       }
     }
-    // Return the entire map of shared recipes
     return recipesMap;
   }
 }

@@ -10,11 +10,6 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home';
-  // final bool shouldReload;
-
-  // const HomeScreen({
-  //   this.shouldReload,
-  // });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -23,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final List<DishWidget> sortedWidgets = <DishWidget>[];
-  //ClientSdkService clientSdkService = ClientSdkService.getInstance();
+
   String atSign =
       AtClientManager.getInstance().atClient.getCurrentAtSign().toString();
 
@@ -47,12 +42,10 @@ class _HomeScreenState extends State<HomeScreen>
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData) {
-                    // Returns a list of attributes for each dish.
                     List<String> dishAttributes = snapshot.data;
                     print(snapshot.data);
                     List<DishWidget> dishWidgets = <DishWidget>[];
                     for (String attributes in dishAttributes) {
-                      // Populate a DishWidget based on the attributes string.
                       List<String> attributesList =
                           attributes.split(constant.splitter);
                       if (attributesList.length >= 3) {
@@ -125,62 +118,34 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  /// Scan for [AtKey] objects with the correct regex.
   Future<List<String>> _scan() async {
-    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    // Instantiate a list of AtKey objects to house each cached recipe from
-    // the secondary server of the authenticated atsign
     List<AtKey> response;
 
-    // This regex is defined for searching for an AtKey object that carries the
-    // namespace of cookbook and that have been created by the authenticated
-    // atsign (the currently logged in atsign)
-
-    // Getting the recipes that are cached on the authenticated atsign's secondary
-    // server utilizing the regex expression defined earlier
     response =
         await AtClientManager.getInstance().atClient.getAtKeys(regex: regex);
     response.retainWhere((AtKey element) => !element.metadata!.isCached);
 
-    // Instantiating a list of strings
     List<String> responseList = <String>[];
 
-    // Looping through every instance of an AtKey object
     for (AtKey atKey in response) {
-      //AtClientManager.getInstance().atClient.delete(atKey);
-      // print(atKey.key);
-      // print('atKey.sharedBy => ${atKey.sharedBy}');
-      // print('atKey.sharedWith => ${atKey.sharedWith}');
       if (formatAtsign(atKey.sharedWith) !=
           formatAtsign(
               AtClientManager.getInstance().atClient.getCurrentAtSign())) {
         continue;
       }
 
-      // We get the current AtKey object that we are looping on
       String? value = (await _lookup(atKey)).value;
 
-      // In addition to the object we are on, we add the name of the recipe,
-      // the constant splitter to segregate the fields, and again, the value of
-      // the recipe which includes; description, ingredients, and image URL
       value = atKey.key! + constant.splitter + (value ?? "");
 
-      // Add current AtKey object to our list of strings defined earlier before
-      // for loop
       responseList.add(value);
     }
 
-    // After successfully looping through each AtKey object instance,
-    // return list of strings
     return responseList;
   }
 
-  /// Look up a value corresponding to an [AtKey] instance.
   Future<dynamic> _lookup(AtKey? atKey) async {
-    //ClientSdkService clientSdkService = ClientSdkService.getInstance();
-    // If an AtKey object exists
     if (atKey != null) {
-      // Simply get the AtKey object utilizing the serverDemoService's get method
       return AtClientManager.getInstance().atClient.get(atKey);
     }
     return null;

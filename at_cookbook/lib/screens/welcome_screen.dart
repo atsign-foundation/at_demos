@@ -29,7 +29,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
   bool showSpinner = false;
   String? atSign;
   AtClientManager clientManager = AtClientManager.getInstance();
-  //ClientSdkService  = ClientSdkService.getInstance();
+
   AtClientPreference? atClientPreference;
   final AtSignLogger _logger = AtSignLogger('Plugin example app');
   @override
