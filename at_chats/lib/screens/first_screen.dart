@@ -51,20 +51,24 @@ class _FirstScreen extends State<FirstScreen> {
                 child: TextButton(
                   onPressed: () async {
                     Onboarding(
-                      appAPIKey: AppStrings.prodAPIKey,
+                      appAPIKey: AppStrings.devAPIKey,
                       context: context,
                       atClientPreference: atClientPreference!,
                       domain: MixedConstants.ROOT_DOMAIN,
                       appColor: const Color.fromARGB(255, 240, 94, 62),
-                      onboard: (Map<String?, AtClientService> value, String? atsign) {
+                      onboard: (Map<String?, AtClientService> value, String? atsign) async {
                         clientSdkService.atClientServiceMap = value;
                         clientSdkService.atClientServiceInstance = value[atsign];
+                        KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+                        Map<String, bool?> a = await _keyChainManager.getAtsignsWithStatus();
+                        print(a);
                         _logger.finer('Successfully onboarded $atsign');
                       },
                       onError: (Object? error) {
                         _logger.severe('Onboarding throws ${error.toString()} error');
                       },
-                      nextScreen: SecondScreen(), rootEnvironment: RootEnvironment.Production,
+                      nextScreen: SecondScreen(),
+                      rootEnvironment: RootEnvironment.Production,
                     );
                   },
                   child: const Text(AppStrings.scan_qr),

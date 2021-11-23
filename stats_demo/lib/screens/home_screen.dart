@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:verbsTesting/screens/notify_screen.dart';
-import 'package:verbsTesting/services/server_demo_service.dart';
+import 'package:verbs_testing/screens/notify_screen.dart';
+import 'package:verbs_testing/services/server_demo_service.dart';
 
 import 'MonitorScreen.dart';
 import 'SyncScreen.dart';
@@ -85,7 +85,6 @@ class VerbButton extends StatelessWidget {
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => widget));
         },
-        child: Text(this.title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)));
+        child: Text(this.title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)));
   }
 }

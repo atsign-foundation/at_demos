@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Device 1",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "flutterMode": "debug",
+            // "args": [
+            //     "-d",
+            //     "emulator-5554"
+            // ]
+        },
+        {
+            "name": "Device 2",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "flutterMode": "debug",
+            // "args": [
+            //     "-d",
+            //     "emulator-5556"
+            // ]
+        }
+    ]
+}

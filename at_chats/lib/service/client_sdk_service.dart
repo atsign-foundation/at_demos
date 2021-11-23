@@ -28,8 +28,8 @@ class ClientSdkService {
     _atsign = null;
   }
 
-  Future<void> _sync() async {
-    await atClientInstance.syncService.sync;
+  void _sync() {
+    atClientInstance.syncService.sync;
   }
   AtClient? _getAtClientForAtsign() {
     return atClientInstance.atClient;
@@ -76,7 +76,7 @@ class ClientSdkService {
         .onboard(atClientPreference: atClientPreference, atsign: atsign);
     _atsign = atsign ?? await getAtSign();
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
-    await _sync();
+    _sync();
     return result;
   }
 
@@ -98,7 +98,7 @@ class ClientSdkService {
         jsonData: jsonData, decryptKey: decryptKey);
     _atsign = atsign;
     atClientServiceMap.putIfAbsent(_atsign, () => atClientServiceInstance!);
-    await _sync();
+    _sync();
     return result;
   }
 

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:verbsTesting/screens/notify_screen.dart';
-import 'package:verbsTesting/services/server_demo_service.dart';
+import 'package:verbs_testing/screens/notify_screen.dart';
+import 'package:verbs_testing/services/server_demo_service.dart';
 
 class MonitorScreen extends StatefulWidget {
   final String atSign;
@@ -46,17 +46,17 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: Text("Start Monitor"),
                           onPressed: _start_monitor,
-                          color: Colors.blueAccent,
-                          textColor: Colors.white,
+                          // color: Colors.blueAccent,
+                          // textColor: Colors.white,
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Text("Stop Monitor"),
                           onPressed: _stop_monitor,
-                          color: Colors.blueAccent,
-                          textColor: Colors.white,
+                          // color: Colors.blueAccent,
+                          // textColor: Colors.white,
                         ),
                       ],
                     ),
@@ -89,11 +89,13 @@ class _MonitorScreenState extends State<MonitorScreen> {
                                 if (data.dateTime != null)
                                   CustomText(
                                       keyTitle: 'DateTime',
-                                      value: DateFormat('dd-MM-yyyy')
-                                              .format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
-                                          ' ' +
-                                          DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))),
-                                // CustomText(keyTitle: 'Title', value: data.key),
+                                      value:
+                                          // DateFormat('dd-MM-yyyy')
+                                          //         .format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
+                                          ' '
+                                      // DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))
+                                      ),
+                                CustomText(keyTitle: 'Title', value: data.key),
                                 if (data.value != null) CustomText(keyTitle: 'Message', value: data.value),
                               ],
                             ),
@@ -164,9 +166,12 @@ class _MonitorScreenState extends State<MonitorScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: CustomText(
                           keyTitle: 'DateTime',
-                          value: DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
-                              ' ' +
-                              DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))),
+                          value:
+                              // DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
+                              ' '
+                          // +
+                          // DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))
+                          ),
                     ),
                   if (data.operation != null)
                     Padding(

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import 'package:verbsTesting/services/server_demo_service.dart';
-import 'package:verbsTesting/utils/at_conf.dart';
+import 'package:verbs_testing/services/server_demo_service.dart';
+import 'package:verbs_testing/utils/at_conf.dart';
 
 import 'home_screen.dart';
 
@@ -87,16 +87,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               showSpinner = true;
                               atSign = newValue;
                             });
-                            await _serverDemoService
-                                .storeDemoDataToKeychain(newValue);
+                            await _serverDemoService.storeDemoDataToKeychain(newValue);
                             setState(() {
                               showSpinner = false;
                             });
                           },
                           value: atSign,
                           //!= null ? atSign : null,
-                          items: at_demo_data.allAtsigns
-                              .map<DropdownMenuItem<String>>(
+                          items: at_demo_data.allAtsigns.map<DropdownMenuItem<String>>(
                             (String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -138,8 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
       FocusScope.of(context).unfocus();
       return Onboarding(
         context: context,
-        atClientPreference:
-            await _serverDemoService.getAtClientPreference(atSign),
+        atClientPreference: await _serverDemoService.getAtClientPreference(atSign),
         atsign: atSign,
         domain: AtConfig.root,
         appColor: Color.fromARGB(255, 43, 155, 219),
@@ -148,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _serverDemoService.atSign = atsign;
           await _serverDemoService.persistKeys(atsign);
         },
-        rootEnvironment: RootEnvironment.Production,
+        rootEnvironment: RootEnvironment.Testing,
         onError: (error) {
           print(error);
         },

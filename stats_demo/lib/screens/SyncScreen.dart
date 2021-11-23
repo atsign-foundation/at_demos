@@ -1,8 +1,7 @@
-import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
+import 'package:at_client/src/service/sync_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:verbsTesting/services/server_demo_service.dart';
-import 'package:at_client/src/manager/sync_manager.dart';
+import 'package:verbs_testing/services/server_demo_service.dart';
 import 'package:at_client/src/util/sync_util.dart';
 
 class SyncScreen extends StatefulWidget {
@@ -44,17 +43,17 @@ class _SyncScreenState extends State<SyncScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      RaisedButton(
-                        child: Text("Sync Once"),
-                        onPressed: _syncOnce,
-                        color: Colors.blueAccent,
-                        textColor: Colors.white,
-                      ),
-                      RaisedButton(
+                      // ElevatedButton(
+                      //   child: Text("Sync Once"),
+                      //   onPressed: _syncOnce,
+                      //   // color: Colors.blueAccent,
+                      //   // textColor: Colors.white,
+                      // ),
+                      ElevatedButton(
                         child: Text("Sync "),
                         onPressed: _sync,
-                        color: Colors.blueAccent,
-                        textColor: Colors.white,
+                        // color: Colors.blueAccent,
+                        // textColor: Colors.white,
                       ),
                     ],
                   ),
@@ -90,14 +89,17 @@ class _SyncScreenState extends State<SyncScreen> {
         ));
   }
 
-  Future<void> onSyncComplete(SyncManager manager) async {
+  Future<void> onSyncComplete() async {
     await Future.delayed(Duration(seconds: 3));
-    commitIdAfterSync =
+    var _commitIdAfterSync =
         (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
-    setState(() => {syncText = "Completed"});
+    setState(() {
+      commitIdAfterSync = _commitIdAfterSync;
+      syncText = "Completed";
+    });
   }
 
-  void onSyncException(SyncManager manager, Exception e) {
+  void onSyncException(SyncService syncService, Exception e) {
     setState(() {
       syncText = "SyncOnce throws " + e.toString();
     });
@@ -106,22 +108,29 @@ class _SyncScreenState extends State<SyncScreen> {
   _sync() async {
     commitIdBeforeSync = null;
     commitIdAfterSync = null;
-    commitIdBeforeSync =
+    var _commitIdBeforeSync =
         (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
     setState(() {
       syncText = "Sync started";
+      commitIdBeforeSync = _commitIdBeforeSync;
     });
-    await _serverDemoService.sync(onSyncComplete);
+    await _serverDemoService.sync(() {}).then((_) async {
+      await onSyncComplete();
+    }).catchError((e) {
+      // onSyncException(_serverDemoService, e);
+      print(e.toString());
+    });
   }
 
-  _syncOnce() async {
-    commitIdBeforeSync = null;
-    commitIdAfterSync = null;
-    commitIdBeforeSync =
-        (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
-    setState(() {
-      syncText = "SyncOnce started";
-    });
-    await _serverDemoService.syncOnce(onSyncComplete);
-  }
+  // _syncOnce() async {
+  //   commitIdBeforeSync = null;
+  //   commitIdAfterSync = null;
+  //   var _commitIdBeforeSync =
+  //       (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
+  //   setState(() {
+  //     _commitIdBeforeSync = commitIdBeforeSync;
+  //     syncText = "SyncOnce started";
+  //   });
+  //   await _serverDemoService.syncOnce(onSyncComplete);
+  // }
 }

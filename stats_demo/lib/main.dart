@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:verbsTesting/screens/home_screen.dart';
-import 'package:verbsTesting/screens/login_screen.dart';
+import 'package:verbs_testing/screens/home_screen.dart';
+import 'package:at_utils/at_logger.dart';
+import 'package:verbs_testing/screens/login_screen.dart';
 
 void main() {
+  AtSignLogger.root_level = 'finer';
   runApp(MyApp());
 }
 

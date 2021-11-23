@@ -3,7 +3,7 @@ import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:verbsTesting/services/server_demo_service.dart';
+import 'package:verbs_testing/services/server_demo_service.dart';
 
 class NotifyScreen extends StatefulWidget {
   const NotifyScreen({Key key}) : super(key: key);
@@ -23,6 +23,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
   bool showSpinner = false;
   String result;
   ButtonType activeButton = ButtonType.sentList;
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +83,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                         },
                         value: receiverAtsign,
                         //!= null ? atSign : null,
-                        items: at_demo_data.allAtsigns
-                            .map<DropdownMenuItem<String>>(
+                        items: at_demo_data.allAtsigns.map<DropdownMenuItem<String>>(
                           (String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -94,9 +100,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                   TextFormField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         hintText: 'Eg: Hello!',
                         labelText: 'Enter any text to notify'),
                   ),
@@ -118,11 +122,8 @@ class _NotifyScreenState extends State<NotifyScreen> {
                     children: [
                       MaterialButton(
                           elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.black87)),
-                          color: activeButton == ButtonType.myList
-                              ? Colors.blue
-                              : Colors.white,
+                          shape: RoundedRectangleBorder(side: BorderSide(color: Colors.black87)),
+                          color: activeButton == ButtonType.myList ? Colors.blue : Colors.white,
                           minWidth: MediaQuery.of(context).size.width * 0.45,
                           onPressed: () async {
                             await _serverDemoService.myNotifications();
@@ -133,30 +134,26 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           child: Text(
                             'Received',
                             style: TextStyle(
-                                fontSize: 14,
-                                color: activeButton == ButtonType.myList
-                                    ? Colors.white
-                                    : Colors.black),
+                                fontSize: 14, color: activeButton == ButtonType.myList ? Colors.white : Colors.black),
                           )),
                       MaterialButton(
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.black87)),
-                          minWidth: MediaQuery.of(context).size.width * 0.45,
-                          color: activeButton == ButtonType.sentList
-                              ? Colors.blue
-                              : Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              activeButton = ButtonType.sentList;
-                            });
-                          },
-                          child: Text('Sent',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: activeButton == ButtonType.sentList
-                                      ? Colors.white
-                                      : Colors.black))),
+                        elevation: 0.0,
+                        shape: RoundedRectangleBorder(side: BorderSide(color: Colors.black87)),
+                        minWidth: MediaQuery.of(context).size.width * 0.45,
+                        color: activeButton == ButtonType.sentList ? Colors.blue : Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            activeButton = ButtonType.sentList;
+                          });
+                        },
+                        child: Text(
+                          'Sent',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: activeButton == ButtonType.sentList ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   ..._getList()
@@ -181,8 +178,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
         for (var data in listData)
           Card(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: BorderSide(color: Colors.blueGrey)),
+                borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.blueGrey)),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
@@ -198,8 +194,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                       CustomText(keyTitle: 'To', value: data.toAtSign),
                       // CustomText(keyTitle: 'Title', value: data.key),
                       CustomText(keyTitle: 'Message', value: data.value),
-                      CustomText(
-                          keyTitle: 'Status', value: data.status ?? 'Unknown')
+                      CustomText(keyTitle: 'Status', value: data.status ?? 'Unknown')
                     ],
                   ],
                 ),
@@ -228,8 +223,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
               ),
             ),
           ),
-      if (listData.isEmpty && activeButton != null)
-        Center(child: Text('No Data Found!!'))
+      if (listData.isEmpty && activeButton != null) Center(child: Text('No Data Found!!'))
     ];
   }
 
@@ -264,42 +258,34 @@ class _NotifyScreenState extends State<NotifyScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: CustomText(keyTitle: 'Value', value: data.value),
                     ),
+                  if (data.status != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: CustomText(keyTitle: 'status', value: data.status),
+                    ),
                   if (data.fromAtSign != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(
-                          keyTitle: 'FromAtSign', value: data.fromAtSign),
+                      child: CustomText(keyTitle: 'FromAtSign', value: data.fromAtSign),
                     ),
                   if (data.dateTime != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: CustomText(
-                          keyTitle: 'DateTime',
-                          value: DateFormat('dd-MM-yyyy').format(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      data.dateTime)) +
-                              ' ' +
-                              DateFormat.jm().format(
-                                  (DateTime.fromMillisecondsSinceEpoch(
-                                      data.dateTime)))),
+                        keyTitle: 'DateTime',
+                        value: DateFormat.yMEd()
+                            .add_jms()
+                            .format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.dateTime))),
+                      ),
                     ),
                   if (data.operation != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(
-                          keyTitle: 'Operation', value: data.operation),
-                    ),
-                  if (data.status != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'Status', value: data.status),
+                      child: CustomText(keyTitle: 'Operation', value: data.operation),
                     ),
                 ],
               ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(_), child: Text('Close'))
-              ],
+              actions: [TextButton(onPressed: () => Navigator.pop(_), child: Text('Close'))],
             );
           });
         });
@@ -307,13 +293,22 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
   Future<void> _notify() async {
     FocusScope.of(context).unfocus();
-
+    if (_messageController.text.isEmpty) {
+      await Fluttertoast.showToast(
+          msg: 'Message is empty!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
     setState(() {
       showSpinner = true;
     });
     try {
-      await _serverDemoService.notify(_messageController.text, receiverAtsign,
-          doneCallBack: (value) {
+      await _serverDemoService.notify(_messageController.text, receiverAtsign, doneCallBack: (value) {
         print('value is $value');
         Fluttertoast.showToast(
             msg: 'Notified Succesfully!',
@@ -356,21 +351,14 @@ class CustomText extends StatelessWidget {
   final String keyTitle;
   final String value;
   final Color color;
-  const CustomText(
-      {@required this.keyTitle,
-      @required this.value,
-      this.color = Colors.black});
+  const CustomText({@required this.keyTitle, @required this.value, this.color = Colors.black});
 
   @override
   Widget build(BuildContext context) {
     return RichText(
-        text: TextSpan(
-            style: TextStyle(color: this.color, fontSize: 16),
-            children: [
-          TextSpan(
-              text: keyTitle + ': ',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(text: value)
-        ]));
+        text: TextSpan(style: TextStyle(color: this.color, fontSize: 16), children: [
+      TextSpan(text: keyTitle + ': ', style: TextStyle(fontWeight: FontWeight.bold)),
+      TextSpan(text: value)
+    ]));
   }
 }

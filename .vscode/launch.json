@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter1",
+            "type": "dart",
+            "request": "launch",
+            "program": "stats_demo/lib/main.dart"
+        },
+        {
+            "name": "Flutter2",
+            "type": "dart",
+            "request": "launch",
+            "program": "stats_demo/lib/main.dart"
+        }
+    ]
+}

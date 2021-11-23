@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:developer';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
-import 'package:verbsTesting/utils/at_conf.dart';
+import 'package:verbs_testing/utils/at_conf.dart';
 import 'package:at_client/at_client.dart';
 import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_client/src/response/default_response_parser.dart';
@@ -169,25 +171,31 @@ class ServerDemoService {
   ///notifies [receiverAtsign] with [value].
   Future<void> notify(String value, String receiverAtsign, {Function doneCallBack, Function errorCallBack}) async {
     try {
-      var metadata = Metadata()..ttr = 24 * 60 * 60 * 1000;
+      var metadata = Metadata()
+        ..ttr = 24 * 60 * 60 * 1000
+        ..createdAt = DateTime.now();
       var inputValue = value;
       AtKey atKey = AtKey()
         ..key = 'sample'
         ..metadata = metadata
         ..sharedWith = receiverAtsign;
-      await _atClientManager.notificationService
-          .notify(NotificationParams.forUpdate(atKey, value: value), onSuccess: doneCallBack, onError: errorCallBack);
-      // await _atClientManager.atClient.notify(atKey, value, OperationEnum.update, (value) {
-      //   var response = DefaultResponseParser().parse(value);
-      //   this.sentNotificationsList.insert(
-      //       0,
-      //       AtNotification(
-      //         id: response.response,
-      //         toAtSign: receiverAtsign,
-      //         value: inputValue,
-      //       ));
-      //   doneCallBack(response.response);
-      // }, errorCallBack);
+      await _atClientManager.notificationService.notify(NotificationParams.forUpdate(atKey, value: value),
+          onSuccess: (value) {
+        var notificationId = value.notificationID;
+        this.sentNotificationsList.insert(
+            0,
+            AtNotification(
+              id: notificationId,
+              toAtSign: receiverAtsign,
+              value: inputValue,
+              dateTime: DateTime.now().millisecondsSinceEpoch.toString(),
+              key: value.atKey.key,
+              operation: 'Update',
+              status: value.notificationStatusEnum.toString().split('.')[1],
+            ));
+        doneCallBack(value);
+      }, onError: log);
+      // await _atClientManager.atClient.notify(atKey, value, OperationEnum.update, , errorCallBack);
     } catch (e) {
       errorCallBack(e);
     }
@@ -243,7 +251,7 @@ class AtNotification {
   String key;
   String value;
   String operation;
-  int dateTime;
+  String dateTime;
   String status;
 
   AtNotification(
