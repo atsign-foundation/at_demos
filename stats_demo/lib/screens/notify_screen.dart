@@ -20,7 +20,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
   String receiverAtsign;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
-  bool showSpinner = false;
+  bool showSpinner = false, atSignSelected = false;
   String result;
   ButtonType activeButton = ButtonType.sentList;
 
@@ -73,24 +73,14 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           color: Colors.blueAccent,
                         ),
                         onChanged: (String newValue) async {
-                          //TODO:put validations
-                          // if(newValue == _serverDemoService.atSign){
-
-                          // }
                           setState(() {
+                            atSignSelected = true;
                             receiverAtsign = newValue;
                           });
                         },
                         value: receiverAtsign,
                         //!= null ? atSign : null,
-                        items: at_demo_data.allAtsigns.map<DropdownMenuItem<String>>(
-                          (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          },
-                        ).toList(),
+                        items: atSignsList(),
                       ),
                     ],
                   ),
@@ -98,15 +88,29 @@ class _NotifyScreenState extends State<NotifyScreen> {
                     height: 20,
                   ),
                   TextFormField(
+                    enabled: atSignSelected,
                     controller: _messageController,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         hintText: 'Eg: Hello!',
                         labelText: 'Enter any text to notify'),
                   ),
-                  MaterialButton(
-                      color: Colors.blue,
-                      minWidth: double.infinity,
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.75, 40)),
+                        foregroundColor: MaterialStateProperty.all(Colors.white),
+                        backgroundColor: MaterialStateProperty.all(Colors.blue),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
                       onPressed: _notify,
                       child: Text(
                         'Notify',
@@ -114,17 +118,38 @@ class _NotifyScreenState extends State<NotifyScreen> {
                       )),
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
               Expanded(
                   child: ListView(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      MaterialButton(
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(side: BorderSide(color: Colors.black87)),
-                          color: activeButton == ButtonType.myList ? Colors.blue : Colors.white,
-                          minWidth: MediaQuery.of(context).size.width * 0.45,
+                      ElevatedButton(
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(0.0),
+                            minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.45, 40)),
+                            foregroundColor: MaterialStateProperty.all(
+                                activeButton == ButtonType.myList ? Colors.blue : Colors.white),
+                            backgroundColor: MaterialStateProperty.all(
+                                activeButton == ButtonType.myList ? Colors.white : Colors.blue),
+                            shape: MaterialStateProperty.all(
+                              activeButton == ButtonType.myList
+                                  ? RoundedRectangleBorder(
+                                      side: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    )
+                                  : RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                            ),
+                          ),
                           onPressed: () async {
                             await _serverDemoService.myNotifications();
                             setState(() {
@@ -134,13 +159,31 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           child: Text(
                             'Received',
                             style: TextStyle(
-                                fontSize: 14, color: activeButton == ButtonType.myList ? Colors.white : Colors.black),
+                                fontSize: 14, color: activeButton == ButtonType.myList ? Colors.blue : Colors.white),
                           )),
-                      MaterialButton(
-                        elevation: 0.0,
-                        shape: RoundedRectangleBorder(side: BorderSide(color: Colors.black87)),
-                        minWidth: MediaQuery.of(context).size.width * 0.45,
-                        color: activeButton == ButtonType.sentList ? Colors.blue : Colors.white,
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(0.0),
+                          minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.45, 40)),
+                          foregroundColor: MaterialStateProperty.all(
+                              activeButton == ButtonType.sentList ? Colors.blue : Colors.white),
+                          backgroundColor: MaterialStateProperty.all(
+                              activeButton == ButtonType.sentList ? Colors.white : Colors.blue),
+                          shape: MaterialStateProperty.all(
+                            activeButton == ButtonType.sentList
+                                ? RoundedRectangleBorder(
+                                    side: BorderSide(color: Colors.blue),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  )
+                                : RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                          ),
+                        ),
                         onPressed: () async {
                           setState(() {
                             activeButton = ButtonType.sentList;
@@ -150,7 +193,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           'Sent',
                           style: TextStyle(
                             fontSize: 14,
-                            color: activeButton == ButtonType.sentList ? Colors.white : Colors.black,
+                            color: activeButton == ButtonType.sentList ? Colors.blue : Colors.white,
                           ),
                         ),
                       ),
@@ -166,6 +209,19 @@ class _NotifyScreenState extends State<NotifyScreen> {
     );
   }
 
+  Iterable<DropdownMenuItem<String>> atSignsList() {
+    var atSignsList = at_demo_data.allAtsigns.map<DropdownMenuItem<String>>(
+      (String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      },
+    ).toList();
+    atSignsList.removeWhere((element) => _serverDemoService.atSign == element.value);
+    return atSignsList;
+  }
+
   _getList() {
     List<AtNotification> listData = [];
     listData = activeButton == ButtonType.myList
@@ -176,53 +232,54 @@ class _NotifyScreenState extends State<NotifyScreen> {
       SizedBox(height: 10),
       if (listData.isNotEmpty)
         for (var data in listData)
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.blueGrey)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (activeButton == ButtonType.myList) ...[
-                      CustomText(keyTitle: 'From', value: data.fromAtSign),
-                      CustomText(keyTitle: 'Title', value: data.key),
-                      CustomText(keyTitle: 'operation', value: data.operation),
+          if (_serverDemoService.atSign != data.fromAtSign)
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.blueGrey)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (activeButton == ButtonType.myList) ...[
+                        CustomText(keyTitle: 'From', value: data.fromAtSign),
+                        CustomText(keyTitle: 'Title', value: data.key),
+                        CustomText(keyTitle: 'operation', value: data.operation),
+                      ],
+                      if (activeButton == ButtonType.sentList) ...[
+                        CustomText(keyTitle: 'To', value: data.toAtSign),
+                        // CustomText(keyTitle: 'Title', value: data.key),
+                        CustomText(keyTitle: 'Message', value: data.value),
+                        CustomText(keyTitle: 'Status', value: data.status ?? 'Unknown')
+                      ],
                     ],
-                    if (activeButton == ButtonType.sentList) ...[
-                      CustomText(keyTitle: 'To', value: data.toAtSign),
-                      // CustomText(keyTitle: 'Title', value: data.key),
-                      CustomText(keyTitle: 'Message', value: data.value),
-                      CustomText(keyTitle: 'Status', value: data.status ?? 'Unknown')
-                    ],
-                  ],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                        onPressed: () async {
-                          await _showNotificationDetails(data);
-                        },
-                        icon: Icon(Icons.info_outline)),
-                    if (activeButton == ButtonType.sentList)
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       IconButton(
                           onPressed: () async {
-                            await _serverDemoService.notifyStatus(data.id,
-                                doneCallBack: (value) {
-                                  setState(() {
-                                    data.status = value;
-                                  });
-                                },
-                                errorCallBack: (err) => print('$err'));
+                            await _showNotificationDetails(data);
                           },
-                          icon: Icon(Icons.refresh)),
-                  ],
+                          icon: Icon(Icons.info_outline)),
+                      if (activeButton == ButtonType.sentList)
+                        IconButton(
+                            onPressed: () async {
+                              await _serverDemoService.notifyStatus(data.id,
+                                  doneCallBack: (value) {
+                                    setState(() {
+                                      data.status = value;
+                                    });
+                                  },
+                                  errorCallBack: (err) => print('$err'));
+                            },
+                            icon: Icon(Icons.refresh)),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
       if (listData.isEmpty && activeButton != null) Center(child: Text('No Data Found!!'))
     ];
   }
@@ -273,9 +330,11 @@ class _NotifyScreenState extends State<NotifyScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: CustomText(
                         keyTitle: 'DateTime',
-                        value: DateFormat.yMEd()
-                            .add_jms()
-                            .format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.dateTime))),
+                        value: DateFormat.yMEd().add_jms().format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(data.dateTime.toString()),
+                              ),
+                            ),
                       ),
                     ),
                   if (data.operation != null)
@@ -338,7 +397,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
           showSpinner = false;
         });
       });
-    } catch (err, stackTrace) {
+    } on Exception catch (err, stackTrace) {
       print('$stackTrace');
       setState(() {
         showSpinner = false;

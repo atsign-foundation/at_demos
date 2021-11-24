@@ -26,6 +26,13 @@ class _MonitorScreenState extends State<MonitorScreen> {
   List<AtNotification> notificationList = [];
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -88,14 +95,15 @@ class _MonitorScreenState extends State<MonitorScreen> {
                                 CustomText(keyTitle: 'Title', value: data.key),
                                 if (data.dateTime != null)
                                   CustomText(
-                                      keyTitle: 'DateTime',
-                                      value:
-                                          // DateFormat('dd-MM-yyyy')
-                                          //         .format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
-                                          ' '
-                                      // DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))
-                                      ),
-                                CustomText(keyTitle: 'Title', value: data.key),
+                                    keyTitle: 'DateTime',
+                                    value: DateFormat.yMEd().add_jms().format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(
+                                              data.dateTime.toString(),
+                                            ),
+                                          ),
+                                        ),
+                                  ),
                                 if (data.value != null) CustomText(keyTitle: 'Message', value: data.value),
                               ],
                             ),
@@ -165,13 +173,13 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: CustomText(
-                          keyTitle: 'DateTime',
-                          value:
-                              // DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(data.dateTime)) +
-                              ' '
-                          // +
-                          // DateFormat.jm().format((DateTime.fromMillisecondsSinceEpoch(data.dateTime)))
-                          ),
+                        keyTitle: 'DateTime',
+                        value: DateFormat.yMEd().add_jms().format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(data.dateTime.toString()),
+                              ),
+                            ),
+                      ),
                     ),
                   if (data.operation != null)
                     Padding(
@@ -204,7 +212,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
     setState(() {
       monitorStatus = "Monitor stopped";
       notifications = '';
-      notificationList = [];
+      notificationList.clear();
     });
     _serverDemoService.getMonitorService(widget.atSign, chanageText, chanageText, () {
       print('retrying.............');
@@ -212,13 +220,20 @@ class _MonitorScreenState extends State<MonitorScreen> {
   }
 
   void chanageText(var newText) async {
-    var atNotification = AtNotification.fromJson(jsonDecode(newText));
-    if (atNotification != null) {
-      // var result = await _serverDemoService.getFromNotification(atNotification);
-      // atNotification.value = result;
-      notificationList.insert(0, atNotification);
-      setState(() => {});
-      // });
+    try {
+      newText = newText.replaceAll('notification: ', '');
+      var atNotification = AtNotification.fromJson(jsonDecode(newText));
+      if (atNotification != null) {
+        // var result = await _serverDemoService.getFromNotification(atNotification);
+        // atNotification.value = result;
+        setState(() {
+          notificationList.clear();
+          notificationList.insert(0, atNotification);
+        });
+        // });
+      }
+    } on FormatException catch (e) {
+      print('Format Exception : $e');
     }
   }
 }

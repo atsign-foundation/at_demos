@@ -188,7 +188,7 @@ class ServerDemoService {
               id: notificationId,
               toAtSign: receiverAtsign,
               value: inputValue,
-              dateTime: DateTime.now().millisecondsSinceEpoch.toString(),
+              dateTime: DateTime.now().millisecondsSinceEpoch,
               key: value.atKey.key,
               operation: 'Update',
               status: value.notificationStatusEnum.toString().split('.')[1],
@@ -196,7 +196,7 @@ class ServerDemoService {
         doneCallBack(value);
       }, onError: log);
       // await _atClientManager.atClient.notify(atKey, value, OperationEnum.update, , errorCallBack);
-    } catch (e) {
+    } on Exception catch (e) {
       errorCallBack(e);
     }
   }
@@ -251,7 +251,7 @@ class AtNotification {
   String key;
   String value;
   String operation;
-  String dateTime;
+  int dateTime;
   String status;
 
   AtNotification(

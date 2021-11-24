@@ -43,17 +43,9 @@ class _SyncScreenState extends State<SyncScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      // ElevatedButton(
-                      //   child: Text("Sync Once"),
-                      //   onPressed: _syncOnce,
-                      //   // color: Colors.blueAccent,
-                      //   // textColor: Colors.white,
-                      // ),
                       ElevatedButton(
                         child: Text("Sync "),
                         onPressed: _sync,
-                        // color: Colors.blueAccent,
-                        // textColor: Colors.white,
                       ),
                     ],
                   ),
@@ -121,16 +113,4 @@ class _SyncScreenState extends State<SyncScreen> {
       print(e.toString());
     });
   }
-
-  // _syncOnce() async {
-  //   commitIdBeforeSync = null;
-  //   commitIdAfterSync = null;
-  //   var _commitIdBeforeSync =
-  //       (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
-  //   setState(() {
-  //     _commitIdBeforeSync = commitIdBeforeSync;
-  //     syncText = "SyncOnce started";
-  //   });
-  //   await _serverDemoService.syncOnce(onSyncComplete);
-  // }
 }
