@@ -22,6 +22,7 @@ class MonitorScreen extends StatefulWidget {
 class _MonitorScreenState extends State<MonitorScreen> {
   String notifications = "";
   String monitorStatus = '';
+  bool monitorStarted = false;
   ServerDemoService _serverDemoService = ServerDemoService.getInstance();
   List<AtNotification> notificationList = [];
 
@@ -50,22 +51,24 @@ class _MonitorScreenState extends State<MonitorScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: Text("Start Monitor"),
-                          onPressed: _start_monitor,
-                          // color: Colors.blueAccent,
-                          // textColor: Colors.white,
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0),
+                        foregroundColor: MaterialStateProperty.all(Colors.white),
+                        overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all(monitorStarted ? Colors.red : Colors.green),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
                         ),
-                        ElevatedButton(
-                          child: Text("Stop Monitor"),
-                          onPressed: _stop_monitor,
-                          // color: Colors.blueAccent,
-                          // textColor: Colors.white,
-                        ),
-                      ],
+                      ),
+                      child: Text("${monitorStarted ? 'Stop' : 'Start'} Monitor"),
+                      onPressed: monitorStarted ? _stop_monitor : _start_monitor,
+                      // color: Colors.blueAccent,
+                      // textColor: Colors.white,
                     ),
                   ],
                 ),
@@ -81,53 +84,37 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    for (var data in notificationList)
-                      Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.blueGrey)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            subtitle: Column(
+                    if (monitorStarted & (notificationList.isEmpty || notificationList == null))
+                      CircularProgressIndicator(),
+                    if (monitorStarted)
+                      for (var data in notificationList)
+                        Center(
+                          child: Container(
+                            height: 300,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                CustomText(keyTitle: 'From', value: data.fromAtSign),
-                                CustomText(keyTitle: 'Title', value: data.key),
+                                if (data.id != null) CustomText(keyTitle: 'Id', value: data.id),
+                                if (data.key != null) CustomText(keyTitle: 'Key', value: data.key),
+                                if (data.value != null) CustomText(keyTitle: 'Server Commit Id', value: data.value),
+                                if (data.fromAtSign != null) CustomText(keyTitle: 'FromAtSign', value: data.fromAtSign),
                                 if (data.dateTime != null)
                                   CustomText(
                                     keyTitle: 'DateTime',
                                     value: DateFormat.yMEd().add_jms().format(
                                           DateTime.fromMillisecondsSinceEpoch(
-                                            int.parse(
-                                              data.dateTime.toString(),
-                                            ),
+                                            int.parse(data.dateTime.toString()),
                                           ),
                                         ),
                                   ),
-                                if (data.value != null) CustomText(keyTitle: 'Message', value: data.value),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      _showNotificationDetails(data);
-                                    },
-                                    icon: Icon(Icons.info_outline)),
+                                if (data.operation != null) CustomText(keyTitle: 'Operation', value: data.operation),
+                                if (data.status != null) CustomText(keyTitle: 'Status', value: data.status),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                    Text(
-                      notifications,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Open Sans',
-                        fontSize: 20,
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -136,71 +123,9 @@ class _MonitorScreenState extends State<MonitorScreen> {
         ));
   }
 
-  _showNotificationDetails(AtNotification data) {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return StatefulBuilder(builder: (_, stateSet) {
-            return AlertDialog(
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (data.id != null)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                      ),
-                      child: CustomText(keyTitle: 'Id', value: data.id),
-                    ),
-                  if (data.key != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'Key', value: data.key),
-                    ),
-                  if (data.value != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'Value', value: data.value),
-                    ),
-                  if (data.fromAtSign != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'FromAtSign', value: data.fromAtSign),
-                    ),
-                  if (data.dateTime != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(
-                        keyTitle: 'DateTime',
-                        value: DateFormat.yMEd().add_jms().format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(data.dateTime.toString()),
-                              ),
-                            ),
-                      ),
-                    ),
-                  if (data.operation != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'Operation', value: data.operation),
-                    ),
-                  if (data.status != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: CustomText(keyTitle: 'Status', value: data.status),
-                    ),
-                ],
-              ),
-              actions: [TextButton(onPressed: () => Navigator.pop(_), child: Text('Close'))],
-            );
-          });
-        });
-  }
-
   _start_monitor() async {
     setState(() {
+      monitorStarted = true;
       monitorStatus = "Monitoring started";
     });
     await _serverDemoService.getMonitorService(widget.atSign, chanageText, chanageText, () {
@@ -212,6 +137,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
     setState(() {
       monitorStatus = "Monitor stopped";
       notifications = '';
+      monitorStarted = false;
       notificationList.clear();
     });
     _serverDemoService.getMonitorService(widget.atSign, chanageText, chanageText, () {
@@ -224,13 +150,10 @@ class _MonitorScreenState extends State<MonitorScreen> {
       newText = newText.replaceAll('notification: ', '');
       var atNotification = AtNotification.fromJson(jsonDecode(newText));
       if (atNotification != null) {
-        // var result = await _serverDemoService.getFromNotification(atNotification);
-        // atNotification.value = result;
         setState(() {
           notificationList.clear();
           notificationList.insert(0, atNotification);
         });
-        // });
       }
     } on FormatException catch (e) {
       print('Format Exception : $e');
