@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:verbs_testing/services/server_demo_service.dart';
 
 class NotifyScreen extends StatefulWidget {
@@ -38,139 +37,103 @@ class _NotifyScreenState extends State<NotifyScreen> {
       appBar: AppBar(
         title: Text(' Notify Testing'),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  Text('Hi, ${_serverDemoService.atSign}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text('Receiver:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                          )),
-                      DropdownButton<String>(
-                        hint: Text('\tPick an @sign'),
-                        icon: Icon(Icons.keyboard_arrow_down),
-                        iconSize: 24,
-                        elevation: 16,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Text('Hi, ${_serverDemoService.atSign}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text('Receiver:',
                         style: TextStyle(
+                          color: Colors.black,
                           fontSize: 20.0,
-                          color: Colors.black87,
-                        ),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.blueAccent,
-                        ),
-                        onChanged: (String newValue) async {
-                          setState(() {
-                            atSignSelected = true;
-                            receiverAtsign = newValue;
-                          });
-                        },
-                        value: receiverAtsign,
-                        //!= null ? atSign : null,
-                        items: atSignsList(),
+                        )),
+                    DropdownButton<String>(
+                      hint: Text('\tPick an @sign'),
+                      icon: Icon(Icons.keyboard_arrow_down),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.black87,
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    enabled: atSignSelected,
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        hintText: 'Eg: Hello!',
-                        labelText: 'Enter any text to notify'),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.75, 40)),
-                        foregroundColor: MaterialStateProperty.all(Colors.white),
-                        backgroundColor: MaterialStateProperty.all(Colors.blue),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.blueAccent,
+                      ),
+                      onChanged: (String newValue) async {
+                        setState(() {
+                          atSignSelected = true;
+                          receiverAtsign = newValue;
+                        });
+                      },
+                      value: receiverAtsign,
+                      //!= null ? atSign : null,
+                      items: atSignsList(),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  enabled: atSignSelected,
+                  controller: _messageController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      hintText: 'Eg: Hello!',
+                      labelText: 'Enter any text to notify'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.75, 40)),
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
                         ),
                       ),
-                      onPressed: _notify,
-                      child: Text(
-                        'Notify',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                  child: ListView(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                          style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(0.0),
-                            minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.45, 40)),
-                            foregroundColor: MaterialStateProperty.all(
-                                activeButton == ButtonType.myList ? Colors.blue : Colors.white),
-                            backgroundColor: MaterialStateProperty.all(
-                                activeButton == ButtonType.myList ? Colors.white : Colors.blue),
-                            shape: MaterialStateProperty.all(
-                              activeButton == ButtonType.myList
-                                  ? RoundedRectangleBorder(
-                                      side: BorderSide(color: Colors.blue),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    )
-                                  : RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                            ),
-                          ),
-                          onPressed: () async {
-                            await _serverDemoService.myNotifications();
-                            setState(() {
-                              activeButton = ButtonType.myList;
-                            });
-                          },
-                          child: Text(
-                            'Received',
-                            style: TextStyle(
-                                fontSize: 14, color: activeButton == ButtonType.myList ? Colors.blue : Colors.white),
-                          )),
-                      ElevatedButton(
+                    ),
+                    onPressed: _notify,
+                    child: Text(
+                      'Notify',
+                      style: TextStyle(fontSize: 14, color: Colors.white),
+                    )),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+                child: ListView(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
                           minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.45, 40)),
-                          foregroundColor: MaterialStateProperty.all(
-                              activeButton == ButtonType.sentList ? Colors.blue : Colors.white),
-                          backgroundColor: MaterialStateProperty.all(
-                              activeButton == ButtonType.sentList ? Colors.white : Colors.blue),
+                          foregroundColor:
+                              MaterialStateProperty.all(activeButton == ButtonType.myList ? Colors.blue : Colors.white),
+                          backgroundColor:
+                              MaterialStateProperty.all(activeButton == ButtonType.myList ? Colors.white : Colors.blue),
                           shape: MaterialStateProperty.all(
-                            activeButton == ButtonType.sentList
+                            activeButton == ButtonType.myList
                                 ? RoundedRectangleBorder(
                                     side: BorderSide(color: Colors.blue),
                                     borderRadius: BorderRadius.all(
@@ -185,25 +148,58 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           ),
                         ),
                         onPressed: () async {
+                          await _serverDemoService.myNotifications();
                           setState(() {
-                            activeButton = ButtonType.sentList;
+                            activeButton = ButtonType.myList;
                           });
                         },
                         child: Text(
-                          'Sent',
+                          'Received',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: activeButton == ButtonType.sentList ? Colors.blue : Colors.white,
-                          ),
+                              fontSize: 14, color: activeButton == ButtonType.myList ? Colors.blue : Colors.white),
+                        )),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0.0),
+                        minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.45, 40)),
+                        foregroundColor:
+                            MaterialStateProperty.all(activeButton == ButtonType.sentList ? Colors.blue : Colors.white),
+                        backgroundColor:
+                            MaterialStateProperty.all(activeButton == ButtonType.sentList ? Colors.white : Colors.blue),
+                        shape: MaterialStateProperty.all(
+                          activeButton == ButtonType.sentList
+                              ? RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.blue),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                )
+                              : RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
                         ),
                       ),
-                    ],
-                  ),
-                  ..._getList()
-                ],
-              ))
-            ],
-          ),
+                      onPressed: () async {
+                        setState(() {
+                          activeButton = ButtonType.sentList;
+                        });
+                      },
+                      child: Text(
+                        'Sent',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: activeButton == ButtonType.sentList ? Colors.blue : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                ..._getList()
+              ],
+            ))
+          ],
         ),
       ),
     );

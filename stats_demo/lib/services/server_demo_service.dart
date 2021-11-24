@@ -3,7 +3,6 @@ import 'dart:core';
 import 'dart:developer';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_server_status/at_server_status.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:at_commons/at_commons.dart';
 import 'package:at_demo_data/at_demo_data.dart' as at_demo_data;
