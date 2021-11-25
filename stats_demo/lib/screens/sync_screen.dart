@@ -10,31 +10,30 @@ class SyncScreen extends StatefulWidget {
   final String atSign;
 
   const SyncScreen({
-    Key key,
-    @required this.atSign,
-  })  : assert(atSign != null),
-        super(key: key);
+    Key? key,
+    required this.atSign,
+  }) : super(key: key);
 
   @override
   _SyncScreenState createState() => _SyncScreenState();
 }
 
 class _SyncScreenState extends State<SyncScreen> {
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
   String syncText = '';
-  String commitIdBeforeSync;
-  String commitIdAfterSync;
+  String? commitIdBeforeSync;
+  String? commitIdAfterSync;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Sync Testing"),
+          title: const Text('Sync Testing'),
         ),
         body: Center(
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 35,
               ),
               Column(
@@ -44,14 +43,14 @@ class _SyncScreenState extends State<SyncScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       ElevatedButton(
-                        child: Text("Sync "),
+                        child: const Text('Sync '),
                         onPressed: _sync,
                       ),
                     ],
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Column(
@@ -60,20 +59,20 @@ class _SyncScreenState extends State<SyncScreen> {
                   Text(
                     syncText,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20),
+                    style: const TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   if (commitIdBeforeSync != null)
-                    Text('commitIdBeforeSync: ' + commitIdBeforeSync,
-                        style: TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20)),
-                  SizedBox(
+                    Text('commitIdBeforeSync: ' + commitIdBeforeSync!,
+                        style: const TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20)),
+                  const SizedBox(
                     height: 20,
                   ),
                   if (commitIdAfterSync != null)
-                    Text('commitIdAfterSync: ' + commitIdAfterSync,
-                        style: TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20)),
+                    Text('commitIdAfterSync: ' + commitIdAfterSync!,
+                        style: const TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20)),
                 ],
               ),
             ],
@@ -82,18 +81,18 @@ class _SyncScreenState extends State<SyncScreen> {
   }
 
   Future<void> onSyncComplete() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     var _commitIdAfterSync =
-        (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
+        (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign!))?.commitId?.toString();
     setState(() {
       commitIdAfterSync = _commitIdAfterSync;
-      syncText = "Completed";
+      syncText = 'Completed';
     });
   }
 
   void onSyncException(SyncService syncService, Exception e) {
     setState(() {
-      syncText = "SyncOnce throws " + e.toString();
+      syncText = 'SyncOnce throws ' + e.toString();
     });
   }
 
@@ -101,9 +100,9 @@ class _SyncScreenState extends State<SyncScreen> {
     commitIdBeforeSync = null;
     commitIdAfterSync = null;
     var _commitIdBeforeSync =
-        (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign))?.commitId?.toString();
+        (await SyncUtil.getLastSyncedEntry(null, atSign: _serverDemoService.atSign!))?.commitId?.toString();
     setState(() {
-      syncText = "Sync started";
+      syncText = 'Sync started';
       commitIdBeforeSync = _commitIdBeforeSync;
     });
     await _serverDemoService.sync(() {}).then((_) async {

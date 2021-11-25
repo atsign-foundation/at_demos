@@ -22,20 +22,20 @@ class ServerDemoService {
 
   factory ServerDemoService.getInstance() => _singleton;
 
-  AtClientService atClientServiceInstance;
-  Map<String, AtClientService> atClientServiceMap = {};
-  String atSign;
+  AtClientService? atClientServiceInstance;
+  Map<String?, AtClientService> atClientServiceMap = {};
+  String? atSign;
   List<AtNotification> myNotificationsList = [];
   List<AtNotification> sentNotificationsList = [];
 
-  Monitor _monitorService;
+  Monitor? _monitorService;
 
-  var _logger = AtSignLogger('Server Demo Service');
+  final AtSignLogger _logger = AtSignLogger('Server Demo Service');
 
   static final KeyChainManager _keyChainManager = KeyChainManager.getInstance();
-  AtClientManager _atClientManager = AtClientManager.getInstance();
+  final AtClientManager _atClientManager = AtClientManager.getInstance();
 
-  AtClientService getClientServiceForAtSign(String atsign) {
+  AtClientService? getClientServiceForAtSign(String atsign) {
     if (atClientServiceMap.containsKey(atsign)) {
       return atClientServiceMap[atsign];
     }
@@ -43,13 +43,13 @@ class ServerDemoService {
     return service;
   }
 
-  Future<AtClientPreference> getAtClientPreference(String atSign) async {
+  Future<AtClientPreference> getAtClientPreference(String? atSign) async {
     final appDocumentDirectory = await path_provider.getApplicationSupportDirectory();
     final path = appDocumentDirectory.path;
     final _atClientPreference = AtClientPreference()
       ..isLocalStoreRequired = true
       ..commitLogPath = path
-      ..cramSecret = at_demo_data.cramKeyMap[atSign]
+      ..cramSecret = at_demo_data.cramKeyMap[atSign!]
       ..namespace = AtConfig.namespace
       ..rootDomain = AtConfig.root
       ..hiveStoragePath = path;
@@ -64,10 +64,10 @@ class ServerDemoService {
   }
 
   Future<void> storeDemoDataToKeychain(String atsign) async {
-    const String KEYCHAIN_ENCRYPTION_PRIVATE_KEY = '_encryption_private_key';
-    const String KEYCHAIN_ENCRYPTION_PUBLIC_KEY = '_encryption_public_key';
-    const String KEYCHAIN_SELF_ENCRYPTION_KEY = '_aesKey';
-    var decryptKey = at_demo_data.aesKeyMap[atsign];
+    const String keychainEncryptionPrivateKey = '_encryption_private_key';
+    const String keychainEncryptionPublicKey = '_encryption_public_key';
+    const String keychainSelfEncryptionKey = '_aesKey';
+    var decryptKey = at_demo_data.aesKeyMap[atsign]!;
     var pkamPublicKey = at_demo_data.pkamPublicKeyMap[atsign];
 
     var pkamPrivateKey = at_demo_data.pkamPrivateKeyMap[atsign];
@@ -75,54 +75,57 @@ class ServerDemoService {
     // Save pkam public/private key pair in keychain
     await _keyChainManager.storeCredentialToKeychain(atsign, privateKey: pkamPrivateKey, publicKey: pkamPublicKey);
 
-    var encryptionPublicKey = at_demo_data.encryptionPublicKeyMap[atsign];
-    await _keyChainManager.putValue(atsign, KEYCHAIN_ENCRYPTION_PUBLIC_KEY, encryptionPublicKey);
+    var encryptionPublicKey = at_demo_data.encryptionPublicKeyMap[atsign]!;
+    await _keyChainManager.putValue(atsign, keychainEncryptionPublicKey, encryptionPublicKey);
 
-    var encryptionPrivateKey = at_demo_data.encryptionPrivateKeyMap[atsign];
-    await _keyChainManager.putValue(atsign, KEYCHAIN_ENCRYPTION_PRIVATE_KEY, encryptionPrivateKey);
-    await _keyChainManager.putValue(atsign, KEYCHAIN_SELF_ENCRYPTION_KEY, decryptKey);
+    var encryptionPrivateKey = at_demo_data.encryptionPrivateKeyMap[atsign]!;
+    await _keyChainManager.putValue(atsign, keychainEncryptionPrivateKey, encryptionPrivateKey);
+    await _keyChainManager.putValue(atsign, keychainSelfEncryptionKey, decryptKey);
   }
 
   ///persisting keys into keystore for [atSign].
-  Future<void> persistKeys(String atSign) async {
-    var pkamPublicKey = at_demo_data.pkamPublicKeyMap[atSign];
+  Future<void> persistKeys(String? atSign) async {
+    var pkamPublicKey = at_demo_data.pkamPublicKeyMap[atSign!]!;
 
-    var pkamPrivateKey = at_demo_data.pkamPrivateKeyMap[atSign];
+    var pkamPrivateKey = at_demo_data.pkamPrivateKeyMap[atSign]!;
 
-    var encryptPrivateKey = at_demo_data.encryptionPrivateKeyMap[atSign];
+    var encryptPrivateKey = at_demo_data.encryptionPrivateKeyMap[atSign]!;
 
     var encryptPublicKey = at_demo_data.encryptionPublicKeyMap[atSign];
 
-    var selfEncryptionKey = at_demo_data.aesKeyMap[atSign];
+    var selfEncryptionKey = at_demo_data.aesKeyMap[atSign]!;
 
     var atClient = _atClientManager.atClient;
 
-    await atClient.getLocalSecondary().putValue(AT_PKAM_PUBLIC_KEY, pkamPublicKey);
-    await atClient.getLocalSecondary().putValue(AT_PKAM_PRIVATE_KEY, pkamPrivateKey);
-    await atClient.getLocalSecondary().putValue(AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey);
+    await atClient.getLocalSecondary()!.putValue(AT_PKAM_PUBLIC_KEY, pkamPublicKey);
+    await atClient.getLocalSecondary()!.putValue(AT_PKAM_PRIVATE_KEY, pkamPrivateKey);
+    await atClient.getLocalSecondary()!.putValue(AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey);
     var updateBuilder = UpdateVerbBuilder()
       ..atKey = 'publickey'
       ..isPublic = true
       ..sharedBy = atSign
       ..value = encryptPublicKey;
-    await atClient.getLocalSecondary().executeVerb(updateBuilder, sync: true);
+    await atClient.getLocalSecondary()!.executeVerb(updateBuilder, sync: true);
 
-    await atClient.getLocalSecondary().putValue(AT_ENCRYPTION_SELF_KEY, selfEncryptionKey);
+    await atClient.getLocalSecondary()!.putValue(AT_ENCRYPTION_SELF_KEY, selfEncryptionKey);
   }
 
-  Future<String> get(AtKey atKey) async {
+  Future<String?> get(AtKey atKey) async {
     final result = await _atClientManager.atClient.get(atKey);
     return result.value;
   }
 
-  Future<String> getFromNotification(AtNotification notification) async {
-    var metadata = Metadata()..isCached = true;
+  Future<String?> getFromNotification(
+    AtNotification notification, {
+    required bool isCached,
+  }) async {
+    var metadata = Metadata()..isCached = isCached;
     var atKey = AtKey()
       ..sharedBy = notification.fromAtSign
       ..sharedWith = notification.toAtSign
       ..key = notification.key
       ..metadata = metadata;
-    var result = await this.get(atKey);
+    var result = await get(atKey);
     return result;
   }
 
@@ -130,21 +133,21 @@ class ServerDemoService {
 
   Future<bool> delete(AtKey atKey) async => await _atClientManager.atClient.delete(atKey);
 
-  Future<List<AtKey>> getAtKeys({String sharedBy}) async => await _atClientManager.atClient.getAtKeys(
+  Future<List<AtKey>> getAtKeys({String? sharedBy}) async => await _atClientManager.atClient.getAtKeys(
         regex: AtConfig.namespace,
         sharedBy: sharedBy,
       );
 
   ///Fetches atsign from device keychain.
-  Future<String> getAtSign() async {
+  Future<String?> getAtSign() async {
     return _atClientManager.atClient.getCurrentAtSign();
   }
 
   void startMonitoring(String atsign, Function notificationCallback) {
-    _atClientManager.notificationService.subscribe(regex: AtConfig.namespace).listen(notificationCallback);
+    _atClientManager.notificationService.subscribe(regex: AtConfig.namespace).listen(notificationCallback());
   }
 
-  Monitor getMonitorService(
+  Monitor? getMonitorService(
       String atSign, Function notificationCallBack, Function errorCallBack, Function retryCallBack) {
     if (_monitorService != null) return _monitorService;
 
@@ -157,7 +160,7 @@ class ServerDemoService {
       ..hiveStoragePath = '/hive/storage/path'
       ..privateKey = at_demo_data.pkamPrivateKeyMap[atSign];
 
-    var monitorPreference = MonitorPreference();
+    MonitorPreference monitorPreference = MonitorPreference();
     monitorPreference.keepAlive = true;
     return _monitorService =
         Monitor(notificationCallBack, errorCallBack, atSign, preference, monitorPreference, retryCallBack);
@@ -168,12 +171,12 @@ class ServerDemoService {
   }
 
   ///notifies [receiverAtsign] with [value].
-  Future<void> notify(String value, String receiverAtsign, {Function doneCallBack, Function errorCallBack}) async {
+  Future<void> notify(String value, String? receiverAtsign, {Function? doneCallBack, Function? errorCallBack}) async {
     try {
-      var metadata = Metadata()
+      Metadata metadata = Metadata()
         ..ttr = 24 * 60 * 60 * 1000
         ..createdAt = DateTime.now();
-      var inputValue = value;
+      String inputValue = value;
       AtKey atKey = AtKey()
         ..key = 'sample'
         ..metadata = metadata
@@ -181,7 +184,7 @@ class ServerDemoService {
       await _atClientManager.notificationService.notify(NotificationParams.forUpdate(atKey, value: value),
           onSuccess: (value) {
         var notificationId = value.notificationID;
-        this.sentNotificationsList.insert(
+        sentNotificationsList.insert(
             0,
             AtNotification(
               id: notificationId,
@@ -192,36 +195,37 @@ class ServerDemoService {
               operation: 'Update',
               status: value.notificationStatusEnum.toString().split('.')[1],
             ));
-        doneCallBack(value);
+        doneCallBack!(value);
       }, onError: log);
       // await _atClientManager.atClient.notify(atKey, value, OperationEnum.update, , errorCallBack);
     } on Exception catch (e) {
-      errorCallBack(e);
+      errorCallBack!(e);
     }
   }
 
   //status of a notifications
-  Future<void> notifyStatus(String notificationId, {Function doneCallBack, Function errorCallBack}) async {
+  Future<void> notifyStatus(String notificationId, {Function? doneCallBack, Function? errorCallBack}) async {
     await _atClientManager.atClient.notifyStatus(notificationId);
   }
 
   //notifications list from past 1day will be fetched.
   Future<void> myNotifications() async {
     try {
-      await this.sync((value) => print('sync success: $value'));
+      await sync((value) => print('sync success: $value'));
       var date = DateTime.now();
-      date = date.subtract(Duration(days: 1));
+      date = date.subtract(const Duration(days: 1));
       var response = await _atClientManager.atClient.notifyList(
         fromDate: date.toString(),
       );
       var parserResponse = DefaultResponseParser().parse(response);
-      if (parserResponse.response == 'null' || parserResponse.response == null) {
-        return [];
+      if (parserResponse.response == 'null') {
+        myNotificationsList = [];
+        return;
       }
-      this.myNotificationsList =
+      myNotificationsList =
           AtNotification.fromJsonList(List<Map<String, dynamic>>.from(jsonDecode(parserResponse.response)));
       //descending order
-      this.myNotificationsList.sort((e1, e2) => e2.dateTime.compareTo(e1.dateTime));
+      myNotificationsList.sort((e1, e2) => e2.dateTime!.compareTo(e1.dateTime!));
     } catch (e) {
       _logger.severe('Fetching notification list throws $e');
     }
@@ -232,26 +236,26 @@ class ServerDemoService {
   }
 
   Future<void> reset() async {
-    await _keyChainManager.resetAtSignFromKeychain(atSign);
+    await _keyChainManager.resetAtSignFromKeychain(atSign!);
   }
 }
 
 class BackupKeyConstants {
-  static const String AES_PKAM_PUBLIC_KEY = 'aesPkamPublicKey';
-  static const String AES_PKAM_PRIVATE_KEY = 'aesPkamPrivateKey';
-  static const String AES_ENCRYPTION_PUBLIC_KEY = 'aesEncryptPublicKey';
-  static const String AES_ENCRYPTION_PRIVATE_KEY = 'aesEncryptPrivateKey';
+  static const String aesPKAMpublicKey = 'aesPkamPublicKey';
+  static const String aesPKAMprivateKey = 'aesPkamPrivateKey';
+  static const String aesEncrptionPublicKey = 'aesEncryptPublicKey';
+  static const String aesEncrptionPrivateKey = 'aesEncryptPrivateKey';
 }
 
 class AtNotification {
-  String id;
-  String fromAtSign;
-  String toAtSign;
-  String key;
-  String value;
-  String operation;
-  int dateTime;
-  String status;
+  String? id;
+  String? fromAtSign;
+  String? toAtSign;
+  String? key;
+  String? value;
+  String? operation;
+  int? dateTime;
+  String? status;
 
   AtNotification(
       {this.id, this.fromAtSign, this.toAtSign, this.key, this.value, this.dateTime, this.operation, this.status});

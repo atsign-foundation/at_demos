@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:verbs_testing/services/server_demo_service.dart';
 
 class NotifyScreen extends StatefulWidget {
-  const NotifyScreen({Key key}) : super(key: key);
+  const NotifyScreen({Key? key}) : super(key: key);
 
   @override
   _NotifyScreenState createState() => _NotifyScreenState();
@@ -14,13 +14,15 @@ class NotifyScreen extends StatefulWidget {
 enum ButtonType { myList, sentList }
 
 class _NotifyScreenState extends State<NotifyScreen> {
-  TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
   // TextEditingController _keyController = TextEditingController();
 
-  String receiverAtsign;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
-  bool showSpinner = false, atSignSelected = false;
-  String result;
+  String? receiverAtsign;
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  bool isNotifying = false;
+  bool isLoading = false;
+  bool atSignSelected = false;
+  String? result;
   ButtonType activeButton = ButtonType.sentList;
 
   @override
@@ -35,7 +37,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(' Notify Testing'),
+        title: const Text(' Notify Testing'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -44,24 +46,24 @@ class _NotifyScreenState extends State<NotifyScreen> {
             Column(
               children: [
                 Text('Hi, ${_serverDemoService.atSign}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
                     )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('Receiver:',
+                    const Text('Receiver:',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20.0,
                         )),
                     DropdownButton<String>(
-                      hint: Text('\tPick an @sign'),
-                      icon: Icon(Icons.keyboard_arrow_down),
+                      hint: const Text('\tPick an @sign'),
+                      icon: const Icon(Icons.keyboard_arrow_down),
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         color: Colors.black87,
                       ),
@@ -69,7 +71,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                         height: 2,
                         color: Colors.blueAccent,
                       ),
-                      onChanged: (String newValue) async {
+                      onChanged: (String? newValue) async {
                         setState(() {
                           atSignSelected = true;
                           receiverAtsign = newValue;
@@ -81,41 +83,50 @@ class _NotifyScreenState extends State<NotifyScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
                   enabled: atSignSelected,
                   controller: _messageController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       hintText: 'Eg: Hello!',
                       labelText: 'Enter any text to notify'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.75, 40)),
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.75, 40)),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    backgroundColor: MaterialStateProperty.all(isNotifying ? Colors.transparent : Colors.blue),
+                    shape: MaterialStateProperty.all(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
                         ),
                       ),
                     ),
-                    onPressed: _notify,
-                    child: Text(
-                      'Notify',
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    )),
+                  ),
+                  onPressed: isNotifying ? null : _notify,
+                  child: isNotifying
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : const Text(
+                          'Notify',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Expanded(
@@ -134,13 +145,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
                               MaterialStateProperty.all(activeButton == ButtonType.myList ? Colors.white : Colors.blue),
                           shape: MaterialStateProperty.all(
                             activeButton == ButtonType.myList
-                                ? RoundedRectangleBorder(
+                                ? const RoundedRectangleBorder(
                                     side: BorderSide(color: Colors.blue),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
                                     ),
                                   )
-                                : RoundedRectangleBorder(
+                                : const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
                                     ),
@@ -148,10 +159,16 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          await _serverDemoService.myNotifications();
                           setState(() {
+                            isLoading = true;
                             activeButton = ButtonType.myList;
                           });
+                          await _serverDemoService.myNotifications().then((value) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          });
+                          setState(() {});
                         },
                         child: Text(
                           'Received',
@@ -168,13 +185,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
                             MaterialStateProperty.all(activeButton == ButtonType.sentList ? Colors.white : Colors.blue),
                         shape: MaterialStateProperty.all(
                           activeButton == ButtonType.sentList
-                              ? RoundedRectangleBorder(
+                              ? const RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.blue),
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(10),
                                   ),
                                 )
-                              : RoundedRectangleBorder(
+                              : const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -205,7 +222,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
     );
   }
 
-  Iterable<DropdownMenuItem<String>> atSignsList() {
+  List<DropdownMenuItem<String>> atSignsList() {
     var atSignsList = at_demo_data.allAtsigns.map<DropdownMenuItem<String>>(
       (String value) {
         return DropdownMenuItem<String>(
@@ -224,65 +241,74 @@ class _NotifyScreenState extends State<NotifyScreen> {
         ? _serverDemoService.myNotificationsList
         : _serverDemoService.sentNotificationsList;
 
-    return <Widget>[
-      SizedBox(height: 10),
-      if (listData.isNotEmpty)
-        for (var data in listData)
-          if (_serverDemoService.atSign != data.fromAtSign)
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.blueGrey)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (activeButton == ButtonType.myList) ...[
-                        CustomText(keyTitle: 'From', value: data.fromAtSign),
-                        CustomText(keyTitle: 'Title', value: data.key),
-                        CustomText(keyTitle: 'operation', value: data.operation),
-                      ],
-                      if (activeButton == ButtonType.sentList) ...[
-                        CustomText(keyTitle: 'To', value: data.toAtSign),
-                        // CustomText(keyTitle: 'Title', value: data.key),
-                        CustomText(keyTitle: 'Message', value: data.value),
-                        CustomText(keyTitle: 'Status', value: data.status ?? 'Unknown')
-                      ],
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: () async {
-                            await _showNotificationDetails(data);
-                          },
-                          icon: Icon(Icons.info_outline)),
-                      if (activeButton == ButtonType.sentList)
-                        IconButton(
-                            onPressed: () async {
-                              await _serverDemoService.notifyStatus(data.id,
-                                  doneCallBack: (value) {
-                                    setState(() {
-                                      data.status = value;
-                                    });
-                                  },
-                                  errorCallBack: (err) => print('$err'));
-                            },
-                            icon: Icon(Icons.refresh)),
-                    ],
-                  ),
-                ),
+    return isLoading
+        ? <Widget>[
+            const Center(
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: CircularProgressIndicator(),
               ),
             ),
-      if (listData.isEmpty && activeButton != null) Center(child: Text('No Data Found!!'))
-    ];
+          ]
+        : <Widget>[
+            const SizedBox(height: 10),
+            if (listData.isNotEmpty)
+              for (var data in listData)
+                if (_serverDemoService.atSign != data.fromAtSign && data.key != 'shared_key')
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0), side: const BorderSide(color: Colors.blueGrey)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (activeButton == ButtonType.myList) ...[
+                              CustomText(keyTitle: 'From', value: data.fromAtSign),
+                              CustomText(keyTitle: 'Title', value: data.key),
+                              CustomText(keyTitle: 'operation', value: data.operation),
+                            ],
+                            if (activeButton == ButtonType.sentList) ...[
+                              CustomText(keyTitle: 'To', value: data.toAtSign),
+                              CustomText(keyTitle: 'Message', value: data.value),
+                              CustomText(keyTitle: 'Status', value: data.status ?? 'Unknown')
+                            ],
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                onPressed: () async {
+                                  await _showNotificationDetails(data);
+                                },
+                                icon: const Icon(Icons.info_outline)),
+                            if (activeButton == ButtonType.sentList)
+                              IconButton(
+                                  onPressed: () async {
+                                    await _serverDemoService.notifyStatus(data.id!,
+                                        doneCallBack: (value) {
+                                          setState(() {
+                                            data.status = value;
+                                          });
+                                        },
+                                        errorCallBack: (err) => print('$err'));
+                                  },
+                                  icon: const Icon(Icons.refresh)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+            if (listData.isEmpty) const Center(child: Text('No Data Found!!'))
+          ];
   }
 
   _showNotificationDetails(AtNotification data) async {
-    if (data.value != null && this.activeButton == ButtonType.myList) {
-      data.value = await _serverDemoService.getFromNotification(data);
+    if (data.value != null && activeButton == ButtonType.myList) {
+      data.value = await _serverDemoService.getFromNotification(data, isCached: false);
     }
     showDialog(
         context: context,
@@ -296,7 +322,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                 children: [
                   if (data.id != null)
                     Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         vertical: 4.0,
                       ),
                       child: CustomText(keyTitle: 'Id', value: data.id),
@@ -340,7 +366,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                     ),
                 ],
               ),
-              actions: [TextButton(onPressed: () => Navigator.pop(_), child: Text('Close'))],
+              actions: [TextButton(onPressed: () => Navigator.pop(_), child: const Text('Close'))],
             );
           });
         });
@@ -348,7 +374,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
   Future<void> _notify() async {
     FocusScope.of(context).unfocus();
+    setState(() {
+      isNotifying = true;
+    });
     if (_messageController.text.isEmpty) {
+      setState(() {
+        isNotifying = false;
+      });
       await Fluttertoast.showToast(
           msg: 'Message is empty!',
           toastLength: Toast.LENGTH_SHORT,
@@ -359,9 +391,6 @@ class _NotifyScreenState extends State<NotifyScreen> {
           fontSize: 16.0);
       return;
     }
-    setState(() {
-      showSpinner = true;
-    });
     try {
       await _serverDemoService.notify(_messageController.text, receiverAtsign, doneCallBack: (value) {
         print('value is $value');
@@ -374,7 +403,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
             textColor: Colors.black,
             fontSize: 16.0);
         setState(() {
-          showSpinner = false;
+          isNotifying = false;
         });
       }, errorCallBack: (error) {
         result = 'error is:\n$error';
@@ -390,13 +419,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
         print('error is $error');
         setState(() {
-          showSpinner = false;
+          isNotifying = false;
         });
       });
     } on Exception catch (err, stackTrace) {
       print('$stackTrace');
       setState(() {
-        showSpinner = false;
+        isNotifying = false;
       });
     }
   }
@@ -404,15 +433,16 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
 class CustomText extends StatelessWidget {
   final String keyTitle;
-  final String value;
+  final String? value;
   final Color color;
-  const CustomText({@required this.keyTitle, @required this.value, this.color = Colors.black});
+  const CustomText({Key? key, required this.keyTitle, required this.value, this.color = Colors.black})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RichText(
-        text: TextSpan(style: TextStyle(color: this.color, fontSize: 16), children: [
-      TextSpan(text: keyTitle + ': ', style: TextStyle(fontWeight: FontWeight.bold)),
+        text: TextSpan(style: TextStyle(color: color, fontSize: 16), children: [
+      TextSpan(text: keyTitle + ': ', style: const TextStyle(fontWeight: FontWeight.bold)),
       TextSpan(text: value)
     ]));
   }

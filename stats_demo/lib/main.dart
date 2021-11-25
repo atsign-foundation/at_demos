@@ -6,10 +6,12 @@ import 'package:verbs_testing/screens/login_screen.dart';
 
 void main() {
   AtSignLogger.root_level = 'finer';
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,11 +26,11 @@ class MyApp extends StatelessWidget {
           case HomeScreen.id:
             final atSign = setting.arguments;
             return MaterialPageRoute(
-              builder: (_) => HomeScreen(atSign: atSign),
+              builder: (_) => HomeScreen(atSign: atSign as String),
             );
           case LoginScreen.id:
           default:
-            return MaterialPageRoute(builder: (_) => LoginScreen());
+            return MaterialPageRoute(builder: (_) => const LoginScreen());
         }
       },
     );

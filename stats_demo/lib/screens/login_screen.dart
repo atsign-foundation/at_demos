@@ -13,22 +13,22 @@ import 'home_screen.dart';
 class LoginScreen extends StatefulWidget {
   static const String id = 'login';
 
-  const LoginScreen({Key key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String atSign;
+  String? atSign;
   bool showSpinner = false;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Login',
           style: TextStyle(
             fontSize: 20,
@@ -39,10 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: ListView(
           children: <Widget>[
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Container(
+            SizedBox(
               width: 500,
               height: 220,
               child: Card(
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      title: Text(
+                      title: const Text(
                         'Log In',
                         style: TextStyle(
                           color: Colors.black,
@@ -67,11 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       subtitle: DropdownButton<String>(
-                        hint: Text('\tPick an @sign'),
-                        icon: Icon(Icons.keyboard_arrow_down),
+                        hint: const Text('\tPick an @sign'),
+                        icon: const Icon(Icons.keyboard_arrow_down),
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20.0,
                           color: Colors.black87,
                         ),
@@ -79,12 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 2,
                           color: Colors.blueAccent,
                         ),
-                        onChanged: (String newValue) async {
+                        onChanged: (String? newValue) async {
                           setState(() {
                             showSpinner = true;
                             atSign = newValue;
                           });
-                          await _serverDemoService.storeDemoDataToKeychain(newValue);
+                          await _serverDemoService.storeDemoDataToKeychain(newValue!);
                           setState(() {
                             showSpinner = false;
                           });
@@ -102,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(20),
+                      margin: const EdgeInsets.all(20),
                       child: MaterialButton(
-                        child: Text('Login'),
+                        child: const Text('Login'),
                         color: Colors.blueAccent,
                         textColor: Colors.white,
                         onPressed: _login,
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 280),
+            const SizedBox(height: 280),
             Container(
               height: 50,
             ),
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
         atClientPreference: await _serverDemoService.getAtClientPreference(atSign),
         atsign: atSign,
         domain: AtConfig.root,
-        appColor: Color.fromARGB(255, 43, 155, 219),
+        appColor: const Color.fromARGB(255, 43, 155, 219),
         onboard: (atClientServiceMap, atsign) async {
           _serverDemoService.atClientServiceMap = atClientServiceMap;
           _serverDemoService.atSign = atsign;
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
         onError: (error) {
           print(error);
         },
-        nextScreen: HomeScreen(atSign: atSign),
+        nextScreen: HomeScreen(atSign: atSign!),
       );
     }
   }

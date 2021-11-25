@@ -10,20 +10,19 @@ class MonitorScreen extends StatefulWidget {
   final String atSign;
 
   const MonitorScreen({
-    Key key,
-    @required this.atSign,
-  })  : assert(atSign != null),
-        super(key: key);
+    Key? key,
+    required this.atSign,
+  }) : super(key: key);
 
   @override
   _MonitorScreenState createState() => _MonitorScreenState();
 }
 
 class _MonitorScreenState extends State<MonitorScreen> {
-  String notifications = "";
+  String notifications = '';
   String monitorStatus = '';
   bool monitorStarted = false;
-  ServerDemoService _serverDemoService = ServerDemoService.getInstance();
+  final ServerDemoService _serverDemoService = ServerDemoService.getInstance();
   List<AtNotification> notificationList = [];
 
   @override
@@ -33,19 +32,27 @@ class _MonitorScreenState extends State<MonitorScreen> {
     }
   }
 
+  // @override
+  // void dispose() {
+  //   if (mounted) {
+  //     _stopmonitor();
+  //     super.dispose();
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("Monitor Testing"),
+          title: const Text('Monitor Testing'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: ListView(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 35,
                 ),
                 Column(
@@ -58,7 +65,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
                         overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                         backgroundColor: MaterialStateProperty.all(monitorStarted ? Colors.red : Colors.green),
                         shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
+                          const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -66,30 +73,29 @@ class _MonitorScreenState extends State<MonitorScreen> {
                         ),
                       ),
                       child: Text("${monitorStarted ? 'Stop' : 'Start'} Monitor"),
-                      onPressed: monitorStarted ? _stop_monitor : _start_monitor,
+                      onPressed: monitorStarted ? _stopmonitor : _startMonitor,
                       // color: Colors.blueAccent,
                       // textColor: Colors.white,
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 Column(
                   children: <Widget>[
                     Text(
                       monitorStatus,
-                      style: TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20),
+                      style: const TextStyle(color: Colors.black, fontFamily: 'Open Sans', fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    if (monitorStarted & (notificationList.isEmpty || notificationList == null))
-                      CircularProgressIndicator(),
+                    if (monitorStarted & notificationList.isEmpty) const CircularProgressIndicator(),
                     if (monitorStarted)
                       for (var data in notificationList)
                         Center(
-                          child: Container(
+                          child: SizedBox(
                             height: 300,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,7 +104,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
                               children: [
                                 if (data.id != null) CustomText(keyTitle: 'Id', value: data.id),
                                 if (data.key != null) CustomText(keyTitle: 'Key', value: data.key),
-                                if (data.value != null) CustomText(keyTitle: 'Server Commit Id', value: data.value),
+                                if (data.value != null) CustomText(keyTitle: 'Value', value: data.value),
                                 if (data.fromAtSign != null) CustomText(keyTitle: 'FromAtSign', value: data.fromAtSign),
                                 if (data.dateTime != null)
                                   CustomText(
@@ -123,34 +129,41 @@ class _MonitorScreenState extends State<MonitorScreen> {
         ));
   }
 
-  _start_monitor() async {
+  _startMonitor() async {
     setState(() {
       monitorStarted = true;
-      monitorStatus = "Monitoring started";
+      monitorStatus = 'Monitoring started';
     });
     await _serverDemoService.getMonitorService(widget.atSign, chanageText, chanageText, () {
       print('retrying.............');
-    }).start();
+    })!.start();
   }
 
-  _stop_monitor() {
+  _stopmonitor() {
     setState(() {
-      monitorStatus = "Monitor stopped";
+      monitorStatus = 'Monitor stopped';
       notifications = '';
       monitorStarted = false;
       notificationList.clear();
     });
     _serverDemoService.getMonitorService(widget.atSign, chanageText, chanageText, () {
       print('retrying.............');
-    }).stop();
+    })!.stop();
   }
 
   void chanageText(var newText) async {
     try {
       newText = newText.replaceAll('notification: ', '');
       var atNotification = AtNotification.fromJson(jsonDecode(newText));
-      if (atNotification != null) {
+      if (atNotification.key == 'shared_key') {
+        return;
+      }
+      String? notificationValue = await _serverDemoService.getFromNotification(atNotification, isCached: false);
+      if (atNotification.toString().isNotEmpty) {
         setState(() {
+          if (notificationValue != null) {
+            atNotification.value = notificationValue;
+          }
           notificationList.clear();
           notificationList.insert(0, atNotification);
         });
