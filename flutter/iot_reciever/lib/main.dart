@@ -7,7 +7,8 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
 
-import 'home_screen.dart';
+import 'package:iot_reciever/screens/home_screen.dart';
+import 'package:iot_reciever/screens/onboarding_screen.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
@@ -50,38 +51,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // * The onboarding screen (first screen)
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('MyApp'),
-        ),
-        body: Builder(
-          builder: (context) => Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                // * The Onboarding widget
-                // * This widget contains the required logic for onboarding an @sign into the app
-                // * Read more here: https://pub.dev/packages/at_onboarding_flutter
-                Onboarding(
-                  context: context,
-                  atClientPreference: await futurePreference,
-                  domain: AtEnv.rootDomain,
-                  rootEnvironment: AtEnv.rootEnvironment,
-                  appAPIKey: AtEnv.appApiKey,
-                  onboard: (value, atsign) {
-                    _logger.finer('Successfully onboarded $atsign');
-                  },
-                  onError: (error) {
-                    _logger.severe('Onboarding throws $error error');
-                  },
-                  nextScreen: HomeScreen(),
-                );
-              },
-              child: const Text('Onboard an @sign'),
-            ),
-          ),
-        ),
+      debugShowCheckedModeBanner: false,
+      title: 'HamLib-Web UI',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
       ),
+      // * The onboarding screen (first screen)
+      routes: {
+        HomeScreen.id: (_) => HomeScreen(),
+        OnboardingScreen.id: (_) =>  const OnboardingScreen(),
+        //Next.id: (_) => const Next(),
+      },
+      initialRoute: OnboardingScreen.id,
     );
   }
 }

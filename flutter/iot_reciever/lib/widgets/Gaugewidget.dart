@@ -67,7 +67,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          gaugeSize: 170,
+          gaugeSize: 350,
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -81,8 +81,8 @@ class _GaugeWidgetState extends State<GaugeWidget> {
               Text(widget.measurement, style: const TextStyle(fontSize: 12)),
         ),
         Container(
-            width: 50,
-            height: 50,
+            width: 150,
+            height: 150,
             padding: const EdgeInsets.all(10),
             child: Text(
               widget.units,

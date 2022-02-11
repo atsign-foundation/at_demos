@@ -5,11 +5,12 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:iot_reciever/models/iot_model.dart';
 
-import 'widgets/Gaugewidget.dart';
+import 'package:iot_reciever/widgets/Gaugewidget.dart';
 
 // * Once the onboarding process is completed you will be taken to this screen
 class HomeScreen extends StatelessWidget {
-  final ioT = IoT(sensorName: '@ZARIOT', heartRate: 'heartRate', bloodOxygen: 'bloodOxygen');
+  final ioT = IoT(sensorName: '@ZARIOT', heartRate: '3', bloodOxygen: '90', time: 'Todays Time');
+   static const String id = '/home';
    HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -37,17 +38,17 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
-                measurement: 'SWR',
+                measurement: 'Heart Rate',
                 units: '',
                 ioT: ioT,
                 value: 'heartRate',
                 decimalPlaces: 3,
-                bottomRange: 1,
-                topRange: 5,
-                lowSector: 1.3,
-                medSector: 1.7,
-                highSector: 1.0,
-                lowColor: Colors.lightGreen,
+                bottomRange: 0,
+                topRange: 200,
+                lowSector: 50,
+                medSector: 130,
+                highSector: 20,
+                lowColor: Colors.red,
                 medColor: Colors.green,
                 highColor: Colors.red,
               ),
@@ -55,18 +56,18 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
-                measurement: 'Modulation',
+                measurement: 'O2',
                 units: '%',
                 ioT: ioT,
                 value: 'bloodOxygen',
                 decimalPlaces: 3,
-                bottomRange: 0,
-                topRange: 110,
-                lowSector: 40.0,
-                medSector: 65.0,
-                highSector: 5.0,
+                bottomRange: 90,
+                topRange: 100,
+                lowSector: 0.5,
+                medSector: 9.5,
+                highSector: 0,
                 lowColor: Colors.red,
-                medColor: Colors.lightGreen,
+                medColor: Colors.green,
                 highColor: Colors.red,
               ),
             ),
