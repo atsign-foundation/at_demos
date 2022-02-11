@@ -1,0 +1,25 @@
+name: iot_reciever
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=2.15.1 <3.0.0'
+dependencies: 
+  cupertino_icons: ^1.0.2
+  at_client_mobile: ^3.0.3
+  at_onboarding_flutter: ^3.0.1
+  at_utils: ^3.0.0
+  path_provider: ^2.0.5
+  flutter_dotenv: ^5.0.2
+  at_app_flutter: any
+  flutter: 
+    sdk: flutter
+dev_dependencies: 
+  flutter_lints: ^1.0.0
+  at_app_templates: ^1.0.1
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  assets: 
+    - .env
+  uses-material-design: true

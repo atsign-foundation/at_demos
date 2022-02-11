@@ -1,0 +1,20 @@
+name: iot_sender
+description: A simple command-line application.
+version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.15.1 <3.0.0'
+
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^1.0.0
+dependencies: 
+  at_client: ^3.0.9
+  at_utils: ^3.0.5
+  image: ^3.1.1
+  mqtt_client: ^9.6.5
+  zxing2: ^0.1.0

@@ -1,0 +1,7 @@
+root_server:
+  port: 64
+  url: 'root.atsign.org'
+
+auth:
+  atKeysPath: 'lib/config/@blackdeath_key.atKeys'
+#  qrPath: 'lib/config/qr.png'
