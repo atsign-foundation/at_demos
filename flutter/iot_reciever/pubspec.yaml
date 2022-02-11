@@ -14,6 +14,8 @@ dependencies:
   at_app_flutter: any
   flutter: 
     sdk: flutter
+  pretty_gauge: ^1.0.1
+  auto_size_text: ^3.0.0
 dev_dependencies: 
   flutter_lints: ^1.0.0
   at_app_templates: ^1.0.1

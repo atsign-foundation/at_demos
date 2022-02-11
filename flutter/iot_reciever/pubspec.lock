@@ -127,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.5"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   biometric_storage:
     dependency: transitive
     description:
@@ -534,6 +541,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.1"
+  pretty_gauge:
+    dependency: "direct main"
+    description:
+      name: pretty_gauge
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   process:
     dependency: transitive
     description:

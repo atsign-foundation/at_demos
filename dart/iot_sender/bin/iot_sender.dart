@@ -32,13 +32,9 @@ void main() async {
   await atClientManager.setCurrentAtSign(atsign, namespace, preference);
   atClient = atClientManager.atClient;
 
-  await atClient
-      .getLocalSecondary()
-      ?.putValue(common.AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey!);
+  await atClient.getLocalSecondary()?.putValue(common.AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey!);
 
-  await atClient
-      .getLocalSecondary()
-      ?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
+  await atClient.getLocalSecondary()?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
 
 
 
