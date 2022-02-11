@@ -1,10 +1,9 @@
 import 'package:at_lookup/at_lookup.dart';
 import 'package:iot_sender/at_onboarding_cli.dart';
 import 'package:at_client/at_client.dart';
-import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/at_commons.dart' as common;
 
-import 'package:iot_sender/iot_mqtt_listener';
+import 'package:iot_sender/iot_mqtt_listener.dart';
 
 void main() async {
   OnboardingService onboardingService = OnboardingService('blackdeath');
@@ -41,20 +40,8 @@ void main() async {
       .getLocalSecondary()
       ?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
 
-  var metaData = Metadata()
-    ..isPublic = true
-    ..isEncrypted = false
-    ..namespaceAware = true
-    ..ttl = 100000;
 
-  var key = AtKey()
-    ..key = 'blood'
-    ..sharedBy = atsign
-    ..sharedWith = null
-    ..metadata = metaData;
 
-  await atClient.put(key, 'working');
-
-  iotListen();
+  iotListen(atClient, atsign);
   print('listening');
 }
