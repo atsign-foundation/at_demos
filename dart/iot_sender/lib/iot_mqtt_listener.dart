@@ -8,7 +8,7 @@ import 'package:at_commons/at_commons.dart';
 
 final client = MqttServerClient('localhost', '');
 
-Future<int> iotListen(AtClient atClient, String atsign) async {
+Future<int> iotListen(AtClient atClient, String atsign, String toAtsign) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -57,15 +57,15 @@ Future<int> iotListen(AtClient atClient, String atsign) async {
     if (c[0].topic == "mqtt/mwc_hr")  {
       print('Heart Rate: ' + pt);
     var metaData = Metadata()
-    ..isPublic = true
-    ..isEncrypted = false
+    ..isPublic = false
+    ..isEncrypted = true
     ..namespaceAware = true
     ..ttl = 100000;
 
   var key = AtKey()
     ..key = 'mwc_hr'
     ..sharedBy = atsign
-    ..sharedWith = null
+    ..sharedWith = toAtsign
     ..metadata = metaData;
 
   await atClient.put(key, pt);
@@ -74,15 +74,15 @@ Future<int> iotListen(AtClient atClient, String atsign) async {
     if (c[0].topic == "mqtt/mwc_o2") {
       print('Blood Oxygen: ' + pt);
           var metaData = Metadata()
-    ..isPublic = true
-    ..isEncrypted = false
+    ..isPublic = false
+    ..isEncrypted = true
     ..namespaceAware = true
     ..ttl = 100000;
 
   var key = AtKey()
     ..key = 'mwc_o2'
     ..sharedBy = atsign
-    ..sharedWith = null
+    ..sharedWith = '@colin'
     ..metadata = metaData;
 
   await atClient.put(key, pt);

@@ -215,7 +215,8 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                   AutoSizeText(_atSignsList[index].toLowerCase(),
                       minFontSize: 10,
                       maxFontSize: 30,
-),
+                      textAlign: TextAlign.right,
+                   ),
                   Expanded(
                     child: Container(),
                   ),

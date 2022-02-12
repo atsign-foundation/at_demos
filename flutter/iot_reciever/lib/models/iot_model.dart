@@ -2,12 +2,16 @@ class IoT {
   String sensorName;
   String? heartRate;
   String? bloodOxygen;
+  String? meterHeartRate;
+  String? meterBloodOxygen;
   String? time;
 
   IoT({
     required this.sensorName,
     required this.heartRate,
     required this.bloodOxygen,
+    this.meterBloodOxygen = '90',
+    this.meterHeartRate = '0',
     this.time = '0',
   });
 

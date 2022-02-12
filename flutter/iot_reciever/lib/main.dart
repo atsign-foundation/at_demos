@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_onboarding_flutter/at_onboarding_flutter.dart' show Onboarding;
+import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
+    show Onboarding;
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
+import 'package:iot_reciever/models/iot_model.dart';
+import 'package:path_provider/path_provider.dart'
+    show getApplicationSupportDirectory;
 
 import 'package:iot_reciever/screens/home_screen.dart';
 import 'package:iot_reciever/screens/onboarding_screen.dart';
@@ -46,21 +49,23 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
+  IoT ioT =
+      IoT(bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', time: '0:0:0');
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'HamLib-Web UI',
+      title: 'HRO2 DISPLAY',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         backgroundColor: Colors.white,
       ),
       // * The onboarding screen (first screen)
       routes: {
-        HomeScreen.id: (_) => HomeScreen(),
-        OnboardingScreen.id: (_) =>  const OnboardingScreen(),
+        HomeScreen.id: (_) => HomeScreen(ioT: ioT),
+        OnboardingScreen.id: (_) => const OnboardingScreen(),
         //Next.id: (_) => const Next(),
       },
       initialRoute: OnboardingScreen.id,

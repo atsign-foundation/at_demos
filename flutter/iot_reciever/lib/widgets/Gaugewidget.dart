@@ -67,7 +67,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          gaugeSize: 350,
+          gaugeSize: 270,
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -120,17 +120,11 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   double getMeter(String value) {
     String? result;
     switch (value) {
-      case 'sensorName':
-        result = widget.ioT.sensorName;
-        break;
       case 'heartRate':
-        result = widget.ioT.heartRate;
+        result = widget.ioT.meterHeartRate;
         break;
       case 'bloodOxygen':
-        result = widget.ioT.bloodOxygen;
-        break;
-      case 'time':
-        result = widget.ioT.time;
+        result = widget.ioT.meterBloodOxygen;
         break;
       default:
         result = "0.0";
@@ -141,17 +135,11 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
   setMeter(String value, double reading) {
     switch (value) {
-      case 'sensorName':
-        widget.ioT.sensorName = reading.toString();
-        break;
       case 'heartRate':
-        widget.ioT.heartRate = reading.toString();
+        widget.ioT.meterHeartRate = reading.toString();
         break;
       case 'bloodOxygen':
-        widget.ioT.bloodOxygen = reading.toString();
-        break;
-      case 'time':
-        widget.ioT.time = reading.toString();
+        widget.ioT.meterBloodOxygen = reading.toString();
         break;
       default:
         break;

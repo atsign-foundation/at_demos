@@ -4,8 +4,16 @@ import 'package:at_client/at_client.dart';
 import 'package:at_commons/at_commons.dart' as common;
 
 import 'package:iot_sender/iot_mqtt_listener.dart';
+import 'dart:io';
 
-void main() async {
+void main(List<String> arguments) async {
+  var toAtsigns = arguments;
+  if (toAtsigns.isEmpty) {
+    print('Usage: iot_sender <@sign>');
+    exit(0);
+  }
+  String toAtsign = toAtsigns[0];
+
   OnboardingService onboardingService = OnboardingService('blackdeath');
   await onboardingService.authenticate();
   AtLookupImpl atLookup = onboardingService.getAtLookup();
@@ -32,12 +40,14 @@ void main() async {
   await atClientManager.setCurrentAtSign(atsign, namespace, preference);
   atClient = atClientManager.atClient;
 
-  await atClient.getLocalSecondary()?.putValue(common.AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey!);
+  await atClient
+      .getLocalSecondary()
+      ?.putValue(common.AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey!);
 
-  await atClient.getLocalSecondary()?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
+  await atClient
+      .getLocalSecondary()
+      ?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
 
-
-
-  iotListen(atClient, atsign);
+  iotListen(atClient, atsign, toAtsign);
   print('listening');
 }
