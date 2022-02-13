@@ -90,16 +90,8 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           ],
           currentValue: reading,
           displayWidget: displayUnits(widget.units, _font),
-        ),
-        Container(
-            width: 150,
-            height: 150,
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              widget.measurement,
-              style: const TextStyle(fontSize: 11),
-              textAlign: TextAlign.center,
-            ))
+        )
+
       ]);
 
       // return  Text("${DateTime.now()}");
@@ -183,6 +175,10 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     ;
     return Column(
       children: [
+                AutoSizeText(
+          widget.measurement,
+          minFontSize: fontSize.truncateToDouble(),
+          maxFontSize: _max,),
         AutoSizeText(
           units,
           minFontSize: fontSize.truncateToDouble(),

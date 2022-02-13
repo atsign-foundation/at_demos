@@ -42,10 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     AtClientManager atClientManager = AtClientManager.getInstance();
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    // double _width = MediaQuery.of(context).size.width;
+    // double _height = MediaQuery.of(context).size.height;
+    var mediaQuery = MediaQuery.of(context);
+    var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
+    var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
+    print(_width);
+
     int _gridRows;
-    if (_width > 600) {
+    if (_width > 1080) {
       _gridRows = 2;
     } else {
       _gridRows = 1;
@@ -69,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
                 measurement: 'Heart Rate',
-                units: 'Bps',
+                units: 'Bpm',
                 ioT: readings,
                 value: 'heartRate',
                 decimalPlaces: 3,
