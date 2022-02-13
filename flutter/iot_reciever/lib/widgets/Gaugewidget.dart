@@ -78,7 +78,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          valueWidget: displayReading(reading, _font),
+          valueWidget: displayReading(read, _font),
           gaugeSize: _size,
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
@@ -175,6 +175,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   }
 
   Widget displayUnits(String units, double fontSize) {
+    fontSize = fontSize * .3;
     double _max = 200;
     if (fontSize > _max) {
       fontSize = _max;
