@@ -89,15 +89,14 @@ class _GaugeWidgetState extends State<GaugeWidget> {
             GaugeSegment('High', widget.highSector, widget.highColor),
           ],
           currentValue: reading,
-          displayWidget:
-              Text(widget.measurement, style: const TextStyle(fontSize: 20)),
+          displayWidget: displayUnits(widget.units, _font),
         ),
         Container(
             width: 150,
             height: 150,
             padding: const EdgeInsets.all(10),
             child: Text(
-              widget.units,
+              widget.measurement,
               style: const TextStyle(fontSize: 11),
               textAlign: TextAlign.center,
             ))
@@ -168,6 +167,23 @@ class _GaugeWidgetState extends State<GaugeWidget> {
       children: [
         AutoSizeText(
           reading.toString(),
+          minFontSize: fontSize.truncateToDouble(),
+          maxFontSize: _max,
+        )
+      ],
+    );
+  }
+
+  Widget displayUnits(String units, double fontSize) {
+    double _max = 200;
+    if (fontSize > _max) {
+      fontSize = _max;
+    }
+    ;
+    return Column(
+      children: [
+        AutoSizeText(
+          units,
           minFontSize: fontSize.truncateToDouble(),
           maxFontSize: _max,
         )

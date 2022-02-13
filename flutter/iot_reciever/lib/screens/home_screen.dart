@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
                 measurement: 'Heart Rate',
-                units: '',
+                units: 'Bps',
                 ioT: readings,
                 value: 'heartRate',
                 decimalPlaces: 3,
