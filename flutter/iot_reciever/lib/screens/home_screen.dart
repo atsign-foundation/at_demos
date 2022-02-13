@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(_width);
 
     int _gridRows;
-    if (_width > 1080) {
+    if (_width > _height ) {
       _gridRows = 2;
     } else {
       _gridRows = 1;
@@ -65,8 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         child: GridView.count(
           primary: false,
+          childAspectRatio: 1,
           padding: const EdgeInsets.all(1),
-          crossAxisSpacing: 1,
+          crossAxisSpacing: 2,
           mainAxisSpacing: 1,
           crossAxisCount: _gridRows,
           children: <Widget>[

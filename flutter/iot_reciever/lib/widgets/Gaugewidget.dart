@@ -54,15 +54,21 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   Widget build(BuildContext context) {
     double read = getValue(widget.value);
     double reading = getMeter(widget.value);
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    var mediaQuery = MediaQuery.of(context);
+    var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
+    var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
     double _size;
-    if (_width > 600) {
-      _size = _width / 2;
+    double _font;
+    if (_width > _height) {
+      _size = _width / 4;
+      _font = _width / 32;
     } else {
-      _size = _width;
+      _size = _height / 2;
+      if (_size > _width / 2) {
+        _size = _width / 2;
+      }
+      _font = _width / 32;
     }
-    double _font = _size / 8;
     var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
         builder: (context) {
@@ -91,7 +97,6 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           currentValue: reading,
           displayWidget: displayUnits(widget.units, _font),
         )
-
       ]);
 
       // return  Text("${DateTime.now()}");
@@ -175,10 +180,11 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     ;
     return Column(
       children: [
-                AutoSizeText(
+        AutoSizeText(
           widget.measurement,
           minFontSize: fontSize.truncateToDouble(),
-          maxFontSize: _max,),
+          maxFontSize: _max,
+        ),
         AutoSizeText(
           units,
           minFontSize: fontSize.truncateToDouble(),
