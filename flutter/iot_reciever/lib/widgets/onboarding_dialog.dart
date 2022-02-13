@@ -73,7 +73,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
               items: _atSignsList
                   .map((atsign) => DropdownMenuItem(
                         child: SizedBox(
-                            width: 350,
+                            width: 210,
                             child: AutoSizeText(
                               atsign.toLowerCase(),
                               overflow: TextOverflow.ellipsis,

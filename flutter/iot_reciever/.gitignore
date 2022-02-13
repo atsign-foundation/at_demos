@@ -44,5 +44,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-.env
+#removed so we do not hit comple issues!! -Colin
+#.env
