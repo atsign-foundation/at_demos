@@ -42,7 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     AtClientManager atClientManager = AtClientManager.getInstance();
-
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+    int _gridRows;
+    if (_width > 600) {
+      _gridRows = 2;
+    } else {
+      _gridRows = 1;
+    }
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
@@ -56,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(1),
           crossAxisSpacing: 1,
           mainAxisSpacing: 1,
-          crossAxisCount: 1,
+          crossAxisCount: _gridRows,
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(10),

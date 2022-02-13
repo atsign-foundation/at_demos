@@ -3,6 +3,8 @@
 import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:timer_builder/timer_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:iot_reciever/models/iot_model.dart';
 
 class GaugeWidget extends StatefulWidget {
@@ -23,8 +25,7 @@ class GaugeWidget extends StatefulWidget {
 
   // ignore: use_key_in_widget_constructors
   const GaugeWidget(
-      {
-      required this.ioT,
+      {required this.ioT,
       required this.measurement,
       required this.units,
       required this.value,
@@ -53,8 +54,18 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   Widget build(BuildContext context) {
     double read = getValue(widget.value);
     double reading = getMeter(widget.value);
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+    double _size;
+    if (_width > 600) {
+      _size = _width / 2;
+    } else {
+      _size = _width;
+    }
+    double _font = _size / 8;
     var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
-    return TimerBuilder.periodic(const Duration(milliseconds: 5), builder: (context) {
+    return TimerBuilder.periodic(const Duration(milliseconds: 5),
+        builder: (context) {
       read = getValue(widget.value);
       if (reading - step > read) {
         reading = reading - step;
@@ -67,7 +78,8 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          gaugeSize: 270,
+          valueWidget: displayReading(reading, _font),
+          gaugeSize: _size,
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -78,7 +90,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           ],
           currentValue: reading,
           displayWidget:
-              Text(widget.measurement, style: const TextStyle(fontSize: 12)),
+              Text(widget.measurement, style: const TextStyle(fontSize: 20)),
         ),
         Container(
             width: 150,
@@ -144,5 +156,22 @@ class _GaugeWidgetState extends State<GaugeWidget> {
       default:
         break;
     }
+  }
+
+  Widget displayReading(double reading, double fontSize) {
+    double _max = 200;
+    if (fontSize > _max) {
+      fontSize = _max;
+    }
+    ;
+    return Column(
+      children: [
+        AutoSizeText(
+          reading.toString(),
+          minFontSize: fontSize.truncateToDouble(),
+          maxFontSize: _max,
+        )
+      ],
+    );
   }
 }
