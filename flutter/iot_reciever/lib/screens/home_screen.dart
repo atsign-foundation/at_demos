@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(_width);
 
     int _gridRows;
-    if (_width > _height ) {
+    if (_width > _height) {
       _gridRows = 2;
     } else {
       _gridRows = 1;
@@ -75,10 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
                 measurement: 'Heart Rate',
-                units: 'Bpm',
+                units: 'BPM',
                 ioT: readings,
                 value: 'heartRate',
-                decimalPlaces: 3,
+                decimalPlaces: 0,
                 bottomRange: 0,
                 topRange: 200,
                 lowSector: 50,
@@ -92,11 +92,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: EdgeInsets.all(10),
               child: GaugeWidget(
-                measurement: 'O2',
-                units: '%',
+                measurement: 'Oxygen Saturation',
+                units: 'SpO2%',
                 ioT: readings,
                 value: 'bloodOxygen',
-                decimalPlaces: 3,
+                decimalPlaces: 1,
                 bottomRange: 90,
                 topRange: 100,
                 lowSector: 0.5,

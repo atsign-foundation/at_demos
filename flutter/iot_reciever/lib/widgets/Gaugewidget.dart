@@ -61,13 +61,13 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     double _font;
     if (_width > _height) {
       _size = _width / 4;
-      _font = _width / 32;
+      _font = _size / 10;
     } else {
       _size = _height / 2;
       if (_size > _width / 2) {
         _size = _width / 2;
       }
-      _font = _width / 32;
+      _font = _size / 10;
     }
     var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
@@ -84,8 +84,10 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          valueWidget: displayReading(read, _font),
+          valueWidget: displayReading(read, _font, widget.decimalPlaces),
           gaugeSize: _size,
+          startMarkerStyle: TextStyle(fontSize: _font/2, color: Colors.grey),
+          endMarkerStyle:  TextStyle(fontSize: _font/2, color: Colors.grey),
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -154,8 +156,15 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     }
   }
 
-  Widget displayReading(double reading, double fontSize) {
+  Widget displayReading(double reading, double fontSize, int decimalPlaces) {
     double _max = 200;
+        // Make sure the decimal place if supplied meets Darts bounds (0-20)
+    if (decimalPlaces < 0) {
+      decimalPlaces = 0;
+    }
+     if (decimalPlaces > 20) {
+      decimalPlaces = 20;
+    } 
     if (fontSize > _max) {
       fontSize = _max;
     }
@@ -163,7 +172,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     return Column(
       children: [
         AutoSizeText(
-          reading.toString(),
+          reading.toStringAsFixed(decimalPlaces),
           minFontSize: fontSize.truncateToDouble(),
           maxFontSize: _max,
         )
