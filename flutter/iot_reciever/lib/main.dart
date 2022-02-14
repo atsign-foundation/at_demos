@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
-    show Onboarding;
+// import 'package:at_onboarding_flutter/at_onboarding_flutter.dart' show Onboarding;
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_reciever/models/iot_model.dart';
@@ -49,8 +49,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
-  IoT ioT =
-      IoT(bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', time: '0:0:0');
+  IoT ioT = IoT(
+      bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', time: '0:0:0');
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
 
   @override

@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:iot_reciever/main.dart';
 import 'package:iot_reciever/models/iot_model.dart';
 import 'package:iot_reciever/widgets/Gaugewidget.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 // * Once the onboarding process is completed you will be taken to this screen
 class HomeScreen extends StatefulWidget {
@@ -58,27 +59,25 @@ class _HomeScreenState extends State<HomeScreen> {
       _gridRows = 1;
     }
     return Scaffold(
-      appBar: AppBar(
-        title: AutoSizeText(
-          widget.ioT.sensorName,
-          minFontSize: 5,
-        ),
+      appBar: NewGradientAppBar(
+          title: Text(widget.ioT.sensorName),
+          gradient: LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
       ),
       body: Container(
         decoration:  BoxDecoration(
           color: Colors.white70,
           gradient: _gridRows > 1 ? LinearGradient(
             begin: Alignment.topLeft,
-            end: Alignment.topRight,
+            end: Alignment.bottomRight,
             colors:  [ 
-             Colors.red,Colors.blue
+             Color.fromARGB(255, 240, 181, 178),Color.fromARGB(255, 171, 200, 224)
             ],
           ):
           LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors:  [ 
-             Colors.red,Colors.blue
+             Color.fromARGB(255, 240, 181, 178),Color.fromARGB(255, 171, 200, 224)
             ],
           )
           ,
@@ -110,9 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 50,
                 medSector: 130,
                 highSector: 20,
-                lowColor: Color.fromARGB(255, 190, 35, 23),
-                medColor: Color.fromARGB(255, 29, 102, 31),
-                highColor: Color.fromARGB(255, 190, 35, 23),
+                lowColor: Color.fromARGB(255, 161, 52, 44),
+                medColor: Color.fromARGB(255, 75, 145, 78),
+                highColor:Color.fromARGB(255, 161, 52, 44),
               ),
             ),
             Container(
@@ -127,9 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 0.5,
                 medSector: 9.5,
                 highSector: 0,
-                lowColor: Color.fromARGB(255, 190, 35, 23),
-                medColor: Color.fromARGB(255, 29, 102, 31),
-                highColor: Color.fromARGB(255, 190, 35, 23),
+                lowColor: Color.fromARGB(255, 161, 52, 44),
+                medColor: Color.fromARGB(255, 75, 145, 78),
+                highColor: Color.fromARGB(255, 161, 52, 44),
               ),
             ),
           ],
