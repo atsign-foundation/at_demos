@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'HRO2 DISPLAY',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.lightBlue,
         backgroundColor: Colors.white,
       ),
       // * The onboarding screen (first screen)

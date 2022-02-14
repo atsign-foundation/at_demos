@@ -12,11 +12,11 @@ dependencies:
   path_provider: ^2.0.5
   flutter_dotenv: ^5.0.2
   at_app_flutter: any
-  flutter: 
-    sdk: flutter
   pretty_gauge: ^1.0.1
   auto_size_text: ^3.0.0
   intl: ^0.17.0
+  flutter: 
+    sdk: flutter
 dev_dependencies: 
   flutter_lints: ^1.0.0
   at_app_templates: ^1.0.1
@@ -25,4 +25,5 @@ dev_dependencies:
 flutter: 
   assets: 
     - .env
+    - assets/images/
   uses-material-design: true

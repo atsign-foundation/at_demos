@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/date_symbol_data_file.dart';
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
     print(_width);
 
-    int _gridRows;
+    int _gridRows =1 ;
     if (_width > _height) {
       _gridRows = 2;
     } else {
@@ -63,6 +65,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Container(
+        decoration:  BoxDecoration(
+          color: Colors.white70,
+          gradient: _gridRows > 1 ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.topRight,
+            colors:  [ 
+             Colors.red,Colors.blue
+            ],
+          ):
+          LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors:  [ 
+             Colors.red,Colors.blue
+            ],
+          )
+          ,
+          image: DecorationImage(
+            opacity: .1,
+            fit: BoxFit.cover,
+            image: AssetImage(
+              'assets/images/blood-pressure.png',
+            ),
+          ),
+        ),
         child: GridView.count(
           primary: false,
           childAspectRatio: 1,
@@ -72,7 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisCount: _gridRows,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(10),
               child: GaugeWidget(
                 measurement: 'Heart Rate',
                 units: 'BPM',
@@ -84,13 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 50,
                 medSector: 130,
                 highSector: 20,
-                lowColor: Colors.red,
-                medColor: Colors.green,
-                highColor: Colors.red,
+                lowColor: Color.fromARGB(255, 190, 35, 23),
+                medColor: Color.fromARGB(255, 29, 102, 31),
+                highColor: Color.fromARGB(255, 190, 35, 23),
               ),
             ),
             Container(
-              padding: EdgeInsets.all(10),
               child: GaugeWidget(
                 measurement: 'Oxygen Saturation',
                 units: 'SpO2%',
@@ -102,9 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 0.5,
                 medSector: 9.5,
                 highSector: 0,
-                lowColor: Colors.red,
-                medColor: Colors.green,
-                highColor: Colors.red,
+                lowColor: Color.fromARGB(255, 190, 35, 23),
+                medColor: Color.fromARGB(255, 29, 102, 31),
+                highColor: Color.fromARGB(255, 190, 35, 23),
               ),
             ),
           ],

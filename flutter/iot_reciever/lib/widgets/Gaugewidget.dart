@@ -86,8 +86,8 @@ class _GaugeWidgetState extends State<GaugeWidget> {
         PrettyGauge(
           valueWidget: displayReading(read, _font, widget.decimalPlaces),
           gaugeSize: _size,
-          startMarkerStyle: TextStyle(fontSize: _font/2, color: Colors.grey),
-          endMarkerStyle:  TextStyle(fontSize: _font/2, color: Colors.grey),
+          startMarkerStyle: TextStyle(fontSize: _font/2, color: Colors.black87,fontWeight: FontWeight.bold ),
+          endMarkerStyle:  TextStyle(fontSize: _font/2, color: Colors.black87, fontWeight: FontWeight.bold),
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -175,6 +175,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           reading.toStringAsFixed(decimalPlaces),
           minFontSize: fontSize.truncateToDouble(),
           maxFontSize: _max,
+          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
         )
       ],
     );
@@ -193,11 +194,13 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           widget.measurement,
           minFontSize: fontSize.truncateToDouble(),
           maxFontSize: _max,
+          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
         ),
         AutoSizeText(
           units,
           minFontSize: fontSize.truncateToDouble(),
           maxFontSize: _max,
+          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
         )
       ],
     );
