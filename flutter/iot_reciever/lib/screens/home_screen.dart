@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
           ,
           image: DecorationImage(
-            opacity: .1,
+            opacity: .15,
             fit: BoxFit.cover,
             image: AssetImage(
               'assets/images/blood-pressure.png',
