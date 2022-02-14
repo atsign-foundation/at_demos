@@ -60,14 +60,14 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     double _size;
     double _font;
     if (_width > _height) {
-      _size = _width / 4;
-      _font = _size / 10;
+      _size = _width /2 ;
+      _font = _size / 8;
     } else {
-      _size = _height / 2;
-      if (_size > _width / 2) {
-        _size = _width / 2;
+      _size = _height ;
+      if (_size > _width) {
+        _size = _width / 1.2;
       }
-      _font = _size / 10;
+      _font = _size / 8;
     }
     var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),

@@ -82,7 +82,7 @@ Future<int> iotListen(AtClient atClient, String atsign, String toAtsign) async {
   var key = AtKey()
     ..key = 'mwc_o2'
     ..sharedBy = atsign
-    ..sharedWith = '@colin'
+    ..sharedWith = toAtsign
     ..metadata = metaData;
 
   await atClient.put(key, pt);
