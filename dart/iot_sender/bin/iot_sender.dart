@@ -7,14 +7,16 @@ import 'package:iot_sender/iot_mqtt_listener.dart';
 import 'dart:io';
 
 void main(List<String> arguments) async {
-  var toAtsigns = arguments;
-  if (toAtsigns.isEmpty) {
-    print('Usage: iot_sender <@sign>');
+ 
+  if (arguments.isEmpty || arguments.length != 2) {
+    print('Usage: iot_sender <sender @sign> <reciever @sign>');
     exit(0);
   }
-  String toAtsign = toAtsigns[0];
 
-  OnboardingService onboardingService = OnboardingService('blackdeath');
+  String atsign = arguments[0];
+  String toAtsign = arguments[1];
+
+  OnboardingService onboardingService = OnboardingService(atsign);
   await onboardingService.authenticate();
   AtLookupImpl atLookup = onboardingService.getAtLookup();
   var keys = await atLookup.scan(auth: true);
@@ -24,7 +26,6 @@ void main(List<String> arguments) async {
   var encryptSelfKey = await onboardingService.selfEncryptionKey();
   var encryptPrivateKey = await onboardingService.privateEncryptionKey();
 
-  String atsign = '@blackdeath';
   String namespace = 'fourballcorporate9';
   AtClientManager atClientManager = AtClientManager.getInstance();
   AtClient atClient;

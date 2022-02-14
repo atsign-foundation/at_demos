@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String? currentAtsign;
     late AtClient atClient;
     var notificationService = atClientManager.notificationService;
+     atClientManager.syncService.sync();
     notificationService
         .subscribe(regex: AtEnv.appNamespace)
         .listen((notification) {
@@ -52,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
     print(_width);
 
-    int _gridRows =1 ;
+    int _gridRows = 1;
     if (_width > _height) {
       _gridRows = 2;
     } else {
@@ -60,28 +61,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Scaffold(
       appBar: NewGradientAppBar(
-          title: Text(widget.ioT.sensorName),
-          gradient: LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+        title: Text(widget.ioT.sensorName),
+        gradient: const LinearGradient(colors: [
+          Color.fromARGB(255, 173, 83, 78),
+          Color.fromARGB(255, 108, 169, 197)
+        ]),
       ),
       body: Container(
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white70,
-          gradient: _gridRows > 1 ? LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:  [ 
-             Color.fromARGB(255, 240, 181, 178),Color.fromARGB(255, 171, 200, 224)
-            ],
-          ):
-          LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:  [ 
-             Color.fromARGB(255, 240, 181, 178),Color.fromARGB(255, 171, 200, 224)
-            ],
-          )
-          ,
-          image: DecorationImage(
+          gradient: _gridRows > 1
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
+                )
+              : const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
+                ),
+          image: const DecorationImage(
             opacity: .15,
             fit: BoxFit.cover,
             image: AssetImage(
@@ -109,9 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 50,
                 medSector: 130,
                 highSector: 20,
-                lowColor: Color.fromARGB(255, 161, 52, 44),
-                medColor: Color.fromARGB(255, 75, 145, 78),
-                highColor:Color.fromARGB(255, 161, 52, 44),
+                lowColor: const Color.fromARGB(255, 161, 52, 44),
+                medColor: const Color.fromARGB(255, 75, 145, 78),
+                highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
             ),
             Container(
@@ -126,9 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowSector: 0.5,
                 medSector: 9.5,
                 highSector: 0,
-                lowColor: Color.fromARGB(255, 161, 52, 44),
-                medColor: Color.fromARGB(255, 75, 145, 78),
-                highColor: Color.fromARGB(255, 161, 52, 44),
+                lowColor: const Color.fromARGB(255, 161, 52, 44),
+                medColor: const Color.fromARGB(255, 75, 145, 78),
+                highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
             ),
           ],
