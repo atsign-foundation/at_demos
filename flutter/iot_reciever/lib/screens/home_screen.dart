@@ -5,6 +5,7 @@ import 'package:at_utils/at_logger.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  IoT readings = IoT(sensorName: '@ZARIOT', heartRate: '0', bloodOxygen: '90');
+  IoT readings = IoT(sensorName: 'ZARIOT / The @ Company', heartRate: '0', bloodOxygen: '90');
 
   @override
   void initState() {
@@ -36,8 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
     atClientManager.syncService.sync(onDone: () {
       _logger.info('sync complete');
     });
-    notificationService.subscribe(regex: AtEnv.appNamespace).listen((notification) {
-      _logger.info('notification subscription handler got notification with key ${notification.key}');
+    notificationService
+        .subscribe(regex: AtEnv.appNamespace)
+        .listen((notification) {
+      _logger.info(
+          'notification subscription handler got notification with key ${notification.key}');
       getAtsignData(context, notification.key);
     });
     setState(() {});
@@ -46,13 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
-    AtClientManager atClientManager = AtClientManager.getInstance();
+    //AtClientManager atClientManager = AtClientManager.getInstance();
     double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height ;
+    double _height = MediaQuery.of(context).size.height;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
-    _logger.info('width: $_width');
 
     int _gridRows = 1;
     if (_width > _height) {
@@ -62,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: Text(widget.ioT.sensorName),
+        title: AutoSizeText(readings.sensorName),
         gradient: const LinearGradient(colors: [
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
@@ -191,10 +194,11 @@ class _HomeScreenState extends State<HomeScreen> {
       readings.bloodOxygen = value;
     }
     var createdAt = reading.metadata?.createdAt;
-    var dateFormat = DateFormat("H:m.s");
+    var dateFormat = DateFormat("HH:mm.ss");
     String dateFormated = dateFormat.format(createdAt!);
-    widget.ioT.sensorName = 'Updated: $dateFormated';
+    readings.sensorName = '$dateFormated UTC | $sharedByAtsign';
     setState(() {});
-    _logger.info('Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
+    _logger.info(
+        'Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
   }
 }

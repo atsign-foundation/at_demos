@@ -69,7 +69,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
         _size = _width;
       }      _font = _size / 9;
     
-    var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
+    var step = (this.widget.topRange - this.widget.bottomRange) / 250;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
         builder: (context) {
       read = getValue(widget.value);

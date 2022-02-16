@@ -10,7 +10,7 @@ import 'package:at_commons/at_commons.dart';
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
 
-bool fakingO2SatValues = true;
+bool fakingO2SatValues = false;
 Random random = Random();
 int fakeO2IntMinValue = 950;
 int fakeO2IntMaxValue = 995;
