@@ -56,6 +56,7 @@ printing out values to local LCD display using pygame
 * [Adafruit PiTFT 2.4" HAT Mini Kit](https://thepihut.com/products/adafruit-pitft-2-4-hat-mini-kit-320x240-tft-touchscreen?variant=13930056004)
 * [MAX30105 Breakout](https://thepihut.com/products/max30105-breakout-heart-rate-oximeter-smoke-sensor?variant=32180290355262) NB MAX30101 supplied
 * [Extra-Tall Push-Fit Stacking GPIO Header for Raspberry Pi](https://thepihut.com/products/40-pin-extra-tall-header-push-fit-version-single-shroud)
+* [Anker PowerCore Essential 20,000 PD Power Bank](https://smile.amazon.co.uk/gp/product/B08LG2X98F)
 
 ### Software config
 
