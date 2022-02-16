@@ -5,10 +5,10 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:at_client/at_client.dart';
 import 'package:at_commons/at_commons.dart';
 
-
 final client = MqttServerClient('localhost', '');
 
-Future <void> iotListen(AtClient atClient, String atsign, String toAtsign) async {
+Future<void> iotListen(
+    AtClient atClient, String atsign, String toAtsign) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -53,43 +53,42 @@ Future <void> iotListen(AtClient atClient, String atsign, String toAtsign) async
     final pt =
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-
-    if (c[0].topic == "mqtt/mwc_hr")  {
+    if (c[0].topic == "mqtt/mwc_hr") {
       print('Heart Rate: ' + pt);
-    var metaData = Metadata()
-    ..isPublic = false
-    ..isEncrypted = true
-    ..namespaceAware = true
-    ..ttl = 100000;
+      var metaData = Metadata()
+        ..isPublic = false
+        ..isEncrypted = true
+        ..namespaceAware = true
+        ..ttl = 100000;
 
-  var key = AtKey()
-    ..key = 'mwc_hr'
-    ..sharedBy = atsign
-    ..sharedWith = toAtsign
-    ..metadata = metaData;
+      var key = AtKey()
+        ..key = 'mwc_hr'
+        ..sharedBy = atsign
+        ..sharedWith = toAtsign
+        ..metadata = metaData;
 
-  await atClient.put(key, pt);
+      await atClient.put(key, pt);
     }
 
     if (c[0].topic == "mqtt/mwc_o2") {
       print('Blood Oxygen: ' + pt);
-          var metaData = Metadata()
-    ..isPublic = false
-    ..isEncrypted = true
-    ..namespaceAware = true
-    ..ttl = 100000;
+      var metaData = Metadata()
+        ..isPublic = false
+        ..isEncrypted = true
+        ..namespaceAware = true
+        ..ttl = 100000;
 
-  var key = AtKey()
-    ..key = 'mwc_o2'
-    ..sharedBy = atsign
-    ..sharedWith = toAtsign
-    ..metadata = metaData;
+      var key = AtKey()
+        ..key = 'mwc_o2'
+        ..sharedBy = atsign
+        ..sharedWith = toAtsign
+        ..metadata = metaData;
 
-  await atClient.put(key, pt);
+      await atClient.put(key, pt);
     }
+
+
   });
-
-
 }
 
 /// The subscribed callback

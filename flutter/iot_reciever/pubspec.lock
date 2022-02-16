@@ -79,11 +79,13 @@ packages:
     source: hosted
     version: "3.0.5"
   at_lookup:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: at_lookup
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: at_lookup
+      ref: quickFixAtLookupRaceCondition
+      resolved-ref: e8f1b3c8d318792c851e35fb42d65153fc3fe7e5
+      url: "https://github.com/atsign-foundation/at_libraries.git"
+    source: git
     version: "3.0.7"
   at_onboarding_flutter:
     dependency: "direct main"
@@ -252,7 +254,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.3"
+    version: "4.4.0"
   file_saver:
     dependency: transitive
     description:
@@ -450,6 +452,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  mutex:
+    dependency: transitive
+    description:
+      name: mutex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   new_gradient_app_bar:
     dependency: "direct main"
     description:
@@ -582,7 +591,7 @@ packages:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.5"
   share_plus_linux:
     dependency: transitive
     description:
@@ -762,7 +771,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.2"
+    version: "2.8.3"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
