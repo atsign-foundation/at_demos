@@ -1,7 +1,2 @@
-dart/iot_sender/lib/hive/client/c14ec7dc07baa6d982a63bf7ef60cb5dceb744210afd075ae607d036856d03da.hash
-dart/iot_sender/lib/hive/client/c14ec7dc07baa6d982a63bf7ef60cb5dceb744210afd075ae607d036856d03da.hive
-dart/iot_sender/lib/hive/client/c14ec7dc07baa6d982a63bf7ef60cb5dceb744210afd075ae607d036856d03da.lock
-dart/iot_sender/lib/hive/client/commit/commit_log_c14ec7dc07baa6d982a63bf7ef60cb5dceb744210afd075ae607d036856d03da.hive
-dart/iot_sender/lib/hive/client/commit/commit_log_c14ec7dc07baa6d982a63bf7ef60cb5dceb744210afd075ae607d036856d03da.lock
-dart/iot_sender/lib/config/@blackdeath_key.atKeys
-dart/iot_sender/lib/config/@ai6bh_key.atKeys
+dart/iot_sender/lib/hive/*
+*.atKeys
