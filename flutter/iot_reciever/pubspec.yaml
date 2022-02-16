@@ -37,9 +37,4 @@ flutter:
     - .env
     - assets/images/
   uses-material-design: true
-dependency_overrides:
-  at_lookup:
-    git:
-      url: https://github.com/atsign-foundation/at_libraries.git
-      path: at_lookup
-      ref: quickFixAtLookupRaceCondition
+
