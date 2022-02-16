@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:at_utils/at_utils.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -9,6 +10,26 @@ import 'package:at_commons/at_commons.dart';
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
 
+bool fakingO2SatValues = true;
+Random random = Random();
+int fakeO2IntMinValue = 950;
+int fakeO2IntMaxValue = 995;
+// fakeO2 value in int, convert to double by dividing by 10 when publishing
+int currentFakeO2IntValue = random.nextInt(fakeO2IntMaxValue-fakeO2IntMinValue) + fakeO2IntMinValue;
+
+int getNextFakeO2IntValue() {
+  // get random int in range -5..+5
+  // so the double value will have a change delta of -0.5 to +0.5
+  int fakeO2Delta = random.nextInt(11) - 5;
+
+  currentFakeO2IntValue += fakeO2Delta;
+  if (currentFakeO2IntValue > fakeO2IntMaxValue) {
+    currentFakeO2IntValue = fakeO2IntMaxValue;
+  } else if (currentFakeO2IntValue < fakeO2IntMinValue) {
+    currentFakeO2IntValue = fakeO2IntMinValue;
+  }
+  return currentFakeO2IntValue;
+}
 
 Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async {
   client.logging(on: false);
@@ -17,6 +38,9 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
   client.onDisconnected = onDisconnected;
   client.onConnected = onConnected;
   client.onSubscribed = onSubscribed;
+
+  double lastHeartRateDoubleValue = 0.0;
+  double lastO2SatDoubleValue = 0.0;
 
   try {
     await client.connect();
@@ -79,45 +103,69 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
     if (c[0].topic == "mqtt/mwc_hr") {
-      logger.info('Heart Rate: ' + pt);
-      var metaData = Metadata()
-        ..isPublic = false
-        ..isEncrypted = true
-        ..namespaceAware = true
-        ..ttl = 100000;
+      double? heartRateDoubleValue = double.tryParse(pt);
+      heartRateDoubleValue ??= lastHeartRateDoubleValue;
+      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, putCounterHR, atClient);
 
-      var key = AtKey()
-        ..key = 'mwc_hr'
-        ..sharedBy = atsign
-        ..sharedWith = toAtsign
-        ..metadata = metaData;
-
-      int thisHRPutNo = ++putCounterHR;
-      logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
-      await atClient.put(key, pt);
-      logger.info('atClient.put #$thisHRPutNo complete');
+      if (fakingO2SatValues) {
+        // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
+        currentFakeO2IntValue = getNextFakeO2IntValue();
+        double fakeO2DoubleValue = currentFakeO2IntValue/10;
+        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, putCounterO2, atClient);
+      }
     }
 
     if (c[0].topic == "mqtt/mwc_o2") {
-      logger.info('Blood Oxygen: ' + pt);
-      var metaData = Metadata()
-        ..isPublic = false
-        ..isEncrypted = true
-        ..namespaceAware = true
-        ..ttl = 100000;
+      double? o2SatDoubleValue = double.tryParse(pt);
+      o2SatDoubleValue ??= lastO2SatDoubleValue;
 
-      var key = AtKey()
-        ..key = 'mwc_o2'
-        ..sharedBy = atsign
-        ..sharedWith = toAtsign
-        ..metadata = metaData;
-
-      int thisO2PutNo = ++putCounterO2;
-      logger.info('calling atClient.put for O2 #$thisO2PutNo');
-      await atClient.put(key, pt);
-      logger.info('atClient.put #$thisO2PutNo complete');
+      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, putCounterO2, atClient);
     }
   });
+}
+
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, int putCounterHR, AtClient atClient) async {
+  String heartRateAsString = heartRate.toStringAsFixed(1);
+  logger.info('Heart Rate: $heartRateAsString');
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+    ..namespaceAware = true
+    ..ttl = 100000;
+
+  var key = AtKey()
+    ..key = 'mwc_hr'
+    ..sharedBy = atsign
+    ..sharedWith = toAtsign
+    ..metadata = metaData;
+
+  int thisHRPutNo = ++putCounterHR;
+  logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
+  await atClient.put(key, heartRateAsString);
+  logger.info('atClient.put #$thisHRPutNo complete');
+}
+
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, int putCounterO2, AtClient atClient) async {
+  String o2SatAsString = o2Sat.toStringAsFixed(1);
+  logger.info('Blood Oxygen: $o2SatAsString');
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+    ..namespaceAware = true
+    ..ttl = 100000;
+
+  var key = AtKey()
+    ..key = 'mwc_o2'
+    ..sharedBy = atsign
+    ..sharedWith = toAtsign
+    ..metadata = metaData;
+
+  int thisO2PutNo = ++putCounterO2;
+  logger.info('calling atClient.put for O2 #$thisO2PutNo');
+  await atClient.put(key, o2SatAsString);
+  logger.info('atClient.put #$thisO2PutNo complete');
 }
 
 /// The subscribed callback

@@ -13,7 +13,7 @@ void main(List<String> arguments) async {
     exit(0);
   }
 
-  AtSignLogger.root_level = 'FINER';
+  AtSignLogger.root_level = 'INFO';
 
   final AtSignLogger logger = AtSignLogger('iot_sender');
 
