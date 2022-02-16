@@ -50,6 +50,14 @@ void main(List<String> arguments) async {
       .getLocalSecondary()
       ?.putValue(common.AT_ENCRYPTION_PUBLIC_KEY+atsign, encryptPublicKey!);
 
+  print('Waiting for Sync to Complete');
+  /// Surely there is a way to check to see if the first synch is completed ?
+  /// It seems nothing is reliable :-9
+  /// So waiting 20 Secs blah
+  sleep(const Duration(seconds: 20));
+
+  print('OK Ready');
+
 
   print('Listening for mqtt');
 
