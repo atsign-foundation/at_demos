@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:at_app_flutter/at_app_flutter.dart';
+import 'package:at_utils/at_logger.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/date_symbol_data_file.dart';
 
@@ -14,6 +15,8 @@ import 'package:iot_reciever/models/iot_model.dart';
 import 'package:iot_reciever/widgets/Gaugewidget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
+final AtSignLogger _logger = AtSignLogger('HomeScreen');
+
 // * Once the onboarding process is completed you will be taken to this screen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.ioT}) : super(key: key);
@@ -26,17 +29,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   IoT readings = IoT(sensorName: '@ZARIOT', heartRate: '0', bloodOxygen: '90');
+  late AtClientManager atClientManager;
   @override
   void initState() {
     super.initState();
-    var atClientManager = AtClientManager.getInstance();
-    String? currentAtsign;
-    late AtClient atClient;
+    atClientManager = AtClientManager.getInstance();
     var notificationService = atClientManager.notificationService;
     atClientManager.syncService.sync(onDone: () {
-      notificationService.subscribe(regex: AtEnv.appNamespace).listen((notification) {
-        getAtsignData(context, notification.key);
-      });
+      _logger.info('sync complete');
+    });
+    notificationService.subscribe(regex: AtEnv.appNamespace).listen((notification) {
+      _logger.finer('notification subscription handler got notification');
+      getAtsignData(context, notification.key);
     });
     setState(() {});
   }
@@ -50,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
-    print(_width);
+    _logger.finer('width: $_width');
 
     int _gridRows = 1;
     if (_width > _height) {
@@ -156,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
     atClient = atClientManager.atClient;
     atClientManager.atClient.setPreferences(preference);
     currentAtsign = atClient.getCurrentAtSign();
-    print(currentAtsign);
+    _logger.info('getAtsignData: currentAtsign is $currentAtsign');
 
     //Split the notification to get the key and the sharedByAtsign
     // Notification looks like this :-
