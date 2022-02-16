@@ -7,6 +7,8 @@ import 'package:at_client/at_client.dart';
 import 'package:at_commons/at_commons.dart';
 
 final client = MqttServerClient('localhost', '');
+final AtSignLogger logger = AtSignLogger('iotListen');
+
 
 Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async {
   client.logging(on: false);
@@ -15,8 +17,6 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
   client.onDisconnected = onDisconnected;
   client.onConnected = onConnected;
   client.onSubscribed = onSubscribed;
-
-  final AtSignLogger logger = AtSignLogger('iotListen');
 
   try {
     await client.connect();
@@ -54,7 +54,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     ..metadata = metaData;
 
   logger.info('calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
-  await atClient.put(key, '42');
+  await atClient.put(key, '42.0');
   logger.info('Initial put complete, AtClient connection should now be authorized');
 
   /// Ok, lets try a subscription
@@ -79,7 +79,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
     if (c[0].topic == "mqtt/mwc_hr") {
-      print('Heart Rate: ' + pt);
+      logger.info('Heart Rate: ' + pt);
       var metaData = Metadata()
         ..isPublic = false
         ..isEncrypted = true
@@ -99,7 +99,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     }
 
     if (c[0].topic == "mqtt/mwc_o2") {
-      print('Blood Oxygen: ' + pt);
+      logger.info('Blood Oxygen: ' + pt);
       var metaData = Metadata()
         ..isPublic = false
         ..isEncrypted = true
@@ -122,16 +122,16 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
 
 /// The subscribed callback
 void onSubscribed(String topic) {
-  print('INFO::Subscription confirmed for topic $topic');
+  logger.info('Subscription confirmed for topic $topic');
 }
 
 /// The unsolicited disconnect callback
 void onDisconnected() {
-  print('INFO::OnDisconnected client callback - Client disconnection');
+  logger.info('OnDisconnected client callback - Client disconnection');
   if (client.connectionStatus!.disconnectionOrigin == MqttDisconnectionOrigin.solicited) {
-    print('INFO::OnDisconnected callback is solicited, this is correct');
+    logger.info('OnDisconnected callback is solicited, this is correct');
   } else {
-    print('INFO::OnDisconnected callback is unsolicited or none, this is incorrect - exiting');
+    logger.severe('OnDisconnected callback is unsolicited or none, this is incorrect - exiting');
     exit(-1);
   }
 }

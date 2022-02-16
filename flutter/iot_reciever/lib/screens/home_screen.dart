@@ -33,11 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
     String? currentAtsign;
     late AtClient atClient;
     var notificationService = atClientManager.notificationService;
-     atClientManager.syncService.sync();
-    notificationService
-        .subscribe(regex: AtEnv.appNamespace)
-        .listen((notification) {
-      getAtsignData(context, notification.key);
+    atClientManager.syncService.sync(onDone: () {
+      notificationService.subscribe(regex: AtEnv.appNamespace).listen((notification) {
+        getAtsignData(context, notification.key);
+      });
     });
     setState(() {});
   }
