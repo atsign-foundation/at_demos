@@ -8,7 +8,7 @@ import 'package:at_commons/at_commons.dart';
 
 final client = MqttServerClient('localhost', '');
 
-Future<int> iotListen(AtClient atClient, String atsign, String toAtsign) async {
+Future <void> iotListen(AtClient atClient, String atsign, String toAtsign) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -89,7 +89,7 @@ Future<int> iotListen(AtClient atClient, String atsign, String toAtsign) async {
     }
   });
 
-  return 0;
+
 }
 
 /// The subscribed callback

@@ -46,11 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     AtClientManager atClientManager = AtClientManager.getInstance();
-    // double _width = MediaQuery.of(context).size.width;
-    // double _height = MediaQuery.of(context).size.height;
-    var mediaQuery = MediaQuery.of(context);
-    var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
-    var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height ;
+    // var mediaQuery = MediaQuery.of(context);
+    // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
+    // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
     print(_width);
 
     int _gridRows = 1;
@@ -99,9 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
           primary: false,
           childAspectRatio: 1,
           padding: const EdgeInsets.all(1),
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 1,
+          crossAxisSpacing: 0,
+          mainAxisSpacing: 0,
           crossAxisCount: _gridRows,
+          shrinkWrap: true,
           children: <Widget>[
             Container(
               child: GaugeWidget(
@@ -193,6 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
     String dateFormated = dateFormat.format(createdAt!);
     widget.ioT.sensorName = 'Updated: $dateFormated';
     setState(() {});
-    print('Yay! A $keyAtsign reading of $value ! From $sharedByAtsign');
+    print('Yay $currentAtsign was just set a $keyAtsign reading of $value ! From $sharedByAtsign');
   }
 }

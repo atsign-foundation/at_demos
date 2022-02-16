@@ -7,7 +7,6 @@ import 'package:iot_sender/iot_mqtt_listener.dart';
 import 'dart:io';
 
 void main(List<String> arguments) async {
- 
   if (arguments.isEmpty || arguments.length != 2) {
     print('Usage: iot_sender <sender @sign> <reciever @sign>');
     exit(0);
@@ -18,13 +17,11 @@ void main(List<String> arguments) async {
 
   OnboardingService onboardingService = OnboardingService(atsign);
   await onboardingService.authenticate();
-  AtLookupImpl atLookup = onboardingService.getAtLookup();
-  var keys = await atLookup.scan(auth: true);
-  print('scan ${keys.toString()}');
 
   var pkam = await onboardingService.privateKey();
   var encryptSelfKey = await onboardingService.selfEncryptionKey();
   var encryptPrivateKey = await onboardingService.privateEncryptionKey();
+  var encryptPublicKey = await onboardingService.publicEncryptionKey();
 
   String namespace = 'fourballcorporate9';
   AtClientManager atClientManager = AtClientManager.getInstance();
@@ -48,6 +45,13 @@ void main(List<String> arguments) async {
   await atClient
       .getLocalSecondary()
       ?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
+
+  await atClient
+      .getLocalSecondary()
+      ?.putValue(common.AT_ENCRYPTION_PUBLIC_KEY+atsign, encryptPublicKey!);
+
+
+  print('Listening for mqtt');
 
   iotListen(atClient, atsign, toAtsign);
   print('listening');

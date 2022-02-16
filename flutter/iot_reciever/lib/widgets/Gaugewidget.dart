@@ -54,21 +54,21 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   Widget build(BuildContext context) {
     double read = getValue(widget.value);
     double reading = getMeter(widget.value);
-    var mediaQuery = MediaQuery.of(context);
-    var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
-    var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height -160 ;
+    // var mediaQuery = MediaQuery.of(context);
+    // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
+    // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio -160;
     double _size;
     double _font;
-    if (_width > _height) {
+    if (_width > _height +160 ) {
       _size = _width /2 ;
-      _font = _size / 8;
+      _font = _size / 9;
     } else {
-      _size = _height ;
-      if (_size > _width) {
-        _size = _width / 1.2;
-      }
-      _font = _size / 8;
-    }
+      // _size = _height/2 ;
+        _size = _width;
+      }      _font = _size / 9;
+    
     var step = (this.widget.topRange - this.widget.bottomRange) / 1000;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
         builder: (context) {
@@ -86,8 +86,8 @@ class _GaugeWidgetState extends State<GaugeWidget> {
         PrettyGauge(
           valueWidget: displayReading(read, _font, widget.decimalPlaces),
           gaugeSize: _size,
-          startMarkerStyle: TextStyle(fontSize: _font/2, color: Colors.black87,fontWeight: FontWeight.bold ),
-          endMarkerStyle:  TextStyle(fontSize: _font/2, color: Colors.black87, fontWeight: FontWeight.bold),
+          startMarkerStyle: TextStyle(fontSize: _font/4, color: Colors.black87,fontWeight: FontWeight.bold ),
+          endMarkerStyle:  TextStyle(fontSize: _font/4, color: Colors.black87, fontWeight: FontWeight.bold),
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,

@@ -3,5 +3,5 @@ root_server:
   url: 'root.atsign.org'
 
 auth:
-  atKeysPath: 'lib/config/@blackdeath_key.atKeys'
+  atKeysPath: 'lib/config/@ai6bh_key.atKeys'
 #  qrPath: 'lib/config/qr.png'
