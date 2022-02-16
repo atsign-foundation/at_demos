@@ -4,7 +4,15 @@ publish_to: none
 description: A new Flutter project.
 environment: 
   sdk: '>=2.15.1 <3.0.0'
-dependencies: 
+
+dependency_overrides:
+  at_lookup:
+    git:
+      url: https://github.com/atsign-foundation/at_libraries.git
+      path: at_lookup
+      ref: quickFixAtLookupRaceCondition
+
+dependencies:
   cupertino_icons: ^1.0.2
   at_client_mobile: ^3.0.3
   at_onboarding_flutter: ^3.0.1

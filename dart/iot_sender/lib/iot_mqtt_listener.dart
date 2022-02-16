@@ -105,6 +105,8 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     if (c[0].topic == "mqtt/mwc_hr") {
       double? heartRateDoubleValue = double.tryParse(pt);
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
+      lastHeartRateDoubleValue = heartRateDoubleValue;
+
       await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, putCounterHR, atClient);
 
       if (fakingO2SatValues) {
@@ -118,6 +120,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
     if (c[0].topic == "mqtt/mwc_o2") {
       double? o2SatDoubleValue = double.tryParse(pt);
       o2SatDoubleValue ??= lastO2SatDoubleValue;
+      lastO2SatDoubleValue = o2SatDoubleValue;
 
       await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, putCounterO2, atClient);
     }
