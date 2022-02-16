@@ -24,7 +24,7 @@ Future<void> main() async {
     _logger.finer('Environment failed to load from .env: ', e);
   }
 
-  AtSignLogger.root_level = 'FINER';
+  AtSignLogger.root_level = 'INFO';
 
   runApp(const MyApp());
 }
