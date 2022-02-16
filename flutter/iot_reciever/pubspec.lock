@@ -83,7 +83,7 @@ packages:
     description:
       path: at_lookup
       ref: quickFixAtLookupRaceCondition
-      resolved-ref: e8f1b3c8d318792c851e35fb42d65153fc3fe7e5
+      resolved-ref: d8e2aa8e41b2083b513951fbf1027a09ca28ff4a
       url: "https://github.com/atsign-foundation/at_libraries.git"
     source: git
     version: "3.0.7"

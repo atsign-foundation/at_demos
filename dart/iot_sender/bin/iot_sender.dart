@@ -1,4 +1,5 @@
 import 'package:at_lookup/at_lookup.dart';
+import 'package:at_utils/at_logger.dart';
 import 'package:iot_sender/at_onboarding_cli.dart';
 import 'package:at_client/at_client.dart';
 import 'package:at_commons/at_commons.dart' as common;
@@ -7,10 +8,14 @@ import 'package:iot_sender/iot_mqtt_listener.dart';
 import 'dart:io';
 
 void main(List<String> arguments) async {
-  if (arguments.isEmpty || arguments.length != 2) {
-    print('Usage: iot_sender <sender @sign> <reciever @sign>');
+  if (arguments.isEmpty || arguments.length < 2) {
+    print('Usage: iot_sender <sender @sign> <receiver @sign>');
     exit(0);
   }
+
+  AtSignLogger.root_level = 'INFO';
+
+  final AtSignLogger logger = AtSignLogger('iot_sender');
 
   String atsign = arguments[0];
   String toAtsign = arguments[1];
@@ -50,17 +55,17 @@ void main(List<String> arguments) async {
       .getLocalSecondary()
       ?.putValue(common.AT_ENCRYPTION_PUBLIC_KEY+atsign, encryptPublicKey!);
 
-  print('Waiting for Sync to Complete');
+  int waitSeconds = 20;
+  logger.info('Waiting $waitSeconds for Sync to Complete');
   /// Surely there is a way to check to see if the first synch is completed ?
+  ///     [gkc] Murali currently working on that in core sprint 30
   /// It seems nothing is reliable :-9
   /// So waiting 20 Secs blah
-  sleep(const Duration(seconds: 20));
+  sleep(Duration(seconds: waitSeconds));
 
+  logger.info('OK Ready');
 
-  print('OK Ready');
-
-
-  print('Listening for mqtt');
+  logger.info("calling iotListen atSign '$atsign', toAtSign '$toAtsign'");
 
   iotListen(atClient, atsign, toAtsign);
   print('listening');

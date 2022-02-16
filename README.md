@@ -2,74 +2,83 @@
 
 ### Now for a little internet optimism
 
-# Sample README
+# Mobile World Congress Demo
 
-Open with intent - we welcome contributions - we want pull requests and to hear about issues.
+This repo holds the files for The @ Company and Zariot demo for MWC 2022.
 
-## Who is this for?
+## at_cli
 
-The README should be addressed to somebody who's never seen this before.
-But also don't assume that they're a novice.
+A simple script to use the at_cli tool to read from MQTT and send updates to
+an @ sign.
 
-### Code user
+## dart/iot_sender
 
-Does this repo publish to [pub.dev](https://pub.dev) or similar?
-In which case the code user just needs a pointer there - e.g. [at_client on pub.dev](https://pub.dev/packages/at_client)
+A dart app to read from MQTT and send to an @ sign.
 
-### Contributor
+First modify `lib/config/config.yaml` to hold the correct location for the
+sending @ sign .atKeys file.
 
-This is the person who we want working with us here.
-[CONTRIBUTING.md](CONTRIBUTING.md) is going to have the detailed guidance on how to setup their tools,
-tests and how to make a pull request.
+```bash
+cd dart/iot_sender
+dart pub get
+dart run ./bin/iot_sender.dart "@sendingatsign" "@receivingatsign"
+```
 
-## Why, What, How?
+## flutter/iot_receiver
 
-### Why?
+A flutter app to receive data from dart/iot_sender and display it on dials.
 
-What is the purpose of this project?
+To run the Windows version:
 
-### What?
+```
+cd flutter/iot_receiver
+flutter pub get
+flutter run -d windows
+```
 
-What is needed to get the project and its dependencies installed?
+## python
 
-### How?
+### hrmqttsolcd.py
 
-How does this work? How is this used to fulfil its intended purpose?
+Reads data from MAX30101 sensor then puts it onto MQTT queue whilst also
+printing out values to local LCD display using pygame
 
-## Checklist
+## Raspberry Pi setup
 
-### Writing
+### Bill of Materials
 
-Does the writing flow, with proper grammar and correct spelling?
+* [Raspberry Pi 4 Model B](https://thepihut.com/products/raspberry-pi-4-model-b?variant=20064052740158) (2GB or 4GB)
+* [Raspberry Pi 4 Power Supply](https://thepihut.com/products/raspberry-pi-psu-uk?variant=20064070303806)
+* [Heatsink Case for Raspberry Pi 4](https://thepihut.com/products/aluminium-armour-heatsink-case-for-raspberry-pi-4?variant=31139034038334)
+* [SIM7600X 4G HAT](https://thepihut.com/products/4g-hat-for-raspberry-pi-lte-cat-4-3g-2g-with-gnss-positioning?variant=39761668374723)
+* [SSD to USB 3.0 Cable](https://thepihut.com/products/ssd-to-usb-3-0-cable-for-raspberry-pi?variant=38191015559363)
+* [120GB 2.5" SSD](https://thepihut.com/products/wd-green-120gb-2-5-ssd?variant=37628144648387)
+* [Adafruit PiTFT 2.4" HAT Mini Kit](https://thepihut.com/products/adafruit-pitft-2-4-hat-mini-kit-320x240-tft-touchscreen?variant=13930056004)
+* [MAX30105 Breakout](https://thepihut.com/products/max30105-breakout-heart-rate-oximeter-smoke-sensor?variant=32180290355262) NB MAX30101 supplied
+* [Extra-Tall Push-Fit Stacking GPIO Header for Raspberry Pi](https://thepihut.com/products/40-pin-extra-tall-header-push-fit-version-single-shroud)
+* [Anker PowerCore Essential 20,000 PD Power Bank](https://smile.amazon.co.uk/gp/product/B08LG2X98F)
 
-### Links
+### Software config
 
-Are the links to external resources correct?
-Are the links to other parts of the project correct
-(beware stuff carried over from previous repos where the
-project might have lived during earlier development)?
+[Raspberry Pi OS Buster 2021-05-28](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/)
+is needed for compatability with the PiTFT HAT. To get it to boot from SSD
+the /boot/start4*.elf files are needed from a more recent Bullseye image.
 
-### Description
+**apt packages**
 
-Has the Description field been filled out?
+```
+sudo apt-get update --allow-releaseinfo-change
+sudo apt-get upgrade -y
+suod apt install i2c-tools git python3-pip curl libsdl2-mixer-2.0-0 \
+  libsdl2-image-2.0-0 libsdl2-2.0-0 libgles2-mesa-dev libsdl2-ttf-2.0-0 \
+  mosquitto mosquitto-clients minicom jq screen
+```
 
-### Acknowledgement/Attribution
+**pip3 packages**
 
-Have we correctly acknowledged the work of others (and their Trademarks etc.)
-where appropriate (per the conditions of their LICENSE?
+```
+sudo pip3 install smbus max30105 smbus2 pygame paho-mqtt i2cdevice
+sudo pip3 install --upgrade adafruit-python-shell click
+```
 
-### LICENSE
-
-Which LICENSE are we using?  
-Is the LICENSE(.md) file present?  
-Does it have the correct dates, legal entities etc.?
-
-## Maintainers
-
-Who created this?  
-
-Do they have complete GitHub profiles?  
-
-How can they be contacted?  
-
-Who is going to respond to pull requests?  
+[TFT HAT easy install](https://learn.adafruit.com/adafruit-2-4-pitft-hat-with-resistive-touchscreen-mini-kit/easy-install)
