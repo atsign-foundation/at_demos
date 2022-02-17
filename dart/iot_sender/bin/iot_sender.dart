@@ -61,7 +61,24 @@ void main(List<String> arguments) async {
   ///     [gkc] Murali currently working on that in core sprint 30
   /// It seems nothing is reliable :-9
   /// So waiting 20 Secs blah
-  sleep(Duration(seconds: waitSeconds));
+  // sleep(Duration(seconds: waitSeconds));
+
+      bool syncComplete = false;
+    void onSyncDone(syncResult) {
+      logger.shout("******* HELLO!!!!! ********");
+      logger.info("syncResult.syncStatus: ${syncResult.syncStatus}");
+      logger.info("syncResult.lastSyncedOn ${syncResult.lastSyncedOn}");
+      syncComplete = true;
+    }
+
+    // Wait for initial sync to complete
+    logger.info("Waiting for initial sync");
+    syncComplete = false;
+    atClientManager.syncService.sync(onDone: onSyncDone);
+    while (! syncComplete) {
+      await Future.delayed(Duration(milliseconds: 100));
+    }
+    logger.info("Initial sync complete");
 
   logger.info('OK Ready');
 
