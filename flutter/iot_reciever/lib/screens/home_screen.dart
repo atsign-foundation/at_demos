@@ -94,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           image: const DecorationImage(
             opacity: .15,
             fit: BoxFit.cover,
+            alignment: Alignment.center,
             image: AssetImage(
               'assets/images/blood-pressure.png',
             ),
