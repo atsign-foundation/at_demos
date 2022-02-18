@@ -20,8 +20,8 @@ dependencies:
   zxing2: ^0.1.0
 
 dependency_overrides:
-  at_lookup:
-    git:
-      url: https://github.com/atsign-foundation/at_libraries.git
-      path: at_lookup
-      ref: quickFixAtLookupRaceCondition
+  # at_lookup:
+  #   git:
+  #     url: https://github.com/atsign-foundation/at_libraries.git
+  #     path: at_lookup
+  #     ref: quickFixAtLookupRaceCondition
