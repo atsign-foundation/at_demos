@@ -48,6 +48,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   @override
   void initState() {
     super.initState();
+        setMeter(widget.value, widget.bottomRange);
   }
 
   @override
@@ -156,15 +157,19 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     switch (value) {
       case 'heartRate':
         widget.ioT.meterHeartRate = reading.toString();
-         widget.ioT.meterHeartRate = reading.toString();
-          if (reading < double.parse(widget.bottomRange.toString())  && reading !=0) {
-          widget.ioT.meterHeartRate = double.parse(widget.bottomRange.toString()).toString();
+        widget.ioT.meterHeartRate = reading.toString();
+        if (reading < double.parse(widget.bottomRange.toString()) &&
+            reading != 0) {
+          widget.ioT.meterHeartRate =
+              double.parse(widget.bottomRange.toString()).toString();
         }
         break;
       case 'bloodOxygen':
         widget.ioT.meterBloodOxygen = reading.toString();
-          if (reading < double.parse(widget.bottomRange.toString()) && reading !=0 ) {
-          widget.ioT.meterBloodOxygen = double.parse(widget.bottomRange.toString()).toString();
+        if (reading < double.parse(widget.bottomRange.toString()) &&
+            reading != 0) {
+          widget.ioT.meterBloodOxygen =
+              double.parse(widget.bottomRange.toString()).toString();
         }
         break;
       default:

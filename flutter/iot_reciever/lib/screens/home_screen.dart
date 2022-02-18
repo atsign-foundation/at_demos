@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_utils/at_logger.dart';
 
@@ -65,12 +67,47 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: AutoSizeText(readings.sensorName),
+        title: AutoSizeText(readings.sensorName,
+        minFontSize: 5,
+        maxFontSize: 50,),
         gradient: const LinearGradient(colors: [
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
         ]),
+                    actions: [
+              PopupMenuButton<String>(
+                color: const Color.fromARGB(255, 108, 169, 197),
+                //padding: const EdgeInsets.symmetric(horizontal: 10),
+                icon: const Icon(
+                  Icons.menu,
+                  size: 20,
+                ),
+                onSelected: (String result) {
+                  switch (result) {
+                    case 'CLOSE':
+                      exit(0);
+                    //break;
+                    default:
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    height: 20,
+                    value: 'CLOSE',
+                    child: Text(
+                      'CLOSE',
+                      style: TextStyle(
+                          fontSize: 15,
+                          letterSpacing: 5,
+                          backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                          color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+            ],
       ),
+  
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white70,
