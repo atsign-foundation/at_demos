@@ -151,12 +151,12 @@ Response looks like:
 Where `A761...3BFD` is the stored value, and `9000` is the success code.
 
 NB: Data is stored as UPPERCASE hex encoded, where one character is a nibble
-(half a byte).
+(half a byte).  
 The records as presently configured will hold 255 bytes (510 hex characters).
 An .atKeys aesPkamPrivateKey key is 2176 Base64 encoded characters (from
-1632 raw bytes), which converts to 3264 hex characters.
+1632 raw bytes), which converts to 3264 hex characters.  
 This means that a single key needs to be spread across 7 records with the SIM
-as presently configured.
+as presently configured.  
 
 ### Update Record
 
