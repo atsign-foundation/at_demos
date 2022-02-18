@@ -55,13 +55,6 @@ void main(List<String> arguments) async {
       .getLocalSecondary()
       ?.putValue(common.AT_ENCRYPTION_PUBLIC_KEY+atsign, encryptPublicKey!);
 
-  int waitSeconds = 20;
-  logger.info('Waiting $waitSeconds for Sync to Complete');
-  /// Surely there is a way to check to see if the first synch is completed ?
-  ///     [gkc] Murali currently working on that in core sprint 30
-  /// It seems nothing is reliable :-9
-  /// So waiting 20 Secs blah
-  // sleep(Duration(seconds: waitSeconds));
 
       bool syncComplete = false;
     void onSyncDone(syncResult) {

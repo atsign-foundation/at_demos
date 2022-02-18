@@ -99,17 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        child: GridView.count(
-          primary: false,
-          childAspectRatio: 1,
-          padding: const EdgeInsets.all(1),
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 0,
-          crossAxisCount: _gridRows,
-          shrinkWrap: true,
-          children: <Widget>[
-            Container(
-              child: GaugeWidget(
+        
+        child: Table(
+          children:[
+            if (_gridRows == 1) 
+            TableRow( children: [ 
+            GaugeWidget(
                 measurement: 'Heart Rate',
                 units: 'BPM',
                 ioT: readings,
@@ -123,10 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowColor: const Color.fromARGB(255, 161, 52, 44),
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
-              ),
+              )],
             ),
-            Container(
-              child: GaugeWidget(
+            if (_gridRows == 1) 
+            TableRow( children: [ 
+             GaugeWidget(
                 measurement: 'Oxygen Saturation',
                 units: 'SpO2%',
                 ioT: readings,
@@ -141,7 +137,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
-            ),
+            ]
+            ), 
+        
+            
+          if (_gridRows == 2) 
+            TableRow( children: [ 
+            GaugeWidget(
+                measurement: 'Heart Rate',
+                units: 'BPM',
+                ioT: readings,
+                value: 'heartRate',
+                decimalPlaces: 0,
+                bottomRange: 0,
+                topRange: 200,
+                lowSector: 50,
+                medSector: 130,
+                highSector: 20,
+                lowColor: const Color.fromARGB(255, 161, 52, 44),
+                medColor: const Color.fromARGB(255, 75, 145, 78),
+                highColor: const Color.fromARGB(255, 161, 52, 44),
+              ),
+             GaugeWidget(
+                measurement: 'Oxygen Saturation',
+                units: 'SpO2%',
+                ioT: readings,
+                value: 'bloodOxygen',
+                decimalPlaces: 1,
+                bottomRange: 90,
+                topRange: 100,
+                lowSector: 0.5,
+                medSector: 9.5,
+                highSector: 0,
+                lowColor: const Color.fromARGB(255, 161, 52, 44),
+                medColor: const Color.fromARGB(255, 75, 145, 78),
+                highColor: const Color.fromARGB(255, 161, 52, 44),
+              ),
+            ]),
           ],
         ),
       ),
