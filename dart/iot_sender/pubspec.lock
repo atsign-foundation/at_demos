@@ -51,11 +51,13 @@ packages:
     source: hosted
     version: "3.0.5"
   at_lookup:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: at_lookup
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: at_lookup
+      ref: quickFixAtLookupRaceCondition
+      resolved-ref: e8f1b3c8d318792c851e35fb42d65153fc3fe7e5
+      url: "https://github.com/atsign-foundation/at_libraries.git"
+    source: git
     version: "3.0.7"
   at_persistence_secondary_server:
     dependency: transitive
@@ -225,6 +227,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.6.5"
+  mutex:
+    dependency: transitive
+    description:
+      name: mutex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   path:
     dependency: transitive
     description:
