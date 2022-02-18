@@ -79,14 +79,12 @@ packages:
     source: hosted
     version: "3.0.5"
   at_lookup:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: at_lookup
-      ref: quickFixAtLookupRaceCondition
-      resolved-ref: d8e2aa8e41b2083b513951fbf1027a09ca28ff4a
-      url: "https://github.com/atsign-foundation/at_libraries.git"
-    source: git
-    version: "3.0.7"
+      name: at_lookup
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.8"
   at_onboarding_flutter:
     dependency: "direct main"
     description:
