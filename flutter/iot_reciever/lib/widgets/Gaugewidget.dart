@@ -157,13 +157,13 @@ class _GaugeWidgetState extends State<GaugeWidget> {
       case 'heartRate':
         widget.ioT.meterHeartRate = reading.toString();
          widget.ioT.meterHeartRate = reading.toString();
-          if (reading < double.parse(widget.bottomRange.toString()) + 1) {
+          if (reading < double.parse(widget.bottomRange.toString())  && reading !=0) {
           widget.ioT.meterHeartRate = double.parse(widget.bottomRange.toString()).toString();
         }
         break;
       case 'bloodOxygen':
         widget.ioT.meterBloodOxygen = reading.toString();
-          if (reading < double.parse(widget.bottomRange.toString()) + 1) {
+          if (reading < double.parse(widget.bottomRange.toString()) && reading !=0 ) {
           widget.ioT.meterBloodOxygen = double.parse(widget.bottomRange.toString()).toString();
         }
         break;
