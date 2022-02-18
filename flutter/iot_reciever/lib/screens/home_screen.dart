@@ -99,9 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        
         child: Table(
           children:[
+
+            if (_gridRows == 1) 
+             TableRow( children: [ 
+             SizedBox(height: _height/16,)
+            ]),
             if (_gridRows == 1) 
             TableRow( children: [ 
             GaugeWidget(
@@ -118,7 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 lowColor: const Color.fromARGB(255, 161, 52, 44),
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
-              )],
+              ),
+            ],
             ),
             if (_gridRows == 1) 
             TableRow( children: [ 
@@ -137,8 +142,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
-            ]
+              ]
             ), 
+               if (_gridRows == 1 ) 
+             TableRow( children: [ 
+             SizedBox(height: _height,)
+            ]),        
         
             
           if (_gridRows == 2) 
@@ -173,7 +182,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
-            ]),
+            ]
+            ),
+            if (_gridRows == 2 ) 
+             TableRow( children: [ 
+             SizedBox(height: _height, width: _width,),
+
+             SizedBox(height: _height,width: _width,)
+            ]), 
           ],
         ),
       ),
