@@ -10,7 +10,7 @@ class IoT {
     required this.sensorName,
     required this.heartRate,
     required this.bloodOxygen,
-    this.meterBloodOxygen = '90',
+    this.meterBloodOxygen = '0',
     this.meterHeartRate = '0',
     this.time = '0',
   });

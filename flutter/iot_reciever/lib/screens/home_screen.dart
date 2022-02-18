@@ -27,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  IoT readings = IoT(sensorName: 'ZARIOT / The @ Company', heartRate: '0', bloodOxygen: '90');
+  IoT readings = IoT(sensorName: 'ZARIOT / The @ Company', heartRate: '0', bloodOxygen: '0');
 
   @override
   void initState() {
@@ -109,6 +109,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ]),
             if (_gridRows == 1) 
             TableRow( children: [ 
+              if (double.parse(readings.heartRate.toString()) == 0)
+            GaugeWidget(
+                measurement: 'Heart Rate',
+                units: 'BPM',
+                ioT: readings,
+                value: 'heartRate',
+                decimalPlaces: 0,
+                bottomRange: 0,
+                topRange: 200,
+                lowSector: 50,
+                medSector: 130,
+                highSector: 20,
+                lowColor: const Color.fromARGB(30, 30, 30, 30),
+                medColor: const Color.fromARGB(50, 50, 50, 50),
+                highColor: const Color.fromARGB(30, 30, 30, 30),
+              ),
+            if (double.parse(readings.heartRate.toString())  != 0)
             GaugeWidget(
                 measurement: 'Heart Rate',
                 units: 'BPM',
@@ -128,6 +145,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             if (_gridRows == 1) 
             TableRow( children: [ 
+            if (double.parse(readings.bloodOxygen.toString())  == 0)
+             GaugeWidget(
+                measurement: 'Oxygen Saturation',
+                units: 'SpO2%',
+                ioT: readings,
+                value: 'bloodOxygen',
+                decimalPlaces: 1,
+                bottomRange: 90,
+                topRange: 100,
+                lowSector: 0.5,
+                medSector: 9.5,
+                highSector: 0,
+                lowColor: const Color.fromARGB(30, 30, 30, 30),
+                medColor: const Color.fromARGB(50, 50, 50, 50),
+                highColor: const Color.fromARGB(30, 30, 30, 30),
+              ),
+
+            if (double.parse(readings.bloodOxygen.toString())  != 0)
              GaugeWidget(
                 measurement: 'Oxygen Saturation',
                 units: 'SpO2%',
@@ -153,6 +188,23 @@ class _HomeScreenState extends State<HomeScreen> {
             
           if (_gridRows == 2) 
             TableRow( children: [ 
+            if (double.parse(readings.heartRate.toString()) == 0)
+            GaugeWidget(
+                measurement: 'Heart Rate',
+                units: 'BPM',
+                ioT: readings,
+                value: 'heartRate',
+                decimalPlaces: 0,
+                bottomRange: 0,
+                topRange: 200,
+                lowSector: 50,
+                medSector: 130,
+                highSector: 20,
+                lowColor: const Color.fromARGB(30, 30, 30, 30),
+                medColor: const Color.fromARGB(50, 50, 50, 50),
+                highColor: const Color.fromARGB(30, 30, 30, 30),
+              ),
+            if (double.parse(readings.heartRate.toString()) != 0)
             GaugeWidget(
                 measurement: 'Heart Rate',
                 units: 'BPM',
@@ -168,6 +220,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 medColor: const Color.fromARGB(255, 75, 145, 78),
                 highColor: const Color.fromARGB(255, 161, 52, 44),
               ),
+             if (double.parse(readings.bloodOxygen.toString())  == 0)
+             GaugeWidget(
+                measurement: 'Oxygen Saturation',
+                units: 'SpO2%',
+                ioT: readings,
+                value: 'bloodOxygen',
+                decimalPlaces: 1,
+                bottomRange: 90,
+                topRange: 100,
+                lowSector: 0.5,
+                medSector: 9.5,
+                highSector: 0,
+                lowColor: const Color.fromARGB(30, 30, 30, 30),
+                medColor: const Color.fromARGB(50, 50, 50, 50),
+                highColor: const Color.fromARGB(30, 30, 30, 30),
+             ),
+            if (double.parse(readings.bloodOxygen.toString())  != 0)
              GaugeWidget(
                 measurement: 'Oxygen Saturation',
                 units: 'SpO2%',

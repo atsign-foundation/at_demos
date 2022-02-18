@@ -123,6 +123,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
         Onboarding(
           atsign: atSign,
           context: context,
+          appColor: Colors.green,
           atClientPreference: preference,
           domain: AtEnv.rootDomain,
           rootEnvironment: AtEnv.rootEnvironment,
