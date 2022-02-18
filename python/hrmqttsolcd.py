@@ -14,9 +14,17 @@ import pygame
 import paho.mqtt.client as mqtt
 from max30105 import MAX30105, HeartRate
 
+spo = 90
+
+def on_message(mqttclient, userdata, message):
+    global spo
+    spo=str(message.payload.decode("utf-8"))
+
 mqttclient=mqtt.Client("mwc")
 mqttclient.connect("localhost")
-mqttclient.publish("mqtt/pimylifeup","Hello from Python")
+mqttclient.loop_start()
+mqttclient.subscribe("mqtt/mwc_o2")
+mqttclient.on_message=on_message
 
 
 max30105 = MAX30105()
@@ -30,6 +38,7 @@ max30105.set_slot_mode(1, 'red')
 max30105.set_slot_mode(2, 'ir')
 max30105.set_slot_mode(3, 'off')
 max30105.set_slot_mode(4, 'off')
+
 
 # Very important: the exact pixel size of the TFT screen must be known so we can build graphics at this exact format
 surfaceSize = (320, 240)
@@ -66,7 +75,8 @@ def display_heartrate(beat, bpm, avg_bpm):
     lcd.blit(defaultFont.render(tidyHR, False, (0, 0, 0)),(10, 30))
     if beat:
       lcd.blit(defaultFont.render("<3", False, (255, 0, 0)),(100, 30))
-    lcd.blit(defaultFont.render("SO2: 99%", False, (0, 0, 0)),(10, 50))
+    tidySPO = "SO2: {0}%".format(spo)
+    lcd.blit(defaultFont.render(tidySPO, False, (0, 0, 0)),(10, 50))
     refresh()
     mqttclient.publish("mqtt/mwc_hr",avg_bpm)
 
