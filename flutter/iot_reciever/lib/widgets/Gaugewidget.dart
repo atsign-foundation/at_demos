@@ -48,6 +48,9 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      setMeter(widget.value, widget.bottomRange);
+    });
   }
 
   @override
@@ -55,22 +58,23 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     double read = getValue(widget.value);
     double reading = getMeter(widget.value);
     double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height -160 ;
+    double _height = MediaQuery.of(context).size.height - 160;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio -160;
     double _size;
     double _font;
-    if (_width > _height +160 ) {
-      _size = _width /2 ;
+    if (_width > _height + 160) {
+      _size = _width / 2;
       _font = _size / 9;
     } else {
-       _size = _height/2 ;
-       if (_width < _height/2){
+      _size = _height / 2;
+      if (_width < _height / 2) {
         _size = _width;
-       }
-      }      _font = _size / 9;
-    
+      }
+    }
+    _font = _size / 9;
+
     var step = (this.widget.topRange - this.widget.bottomRange) / 250;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
         builder: (context) {
@@ -78,6 +82,9 @@ class _GaugeWidgetState extends State<GaugeWidget> {
       if (reading - step > read) {
         reading = reading - step;
       } else if (reading + step < read) {
+        if (reading < widget.bottomRange) {
+          reading = widget.bottomRange;
+        }
         reading = reading + step;
       } else {
         reading = read;
@@ -88,8 +95,14 @@ class _GaugeWidgetState extends State<GaugeWidget> {
         PrettyGauge(
           valueWidget: displayReading(read, _font, widget.decimalPlaces),
           gaugeSize: _size,
-          startMarkerStyle: TextStyle(fontSize: _font/4, color: Colors.black87,fontWeight: FontWeight.bold ),
-          endMarkerStyle:  TextStyle(fontSize: _font/4, color: Colors.black87, fontWeight: FontWeight.bold),
+          startMarkerStyle: TextStyle(
+              fontSize: _font / 4,
+              color: Colors.black87,
+              fontWeight: FontWeight.bold),
+          endMarkerStyle: TextStyle(
+              fontSize: _font / 4,
+              color: Colors.black87,
+              fontWeight: FontWeight.bold),
           currentValueDecimalPlaces: widget.decimalPlaces,
           minValue: widget.bottomRange,
           maxValue: widget.topRange,
@@ -160,25 +173,26 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
   Widget displayReading(double reading, double fontSize, int decimalPlaces) {
     double _max = 200;
-        // Make sure the decimal place if supplied meets Darts bounds (0-20)
+    // Make sure the decimal place if supplied meets Darts bounds (0-20)
     if (decimalPlaces < 0) {
       decimalPlaces = 0;
     }
-     if (decimalPlaces > 20) {
+    if (decimalPlaces > 20) {
       decimalPlaces = 20;
-    } 
+    }
     if (fontSize > _max) {
       fontSize = _max;
     }
     ;
     return Column(
       children: [
-        AutoSizeText(
-          reading.toStringAsFixed(decimalPlaces),
-          minFontSize: fontSize.truncateToDouble(),
-          maxFontSize: _max,
-          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
-        )
+        AutoSizeText(reading.toStringAsFixed(decimalPlaces),
+            minFontSize: fontSize.truncateToDouble(),
+            maxFontSize: _max,
+            style: TextStyle(
+                fontSize: fontSize / 2,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold))
       ],
     );
   }
@@ -192,18 +206,20 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     ;
     return Column(
       children: [
-        AutoSizeText(
-          widget.measurement,
-          minFontSize: fontSize.truncateToDouble(),
-          maxFontSize: _max,
-          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
-        ),
-        AutoSizeText(
-          units,
-          minFontSize: fontSize.truncateToDouble(),
-          maxFontSize: _max,
-          style: TextStyle(fontSize: fontSize/2, color: Colors.black87,fontWeight: FontWeight.bold )
-        )
+        AutoSizeText(widget.measurement,
+            minFontSize: fontSize.truncateToDouble(),
+            maxFontSize: _max,
+            style: TextStyle(
+                fontSize: fontSize / 2,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold)),
+        AutoSizeText(units,
+            minFontSize: fontSize.truncateToDouble(),
+            maxFontSize: _max,
+            style: TextStyle(
+                fontSize: fontSize / 2,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold))
       ],
     );
   }
