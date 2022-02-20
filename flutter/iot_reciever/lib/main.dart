@@ -59,6 +59,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: Colors.lightBlue,
       debugShowCheckedModeBanner: false,
       title: 'HRO2 DISPLAY',
       theme: ThemeData(
