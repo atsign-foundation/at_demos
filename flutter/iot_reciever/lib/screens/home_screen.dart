@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     // reset dials if no data comes in checkExpiry(int Seconds)
     timer = Timer.periodic(
-         Duration(seconds: 1), (Timer t) => checkExpiry(30));
+         const Duration(seconds: 1), (Timer t) => checkExpiry(90));
     setState(() {});
   }
 
@@ -380,9 +380,6 @@ class _HomeScreenState extends State<HomeScreen> {
     heartExpire = heartExpire.toUtc();
     oxygenExpire = oxygenExpire.toUtc();
     var now = DateTime.now().toUtc();
-    print(now);
-    print(heartExpire);
-    print(oxygenExpire);
     now = now.subtract(Duration(seconds: expireSeconds));
     if (now.isAfter(heartExpire)) {
       readings.heartRate = '0';

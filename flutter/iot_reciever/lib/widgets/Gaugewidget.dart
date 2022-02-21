@@ -203,7 +203,6 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     if (fontSize > _max) {
       fontSize = _max;
     }
-    ;
     return Column(
       children: [
         AutoSizeText(widget.measurement,
