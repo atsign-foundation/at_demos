@@ -359,12 +359,21 @@ class _HomeScreenState extends State<HomeScreen> {
     var value = reading.value.toString();
     if (keyAtsign == 'mwc_hr') {
       readings.heartRate = value;
-      readings.heartTime = reading.metadata?.createdAt?.toString();
+    // Use this for created at source (reader)
+    //readings.heartTime = reading.metadata?.createdAt?.toString();
+    // Or this f client got the reading (safer for demos!)
+      readings.heartTime = DateTime.now().toUtc().toString();
     }
     if (keyAtsign == 'mwc_o2') {
       readings.bloodOxygen = value;
-      readings.oxygenTime = reading.metadata?.createdAt?.toString();
+    // Use this for created at source (reader)
+    // readings.oxygenTime = reading.metadata?.createdAt?.toString();   
+    //Or this f client got the reading (safer for demos!)
+      readings.oxygenTime = DateTime.now().toUtc().toString();
     }
+    // Use this for created at source (reader)
+    
+    //Or this f client got the reading (safer for demos!)
     var createdAt = reading.metadata?.createdAt;
     var dateFormat = DateFormat("HH:mm.ss");
     String dateFormated = dateFormat.format(createdAt!);
