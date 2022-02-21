@@ -115,8 +115,6 @@ class _GaugeWidgetState extends State<GaugeWidget> {
           displayWidget: displayUnits(widget.units, _font),
         )
       ]);
-
-      // return  Text("${DateTime.now()}");
     });
   }
 
@@ -132,8 +130,11 @@ class _GaugeWidgetState extends State<GaugeWidget> {
       case 'bloodOxygen':
         result = widget.ioT.bloodOxygen;
         break;
-      case 'time':
-        result = widget.ioT.time;
+      case 'heartTime':
+        result = widget.ioT.heartTime;
+        break;
+      case 'oxygenTime':
+        result = widget.ioT.oxygenTime;
         break;
       default:
         result = "0.0";
@@ -161,7 +162,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   setMeter(String value, double reading) {
     switch (value) {
       case 'heartRate':
-        widget.ioT.meterHeartRate = reading.toString();
+          widget.ioT.meterHeartRate = reading.toString();
         break;
       case 'bloodOxygen':
         widget.ioT.meterBloodOxygen = reading.toString();
@@ -183,7 +184,6 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     if (fontSize > _max) {
       fontSize = _max;
     }
-    ;
     return Column(
       children: [
         AutoSizeText(reading.toStringAsFixed(decimalPlaces),
@@ -203,7 +203,6 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     if (fontSize > _max) {
       fontSize = _max;
     }
-    ;
     return Column(
       children: [
         AutoSizeText(widget.measurement,

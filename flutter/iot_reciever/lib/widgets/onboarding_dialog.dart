@@ -110,8 +110,8 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   Widget _onboard(String atSign, String text) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.green,
-        onPrimary: Colors.white,
+        primary: Colors.blueAccent,
+        onPrimary: Colors.black,
         textStyle: const TextStyle(
             // fontFamily: 'LED',
             fontSize: 30,
@@ -123,7 +123,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
         Onboarding(
           atsign: atSign,
           context: context,
-          appColor: Colors.green,
+          appColor: Colors.lightBlue,
           atClientPreference: preference,
           domain: AtEnv.rootDomain,
           rootEnvironment: AtEnv.rootEnvironment,
@@ -174,13 +174,13 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             _showResetDialog(context, false);
           },
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.green)),
+              backgroundColor: MaterialStateProperty.all(Colors.blueAccent)),
           child: const Text(
             "RESET @SIGNS",
             style: TextStyle(
               color: Colors.white,
               // fontFamily: 'LED',
-              fontSize: 30,
+              fontSize: 20,
               letterSpacing: 5,
             ),
           ),
