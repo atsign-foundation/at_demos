@@ -378,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var heartExpire = DateTime.parse(readings.heartTime.toString());
     var oxygenExpire = DateTime.parse(readings.oxygenTime.toString());
     heartExpire = heartExpire.toUtc();
-    oxygenExpire = heartExpire.toUtc();
+    oxygenExpire = oxygenExpire.toUtc();
     var now = DateTime.now().toUtc();
     print(now);
     print(heartExpire);
