@@ -53,7 +53,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   IoT ioT = IoT(
-      bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', time: '0:0:0');
+      bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', heartTime: DateTime.now().toString(), oxygenTime:DateTime.now().toString());
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
 
   @override

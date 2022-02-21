@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
@@ -29,7 +30,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  IoT readings = IoT(sensorName: 'ZARIOT / The @ Company', heartRate: '0', bloodOxygen: '0');
+  IoT readings = IoT(
+      sensorName: 'ZARIOT / The @ Company',
+      heartRate: '0',
+      bloodOxygen: '0',
+      heartTime: DateTime.now().toString(),
+      oxygenTime: DateTime.now().toString());
+  Timer? timer;
 
   @override
   void initState() {
@@ -46,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
           'notification subscription handler got notification with key ${notification.key}');
       getAtsignData(context, notification.key);
     });
+    // reset dials if no data comes in checkExpiry(int Seconds)
+    timer = Timer.periodic(
+         Duration(seconds: 1), (Timer t) => checkExpiry(30));
     setState(() {});
   }
 
@@ -67,47 +77,48 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: AutoSizeText(readings.sensorName,
-        minFontSize: 5,
-        maxFontSize: 50,),
+        title: AutoSizeText(
+          readings.sensorName,
+          minFontSize: 5,
+          maxFontSize: 50,
+        ),
         gradient: const LinearGradient(colors: [
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
         ]),
-                    actions: [
-              PopupMenuButton<String>(
-                color: const Color.fromARGB(255, 108, 169, 197),
-                //padding: const EdgeInsets.symmetric(horizontal: 10),
-                icon: const Icon(
-                  Icons.menu,
-                  size: 20,
+        actions: [
+          PopupMenuButton<String>(
+            color: const Color.fromARGB(255, 108, 169, 197),
+            //padding: const EdgeInsets.symmetric(horizontal: 10),
+            icon: const Icon(
+              Icons.menu,
+              size: 20,
+            ),
+            onSelected: (String result) {
+              switch (result) {
+                case 'CLOSE':
+                  exit(0);
+                //break;
+                default:
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'CLOSE',
+                child: Text(
+                  'CLOSE',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
                 ),
-                onSelected: (String result) {
-                  switch (result) {
-                    case 'CLOSE':
-                      exit(0);
-                    //break;
-                    default:
-                  }
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    height: 20,
-                    value: 'CLOSE',
-                    child: Text(
-                      'CLOSE',
-                      style: TextStyle(
-                          fontSize: 15,
-                          letterSpacing: 5,
-                          backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                          color: Colors.black),
-                    ),
-                  )
-                ],
-              ),
+              )
             ],
+          ),
+        ],
       ),
-  
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white70,
@@ -138,165 +149,169 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: Table(
-          children:[
-
-            if (_gridRows == 1) 
-             TableRow( children: [ 
-             SizedBox(height: _height/16,)
-            ]),
-            if (_gridRows == 1) 
-            TableRow( children: [ 
-              if (double.parse(readings.heartRate.toString()) == 0)
-            GaugeWidget(
-                measurement: 'Heart Rate',
-                units: 'BPM',
-                ioT: readings,
-                value: 'heartRate',
-                decimalPlaces: 0,
-                bottomRange: 0,
-                topRange: 200,
-                lowSector: 50,
-                medSector: 130,
-                highSector: 20,
-                lowColor: const Color.fromARGB(30, 30, 30, 30),
-                medColor: const Color.fromARGB(50, 50, 50, 50),
-                highColor: const Color.fromARGB(30, 30, 30, 30),
+          children: [
+            if (_gridRows == 1)
+              TableRow(children: [
+                SizedBox(
+                  height: _height / 16,
+                )
+              ]),
+            if (_gridRows == 1)
+              TableRow(
+                children: [
+                  if (double.parse(readings.heartRate.toString()) == 0)
+                    GaugeWidget(
+                      measurement: 'Heart Rate',
+                      units: 'BPM',
+                      ioT: readings,
+                      value: 'heartRate',
+                      decimalPlaces: 0,
+                      bottomRange: 0,
+                      topRange: 200,
+                      lowSector: 50,
+                      medSector: 130,
+                      highSector: 20,
+                      lowColor: const Color.fromARGB(30, 30, 30, 30),
+                      medColor: const Color.fromARGB(50, 50, 50, 50),
+                      highColor: const Color.fromARGB(30, 30, 30, 30),
+                    ),
+                  if (double.parse(readings.heartRate.toString()) != 0)
+                    GaugeWidget(
+                      measurement: 'Heart Rate',
+                      units: 'BPM',
+                      ioT: readings,
+                      value: 'heartRate',
+                      decimalPlaces: 0,
+                      bottomRange: 0,
+                      topRange: 200,
+                      lowSector: 50,
+                      medSector: 130,
+                      highSector: 20,
+                      lowColor: const Color.fromARGB(255, 161, 52, 44),
+                      medColor: const Color.fromARGB(255, 75, 145, 78),
+                      highColor: const Color.fromARGB(255, 161, 52, 44),
+                    ),
+                ],
               ),
-            if (double.parse(readings.heartRate.toString())  != 0)
-            GaugeWidget(
-                measurement: 'Heart Rate',
-                units: 'BPM',
-                ioT: readings,
-                value: 'heartRate',
-                decimalPlaces: 0,
-                bottomRange: 0,
-                topRange: 200,
-                lowSector: 50,
-                medSector: 130,
-                highSector: 20,
-                lowColor: const Color.fromARGB(255, 161, 52, 44),
-                medColor: const Color.fromARGB(255, 75, 145, 78),
-                highColor: const Color.fromARGB(255, 161, 52, 44),
-              ),
-            ],
-            ),
-            if (_gridRows == 1) 
-            TableRow( children: [ 
-            if (double.parse(readings.bloodOxygen.toString())  == 0)
-             GaugeWidget(
-                measurement: 'Oxygen Saturation',
-                units: 'SpO2%',
-                ioT: readings,
-                value: 'bloodOxygen',
-                decimalPlaces: 1,
-                bottomRange: 90,
-                topRange: 100,
-                lowSector: 0.5,
-                medSector: 9.5,
-                highSector: 0,
-                lowColor: const Color.fromARGB(30, 30, 30, 30),
-                medColor: const Color.fromARGB(50, 50, 50, 50),
-                highColor: const Color.fromARGB(30, 30, 30, 30),
-              ),
-
-            if (double.parse(readings.bloodOxygen.toString())  != 0)
-             GaugeWidget(
-                measurement: 'Oxygen Saturation',
-                units: 'SpO2%',
-                ioT: readings,
-                value: 'bloodOxygen',
-                decimalPlaces: 1,
-                bottomRange: 90,
-                topRange: 100,
-                lowSector: 0.5,
-                medSector: 9.5,
-                highSector: 0,
-                lowColor: const Color.fromARGB(255, 161, 52, 44),
-                medColor: const Color.fromARGB(255, 75, 145, 78),
-                highColor: const Color.fromARGB(255, 161, 52, 44),
-              ),
-              ]
-            ), 
-               if (_gridRows == 1 ) 
-             TableRow( children: [ 
-             SizedBox(height: _height,)
-            ]),        
-        
-            
-          if (_gridRows == 2) 
-            TableRow( children: [ 
-            if (double.parse(readings.heartRate.toString()) == 0)
-            GaugeWidget(
-                measurement: 'Heart Rate',
-                units: 'BPM',
-                ioT: readings,
-                value: 'heartRate',
-                decimalPlaces: 0,
-                bottomRange: 0,
-                topRange: 200,
-                lowSector: 50,
-                medSector: 130,
-                highSector: 20,
-                lowColor: const Color.fromARGB(30, 30, 30, 30),
-                medColor: const Color.fromARGB(50, 50, 50, 50),
-                highColor: const Color.fromARGB(30, 30, 30, 30),
-              ),
-            if (double.parse(readings.heartRate.toString()) != 0)
-            GaugeWidget(
-                measurement: 'Heart Rate',
-                units: 'BPM',
-                ioT: readings,
-                value: 'heartRate',
-                decimalPlaces: 0,
-                bottomRange: 0,
-                topRange: 200,
-                lowSector: 50,
-                medSector: 130,
-                highSector: 20,
-                lowColor: const Color.fromARGB(255, 161, 52, 44),
-                medColor: const Color.fromARGB(255, 75, 145, 78),
-                highColor: const Color.fromARGB(255, 161, 52, 44),
-              ),
-             if (double.parse(readings.bloodOxygen.toString())  == 0)
-             GaugeWidget(
-                measurement: 'Oxygen Saturation',
-                units: 'SpO2%',
-                ioT: readings,
-                value: 'bloodOxygen',
-                decimalPlaces: 1,
-                bottomRange: 90,
-                topRange: 100,
-                lowSector: 0.5,
-                medSector: 9.5,
-                highSector: 0,
-                lowColor: const Color.fromARGB(30, 30, 30, 30),
-                medColor: const Color.fromARGB(50, 50, 50, 50),
-                highColor: const Color.fromARGB(30, 30, 30, 30),
-             ),
-            if (double.parse(readings.bloodOxygen.toString())  != 0)
-             GaugeWidget(
-                measurement: 'Oxygen Saturation',
-                units: 'SpO2%',
-                ioT: readings,
-                value: 'bloodOxygen',
-                decimalPlaces: 1,
-                bottomRange: 90,
-                topRange: 100,
-                lowSector: 0.5,
-                medSector: 9.5,
-                highSector: 0,
-                lowColor: const Color.fromARGB(255, 161, 52, 44),
-                medColor: const Color.fromARGB(255, 75, 145, 78),
-                highColor: const Color.fromARGB(255, 161, 52, 44),
-              ),
-            ]
-            ),
-            if (_gridRows == 2 ) 
-             TableRow( children: [ 
-             SizedBox(height: _height, width: _width,),
-
-             SizedBox(height: _height,width: _width,)
-            ]), 
+            if (_gridRows == 1)
+              TableRow(children: [
+                if (double.parse(readings.bloodOxygen.toString()) == 0)
+                  GaugeWidget(
+                    measurement: 'Oxygen Saturation',
+                    units: 'SpO2%',
+                    ioT: readings,
+                    value: 'bloodOxygen',
+                    decimalPlaces: 1,
+                    bottomRange: 90,
+                    topRange: 100,
+                    lowSector: 0.5,
+                    medSector: 9.5,
+                    highSector: 0,
+                    lowColor: const Color.fromARGB(30, 30, 30, 30),
+                    medColor: const Color.fromARGB(50, 50, 50, 50),
+                    highColor: const Color.fromARGB(30, 30, 30, 30),
+                  ),
+                if (double.parse(readings.bloodOxygen.toString()) != 0)
+                  GaugeWidget(
+                    measurement: 'Oxygen Saturation',
+                    units: 'SpO2%',
+                    ioT: readings,
+                    value: 'bloodOxygen',
+                    decimalPlaces: 1,
+                    bottomRange: 90,
+                    topRange: 100,
+                    lowSector: 0.5,
+                    medSector: 9.5,
+                    highSector: 0,
+                    lowColor: const Color.fromARGB(255, 161, 52, 44),
+                    medColor: const Color.fromARGB(255, 75, 145, 78),
+                    highColor: const Color.fromARGB(255, 161, 52, 44),
+                  ),
+              ]),
+            if (_gridRows == 1)
+              TableRow(children: [
+                SizedBox(
+                  height: _height,
+                )
+              ]),
+            if (_gridRows == 2)
+              TableRow(children: [
+                if (double.parse(readings.heartRate.toString()) == 0)
+                  GaugeWidget(
+                    measurement: 'Heart Rate',
+                    units: 'BPM',
+                    ioT: readings,
+                    value: 'heartRate',
+                    decimalPlaces: 0,
+                    bottomRange: 0,
+                    topRange: 200,
+                    lowSector: 50,
+                    medSector: 130,
+                    highSector: 20,
+                    lowColor: const Color.fromARGB(30, 30, 30, 30),
+                    medColor: const Color.fromARGB(50, 50, 50, 50),
+                    highColor: const Color.fromARGB(30, 30, 30, 30),
+                  ),
+                if (double.parse(readings.heartRate.toString()) != 0)
+                  GaugeWidget(
+                    measurement: 'Heart Rate',
+                    units: 'BPM',
+                    ioT: readings,
+                    value: 'heartRate',
+                    decimalPlaces: 0,
+                    bottomRange: 0,
+                    topRange: 200,
+                    lowSector: 50,
+                    medSector: 130,
+                    highSector: 20,
+                    lowColor: const Color.fromARGB(255, 161, 52, 44),
+                    medColor: const Color.fromARGB(255, 75, 145, 78),
+                    highColor: const Color.fromARGB(255, 161, 52, 44),
+                  ),
+                if (double.parse(readings.bloodOxygen.toString()) == 0)
+                  GaugeWidget(
+                    measurement: 'Oxygen Saturation',
+                    units: 'SpO2%',
+                    ioT: readings,
+                    value: 'bloodOxygen',
+                    decimalPlaces: 1,
+                    bottomRange: 90,
+                    topRange: 100,
+                    lowSector: 0.5,
+                    medSector: 9.5,
+                    highSector: 0,
+                    lowColor: const Color.fromARGB(30, 30, 30, 30),
+                    medColor: const Color.fromARGB(50, 50, 50, 50),
+                    highColor: const Color.fromARGB(30, 30, 30, 30),
+                  ),
+                if (double.parse(readings.bloodOxygen.toString()) != 0)
+                  GaugeWidget(
+                    measurement: 'Oxygen Saturation',
+                    units: 'SpO2%',
+                    ioT: readings,
+                    value: 'bloodOxygen',
+                    decimalPlaces: 1,
+                    bottomRange: 90,
+                    topRange: 100,
+                    lowSector: 0.5,
+                    medSector: 9.5,
+                    highSector: 0,
+                    lowColor: const Color.fromARGB(255, 161, 52, 44),
+                    medColor: const Color.fromARGB(255, 75, 145, 78),
+                    highColor: const Color.fromARGB(255, 161, 52, 44),
+                  ),
+              ]),
+            if (_gridRows == 2)
+              TableRow(children: [
+                SizedBox(
+                  height: _height,
+                  width: _width,
+                ),
+                SizedBox(
+                  height: _height,
+                  width: _width,
+                )
+              ]),
           ],
         ),
       ),
@@ -344,9 +359,11 @@ class _HomeScreenState extends State<HomeScreen> {
     var value = reading.value.toString();
     if (keyAtsign == 'mwc_hr') {
       readings.heartRate = value;
+      readings.heartTime = reading.metadata?.createdAt?.toString();
     }
     if (keyAtsign == 'mwc_o2') {
       readings.bloodOxygen = value;
+      readings.oxygenTime = reading.metadata?.createdAt?.toString();
     }
     var createdAt = reading.metadata?.createdAt;
     var dateFormat = DateFormat("HH:mm.ss");
@@ -355,5 +372,25 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
     _logger.info(
         'Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
+  }
+
+  void checkExpiry(int expireSeconds) {
+    var heartExpire = DateTime.parse(readings.heartTime.toString());
+    var oxygenExpire = DateTime.parse(readings.oxygenTime.toString());
+    heartExpire = heartExpire.toUtc();
+    oxygenExpire = heartExpire.toUtc();
+    var now = DateTime.now().toUtc();
+    print(now);
+    print(heartExpire);
+    print(oxygenExpire);
+    now = now.subtract(Duration(seconds: expireSeconds));
+    if (now.isAfter(heartExpire)) {
+      readings.heartRate = '0';
+      setState(() {});
+    }
+    if (now.isAfter(oxygenExpire)) {
+      readings.bloodOxygen = '0';
+      setState(() {});
+    }
   }
 }
