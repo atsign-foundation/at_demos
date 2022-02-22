@@ -5,23 +5,22 @@
 
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names, camel_case_types
 
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 // import 'package:dart_periphery/dart_periphery.dart';
 
 /* MAX30100 parameters */
-int DEFAULT_OPERATING_MODE = Mode.MAX30100_MODE_SPO2_HR;
+const int DEFAULT_OPERATING_MODE = Mode.MAX30100_MODE_SPO2_HR;
 
 /*!!!IMPORTANT
  * You can't just throw these two values at random. Check Check table 8 in datasheet on page 19.
  * 100hz + 1600us is max for that resolution
  */
-int DEFAULT_SAMPLING_RATE = SamplingRate.MAX30100_SAMPLING_RATE_100HZ;
-int DEFAULT_LED_PULSE_WIDTH = LEDPulseWidth.MAX30100_PULSE_WIDTH_1600US_ADC_16;
+const int DEFAULT_SAMPLING_RATE = SamplingRate.MAX30100_SAMPLING_RATE_100HZ;
+const int DEFAULT_LED_PULSE_WIDTH = LEDPulseWidth.MAX30100_PULSE_WIDTH_1600US_ADC_16;
 
-int DEFAULT_IR_LED_CURRENT = LEDCurrent.MAX30100_LED_CURRENT_50MA;
-int STARTING_RED_LED_CURRENT = LEDCurrent.MAX30100_LED_CURRENT_27_1MA;
+const int DEFAULT_IR_LED_CURRENT = LEDCurrent.MAX30100_LED_CURRENT_50MA;
+const int STARTING_RED_LED_CURRENT = LEDCurrent.MAX30100_LED_CURRENT_27_1MA;
 
 /* Adjust RED LED current balancing*/
 const int MAGIC_ACCEPTABLE_INTENSITY_DIFF = 65000;
@@ -85,7 +84,7 @@ class butterworthFilter_t {
 }
 
 class meanDiffFilter_t {
-  List<double> values = []; // size is [MEAN_FILTER_SIZE];
+  List<double> values = List<double>.filled(MEAN_FILTER_SIZE, 0.0, growable:false); // size is [MEAN_FILTER_SIZE];
   int index = 0;
   double sum = 0;
   int count = 0;
@@ -124,48 +123,48 @@ const int MAX30100_MODE_RESET = (1<<6);
 const int MAX30100_MODE_TEMP_EN = (1<<3);
 
 class Mode {
-  static final int MAX30100_MODE_HR_ONLY                 = 0x02;
-  static final int MAX30100_MODE_SPO2_HR                 = 0x03;
+  static const int MAX30100_MODE_HR_ONLY                 = 0x02;
+  static const int MAX30100_MODE_SPO2_HR                 = 0x03;
 }
 
 //Bit defines SpO2 register
 const int MAX30100_SPO2_HI_RES_EN = (1 << 6);
 
 class SamplingRate {
-  static final int MAX30100_SAMPLING_RATE_50HZ = 0x00;
-  static final int MAX30100_SAMPLING_RATE_100HZ = 0x01;
-  static final int MAX30100_SAMPLING_RATE_167HZ = 0x02;
-  static final int MAX30100_SAMPLING_RATE_200HZ = 0x03;
-  static final int MAX30100_SAMPLING_RATE_400HZ = 0x04;
-  static final int MAX30100_SAMPLING_RATE_600HZ = 0x05;
-  static final int MAX30100_SAMPLING_RATE_800HZ = 0x06;
-  static final int MAX30100_SAMPLING_RATE_1000HZ = 0x07;
+  static const int MAX30100_SAMPLING_RATE_50HZ = 0x00;
+  static const int MAX30100_SAMPLING_RATE_100HZ = 0x01;
+  static const int MAX30100_SAMPLING_RATE_167HZ = 0x02;
+  static const int MAX30100_SAMPLING_RATE_200HZ = 0x03;
+  static const int MAX30100_SAMPLING_RATE_400HZ = 0x04;
+  static const int MAX30100_SAMPLING_RATE_600HZ = 0x05;
+  static const int MAX30100_SAMPLING_RATE_800HZ = 0x06;
+  static const int MAX30100_SAMPLING_RATE_1000HZ = 0x07;
 }
 
 class LEDPulseWidth {
-  static final int MAX30100_PULSE_WIDTH_200US_ADC_13     = 0x00;
-  static final int MAX30100_PULSE_WIDTH_400US_ADC_14     = 0x01;
-  static final int MAX30100_PULSE_WIDTH_800US_ADC_15     = 0x02;
-  static final int MAX30100_PULSE_WIDTH_1600US_ADC_16    = 0x03;
+  static const int MAX30100_PULSE_WIDTH_200US_ADC_13     = 0x00;
+  static const int MAX30100_PULSE_WIDTH_400US_ADC_14     = 0x01;
+  static const int MAX30100_PULSE_WIDTH_800US_ADC_15     = 0x02;
+  static const int MAX30100_PULSE_WIDTH_1600US_ADC_16    = 0x03;
 }
 
 class LEDCurrent {
-  static final int MAX30100_LED_CURRENT_0MA              = 0x00;
-  static final int MAX30100_LED_CURRENT_4_4MA            = 0x01;
-  static final int MAX30100_LED_CURRENT_7_6MA            = 0x02;
-  static final int MAX30100_LED_CURRENT_11MA             = 0x03;
-  static final int MAX30100_LED_CURRENT_14_2MA           = 0x04;
-  static final int MAX30100_LED_CURRENT_17_4MA           = 0x05;
-  static final int MAX30100_LED_CURRENT_20_8MA           = 0x06;
-  static final int MAX30100_LED_CURRENT_24MA             = 0x07;
-  static final int MAX30100_LED_CURRENT_27_1MA           = 0x08;
-  static final int MAX30100_LED_CURRENT_30_6MA           = 0x09;
-  static final int MAX30100_LED_CURRENT_33_8MA           = 0x0A;
-  static final int MAX30100_LED_CURRENT_37MA             = 0x0B;
-  static final int MAX30100_LED_CURRENT_40_2MA           = 0x0C;
-  static final int MAX30100_LED_CURRENT_43_6MA           = 0x0D;
-  static final int MAX30100_LED_CURRENT_46_8MA           = 0x0E;
-  static final int MAX30100_LED_CURRENT_50MA             = 0x0F;
+  static const int MAX30100_LED_CURRENT_0MA              = 0x00;
+  static const int MAX30100_LED_CURRENT_4_4MA            = 0x01;
+  static const int MAX30100_LED_CURRENT_7_6MA            = 0x02;
+  static const int MAX30100_LED_CURRENT_11MA             = 0x03;
+  static const int MAX30100_LED_CURRENT_14_2MA           = 0x04;
+  static const int MAX30100_LED_CURRENT_17_4MA           = 0x05;
+  static const int MAX30100_LED_CURRENT_20_8MA           = 0x06;
+  static const int MAX30100_LED_CURRENT_24MA             = 0x07;
+  static const int MAX30100_LED_CURRENT_27_1MA           = 0x08;
+  static const int MAX30100_LED_CURRENT_30_6MA           = 0x09;
+  static const int MAX30100_LED_CURRENT_33_8MA           = 0x0A;
+  static const int MAX30100_LED_CURRENT_37MA             = 0x0B;
+  static const int MAX30100_LED_CURRENT_40_2MA           = 0x0C;
+  static const int MAX30100_LED_CURRENT_43_6MA           = 0x0D;
+  static const int MAX30100_LED_CURRENT_46_8MA           = 0x0E;
+  static const int MAX30100_LED_CURRENT_50MA             = 0x0F;
 }
 
 // END OF .h file
@@ -181,9 +180,17 @@ class MAX30100 {
   bool highResMode = true;
   bool debug = false;
 
-  MAX30100(this.mode, this.samplingRate, this.pulseWidth, this.IrLedCurrent, this.highResMode, this.debug) {
-    setMode(mode);
+  Wire wire;
 
+  MAX30100(this.wire,
+      { this.mode = DEFAULT_OPERATING_MODE,
+        this.samplingRate = DEFAULT_SAMPLING_RATE,
+        this.pulseWidth = DEFAULT_LED_PULSE_WIDTH,
+        this.IrLedCurrent = DEFAULT_IR_LED_CURRENT,
+        this.highResMode = true,
+        this.debug = false})
+  {
+    setMode(mode);
 //Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly. 100hz + 1600us is max for that resolution
     setSamplingRate(samplingRate);
     setLEDPulseWidth(pulseWidth);
@@ -233,7 +240,7 @@ class MAX30100 {
 
   PulseStateMachine currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
   double currentBPM = 0;
-  List<double> valuesBPM = []; // size: PULSE_BPM_SAMPLE_SIZE
+  List<double> valuesBPM = List<double>.filled(PULSE_BPM_SAMPLE_SIZE, 0, growable:false);
   double valuesBPMSum = 0;
   int valuesBPMCount = 0;
   int bpmIndex = 0;
@@ -295,8 +302,8 @@ class MAX30100 {
 
     fifo_t rawData = readFIFO();
 
-    dcFilterIR = dcRemoval(rawData.rawIR as double, dcFilterIR.w, ALPHA);
-    dcFilterRed = dcRemoval(rawData.rawRed as double, dcFilterRed.w, ALPHA);
+    dcFilterIR = dcRemoval(rawData.rawIR.toDouble(), dcFilterIR.w, ALPHA);
+    dcFilterRed = dcRemoval(rawData.rawRed.toDouble(), dcFilterRed.w, ALPHA);
 
     double meanDiffResIR = meanDiff(dcFilterIR.result, meanDiffIR); // &meanDiffIR
     lowPassButterworthFilter(meanDiffResIR /*-dcFilterIR.result*/, lpbFilterIR); // &lpbFilterIR
@@ -456,40 +463,38 @@ class MAX30100 {
     }
   }
 
-  // TODO writeRegister and readRegister are at the heart of getting this port to work
-
   /// Writes val to address register on device
   void writeRegister(int address, int val) { // byte arguments
-    Wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
-    Wire.write(address as Int8); // send register address
-    Wire.write(val as Int8); // send value to write
-    Wire.endTransmission(); // end transmission
+    wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
+    wire.write(address); // send register address
+    wire.write(val); // send value to write
+    wire.endTransmission(); // end transmission
   }
 
   // byte argument, byte return
   int readRegister(int address) {
-    Wire.beginTransmission(MAX30100_DEVICE);
-    Wire.write(address as Int8);
-    Wire.endTransmission(flag:false);
-    Wire.requestFrom(MAX30100_DEVICE, 1);
+    wire.beginTransmission(MAX30100_DEVICE);
+    wire.write(address);
+    wire.endTransmission(flag:false);
+    wire.requestFrom(MAX30100_DEVICE, 1);
 
-    return Wire.read() as int;
+    return wire.read();
   }
 
   // Reads num bytes starting from address register on device in to _buff array
   void readFrom(int address, int num, List<int> _buff) {
-    Wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
-    Wire.write(address as Int8); // sends address to read from
-    Wire.endTransmission(flag: false); // end transmission
+    wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
+    wire.write(address); // sends address to read from
+    wire.endTransmission(flag: false); // end transmission
 
-    Wire.requestFrom(MAX30100_DEVICE, num); // request 6 bytes from device Registers: DATAX0, DATAX1, DATAY0, DATAY1, DATAZ0, DATAZ1
+    wire.requestFrom(MAX30100_DEVICE, num); // request 6 bytes from device Registers: DATAX0, DATAX1, DATAY0, DATAY1, DATAZ0, DATAZ1
 
     int i = 0;
-    while (Wire.available()) { // device may send less than requested (abnormal)
-      _buff[i++] = Wire.read() as int; // receive a byte
+    while (wire.available() && i < _buff.length) { // device may send less than requested (abnormal)
+      _buff[i++] = wire.read(); // receive a byte
     }
 
-    Wire.endTransmission(); // end transmission
+    wire.endTransmission(); // end transmission
   }
 
   /// mode argument should be one of the values in the Mode class
@@ -538,7 +543,7 @@ class MAX30100 {
   fifo_t readFIFO() {
     fifo_t result = fifo_t();
 
-    List<int> buffer = [];
+    List<int> buffer = List<int>.filled(4, 0, growable:false);
     readFrom(MAX30100_FIFO_DATA, 4, buffer);
     result.rawIR = (buffer[0] << 8) | buffer[1];
     result.rawRed = (buffer[2] << 8) | buffer[3];
@@ -602,31 +607,88 @@ class MAX30100 {
   }
 }
 
+abstract class Wire {
+  void begin();
+  void beginTransmission(int max30100_device);
+  void write(int address);
+  void endTransmission({bool? flag});
+  void requestFrom(int max30100_device, int i);
+  int read();
+  bool available();
+}
+
+class FakeWire implements Wire {
+  @override
+  bool available() {
+    return true;
+  }
+
+  @override
+  void begin() {
+    return;
+  }
+
+  @override
+  void beginTransmission(int max30100_device) {
+    return;
+  }
+
+  @override
+  void endTransmission({bool? flag}) {
+    return;
+  }
+
+  @override
+  int read() {
+    return 1;
+  }
+
+  @override
+  void requestFrom(int max30100_device, int i) {
+    return;
+  }
+
+  @override
+  void write(int address) {
+    return;
+  }
+}
+
 /// Arduino Wire class. We need to implement methods so they talk to the MAX30100
-class Wire {
-  static void beginTransmission(int max30100_device) {
+class PiWire implements Wire {
+  @override
+  void begin() {
+    throw Exception("Wire.begin() not implemented");
+  }
+
+  @override
+  void beginTransmission(int max30100_device) {
     throw Exception("Wire.beginTransmission() not implemented");
   }
 
-  static void write(Int8 address) {
+  @override
+  void write(int address) {
     throw Exception("Wire.write() not implemented");
   }
 
-  static void endTransmission({bool? flag}) {
+  @override
+  void endTransmission({bool? flag}) {
     // TODO what is the flag for?
     throw Exception("Wire.endTransmission() not implemented");
   }
 
-  static void requestFrom(int max30100_device, int i) {
+  @override
+  void requestFrom(int max30100_device, int i) {
     throw Exception("Wire.requestFrom() not implemented");
   }
 
-  static Int8 read() {
+  @override
+  int read() {
     throw Exception("Wire.read() not implemented");
   }
 
-  static bool available() {
+  @override
+  bool available() {
     throw Exception("Wire.available() not implemented");
   }
-
 }
