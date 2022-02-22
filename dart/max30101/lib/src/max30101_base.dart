@@ -1,6 +1,6 @@
 
 ///
-/// Line-by-line port ofo https://morf.lv/implementing-pulse-oximeter-using-max30100
+/// Line-by-line port of https://morf.lv/implementing-pulse-oximeter-using-max30100
 ///
 
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names, camel_case_types
