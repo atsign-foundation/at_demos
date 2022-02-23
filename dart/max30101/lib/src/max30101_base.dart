@@ -270,8 +270,9 @@ class MAX30100 {
   double currentSaO2Value = 0;
 
   Future<void> runSampler(Function(bool beatDetected, double bpm, double sao2) onBeat) async {
-    int prevSampleTime = DateTime.now().millisecondsSinceEpoch;
-    int thisSampleTime = 0;
+    int thisSampleTime = DateTime.now().millisecondsSinceEpoch;
+    int prevSampleTime = thisSampleTime;
+
     while (true) {
       pulseoxymeter_t sampleResult = update();
 
