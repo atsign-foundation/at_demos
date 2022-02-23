@@ -7,7 +7,7 @@
 
 import 'dart:io';
 import 'dart:math';
-// import 'package:dart_periphery/dart_periphery.dart';
+import 'package:dart_periphery/dart_periphery.dart';
 
 /* MAX30100 parameters */
 const int DEFAULT_OPERATING_MODE = Mode.MAX30100_MODE_SPO2_HR;
@@ -54,7 +54,7 @@ class pulseoxymeter_t {
   double irDcValue = 0;
   double redDcValue = 0;
 
-  double SaO2 = 0;
+  double saO2 = 0;
 
   double lastBeatThreshold = 0;
 
@@ -91,7 +91,7 @@ class meanDiffFilter_t {
 }
 
 /* MAX30100 register and bit defines, DO NOT EDIT */
-const int MAX30100_DEVICE = 0x57;
+const int MAX30100_DEVICE_ADDRESS = 0x57;
 
 //Part ID Registers
 const int MAX30100_REV_ID = 0xFE;
@@ -175,23 +175,34 @@ class LEDCurrent {
 class MAX30100 {
   int mode = DEFAULT_OPERATING_MODE;
   int samplingRate = DEFAULT_SAMPLING_RATE;
+  int millisBetweenSamples = 10;
   int pulseWidth = DEFAULT_LED_PULSE_WIDTH;
   int IrLedCurrent = DEFAULT_IR_LED_CURRENT;
   bool highResMode = true;
   bool debug = false;
 
-  Wire wire;
+  late I2C device;
 
-  MAX30100(this.wire,
-      { this.mode = DEFAULT_OPERATING_MODE,
+  /// Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly.
+  /// 100hz + 1600us is max for that resolution
+  /// device is injectable so you can inject mocks / whatever for testing purposes
+  MAX30100(
+      {  this.mode = DEFAULT_OPERATING_MODE,
         this.samplingRate = DEFAULT_SAMPLING_RATE,
+        this.millisBetweenSamples = 10,
         this.pulseWidth = DEFAULT_LED_PULSE_WIDTH,
         this.IrLedCurrent = DEFAULT_IR_LED_CURRENT,
         this.highResMode = true,
-        this.debug = false})
+        this.debug = false,
+        I2C? injectedDevice})
   {
+    if (injectedDevice != null) {
+      device = injectedDevice;
+    } else {
+      device = I2C(1);
+    }
+
     setMode(mode);
-//Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly. 100hz + 1600us is max for that resolution
     setSamplingRate(samplingRate);
     setLEDPulseWidth(pulseWidth);
 
@@ -201,7 +212,6 @@ class MAX30100 {
     IrLedCurrent = IrLedCurrent;
     setLEDCurrents(redLEDCurrent, IrLedCurrent );
     setHighresModeEnabled(highResMode);
-
 
     dcFilterIR.w = 0;
     dcFilterIR.result = 0;
@@ -259,34 +269,27 @@ class MAX30100 {
   int pulsesDetected = 0;
   double currentSaO2Value = 0;
 
-  /*
-    pulseoxymeter_t update();
+  Future<void> runSampler(Function(bool beatDetected, double bpm, double sao2) onBeat) async {
+    int prevSampleTime = DateTime.now().millisecondsSinceEpoch;
+    int thisSampleTime = 0;
+    while (true) {
+      pulseoxymeter_t sampleResult = update();
 
-  /// mode needs to be one of the values from Mode class
-  void setMode(int mode);
-  void setHighresModeEnabled(bool enabled);
-  /// rate needs to be one of the values from SamplingRate class
-  void setSamplingRate(int rate);
-  /// pw needs to be one of the values from LEDPulseWidth class
-  void setLEDPulseWidth(int pw);
-  /// values need to be values from LEDCurrent class
-  void setLEDCurrents( int redLedCurrent, int IRLedCurrent );
-  double readTemperature();
-  fifo_t readFIFO();
-  void printRegisters();
+      prevSampleTime = thisSampleTime;
+      thisSampleTime = DateTime.now().millisecondsSinceEpoch;
 
-  dcFilter_t dcRemoval(double x, double prev_w, double alpha);
-  void lowPassButterworthFilter( double x, butterworthFilter_t filterResult );
-  double meanDiff(double M, List<meanDiffFilter_t> filterValues);
+      if (sampleResult.pulseDetected || thisSampleTime - prevSampleTime > 500) {
+        onBeat(sampleResult.pulseDetected, sampleResult.heartBPM, sampleResult.saO2);
+      }
 
-// private:
-  bool detectPulse(double sensor_value);
-  void balanceIntensities( double redLedDC, double IRLedDC );
-
-  void writeRegister(int address, int val); // bytes
-  int readRegister(int address); // byte response, byte argument
-  void readFrom(int address, int num, List<int> _buff); // address is byte, num is int, _buff is byte[]
-   */
+      // Need to wait until millisBetweenSamples milliseconds have passed before taking next sample
+      int nextSampleTime = prevSampleTime + millisBetweenSamples;
+      int waitTime = nextSampleTime - DateTime.now().millisecondsSinceEpoch;
+      if (waitTime > 0) {
+        await Future.delayed(Duration(milliseconds: waitTime));
+      }
+    }
+  }
 
   pulseoxymeter_t update() {
     pulseoxymeter_t result = pulseoxymeter_t()
@@ -295,7 +298,7 @@ class MAX30100 {
       ..irCardiogram = 0.0
       ..irDcValue = 0.0
       ..redDcValue = 0.0
-      ..SaO2 = currentSaO2Value
+      ..saO2 = currentSaO2Value
       ..lastBeatThreshold = 0
       ..dcFilteredIR = 0.0
       ..dcFilteredRed = 0.0;
@@ -324,7 +327,7 @@ class MAX30100 {
 
 //This is my adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
       currentSaO2Value = 110.0 - 18.0 * ratioRMS;
-      result.SaO2 = currentSaO2Value;
+      result.saO2 = currentSaO2Value;
 
       if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
         irACValueSqSum = 0;
@@ -464,37 +467,18 @@ class MAX30100 {
   }
 
   /// Writes val to address register on device
-  void writeRegister(int address, int val) { // byte arguments
-    wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
-    wire.write(address); // send register address
-    wire.write(val); // send value to write
-    wire.endTransmission(); // end transmission
+  void writeRegister(int register, int byteValue) { // byte arguments
+    device.writeByteReg(MAX30100_DEVICE_ADDRESS, register, byteValue);
   }
 
   // byte argument, byte return
-  int readRegister(int address) {
-    wire.beginTransmission(MAX30100_DEVICE);
-    wire.write(address);
-    wire.endTransmission(flag:false);
-    wire.requestFrom(MAX30100_DEVICE, 1);
-
-    return wire.read();
+  int readRegister(int register) {
+    return device.readByteReg(MAX30100_DEVICE_ADDRESS, register);
   }
 
   // Reads num bytes starting from address register on device in to _buff array
-  void readFrom(int address, int num, List<int> _buff) {
-    wire.beginTransmission(MAX30100_DEVICE); // start transmission to device
-    wire.write(address); // sends address to read from
-    wire.endTransmission(flag: false); // end transmission
-
-    wire.requestFrom(MAX30100_DEVICE, num); // request 6 bytes from device Registers: DATAX0, DATAX1, DATAY0, DATAY1, DATAZ0, DATAZ1
-
-    int i = 0;
-    while (wire.available() && i < _buff.length) { // device may send less than requested (abnormal)
-      _buff[i++] = wire.read(); // receive a byte
-    }
-
-    wire.endTransmission(); // end transmission
+  List<int> readFrom(int register, int len) {
+    return device.readBytesReg(MAX30100_DEVICE_ADDRESS, register, len);
   }
 
   /// mode argument should be one of the values in the Mode class
@@ -543,10 +527,10 @@ class MAX30100 {
   fifo_t readFIFO() {
     fifo_t result = fifo_t();
 
-    List<int> buffer = List<int>.filled(4, 0, growable:false);
-    readFrom(MAX30100_FIFO_DATA, 4, buffer);
-    result.rawIR = (buffer[0] << 8) | buffer[1];
-    result.rawRed = (buffer[2] << 8) | buffer[3];
+    List<int> fifoData_FourBytes = readFrom(MAX30100_FIFO_DATA, 4);
+
+    result.rawIR = (fifoData_FourBytes[0] << 8) | fifoData_FourBytes[1];
+    result.rawRed = (fifoData_FourBytes[2] << 8) | fifoData_FourBytes[3];
 
     return result;
   }
@@ -604,91 +588,5 @@ class MAX30100 {
     print(readRegister(MAX30100_TEMP_FRACTION).toRadixString(16));
     print(readRegister(MAX30100_REV_ID).toRadixString(16));
     print(readRegister(MAX30100_PART_ID).toRadixString(16));
-  }
-}
-
-abstract class Wire {
-  void begin();
-  void beginTransmission(int max30100_device);
-  void write(int address);
-  void endTransmission({bool? flag});
-  void requestFrom(int max30100_device, int i);
-  int read();
-  bool available();
-}
-
-class FakeWire implements Wire {
-  @override
-  bool available() {
-    return true;
-  }
-
-  @override
-  void begin() {
-    return;
-  }
-
-  @override
-  void beginTransmission(int max30100_device) {
-    return;
-  }
-
-  @override
-  void endTransmission({bool? flag}) {
-    return;
-  }
-
-  @override
-  int read() {
-    return 1;
-  }
-
-  @override
-  void requestFrom(int max30100_device, int i) {
-    return;
-  }
-
-  @override
-  void write(int address) {
-    return;
-  }
-}
-
-/// Arduino Wire class. We need to implement methods so they talk to the MAX30100
-class PiWire implements Wire {
-  @override
-  void begin() {
-    throw Exception("Wire.begin() not implemented");
-  }
-
-  @override
-  void beginTransmission(int max30100_device) {
-    throw Exception("Wire.beginTransmission() not implemented");
-  }
-
-  @override
-  void write(int address) {
-    throw Exception("Wire.write() not implemented");
-  }
-
-  @override
-  void endTransmission({bool? flag}) {
-    // TODO what is the flag for?
-    throw Exception("Wire.endTransmission() not implemented");
-  }
-
-  @override
-  void requestFrom(int max30100_device, int i) {
-    throw Exception("Wire.requestFrom() not implemented");
-  }
-
-  @override
-  int read() {
-    throw Exception("Wire.read() not implemented");
-  }
-
-  @override
-  bool available() {
-    throw Exception("Wire.available() not implemented");
   }
 }
