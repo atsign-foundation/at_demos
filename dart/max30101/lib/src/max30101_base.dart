@@ -273,18 +273,22 @@ class MAX30100 {
     int thisSampleTime = DateTime.now().millisecondsSinceEpoch;
     int prevSampleTime = thisSampleTime;
 
+    int lastCalledOnBeat = DateTime.now().millisecondsSinceEpoch;
+
     while (true) {
+      // take sample from the device and process it
       pulseoxymeter_t sampleResult = update();
 
       prevSampleTime = thisSampleTime;
       thisSampleTime = DateTime.now().millisecondsSinceEpoch;
 
-      if (sampleResult.pulseDetected || thisSampleTime - prevSampleTime > 500) {
+      if (sampleResult.pulseDetected || DateTime.now().millisecondsSinceEpoch - lastCalledOnBeat > 500) {
         onBeat(sampleResult.pulseDetected, sampleResult.heartBPM, sampleResult.saO2);
+        lastCalledOnBeat = DateTime.now().millisecondsSinceEpoch;
       }
 
       // Need to wait until millisBetweenSamples milliseconds have passed before taking next sample
-      int nextSampleTime = prevSampleTime + millisBetweenSamples;
+      int nextSampleTime = thisSampleTime + millisBetweenSamples;
       int waitTime = nextSampleTime - DateTime.now().millisecondsSinceEpoch;
       if (waitTime > 0) {
         await Future.delayed(Duration(milliseconds: waitTime));
