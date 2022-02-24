@@ -308,7 +308,7 @@ class MAX30101 {
   void setupDevice(
       {double ledPower = 6.4,
       int sampleAverage = 4,
-      int ledsEnabled = 3,
+      int ledsEnabled = 2,
       int sampleRate = 400,
       int pulseWidth = 215,
       int adcRange = 16384,
@@ -324,6 +324,7 @@ class MAX30101 {
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'sample_rate_sps', sampleRate);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'adc_range_nA', adcRange);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'led_pw_us', pulseWidth);
+    writeRegister('SPO2_CONFIG', spo2ConfigValue);
 
     // See table 8 in https://datasheets.maximintegrated.com/en/ds/MAX30101.pdf
     writeRegister('LED1_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
