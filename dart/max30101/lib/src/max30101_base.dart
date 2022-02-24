@@ -153,7 +153,7 @@ class MAX30101 {
       ..addBits('slot4', '11110000', {'off': '0000', 'red':'0001', 'ir':'0010', 'green':'0011'});
   }
 
-  static int setBits(int inputValue, String registerName, String bitsName, dynamic value) {
+  static int setBits(int byteValue, String registerName, String bitsName, dynamic value) {
     Register? register = _registerMap[registerName];
     if (register == null) {
       throw Exception("Register $registerName not mapped");
@@ -165,13 +165,13 @@ class MAX30101 {
 
     if (bits.bitNumbers.length == 1) { // set just one bit to true or false
       // value must be boolean
-      return _setSingleBit(inputValue, register, bits, value);
+      return _setSingleBit(byteValue, register, bits, value);
     } else { // set a group of bits to a value we look up from our adapter map based on supplied value
-      return _setMultipleBits(inputValue, register, bits, value);
+      return _setMultipleBits(byteValue, register, bits, value);
     }
   }
 
-  static int _setMultipleBits(int inputValue, Register register, Bits bits, dynamic value) {
+  static int _setMultipleBits(int byteValue, Register register, Bits bits, dynamic value) {
     String? valueLookup = bits.adapter[value];
     if (valueLookup == null) {
       throw Exception("Value $value is not mapped to a bitmask for ${register.name}.${bits.name}");
@@ -181,17 +181,15 @@ class MAX30101 {
           .length}, but ${register.name}.${bits.name} has mask ${bits.mask} length ${bits.bitNumbers.length}");
     }
 
-    int outputValue = inputValue;
-
     for (int bitNumberIndex = 0, valueIndex = bits.bitNumbers.length-1; bitNumberIndex < bits.bitNumbers.length; bitNumberIndex++, valueIndex--) {
       int bitNumber = bits.bitNumbers[bitNumberIndex];
       if (valueLookup[valueIndex] == '1') {
-        outputValue = BW.setBit(inputValue, bitNumber);
+        byteValue = BW.setBit(byteValue, bitNumber);
       } else {
-        outputValue = BW.clearBit(inputValue, bitNumber);
+        byteValue = BW.clearBit(byteValue, bitNumber);
       }
     }
-    return outputValue;
+    return byteValue;
   }
 
   static int _setSingleBit(int inputValue, Register register, Bits bits, dynamic value) {
