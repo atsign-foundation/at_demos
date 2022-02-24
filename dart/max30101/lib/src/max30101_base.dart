@@ -71,9 +71,9 @@ class Bits {
   Map<dynamic, String> adapter;
 
   Bits(this.name, this._mask, this.adapter) {
-    for (int i = _mask.length - 1; i >= 0; i--) {
-      if (_mask[i] == '1') {
-        bitNumbers.add(i);
+    for (int maskIndex = _mask.length - 1, bitNumberIndex = 0; maskIndex >= 0; maskIndex--, bitNumberIndex++) {
+      if (_mask[maskIndex] == '1') {
+        bitNumbers.add(bitNumberIndex);
       }
     }
   }
