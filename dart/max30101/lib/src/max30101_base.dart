@@ -657,23 +657,6 @@ class MAX30101 {
     avg = filterValues.sum / filterValues.count;
     return avg - M;
   }
-
-
-  // void printRegisters() {
-  //   print(readRegister(MAX30100_INT_STATUS).toRadixString(16));
-  //   print(readRegister(MAX30100_INT_ENABLE).toRadixString(16));
-  //   print(readRegister(MAX30100_FIFO_WRITE).toRadixString(16));
-  //   print(readRegister(MAX30100_FIFO_OVERFLOW_COUNTER).toRadixString(16));
-  //   print(readRegister(MAX30100_FIFO_READ).toRadixString(16));
-  //   print(readRegister(MAX30100_FIFO_DATA).toRadixString(16));
-  //   print(readRegister(MAX30100_MODE_CONF).toRadixString(16));
-  //   print(readRegister(MAX30100_SPO2_CONF).toRadixString(16));
-  //   print(readRegister(MAX30100_LED_CONF).toRadixString(16));
-  //   print(readRegister(MAX30100_TEMP_INT).toRadixString(16));
-  //   print(readRegister(MAX30100_TEMP_FRACTION).toRadixString(16));
-  //   print(readRegister(MAX30100_REV_ID).toRadixString(16));
-  //   print(readRegister(MAX30100_PART_ID).toRadixString(16));
-  // }
 }
 
 class BW {
