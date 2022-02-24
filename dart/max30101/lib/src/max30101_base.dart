@@ -183,9 +183,9 @@ class MAX30101 {
 
     int outputValue = inputValue;
 
-    for (int i = 0; i < bits.bitNumbers.length; i++) {
-      int bitNumber = bits.bitNumbers[i];
-      if (valueLookup[i] == '1') {
+    for (int bitNumberIndex = 0, valueIndex = bits.bitNumbers.length-1; bitNumberIndex < bits.bitNumbers.length; bitNumberIndex++, valueIndex--) {
+      int bitNumber = bits.bitNumbers[bitNumberIndex];
+      if (valueLookup[valueIndex] == '1') {
         outputValue = BW.setBit(inputValue, bitNumber);
       } else {
         outputValue = BW.clearBit(inputValue, bitNumber);
