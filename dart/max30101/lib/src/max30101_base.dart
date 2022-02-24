@@ -330,7 +330,6 @@ class MAX30101 {
     writeRegister('LED1_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
     writeRegister('LED2_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
     writeRegister('LED3_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
-    writeRegister('LED4_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
 
     // LED_PROX_PULSE_AMPLITUDE, register 0x10, does not exist for the MAX30101. Presumably it did for the MAX30105
     // writeRegister('LED_PROX_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
@@ -354,7 +353,7 @@ class MAX30101 {
       writeRegister('LED_MODE_CONTROL_SLOTS_3_4', ledModeValue);
     }
 
-    //         self.clear_fifo()
+    clearFIFO();
   }
 
   void softReset({timeoutMillis = 500}) {
@@ -399,7 +398,11 @@ class MAX30101 {
 
   // Reads num bytes starting from address register on device in to _buff array
   List<int> readFrom(String registerName, int len) {
-    return wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
+    var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
+    if (debug) {
+      print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
+    }
+    return byteValuesRead;
   }
 
   List<SensorFIFOSample> readFIFO() {
