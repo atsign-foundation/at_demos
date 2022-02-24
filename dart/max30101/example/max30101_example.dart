@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:max30101/max30101.dart';
+import 'package:max30101/src/real_i2c_wrapper.dart';
 
-late MAX30100 pulseOxymeter;
+late MAX30101 pulseOxymeter;
 
 int maxCallbacks = 100;
 int numCallbacks = 0;
@@ -16,7 +17,7 @@ void onBeat(bool beatDetected, double bpm, double sao2) {
 }
 
 void main() {
-  MAX30100 max30100 = MAX30100();
+  MAX30101 max30100 = MAX30101(RealI2CWrapper(1));
 
   max30100.runSampler(onBeat);
 }
