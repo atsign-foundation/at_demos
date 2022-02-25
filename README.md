@@ -69,7 +69,7 @@ the /boot/start4*.elf files are needed from a more recent Bullseye image.
 ```
 sudo apt-get update --allow-releaseinfo-change
 sudo apt-get upgrade -y
-suod apt install i2c-tools git python3-pip curl libsdl2-mixer-2.0-0 \
+sudo apt install i2c-tools git python3-pip curl libsdl2-mixer-2.0-0 \
   libsdl2-image-2.0-0 libsdl2-2.0-0 libgles2-mesa-dev libsdl2-ttf-2.0-0 \
   mosquitto mosquitto-clients minicom jq screen
 ```
