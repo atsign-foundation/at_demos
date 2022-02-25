@@ -347,7 +347,7 @@ class MAX30101 {
 
     if (ledsEnabled >= 3) {
       ledModeValue = readRegister('LED_MODE_CONTROL_SLOTS_3_4');
-      ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_3_4', 'slot3', 'red');
+      ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_3_4', 'slot3', 'green');
       writeRegister('LED_MODE_CONTROL_SLOTS_3_4', ledModeValue);
     }
 
@@ -428,9 +428,9 @@ class MAX30101 {
 
     for (int i = 0; i < data.length; i+=3 * ledsEnabled) {
       SensorFIFOSample sample = SensorFIFOSample();
-      // 3 bytes for each LED : IR, Red, Green
-      sample.rawIR = data[i] << 16 | data[i+1] << 8 | data[i+2];
-      sample.rawRed = data[i+3] << 16 | data[i+4] << 8 | data[i+5];
+      // 3 bytes for each LED : Red, IR, Green
+      sample.rawRed = data[i] << 16 | data[i+1] << 8 | data[i+2];
+      sample.rawIR = data[i+3] << 16 | data[i+4] << 8 | data[i+5];
       if (ledsEnabled >= 3) {
         sample.rawGreen = data[i+6] << 16 | data[i+7] << 8 | data[i+8];
       }
