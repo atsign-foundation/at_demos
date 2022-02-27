@@ -6,7 +6,7 @@ import 'i2c_wrapper.dart';
 const int RESET_SPO2_EVERY_N_PULSES = 10;
 
 /* Adjust RED LED current balancing*/
-const int magicAcceptableLEDIntensityDiff = 65000;
+const int magicAcceptableLEDIntensityDiff = 30000;
 const int redLEDCurrentAdjustmentMs = 500; // adjust red led intensity every 500 milliseconds
 const int defaultIRLEDCurrent = 255; // 51mA according to table 8
 const int startingRedLEDCurrent = 127; // ~25.4 mA
@@ -14,13 +14,13 @@ const int startingRedLEDCurrent = 127; // ~25.4 mA
 
 
 const double alpha = 0.95;  //dc filter alpha value
-const int MEAN_FILTER_SIZE = 20;
+const int MEAN_FILTER_SIZE = 15;
 
 const int PULSE_MIN_THRESHOLD = 100; //300 is good for finger, but for wrist you need like 20, and there is sh*t-loads of noise
 const int PULSE_MAX_THRESHOLD = 2000;
 const int PULSE_GO_DOWN_THRESHOLD = 1;
 
-const int PULSE_BPM_SAMPLE_SIZE = 20; //Moving average size
+const int PULSE_BPM_SAMPLE_SIZE = 10; //Moving average size
 
 class PulseOxymeterData {
   bool pulseDetected = false;
@@ -507,7 +507,7 @@ class MAX30101 {
         }
 
         //This is the adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
-        currentSaO2Value = 110.0 - 180.0 * ratioRMS;
+        currentSaO2Value = 110.0 - 18.0 * ratioRMS;
         result.saO2 = currentSaO2Value;
 
         if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
