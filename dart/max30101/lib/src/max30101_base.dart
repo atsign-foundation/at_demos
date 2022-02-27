@@ -236,7 +236,7 @@ class MAX30101 {
   /// 100hz + 1600us is max for that resolution
   /// device is injectable so you can inject mocks / whatever for testing purposes
   MAX30101(this.wrapper, this.captureSamples, {this.ledPower = 6.4, this.ledsEnabled = 2,
-            this.sampleRate = 100, this.sampleAverage = 10,
+            this.sampleRate = 100, this.sampleAverage = 1,
             this.pulseWidth = 411, this.adcRange = 16384,
             this.highResMode = true, this.debug = true})
   {
