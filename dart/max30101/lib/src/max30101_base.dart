@@ -1,28 +1,26 @@
-// ignore_for_file: constant_identifier_names, non_constant_identifier_names, camel_case_types
-
 import 'dart:io';
 import 'dart:math';
 
 import 'i2c_wrapper.dart';
 
-const int RESET_SPO2_EVERY_N_PULSES = 4;
+const int RESET_SPO2_EVERY_N_PULSES = 10;
 
 /* Adjust RED LED current balancing*/
-const int MagicAcceptableLEDIntensityDiff = 65000;
-const int RedLedCurrentAdjustmentMs = 500; // adjust red led intensity every 500 milliseconds
-const int DefaultIrLEDCurrent = 255; // 51mA according to table 8
-const int StartingRedLEDCurrent = 127; // ~25.4 mA
+const int magicAcceptableLEDIntensityDiff = 65000;
+const int redLEDCurrentAdjustmentMs = 500; // adjust red led intensity every 500 milliseconds
+const int defaultIRLEDCurrent = 255; // 51mA according to table 8
+const int startingRedLEDCurrent = 127; // ~25.4 mA
 
 
 
-const double ALPHA = 0.95;  //dc filter alpha value
-const int MEAN_FILTER_SIZE = 15;
+const double alpha = 0.95;  //dc filter alpha value
+const int MEAN_FILTER_SIZE = 20;
 
 const int PULSE_MIN_THRESHOLD = 100; //300 is good for finger, but for wrist you need like 20, and there is sh*t-loads of noise
 const int PULSE_MAX_THRESHOLD = 2000;
 const int PULSE_GO_DOWN_THRESHOLD = 1;
 
-const int PULSE_BPM_SAMPLE_SIZE = 10; //Moving average size
+const int PULSE_BPM_SAMPLE_SIZE = 20; //Moving average size
 
 class PulseOxymeterData {
   bool pulseDetected = false;
@@ -111,7 +109,7 @@ class Register {
 }
 
 void printWithTimestamp(String message) {
-  print('${DateTime.now().toIso8601String()} | message');
+  print('${DateTime.now().toIso8601String()} | $message');
 }
 
 class MAX30101 {
@@ -294,8 +292,8 @@ class MAX30101 {
   }
 
 // private:
-  int redLEDCurrent = StartingRedLEDCurrent;
-  int irLEDCurrent = DefaultIrLEDCurrent;
+  int redLEDCurrent = startingRedLEDCurrent;
+  int irLEDCurrent = defaultIRLEDCurrent;
 
   int lastREDLedCurrentCheck = 0;
 
@@ -346,8 +344,8 @@ class MAX30101 {
     writeRegister('SPO2_CONFIG', spo2ConfigValue);
 
     lastREDLedCurrentCheck = 0;
-    redLEDCurrent = StartingRedLEDCurrent;
-    irLEDCurrent = DefaultIrLEDCurrent;
+    redLEDCurrent = startingRedLEDCurrent;
+    irLEDCurrent = defaultIRLEDCurrent;
     setLEDCurrents(redLEDCurrent, irLEDCurrent);
 
     // LED_PROX_PULSE_AMPLITUDE, register 0x10, does not exist for the MAX30101. Presumably it did for the MAX30105
@@ -488,8 +486,8 @@ class MAX30101 {
     for (int i = 0; i < fifoSampleList.length; i++) {
       SensorFIFOSample sample = fifoSampleList[i];
 
-      dcFilterIR = dcRemoval(sample.rawIR.toDouble(), dcFilterIR.w, ALPHA);
-      dcFilterRed = dcRemoval(sample.rawRed.toDouble(), dcFilterRed.w, ALPHA);
+      dcFilterIR = dcRemoval(sample.rawIR.toDouble(), dcFilterIR.w, alpha);
+      dcFilterRed = dcRemoval(sample.rawRed.toDouble(), dcFilterRed.w, alpha);
 
       double meanDiffResIR = meanDiff(dcFilterIR.result, meanDiffIR); // &meanDiffIR
       lowPassButterworthFilter(meanDiffResIR /*-dcFilterIR.result*/, lpbFilterIR); // &lpbFilterIR
@@ -538,8 +536,8 @@ class MAX30101 {
   int values_went_down = 0;
   int currentBeat = 0;
   int lastBeat = 0;
-  bool detectPulse(double sensor_value) {
-    if (sensor_value > PULSE_MAX_THRESHOLD) {
+  bool detectPulse(double sensorValue) {
+    if (sensorValue > PULSE_MAX_THRESHOLD) {
       currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
       prev_sensor_value = 0;
       lastBeat = 0;
@@ -551,20 +549,20 @@ class MAX30101 {
 
     switch (currentPulseDetectorState) {
       case PulseStateMachine.PULSE_IDLE:
-        if (sensor_value >= PULSE_MIN_THRESHOLD) {
+        if (sensorValue >= PULSE_MIN_THRESHOLD) {
           currentPulseDetectorState = PulseStateMachine.PULSE_TRACE_UP;
           values_went_down = 0;
         }
         break;
 
       case PulseStateMachine.PULSE_TRACE_UP:
-        if (sensor_value > prev_sensor_value) {
+        if (sensorValue > prev_sensor_value) {
           currentBeat = DateTime.now().millisecondsSinceEpoch;
-          lastBeatThreshold = sensor_value;
+          lastBeatThreshold = sensorValue;
         }
         else {
           if (debug == true) {
-            printWithTimestamp("Peak reached: $sensor_value $prev_sensor_value");
+            printWithTimestamp("Peak reached: $sensorValue $prev_sensor_value");
           }
 
           int beatDuration = currentBeat - lastBeat;
@@ -613,31 +611,31 @@ class MAX30101 {
         break;
 
       case PulseStateMachine.PULSE_TRACE_DOWN:
-        if (sensor_value < prev_sensor_value) {
+        if (sensorValue < prev_sensor_value) {
           values_went_down++;
         }
 
-        if (sensor_value < PULSE_MIN_THRESHOLD) {
+        if (sensorValue < PULSE_MIN_THRESHOLD) {
           currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
         }
         break;
     }
 
-    prev_sensor_value = sensor_value;
+    prev_sensor_value = sensorValue;
     return false;
   }
 
-  void balanceIntensities(double redLedDC, double IRLedDC) {
-    if (DateTime.now().millisecondsSinceEpoch - lastREDLedCurrentCheck >= RedLedCurrentAdjustmentMs) {
+  void balanceIntensities(double redLedDC, double irLedDC) {
+    if (DateTime.now().millisecondsSinceEpoch - lastREDLedCurrentCheck >= redLEDCurrentAdjustmentMs) {
 
-      if (IRLedDC - redLedDC > MagicAcceptableLEDIntensityDiff && redLEDCurrent < 255) {
+      if (irLedDC - redLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent < 255) {
         redLEDCurrent++;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
         if (debug == true) {
           printWithTimestamp("RED LED Current +");
         }
       }
-      else if (redLedDC - IRLedDC > MagicAcceptableLEDIntensityDiff && redLEDCurrent > 0) {
+      else if (redLedDC - irLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent > 0) {
         redLEDCurrent--;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
         if (debug == true) {
@@ -655,11 +653,11 @@ class MAX30101 {
   }
 
 
-  DCFilterData dcRemoval(double x, double prev_w, double alpha) {
+  DCFilterData dcRemoval(double x, double previousW, double alpha) {
     DCFilterData filtered = DCFilterData();
 
-    filtered.w = x + alpha * prev_w;
-    filtered.result = filtered.w - prev_w;
+    filtered.w = x + alpha * previousW;
+    filtered.result = filtered.w - previousW;
 
     return filtered;
   }
