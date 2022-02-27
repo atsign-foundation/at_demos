@@ -8,8 +8,8 @@ const int RESET_SPO2_EVERY_N_PULSES = 10;
 /* Adjust RED LED current balancing*/
 const int magicAcceptableLEDIntensityDiff = 30000;
 const int redLEDCurrentAdjustmentMs = 250; // adjust red led intensity every 500 milliseconds
-const int defaultIRLEDCurrent = 32; // about 6.4 mA - see table 8 "LED Current Control"
-const int startingRedLEDCurrent = 16; // about 3.2 mA - see table 8 "LED Current Control"
+const int startingIRLEDCurrent = 64; // about 12.8 mA - see table 8 "LED Current Control"
+const int startingRedLEDCurrent = 32; // about 6.4 mA - see table 8 "LED Current Control"
 
 
 
@@ -293,7 +293,7 @@ class MAX30101 {
 
 // private:
   int redLEDCurrent = startingRedLEDCurrent;
-  int irLEDCurrent = defaultIRLEDCurrent;
+  int irLEDCurrent = startingIRLEDCurrent;
 
   int lastREDLedCurrentCheck = 0;
 
@@ -364,7 +364,7 @@ class MAX30101 {
 
     lastREDLedCurrentCheck = 0;
     redLEDCurrent = startingRedLEDCurrent;
-    irLEDCurrent = defaultIRLEDCurrent;
+    irLEDCurrent = startingIRLEDCurrent;
     setLEDCurrents(redLEDCurrent, irLEDCurrent);
 
     clearFIFO(true);
