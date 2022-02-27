@@ -7,9 +7,9 @@ const int RESET_SPO2_EVERY_N_PULSES = 10;
 
 /* Adjust RED LED current balancing*/
 const int magicAcceptableLEDIntensityDiff = 30000;
-const int redLEDCurrentAdjustmentMs = 500; // adjust red led intensity every 500 milliseconds
-const int defaultIRLEDCurrent = 255; // 51mA according to table 8
-const int startingRedLEDCurrent = 127; // ~25.4 mA
+const int redLEDCurrentAdjustmentMs = 250; // adjust red led intensity every 500 milliseconds
+const int defaultIRLEDCurrent = 32; // about 6.4 mA - see table 8 "LED Current Control"
+const int startingRedLEDCurrent = 16; // about 3.2 mA - see table 8 "LED Current Control"
 
 
 
@@ -331,73 +331,71 @@ class MAX30101 {
       int timeoutMillis = 500}) {
     softReset(timeoutMillis: timeoutMillis);
 
-    int fifoConfigValue = readRegister('FIFO_CONFIG');
+    int fifoConfigValue = readRegister('FIFO_CONFIG', true);
     fifoConfigValue = setBits(fifoConfigValue, 'FIFO_CONFIG', 'sample_average', sampleAverage);
     fifoConfigValue = setBits(fifoConfigValue, 'FIFO_CONFIG', 'fifo_rollover_en', true);
-    writeRegister('FIFO_CONFIG', fifoConfigValue);
+    writeRegister('FIFO_CONFIG', fifoConfigValue, true);
 
     //Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly. 100hz + 1600us is max for that resolution
-    int spo2ConfigValue = readRegister('SPO2_CONFIG');
+    int spo2ConfigValue = readRegister('SPO2_CONFIG', true);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'sample_rate_sps', sampleRate);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'adc_range_nA', adcRange);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'led_pw_us', pulseWidth);
-    writeRegister('SPO2_CONFIG', spo2ConfigValue);
+    writeRegister('SPO2_CONFIG', spo2ConfigValue, true);
 
-    lastREDLedCurrentCheck = 0;
-    redLEDCurrent = startingRedLEDCurrent;
-    irLEDCurrent = defaultIRLEDCurrent;
-    setLEDCurrents(redLEDCurrent, irLEDCurrent);
-
-    // LED_PROX_PULSE_AMPLITUDE, register 0x10, does not exist for the MAX30101. Presumably it did for the MAX30105
-    // writeRegister('LED_PROX_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
-
-    int modeConfigValue = readRegister('MODE_CONFIG');
+    int modeConfigValue = readRegister('MODE_CONFIG', true);
     modeConfigValue = setBits(modeConfigValue, 'MODE_CONFIG', 'mode', ledsEnabled);
-    writeRegister('MODE_CONFIG', modeConfigValue);
+    writeRegister('MODE_CONFIG', modeConfigValue, true);
 
-    int ledModeValue = readRegister('LED_MODE_CONTROL_SLOTS_1_2');
+    int ledModeValue = readRegister('LED_MODE_CONTROL_SLOTS_1_2', true);
     ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_1_2', 'slot1', 'red');
     if (ledsEnabled >= 2) {
       ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_1_2', 'slot2', 'ir');
     } else {
       ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_1_2', 'slot2', 'off');
     }
-    writeRegister('LED_MODE_CONTROL_SLOTS_1_2', ledModeValue);
+    writeRegister('LED_MODE_CONTROL_SLOTS_1_2', ledModeValue, true);
 
     if (ledsEnabled >= 3) {
-      ledModeValue = readRegister('LED_MODE_CONTROL_SLOTS_3_4');
+      ledModeValue = readRegister('LED_MODE_CONTROL_SLOTS_3_4', true);
       ledModeValue = setBits(ledModeValue, 'LED_MODE_CONTROL_SLOTS_3_4', 'slot3', 'green');
-      writeRegister('LED_MODE_CONTROL_SLOTS_3_4', ledModeValue);
+      writeRegister('LED_MODE_CONTROL_SLOTS_3_4', ledModeValue, true);
     }
 
-    clearFIFO();
+    lastREDLedCurrentCheck = 0;
+    redLEDCurrent = startingRedLEDCurrent;
+    irLEDCurrent = defaultIRLEDCurrent;
+    setLEDCurrents(redLEDCurrent, irLEDCurrent);
+
+    clearFIFO(true);
   }
 
   void softReset({timeoutMillis = 500}) {
+    printWithTimestamp("Soft reset");
     // read the MODE_CONFIG register; set the reset bit; write the register; re-read the register until reset bit is zero again
-    int modeConfigValue = readRegister('MODE_CONFIG');
+    int modeConfigValue = readRegister('MODE_CONFIG', true);
     modeConfigValue = setBits(modeConfigValue, 'MODE_CONFIG', 'reset', true);
-    writeRegister('MODE_CONFIG', modeConfigValue);
+    writeRegister('MODE_CONFIG', modeConfigValue, true);
 
     int startTime = DateTime.now().millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch - startTime < timeoutMillis) {
-      int configValue = readRegister('MODE_CONFIG');
+      int configValue = readRegister('MODE_CONFIG', true);
       if (! BW.isBitSet(configValue, _registerMap['MODE_CONFIG']!.bits['reset']!.bitNumbers[0])) {
         break;
       }
-      sleep(Duration(milliseconds: 50));
+      sleep(Duration(milliseconds: 250));
     }
   }
 
-  void clearFIFO() {
-    writeRegister('FIFO_READ', 0);
-    writeRegister('FIFO_WRITE', 0);
-    writeRegister('FIFO_OVERFLOW', 0);
+  void clearFIFO(bool logIt) {
+    writeRegister('FIFO_READ', 0, logIt);
+    writeRegister('FIFO_WRITE', 0, logIt);
+    writeRegister('FIFO_OVERFLOW', 0, logIt);
   }
 
   Future<List<SensorFIFOSample>> readFIFO() async {
-    int fifoReadPointer = readRegister('FIFO_READ');
-    int fifoWritePointer = readRegister('FIFO_WRITE');
+    int fifoReadPointer = readRegister('FIFO_READ', false);
+    int fifoWritePointer = readRegister('FIFO_WRITE', false);
     if (fifoReadPointer == fifoWritePointer) {
       return [];
     }
@@ -410,7 +408,7 @@ class MAX30101 {
     int bytesToRead = numSamples * 3 * ledsEnabled;
     List<int> data = [];
     while (bytesToRead > 0) {
-      var bytesRead = readFrom('FIFO_DATA', min(bytesToRead, 32));
+      var bytesRead = readFrom('FIFO_DATA', min(bytesToRead, 32), false);
       data.addAll(bytesRead);
       if (captureSamples) {
         var logMessage = '${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros} | $bytesRead';
@@ -420,7 +418,7 @@ class MAX30101 {
       bytesToRead -= 32;
     }
 
-    clearFIFO();
+    clearFIFO(false);
 
     List<SensorFIFOSample> result = [];
 
@@ -442,7 +440,7 @@ class MAX30101 {
   Future<void> runSampler(Function(bool beatDetected, double bpm, double sao2) onBeat) async {
     int lastReadAndCalculateTime = 0;
 
-    clearFIFO();
+    clearFIFO(true);
 
     int lastCalledOnBeat = DateTime.now().microsecondsSinceEpoch;
 
@@ -648,8 +646,9 @@ class MAX30101 {
   }
 
   void setLEDCurrents(int _redLedCurrent, int _irLedCurrent) {
-    writeRegister('LED1_PULSE_AMPLITUDE', _redLedCurrent);
-    writeRegister('LED2_PULSE_AMPLITUDE', _irLedCurrent);
+    writeRegister('LED1_PULSE_AMPLITUDE', _redLedCurrent, true);
+
+    writeRegister('LED2_PULSE_AMPLITUDE', _irLedCurrent, true);
   }
 
 
@@ -693,8 +692,8 @@ class MAX30101 {
   }
 
   /// Writes val to address register on device
-  int writeRegister(String registerName, int byteValue) { // byte arguments
-    if (debug) {
+  int writeRegister(String registerName, int byteValue, logIt) { // byte arguments
+    if (logIt) {
       printWithTimestamp("Writing $byteValue to $registerName");
     }
     wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
@@ -702,20 +701,20 @@ class MAX30101 {
   }
 
   // byte argument, byte return
-  int readRegister(String registerName) {
+  int readRegister(String registerName, bool logIt) {
     var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
-    // if (debug) {
-    //   printWithTimestamp("Read $byteValue from $registerName");
-    // }
+    if (logIt) {
+      printWithTimestamp("Read $byteValue from $registerName");
+    }
     return byteValue;
   }
 
   // Reads num bytes starting from address register on device in to _buff array
-  List<int> readFrom(String registerName, int len) {
+  List<int> readFrom(String registerName, int len, bool logIt) {
     var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
-    // if (debug) {
-    //   printWithTimestamp("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
-    // }
+    if (debug) {
+      printWithTimestamp("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
+    }
     return byteValuesRead;
   }
 }
