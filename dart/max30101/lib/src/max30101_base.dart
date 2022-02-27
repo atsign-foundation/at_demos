@@ -110,6 +110,9 @@ class Register {
   }
 }
 
+void printWithTimestamp(String message) {
+  print('${DateTime.now().toIso8601String()} | message');
+}
 
 class MAX30101 {
   static final Map<String, Register> _registerMap = {};
@@ -412,7 +415,9 @@ class MAX30101 {
       var bytesRead = readFrom('FIFO_DATA', min(bytesToRead, 32));
       data.addAll(bytesRead);
       if (captureSamples) {
-        await captureFile.writeAsString('${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros}:$bytesRead\n', flush: true, mode:FileMode.append);
+        var logMessage = '${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros} | $bytesRead';
+        await captureFile.writeAsString('$logMessage\n', flush: true, mode:FileMode.append);
+        printWithTimestamp(logMessage);
       }
       bytesToRead -= 32;
     }
@@ -500,7 +505,7 @@ class MAX30101 {
         double ratioRMS = log(sqrt(redACValueSqSum / samplesRecorded)) / log(sqrt(irACValueSqSum / samplesRecorded));
 
         if (debug == true) {
-          print("RMS Ratio: $ratioRMS");
+          printWithTimestamp("RMS Ratio: $ratioRMS");
         }
 
         //This is the adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
@@ -559,7 +564,7 @@ class MAX30101 {
         }
         else {
           if (debug == true) {
-            print("Peak reached: $sensor_value $prev_sensor_value");
+            printWithTimestamp("Peak reached: $sensor_value $prev_sensor_value");
           }
 
           int beatDuration = currentBeat - lastBeat;
@@ -570,7 +575,7 @@ class MAX30101 {
             rawBPM = 60000.0 / beatDuration;
           }
           if (debug == true) {
-            print("rawBPM: $rawBPM");
+            printWithTimestamp("rawBPM: $rawBPM");
           }
 
 //This method sometimes glitches, it's better to go through whole moving average everytime
@@ -586,7 +591,7 @@ class MAX30101 {
           }
 
           if (debug == true) {
-            print("CurrentMoving Avg: $valuesBPM");
+            printWithTimestamp("CurrentMoving Avg: $valuesBPM");
           }
 
           bpmIndex++;
@@ -598,7 +603,7 @@ class MAX30101 {
 
           currentBPM = valuesBPMSum / valuesBPMCount;
           if (debug == true) {
-            print("Avg. BPM: $currentBPM");
+            printWithTimestamp("Avg. BPM: $currentBPM");
           }
 
           currentPulseDetectorState = PulseStateMachine.PULSE_TRACE_DOWN;
@@ -629,14 +634,14 @@ class MAX30101 {
         redLEDCurrent++;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
         if (debug == true) {
-          print("RED LED Current +");
+          printWithTimestamp("RED LED Current +");
         }
       }
       else if (redLedDC - IRLedDC > MagicAcceptableLEDIntensityDiff && redLEDCurrent > 0) {
         redLEDCurrent--;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
         if (debug == true) {
-          print("RED LED Current -");
+          printWithTimestamp("RED LED Current -");
         }
       }
 
@@ -692,7 +697,7 @@ class MAX30101 {
   /// Writes val to address register on device
   int writeRegister(String registerName, int byteValue) { // byte arguments
     // if (debug) {
-    //   print("Writing $byteValue to $registerName");
+    //   printWithTimestamp("Writing $byteValue to $registerName");
     // }
     wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
     return byteValue;
@@ -702,7 +707,7 @@ class MAX30101 {
   int readRegister(String registerName) {
     var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
     // if (debug) {
-    //   print("Read $byteValue from $registerName");
+    //   printWithTimestamp("Read $byteValue from $registerName");
     // }
     return byteValue;
   }
@@ -711,7 +716,7 @@ class MAX30101 {
   List<int> readFrom(String registerName, int len) {
     var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
     // if (debug) {
-    //   print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
+    //   printWithTimestamp("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
     // }
     return byteValuesRead;
   }
