@@ -694,9 +694,9 @@ class MAX30101 {
 
   /// Writes val to address register on device
   int writeRegister(String registerName, int byteValue) { // byte arguments
-    // if (debug) {
-    //   printWithTimestamp("Writing $byteValue to $registerName");
-    // }
+    if (debug) {
+      printWithTimestamp("Writing $byteValue to $registerName");
+    }
     wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
     return byteValue;
   }
