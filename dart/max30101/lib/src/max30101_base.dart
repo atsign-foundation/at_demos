@@ -219,16 +219,23 @@ class MAX30101 {
   bool highResMode = true;
   bool debug = false;
 
+  bool captureSamples = true;
+  late int captureStartTimeMicros;
+  late File captureFile;
   I2CWrapper wrapper;
 
   /// Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly.
   /// 100hz + 1600us is max for that resolution
   /// device is injectable so you can inject mocks / whatever for testing purposes
-  MAX30101(this.wrapper, {this.ledPower = 6.4, this.ledsEnabled = 2,
+  MAX30101(this.wrapper, this.captureSamples, {this.ledPower = 6.4, this.ledsEnabled = 2,
             this.sampleRate = 400, this.sampleAverage = 4,
             this.pulseWidth = 215, this.adcRange = 16384,
             this.highResMode = true, this.debug = true})
   {
+    if (captureSamples) {
+      captureFile = File('max30101.capture.${DateTime.now().toIso8601String()}');
+    }
+
     if (ledsEnabled < 2 || ledsEnabled > 3) {
       throw Exception("ledsEnabled must be 2 or 3. Preferably 2 (Red and InfraRed)");
     }
@@ -376,34 +383,7 @@ class MAX30101 {
     writeRegister('FIFO_OVERFLOW', 0);
   }
 
-  /// Writes val to address register on device
-  int writeRegister(String registerName, int byteValue) { // byte arguments
-    if (debug) {
-      print("Writing $byteValue to $registerName");
-    }
-    wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
-    return byteValue;
-  }
-
-  // byte argument, byte return
-  int readRegister(String registerName) {
-    var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
-    if (debug) {
-      print("Read $byteValue from $registerName");
-    }
-    return byteValue;
-  }
-
-  // Reads num bytes starting from address register on device in to _buff array
-  List<int> readFrom(String registerName, int len) {
-    var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
-    if (debug) {
-      print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
-    }
-    return byteValuesRead;
-  }
-
-  List<SensorFIFOSample> readFIFO() {
+  Future<List<SensorFIFOSample>> readFIFO() async {
     int fifoReadPointer = readRegister('FIFO_READ');
     int fifoWritePointer = readRegister('FIFO_WRITE');
     if (fifoReadPointer == fifoWritePointer) {
@@ -418,7 +398,11 @@ class MAX30101 {
     int bytesToRead = numSamples * 3 * ledsEnabled;
     List<int> data = [];
     while (bytesToRead > 0) {
-      data.addAll(readFrom('FIFO_DATA', min(bytesToRead, 32)));
+      var bytesRead = readFrom('FIFO_DATA', min(bytesToRead, 32));
+      data.addAll(bytesRead);
+      if (captureSamples) {
+        await captureFile.writeAsString('${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros}:$bytesRead', flush: true);
+      }
       bytesToRead -= 32;
     }
 
@@ -448,9 +432,11 @@ class MAX30101 {
 
     int microsBetweenSamples = (1000000 / sampleRate).round();
 
+    captureStartTimeMicros = DateTime.now().microsecondsSinceEpoch;
+
     while (true) {
       // take sample from the device and process it
-      PulseOxymeterData sampleResult = update();
+      PulseOxymeterData sampleResult = await readSamplesAndCalculate();
       thisSampleTime = DateTime.now().microsecondsSinceEpoch;
 
       if (sampleResult.pulseDetected || DateTime.now().microsecondsSinceEpoch - lastCalledOnBeat > 500) {
@@ -467,7 +453,7 @@ class MAX30101 {
     }
   }
 
-  PulseOxymeterData update() {
+  Future<PulseOxymeterData> readSamplesAndCalculate() async {
     PulseOxymeterData result = PulseOxymeterData()
       ..pulseDetected = false
       ..heartBPM = .0
@@ -479,7 +465,7 @@ class MAX30101 {
       ..dcFilteredIR = 0.0
       ..dcFilteredRed = 0.0;
 
-    List<SensorFIFOSample> fifoSampleList = readFIFO();
+    List<SensorFIFOSample> fifoSampleList = await readFIFO();
 
     for (int i = 0; i < fifoSampleList.length; i++) {
       SensorFIFOSample sample = fifoSampleList[i];
@@ -658,6 +644,33 @@ class MAX30101 {
 
     avg = filterValues.sum / filterValues.count;
     return avg - M;
+  }
+
+  /// Writes val to address register on device
+  int writeRegister(String registerName, int byteValue) { // byte arguments
+    if (debug) {
+      print("Writing $byteValue to $registerName");
+    }
+    wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
+    return byteValue;
+  }
+
+  // byte argument, byte return
+  int readRegister(String registerName) {
+    var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
+    if (debug) {
+      print("Read $byteValue from $registerName");
+    }
+    return byteValue;
+  }
+
+  // Reads num bytes starting from address register on device in to _buff array
+  List<int> readFrom(String registerName, int len) {
+    var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
+    if (debug) {
+      print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
+    }
+    return byteValuesRead;
   }
 }
 

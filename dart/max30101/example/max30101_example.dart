@@ -8,7 +8,7 @@ void onBeat(bool beatDetected, double bpm, double sao2) {
 }
 
 void main() {
-  MAX30101 max30100 = MAX30101(RealI2CWrapper(1));
+  MAX30101 max30101 = MAX30101(RealI2CWrapper(1), true);
 
-  max30100.runSampler(onBeat);
+  max30101.runSampler(onBeat);
 }
