@@ -7,6 +7,14 @@ import 'i2c_wrapper.dart';
 
 const int RESET_SPO2_EVERY_N_PULSES = 4;
 
+/* Adjust RED LED current balancing*/
+const int MagicAcceptableLEDIntensityDiff = 65000;
+const int RedLedCurrentAdjustmentMs = 500; // adjust red led intensity every 500 milliseconds
+const int DefaultIrLEDCurrent = 255; // 51mA according to table 8
+const int StartingRedLEDCurrent = 127; // ~25.4 mA
+
+
+
 const double ALPHA = 0.95;  //dc filter alpha value
 const int MEAN_FILTER_SIZE = 15;
 
@@ -228,8 +236,8 @@ class MAX30101 {
   /// 100hz + 1600us is max for that resolution
   /// device is injectable so you can inject mocks / whatever for testing purposes
   MAX30101(this.wrapper, this.captureSamples, {this.ledPower = 6.4, this.ledsEnabled = 2,
-            this.sampleRate = 400, this.sampleAverage = 4,
-            this.pulseWidth = 215, this.adcRange = 16384,
+            this.sampleRate = 100, this.sampleAverage = 10,
+            this.pulseWidth = 411, this.adcRange = 16384,
             this.highResMode = true, this.debug = true})
   {
     if (captureSamples) {
@@ -283,7 +291,9 @@ class MAX30101 {
   }
 
 // private:
-  int redLEDCurrent = 0;
+  int redLEDCurrent = StartingRedLEDCurrent;
+  int irLEDCurrent = DefaultIrLEDCurrent;
+
   int lastREDLedCurrentCheck = 0;
 
   PulseStateMachine currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
@@ -314,7 +324,7 @@ class MAX30101 {
       {double ledPower = 6.4,
       int sampleAverage = 4,
       int ledsEnabled = 2,
-      int sampleRate = 400,
+      int sampleRate = 100,
       int pulseWidth = 215,
       int adcRange = 16384,
       int timeoutMillis = 500}) {
@@ -325,16 +335,17 @@ class MAX30101 {
     fifoConfigValue = setBits(fifoConfigValue, 'FIFO_CONFIG', 'fifo_rollover_en', true);
     writeRegister('FIFO_CONFIG', fifoConfigValue);
 
+    //Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly. 100hz + 1600us is max for that resolution
     int spo2ConfigValue = readRegister('SPO2_CONFIG');
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'sample_rate_sps', sampleRate);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'adc_range_nA', adcRange);
     spo2ConfigValue = setBits(spo2ConfigValue, 'SPO2_CONFIG', 'led_pw_us', pulseWidth);
     writeRegister('SPO2_CONFIG', spo2ConfigValue);
 
-    // See table 8 in https://datasheets.maximintegrated.com/en/ds/MAX30101.pdf
-    writeRegister('LED1_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
-    writeRegister('LED2_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
-    writeRegister('LED3_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
+    lastREDLedCurrentCheck = 0;
+    redLEDCurrent = StartingRedLEDCurrent;
+    irLEDCurrent = DefaultIrLEDCurrent;
+    setLEDCurrents(redLEDCurrent, irLEDCurrent);
 
     // LED_PROX_PULSE_AMPLITUDE, register 0x10, does not exist for the MAX30101. Presumably it did for the MAX30105
     // writeRegister('LED_PROX_PULSE_AMPLITUDE', (ledPower / 0.2).floor());
@@ -401,7 +412,7 @@ class MAX30101 {
       var bytesRead = readFrom('FIFO_DATA', min(bytesToRead, 32));
       data.addAll(bytesRead);
       if (captureSamples) {
-        await captureFile.writeAsString('${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros}:$bytesRead', flush: true);
+        await captureFile.writeAsString('${DateTime.now().microsecondsSinceEpoch - captureStartTimeMicros}:$bytesRead\n', flush: true, mode:FileMode.append);
       }
       bytesToRead -= 32;
     }
@@ -427,6 +438,8 @@ class MAX30101 {
 
   Future<void> runSampler(Function(bool beatDetected, double bpm, double sao2) onBeat) async {
     int thisSampleTime = 0;
+
+    clearFIFO();
 
     int lastCalledOnBeat = DateTime.now().microsecondsSinceEpoch;
 
@@ -501,6 +514,8 @@ class MAX30101 {
         }
       }
     }
+
+    balanceIntensities(dcFilterRed.w, dcFilterIR.w);
 
     result.heartBPM = currentBPM;
     result.irCardiogram = lpbFilterIR.result;
@@ -607,6 +622,34 @@ class MAX30101 {
     return false;
   }
 
+  void balanceIntensities(double redLedDC, double IRLedDC) {
+    if (DateTime.now().millisecondsSinceEpoch - lastREDLedCurrentCheck >= RedLedCurrentAdjustmentMs) {
+
+      if (IRLedDC - redLedDC > MagicAcceptableLEDIntensityDiff && redLEDCurrent < 255) {
+        redLEDCurrent++;
+        setLEDCurrents(redLEDCurrent, irLEDCurrent);
+        if (debug == true) {
+          print("RED LED Current +");
+        }
+      }
+      else if (redLedDC - IRLedDC > MagicAcceptableLEDIntensityDiff && redLEDCurrent > 0) {
+        redLEDCurrent--;
+        setLEDCurrents(redLEDCurrent, irLEDCurrent);
+        if (debug == true) {
+          print("RED LED Current -");
+        }
+      }
+
+      lastREDLedCurrentCheck = DateTime.now().millisecondsSinceEpoch;
+    }
+  }
+
+  void setLEDCurrents(int _redLedCurrent, int _irLedCurrent) {
+    writeRegister('LED1_PULSE_AMPLITUDE', _redLedCurrent);
+    writeRegister('LED2_PULSE_AMPLITUDE', _irLedCurrent);
+  }
+
+
   DCFilterData dcRemoval(double x, double prev_w, double alpha) {
     DCFilterData filtered = DCFilterData();
 
@@ -648,9 +691,9 @@ class MAX30101 {
 
   /// Writes val to address register on device
   int writeRegister(String registerName, int byteValue) { // byte arguments
-    if (debug) {
-      print("Writing $byteValue to $registerName");
-    }
+    // if (debug) {
+    //   print("Writing $byteValue to $registerName");
+    // }
     wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
     return byteValue;
   }
@@ -658,18 +701,18 @@ class MAX30101 {
   // byte argument, byte return
   int readRegister(String registerName) {
     var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
-    if (debug) {
-      print("Read $byteValue from $registerName");
-    }
+    // if (debug) {
+    //   print("Read $byteValue from $registerName");
+    // }
     return byteValue;
   }
 
   // Reads num bytes starting from address register on device in to _buff array
   List<int> readFrom(String registerName, int len) {
     var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
-    if (debug) {
-      print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
-    }
+    // if (debug) {
+    //   print("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
+    // }
     return byteValuesRead;
   }
 }
