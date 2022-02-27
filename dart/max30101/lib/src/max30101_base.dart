@@ -507,7 +507,7 @@ class MAX30101 {
         }
 
         //This is the adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
-        currentSaO2Value = 110.0 - 18.0 * ratioRMS;
+        currentSaO2Value = 110.0 - 180.0 * ratioRMS;
         result.saO2 = currentSaO2Value;
 
         if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
