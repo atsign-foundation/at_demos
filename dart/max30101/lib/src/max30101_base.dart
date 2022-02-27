@@ -437,7 +437,7 @@ class MAX30101 {
   }
 
   Future<void> runSampler(Function(bool beatDetected, double bpm, double sao2) onBeat) async {
-    int thisSampleTime = 0;
+    int lastReadAndCalculateTime = 0;
 
     clearFIFO();
 
@@ -450,15 +450,15 @@ class MAX30101 {
     while (true) {
       // take sample from the device and process it
       PulseOxymeterData sampleResult = await readSamplesAndCalculate();
-      thisSampleTime = DateTime.now().microsecondsSinceEpoch;
+      lastReadAndCalculateTime = DateTime.now().microsecondsSinceEpoch;
 
-      if (sampleResult.pulseDetected || DateTime.now().microsecondsSinceEpoch - lastCalledOnBeat > 500) {
+      if (sampleResult.pulseDetected || DateTime.now().microsecondsSinceEpoch - lastCalledOnBeat > 500000) {
         onBeat(sampleResult.pulseDetected, sampleResult.heartBPM, sampleResult.saO2);
         lastCalledOnBeat = DateTime.now().microsecondsSinceEpoch;
       }
 
       // Need to wait until millisBetweenSamples milliseconds have passed before taking next sample
-      int nextSampleTime = thisSampleTime + microsBetweenSamples;
+      int nextSampleTime = lastReadAndCalculateTime + microsBetweenSamples;
       int waitTimeInMicros = nextSampleTime - DateTime.now().microsecondsSinceEpoch;
       if (waitTimeInMicros > 0) {
         await Future.delayed(Duration(microseconds: waitTimeInMicros));
