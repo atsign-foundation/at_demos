@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'i2c_wrapper.dart';
 
-const int RESET_SPO2_EVERY_N_PULSES = 10;
+const int RESET_SPO2_EVERY_N_PULSES = 5;
 
 /* Adjust RED LED current balancing*/
-const int magicAcceptableLEDIntensityDiff = 30000;
+const int magicAcceptableLEDIntensityDiff = 65000;
 const int redLEDCurrentAdjustmentMs = 250; // adjust red led intensity every 500 milliseconds
 const int startingIRLEDCurrent = 64; // about 12.8 mA - see table 8 "LED Current Control"
 const int startingRedLEDCurrent = 32; // about 6.4 mA - see table 8 "LED Current Control"
@@ -242,11 +242,11 @@ class MAX30101 {
             this.highResMode = true, this.debug = true})
   {
     if (captureSamples) {
-      captureFile = File('max30101.capture.${DateTime.now().toIso8601String()}');
+      captureFile = File('max30101.capture.txt');
     }
 
     if (ledsEnabled < 2 || ledsEnabled > 3) {
-      throw Exception("ledsEnabled must be 2 or 3. Preferably 2 (Red and InfraRed)");
+      throw Exception("ledsEnabled must be 2 or 3. Preferably 2 (Red and InfraRed) because we don't do anything with green anyway");
     }
 
     _setupRegisters();
@@ -505,7 +505,7 @@ class MAX30101 {
         }
 
         //This is the adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
-        currentSaO2Value = 110.0 - 18.0 * ratioRMS;
+        currentSaO2Value = 110.0 - 16.0 * ratioRMS;
         result.saO2 = currentSaO2Value;
 
         if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
@@ -626,7 +626,7 @@ class MAX30101 {
   void balanceIntensities(double redLedDC, double irLedDC) {
     if (DateTime.now().millisecondsSinceEpoch - lastREDLedCurrentCheck >= redLEDCurrentAdjustmentMs) {
 
-      if (irLedDC - redLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent < 255) {
+      if (irLedDC - redLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent < irLEDCurrent) {
         redLEDCurrent++;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
         if (debug == true) {
