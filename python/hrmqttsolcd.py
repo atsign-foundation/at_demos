@@ -20,7 +20,7 @@ def on_message(mqttclient, userdata, message):
     global spo
     spo=str(message.payload.decode("utf-8"))
 
-mqttclient=mqtt.Client("mwc")
+mqttclient=mqtt.Client("mwcpy")
 mqttclient.connect("localhost")
 mqttclient.loop_start()
 mqttclient.subscribe("mqtt/mwc_o2")

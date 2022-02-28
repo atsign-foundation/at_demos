@@ -22,7 +22,7 @@ def on_message(mqttclient, userdata, message):
     display_hro2(beat,bpm,spo)
 
 
-mqttclient=mqtt.Client("mwc")
+mqttclient=mqtt.Client("mwcpydisp")
 mqttclient.connect("localhost")
 mqttclient.loop_start()
 mqttclient.subscribe("mqtt/mwc_beat_hr_o2")
