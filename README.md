@@ -64,6 +64,10 @@ printing out values to local LCD display using pygame
 is needed for compatability with the PiTFT HAT. To get it to boot from SSD
 the /boot/start4*.elf files are needed from a more recent Bullseye image.
 
+**raspi-config**
+
+Enable SSH, I2C, SPI, Uart (disable console on Uart)
+
 **apt packages**
 
 ```
@@ -82,3 +86,28 @@ sudo pip3 install --upgrade adafruit-python-shell click
 ```
 
 [TFT HAT easy install](https://learn.adafruit.com/adafruit-2-4-pitft-hat-with-resistive-touchscreen-mini-kit/easy-install)
+
+The resultant config in /boot/config.txt is something like:
+
+```
+# --- added by adafruit-pitft-helper Tue Feb  8 14:31:08 2022 ---
+#hdmi_force_hotplug=0
+dtparam=spi=on
+dtparam=i2c1=on
+dtparam=i2c_arm=on
+dtoverlay=pitft28-resistive,rotate=270,speed=64000000,fps=30
+# --- end adafruit-pitft-helper Tue Feb  8 14:31:08 2022 ---
+```
+
+Also add these lines to avoid console being shown on TFT and hogging
+framebuffer device when no HDMI monitor is connected:
+
+```
+hdmi_force_hotplug=1
+hdmi_drive=2
+```
+
+**install Dart**
+
+From the [Dart SDK archive](https://dart.dev/get-dart/archive):  
+Stable channel : Linux : Armv7
