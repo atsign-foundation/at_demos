@@ -102,7 +102,7 @@ void main(List<String> arguments) async {
     String message = '${beatDetected.toString().toLowerCase()},${bpm.toStringAsFixed(1)},${sao2.toStringAsFixed(1)}';
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
-    mqttClient.publishMessage('mwc_beat_hr_o2', MqttQos.atLeastOnce, builder.payload!);
+    mqttClient.publishMessage('mqtt/mwc_beat_hr_o2', MqttQos.atLeastOnce, builder.payload!);
   }
 
   MAX30101 max30101 = MAX30101(RealI2CWrapper(1), false, debug:false);

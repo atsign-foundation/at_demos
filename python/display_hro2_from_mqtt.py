@@ -15,6 +15,7 @@ import paho.mqtt.client as mqtt
 
 def on_message(mqttclient, userdata, message):
     beat_bpm_spo=(str(message.payload.decode("utf-8"))).split(",")
+    print(beat_bpm_spo)
     beat=beat_bpm_spo[0]=='true'
     bpm=float(beat_bpm_spo[1])
     spo=float(beat_bpm_spo[2])
@@ -63,7 +64,6 @@ def display_hro2(beat,avg_bpm,spo):
     tidySPO = "SO2: {0}%".format(spo)
     lcd.blit(defaultFont.render(tidySPO, False, (0, 0, 0)),(10, 50))
     refresh()
-
 
 pygame.font.init()
 defaultFont = pygame.font.SysFont(None,30)
