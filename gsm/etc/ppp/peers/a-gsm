@@ -1,0 +1,18 @@
+connect "/usr/sbin/chat -v -f /etc/chatscripts/gprs -T zp2.gota.net"
+/dev/ttyS0
+
+115200
+
+noipdefault
+
+usepeerdns
+
+defaultroute
+
+persist
+
+noauth
+
+nocrtscts
+
+local
