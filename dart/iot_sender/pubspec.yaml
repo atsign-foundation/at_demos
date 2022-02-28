@@ -12,9 +12,12 @@ environment:
 
 dev_dependencies:
   lints: ^1.0.0
-dependencies: 
-  at_client: ^3.0.9
+
+dependencies:
+  max30101:
+    path: ../max30101
   at_utils: ^3.0.5
+  at_client: ^3.0.12
   image: ^3.1.1
   mqtt_client: ^9.6.5
   zxing2: ^0.1.0

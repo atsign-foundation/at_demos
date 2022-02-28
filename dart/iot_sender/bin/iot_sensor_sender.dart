@@ -4,7 +4,11 @@ import 'package:at_client/at_client.dart';
 import 'package:at_commons/at_commons.dart' as common;
 
 import 'package:iot_sender/iot_mqtt_listener.dart';
+import 'package:max30101/max30101.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'dart:io';
+
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 void main(List<String> arguments) async {
   if (arguments.isEmpty || arguments.length < 2) {
@@ -71,7 +75,36 @@ void main(List<String> arguments) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
+
+  ///
+  /// The iot_mqtt_listener will subscribe to mqtt topics and puts the values to the atSign
+  /// The listener subscribes to multiple topics to support various iterations of this demo
+  /// Previous sender was subscribing to outputs from the python sensor driver and publishing
+  /// on the mwc_hr and mwc_o2 topics
+  ///
+  /// This sender integrates with the sensor and publishes on 'mwc_beat_hr_o2' topic
+  /// Which in turn is subscribed to by (a) the python TFT driver (b) the iot_mqtt_listener
+  ///
   logger.info("calling iotListen atSign '$atsign', toAtSign '$toAtsign'");
   iotListen(atClient, atsign, toAtsign);
   print('listening');
+
+
+  ///
+  /// The MAX30101 sensor driver
+  ///
+  logger.info("Starting Max30101 sampler");
+
+  final mqttClient = MqttServerClient('localhost', '');
+
+  void onBeat(bool beatDetected, double bpm, double sao2) {
+    logger.info("onBeat called with beatDetected:$beatDetected bpm:$bpm sao2:$sao2");
+    String message = '${beatDetected.toString().toLowerCase()},${bpm.toStringAsFixed(1)},${sao2.toStringAsFixed(1)}';
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    mqttClient.publishMessage('mwc_beat_hr_o2', MqttQos.atLeastOnce, builder.payload!);
+  }
+
+  MAX30101 max30101 = MAX30101(RealI2CWrapper(1), false, debug:false);
+  max30101.runSampler(onBeat);
 }

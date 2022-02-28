@@ -90,6 +90,10 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
   const topicTwo = 'mqtt/mwc_o2'; // Not a wildcard topic
   client.subscribe(topicTwo, MqttQos.atMostOnce);
 
+  logger.info('Subscribing to the mqtt/mwc_beat_hr_o2 topic');
+  const combinedTopic = 'mqtt/mwc_beat_hr_o2'; // Not a wildcard topic
+  client.subscribe(combinedTopic, MqttQos.atMostOnce);
+
   int putCounterHR = 0;
   int putCounterO2 = 0;
 
@@ -123,6 +127,16 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
       lastO2SatDoubleValue = o2SatDoubleValue;
 
       await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, putCounterO2, atClient);
+    }
+
+    if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
+      List<String> beatBpmSpo=pt.split(",");
+      bool beat=beatBpmSpo[0]=='true';
+      double bpm=double.parse(beatBpmSpo[1]);
+      double spo=double.parse(beatBpmSpo[2]);
+
+      await shareHeartRate(bpm, atsign, toAtsign, putCounterHR, atClient);
+      await shareO2Sat(spo, atsign, toAtsign, putCounterO2, atClient);
     }
   });
 }
