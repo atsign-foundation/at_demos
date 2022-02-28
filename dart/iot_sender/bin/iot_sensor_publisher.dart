@@ -11,7 +11,7 @@ void main(List<String> arguments) async {
   /// The MAX30101 sensor driver
   printWithTimestamp("Starting Max30101 sampler");
 
-  final publishingClient = MqttServerClient('localhost', '');
+  final publishingClient = MqttServerClient('localhost', 'max');
   try {
     await publishingClient.connect();
   } on NoConnectionException catch (e) {
