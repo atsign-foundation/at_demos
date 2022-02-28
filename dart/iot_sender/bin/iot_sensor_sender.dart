@@ -95,14 +95,36 @@ void main(List<String> arguments) async {
   ///
   logger.info("Starting Max30101 sampler");
 
-  final mqttClient = MqttServerClient('localhost', '');
+  final publishingClient = MqttServerClient('localhost', '');
+  try {
+    await publishingClient.connect();
+  } on NoConnectionException catch (e) {
+    // Raised by the client when connection fails.
+    logger.severe('client exception - $e');
+    publishingClient.disconnect();
+  } on SocketException catch (e) {
+    // Raised by the socket layer
+    logger.severe('socket exception - $e');
+    publishingClient.disconnect();
+  }
+
+  /// Check we are connected
+  if (publishingClient.connectionStatus!.state == MqttConnectionState.connected) {
+    logger.info('Mosquitto publishing client connected');
+  } else {
+    /// Use status here rather than state if you also want the broker return code.
+    logger.severe('ERROR Mosquitto publishing client connection failed - disconnecting, status is ${publishingClient.connectionStatus}');
+    publishingClient.disconnect();
+    exit(-1);
+  }
+
 
   void onBeat(bool beatDetected, double bpm, double sao2) {
     logger.info("onBeat called with beatDetected:$beatDetected bpm:$bpm sao2:$sao2");
     String message = '${beatDetected.toString().toLowerCase()},${bpm.toStringAsFixed(1)},${sao2.toStringAsFixed(1)}';
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
-    mqttClient.publishMessage('mqtt/mwc_beat_hr_o2', MqttQos.atLeastOnce, builder.payload!);
+    publishingClient.publishMessage('mqtt/mwc_beat_hr_o2', MqttQos.atLeastOnce, builder.payload!);
   }
 
   MAX30101 max30101 = MAX30101(RealI2CWrapper(1), false, debug:false);
