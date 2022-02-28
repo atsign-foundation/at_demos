@@ -450,11 +450,17 @@ class MAX30101 {
 
     while (true) {
       // take sample from the device and process it
-      PulseOxymeterData sampleResult = await readSamplesAndCalculate();
+      PulseOxymeterData latestValues = await readSamplesAndCalculate();
       lastReadAndCalculateTime = DateTime.now().microsecondsSinceEpoch;
 
-      if (sampleResult.pulseDetected || DateTime.now().microsecondsSinceEpoch - lastCalledOnBeat > 500000) {
-        onBeat(sampleResult.pulseDetected, sampleResult.heartBPM, sampleResult.saO2);
+      if (latestValues.pulseDetected || DateTime.now().microsecondsSinceEpoch - lastCalledOnBeat > 2000000) {
+        latestValues.saO2 = double.parse(latestValues.saO2.toStringAsFixed(1));
+        latestValues.heartBPM = double.parse(latestValues.heartBPM.toStringAsFixed(1));
+
+        printWithTimestamp ("runSampler calling onBeat called with beatDetected:${latestValues.pulseDetected} bpm:${latestValues.heartBPM} sao2:${latestValues.saO2}");
+
+        onBeat(latestValues.pulseDetected, latestValues.heartBPM, latestValues.saO2);
+
         lastCalledOnBeat = DateTime.now().microsecondsSinceEpoch;
       }
 
@@ -505,8 +511,14 @@ class MAX30101 {
         }
 
         //This is the adjusted standard model, so it shows 0.89 as 94% saturation. It is probably far from correct, requires proper empirical calibration
-        currentSaO2Value = 110.0 - 16.0 * ratioRMS;
-        result.saO2 = currentSaO2Value;
+        double ratioToApply = ratioRMS;
+        if (ratioToApply > 1.0) {
+          ratioToApply = 1.0;
+        }
+        currentSaO2Value = 110.0 - 15.0 * ratioToApply;
+        if (currentSaO2Value > 100) {
+          currentSaO2Value = 100.0;
+        }
 
         if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
           irACValueSqSum = 0;
@@ -627,18 +639,14 @@ class MAX30101 {
     if (DateTime.now().millisecondsSinceEpoch - lastREDLedCurrentCheck >= redLEDCurrentAdjustmentMs) {
 
       if (irLedDC - redLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent < irLEDCurrent) {
+        printWithTimestamp("RED LED Current ++");
         redLEDCurrent++;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
-        if (debug == true) {
-          printWithTimestamp("RED LED Current +");
-        }
       }
       else if (redLedDC - irLedDC > magicAcceptableLEDIntensityDiff && redLEDCurrent > 0) {
+        printWithTimestamp("RED LED Current --");
         redLEDCurrent--;
         setLEDCurrents(redLEDCurrent, irLEDCurrent);
-        if (debug == true) {
-          printWithTimestamp("RED LED Current -");
-        }
       }
 
       lastREDLedCurrentCheck = DateTime.now().millisecondsSinceEpoch;
