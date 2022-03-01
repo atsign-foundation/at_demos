@@ -31,7 +31,15 @@ int getNextFakeO2IntValue() {
   return currentFakeO2IntValue;
 }
 
-Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async {
+bool _sendHR = true;
+bool _sendO2 = true;
+int _putCounterHR = 0;
+int _putCounterO2 = 0;
+
+Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
+  _sendHR = sendHR;
+  _sendO2 = sendO2;
+
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -94,9 +102,6 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
   const combinedTopic = 'mqtt/mwc_beat_hr_o2'; // Not a wildcard topic
   client.subscribe(combinedTopic, MqttQos.atMostOnce);
 
-  int putCounterHR = 0;
-  int putCounterO2 = 0;
-
   // NOTE When this listenHandler function is called, the caller is not using await
   // i.e. this function can (and will) be called even if previous calls haven't yet completed
   // TODO If we encounter any more problems because of this, the solution is to have this
@@ -111,13 +116,13 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
 
-      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, putCounterHR, atClient);
+      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, atClient);
 
       if (fakingO2SatValues) {
         // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
         currentFakeO2IntValue = getNextFakeO2IntValue();
         double fakeO2DoubleValue = currentFakeO2IntValue/10;
-        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, putCounterO2, atClient);
+        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, atClient);
       }
     }
 
@@ -126,7 +131,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
 
-      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, putCounterO2, atClient);
+      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, atClient);
     }
 
     if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
@@ -135,13 +140,17 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign) async 
       double bpm=double.parse(beatBpmSpo[1]);
       double spo=double.parse(beatBpmSpo[2]);
 
-      await shareHeartRate(bpm, atsign, toAtsign, putCounterHR, atClient);
-      await shareO2Sat(spo, atsign, toAtsign, putCounterO2, atClient);
+      await shareHeartRate(bpm, atsign, toAtsign, atClient);
+      await shareO2Sat(spo, atsign, toAtsign, atClient);
     }
   });
 }
 
-Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, int putCounterHR, AtClient atClient) async {
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, AtClient atClient) async {
+  if (! _sendHR) {
+    return;
+  }
+
   String heartRateAsString = heartRate.toStringAsFixed(1);
   logger.info('Heart Rate: $heartRateAsString');
 
@@ -157,13 +166,17 @@ Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, in
     ..sharedWith = toAtsign
     ..metadata = metaData;
 
-  int thisHRPutNo = ++putCounterHR;
+  int thisHRPutNo = ++_putCounterHR;
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
   await atClient.put(key, heartRateAsString);
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, int putCounterO2, AtClient atClient) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, AtClient atClient) async {
+  if (! _sendO2) {
+    return;
+  }
+
   String o2SatAsString = o2Sat.toStringAsFixed(1);
   logger.info('Blood Oxygen: $o2SatAsString');
 
@@ -179,7 +192,7 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, int putCou
     ..sharedWith = toAtsign
     ..metadata = metaData;
 
-  int thisO2PutNo = ++putCounterO2;
+  int thisO2PutNo = ++_putCounterO2;
   logger.info('calling atClient.put for O2 #$thisO2PutNo');
   await atClient.put(key, o2SatAsString);
   logger.info('atClient.put #$thisO2PutNo complete');

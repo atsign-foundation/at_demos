@@ -7,9 +7,13 @@ import 'package:iot_sender/iot_mqtt_listener.dart';
 import 'dart:io';
 
 void main(List<String> arguments) async {
-  if (arguments.isEmpty || arguments.length < 2) {
-    print('Usage: iot_sender <sender @sign> <receiver @sign>');
+  void printUsage() {
+    print('Usage: iot_sender <sender @sign> <receiver @sign> [<mode>]');
     exit(0);
+  }
+
+  if (arguments.isEmpty || arguments.length < 2 || arguments.length > 3) {
+    printUsage();
   }
 
   AtSignLogger.root_level = 'INFO';
@@ -18,6 +22,27 @@ void main(List<String> arguments) async {
 
   String atsign = arguments[0];
   String toAtsign = arguments[1];
+
+  bool sendHR = true;
+  bool sendO2 = true;
+
+  if (arguments.length > 2) {
+    String mode = arguments[2].toLowerCase();
+    switch(mode) {
+      case 'hr':
+        sendHR = true;
+        break;
+      case 'o2':
+        sendO2 = true;
+        break;
+      case 'hro2':
+        sendHR = true;
+        sendO2 = true;
+        break;
+      default:
+        printUsage();
+    }
+  }
 
   OnboardingService onboardingService = OnboardingService(atsign);
   await onboardingService.authenticate();
@@ -72,6 +97,6 @@ void main(List<String> arguments) async {
   logger.info('OK Ready');
 
   logger.info("calling iotListen atSign '$atsign', toAtSign '$toAtsign'");
-  iotListen(atClient, atsign, toAtsign);
+  iotListen(atClient, atsign, toAtsign, sendHR:sendHR, sendO2:sendO2);
   print('listening');
 }
