@@ -6,32 +6,34 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 void main(List<String> arguments) async {
   void printUsage() {
-    print('Usage: iot_sensor_publisher <mode>');
+    print('Usage: iot_sensor_publisher [mode]');
     print("    where <mode> is one of {hr|o2|hro2}");
     exit(0);
   }
 
-  if (arguments.isEmpty || arguments.length > 1) {
+  if (arguments.length > 1) {
     printUsage();
   }
 
-  bool sendHR = false;
-  bool sendO2 = false;
+  bool sendHR = true;
+  bool sendO2 = true;
 
-  String mode = arguments[0].toLowerCase();
-  switch(mode) {
-    case 'hr':
-      sendHR = true;
-      break;
-    case 'o2':
-      sendO2 = true;
-      break;
-    case 'hro2':
-      sendHR = true;
-      sendO2 = true;
-      break;
-    default:
-      printUsage();
+  if (arguments.isNotEmpty) {
+    String mode = arguments[0].toLowerCase();
+    switch(mode) {
+      case 'hr':
+        sendHR = true;
+        break;
+      case 'o2':
+        sendO2 = true;
+        break;
+      case 'hro2':
+        sendHR = true;
+        sendO2 = true;
+        break;
+      default:
+        printUsage();
+    }
   }
 
   /// This sender integrates with the sensor and publishes on 'mwc_beat_hr_o2' topic
