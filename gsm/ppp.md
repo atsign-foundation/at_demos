@@ -14,6 +14,12 @@ To set as default route:
 sudo route add default dev ppp0
 ```
 
+MTU needs to be reduced, otherwise TLS hangs at CONNECT:
+
+```
+sudo ifconfig ppp0 mtu 1200
+```
+
 To shut down:
 
 ```
