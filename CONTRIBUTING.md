@@ -26,33 +26,26 @@ describe.
 ## Development Environment Setup
 
 
-### Prerequisites
-
-   ``` sh
-   # show how to install the tools needed to work with the code here
-   ```
-
-
 ### GitHub Repository Clone
 
 To prepare your dedicated GitHub repository:
 
-1. Fork in GitHub https://github.com/atsign-foundation/REPO
-2. Clone *your forked repository* (e.g., `git clone git@github.com:yourname/REPO`)
+1. Fork in GitHub https://github.com/atsign-foundation/mwc_demo
+2. Clone *your forked repository* (e.g., `git clone git@github.com:yourname/mwc_demo`)
 3. Set your remotes as follows:
 
    ```sh
-   cd REPO
-   git remote add upstream git@github.com:atsign-foundation/REPO.git
+   cd mwc_demo
+   git remote add upstream git@github.com:atsign-foundation/mwc_demo.git
    git remote set-url upstream --push DISABLED
    ```
 
    Running `git remote -v` should give something similar to:
 
    ```text
-   origin  git@github.com:yourname/REPO.git (fetch)
-   origin  git@github.com:yourname/REPO.git (push)
-   upstream        git@github.com:atsign-foundation/REPO.git (fetch)
+   origin  git@github.com:yourname/mwc_demo.git (fetch)
+   origin  git@github.com:yourname/mwc_demo.git (push)
+   upstream        git@github.com:atsign-foundation/mwc_demo.git (fetch)
    upstream        DISABLED (push)
    ```
 
@@ -85,12 +78,6 @@ To prepare your dedicated GitHub repository:
    git add *
    git commit -m 'A useful commit message'
    git push
-   ```
-
-1. How to run tests:
-
-   ``` sh
-   # explain tests here
    ```
 
 1. Open a new Pull Request to the main repository using your `trunk` branch
