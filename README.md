@@ -77,6 +77,9 @@ flutter run -d windows
 Details of using a SIM card to store keys, and config files for ppp connection
 with the cellular modem.
 
+Of course you'll need a SIM, which can be ordered from ZARIOT's
+[test now](https://www.zariot.com/test-now/) page.
+
 ## python
 
 ### display_hro2_from_mqtt.py
