@@ -6,12 +6,17 @@
 
 This repo holds the files for The @ Company and Zariot demo for MWC 2022.
 
+For background take a look at the [press release](https://www.zariot.com/blog/zariot-kigen-and-the-company-stem-chaos-in-iot-through-true-e2e-encryption-and-sim-technology/)
+and the white paper [Flipping The Internet of Things](https://www.zariot.com/resources/flipping-the-internet-of-things/)
+
 ## at_cli
 
 A simple script to use the at_cli tool to read from MQTT and send updates to
 an @ sign.
 
-## dart/iot_sender
+This is no longer used in the demo, but left in place as an example.
+
+## dart/iot_sender - iot_sender
 
 A dart app to read from MQTT and send to an @ sign.
 
@@ -23,6 +28,37 @@ cd dart/iot_sender
 dart pub get
 dart run ./bin/iot_sender.dart "@sendingatsign" "@receivingatsign"
 ```
+
+When the sender is going to be used repeatedly it should be compiled:
+
+```bash
+cd dart/iot_sender
+dart pub get
+dart compile exe ./bin/iot_sender.dart -o sender
+```
+
+The systemd units expect to find a compiled `sender` binary.
+
+## dart/iot_sender - iot_sensor_publisher
+
+A dart app to read from the MAX30101 sensor and place values onto
+MQTT topics.
+
+```bash
+cd dart/iot_sender
+dart pub get
+dart run ./bin/iot_sensor_publisher.dart
+```
+
+When the publisher is going to be used repeatedly it should be compiled:
+
+```bash
+cd dart/iot_sender
+dart pub get
+dart compile exe ./bin/iot_sensor_publisher.dart -o spub
+```
+
+The systemd units expect to find a compiled `spub` binary.
 
 ## flutter/iot_receiver
 
@@ -36,12 +72,33 @@ flutter pub get
 flutter run -d windows
 ```
 
+## gsm
+
+Details of using a SIM card to store keys, and config files for ppp connection
+with the cellular modem.
+
 ## python
+
+### display_hro2_from_mqtt.py
+
+Reads data from MQTT (sent by spub) and displays it on the local LCD display
+using pygame.
 
 ### hrmqttsolcd.py
 
 Reads data from MAX30101 sensor then puts it onto MQTT queue whilst also
-printing out values to local LCD display using pygame
+printing out values to local LCD display using pygame.
+
+This is no longer used, but has been left as an example.
+
+## shell
+
+O2sender.sh was used during testing to place O2 values onto an MQTT topic.
+
+## systemd
+
+Unit definitions to start the demo as a set of services running in detached
+GNU screens.
 
 ## Raspberry Pi setup
 
