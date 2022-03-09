@@ -1,0 +1,14 @@
+[Unit]
+Description=MWC sensor publisher in a screen
+After=network-online.target
+
+[Service]
+User=pi
+Type=simple
+Restart=on-failure
+RestartSec=3
+WorkingDirectory=/home/pi/git/github.com/atsign-company/mwc_demo/dart/iot_sender
+ExecStart=/usr/bin/screen -DmS mwcspub ./spub
+
+[Install]
+WantedBy=multi-user.target
