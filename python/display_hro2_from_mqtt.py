@@ -68,4 +68,4 @@ def display_hro2(beat,avg_bpm,spo):
 pygame.font.init()
 defaultFont = pygame.font.SysFont(None,30)
 
-input("Press enter to stop")
+input("HRO2 display running. Press enter to stop")
