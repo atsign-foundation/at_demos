@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'register_utils.dart';
 import 'i2c_wrapper.dart';
 
-const int RESET_SPO2_EVERY_N_PULSES = 5;
+const int resetSPO2EveryNPulses = 5;
 
 /* Adjust RED LED current balancing*/
 const int magicAcceptableLEDIntensityDiff = 65000;
@@ -11,16 +12,14 @@ const int redLEDCurrentAdjustmentMs = 250; // adjust red led intensity every 500
 const int startingIRLEDCurrent = 64; // about 12.8 mA - see table 8 "LED Current Control"
 const int startingRedLEDCurrent = 32; // about 6.4 mA - see table 8 "LED Current Control"
 
-
-
 const double alpha = 0.95;  //dc filter alpha value
-const int MEAN_FILTER_SIZE = 15;
+const int meanFilterSize = 15;
 
-const int PULSE_MIN_THRESHOLD = 100; //300 is good for finger, but for wrist you need like 20, and there is sh*t-loads of noise
-const int PULSE_MAX_THRESHOLD = 2000;
-const int PULSE_GO_DOWN_THRESHOLD = 1;
+const int pulseMinThreshold = 100; //300 is good for finger, but for wrist you need like 20, and there is sh*t-loads of noise
+const int pulseMaxThreshold = 2000;
+const int pulseGoDownThreshold = 1;
 
-const int PULSE_BPM_SAMPLE_SIZE = 10; //Moving average size
+const int pulseBpmSampleSize = 10; //Moving average size
 
 class PulseOxymeterData {
   bool pulseDetected = false;
@@ -40,9 +39,9 @@ class PulseOxymeterData {
 }
 
 enum PulseStateMachine {
-  PULSE_IDLE,
-  PULSE_TRACE_UP,
-  PULSE_TRACE_DOWN
+  pulseIdle,
+  pulseTraceUp,
+  pulseTraceDown
 }
 
 class SensorFIFOSample {
@@ -62,57 +61,19 @@ class ButterworthFilterData {
 }
 
 class MeanDiffFilterData {
-  List<double> values = List<double>.filled(MEAN_FILTER_SIZE, 0.0, growable:false); // size is [MEAN_FILTER_SIZE];
+  List<double> values = List<double>.filled(meanFilterSize, 0.0, growable:false);
   int index = 0;
   double sum = 0;
   int count = 0;
 }
 
-const int Max30101DeviceAddress = 0x57;
-
-class Bits {
-  String name;
-  String _mask;
-  List<int> bitNumbers = [];
-  Map<dynamic, String> adapter;
-
-  Bits(this.name, this._mask, this.adapter) {
-    for (int maskIndex = _mask.length - 1, bitNumberIndex = 0; maskIndex >= 0; maskIndex--, bitNumberIndex++) {
-      if (_mask[maskIndex] == '1') {
-        bitNumbers.add(bitNumberIndex);
-      }
-    }
-  }
-
-  @override String toString() {
-    return "Bits:{name:$name, mask:$_mask, bitNumbers:$bitNumbers, adapter:$adapter}\n";
-  }
-
-
-  get mask => _mask;
-}
-
-class Register {
-  String name;
-  int address;
-  Map<String, Bits> bits = {};
-
-  Register(this.name, this.address);
-
-  addBits(String name, String mask, Map<dynamic, String> adapter) {
-    bits[name] = Bits(name, mask, adapter);
-  }
-
-  @override String toString() {
-    return "Register:{name:$name, address:$address, bits:$bits}";
-  }
-}
+const int max30101DeviceAddress = 0x57;
 
 void printWithTimestamp(String message) {
   print('${DateTime.now().toIso8601String()} | $message');
 }
 
-class MAX30101 {
+class Max30101 {
   static final Map<String, Register> _registerMap = {};
   static Map<String, Register> getRegisterMap() {
     _setupRegisters();
@@ -193,9 +154,9 @@ class MAX30101 {
     for (int bitNumberIndex = 0, valueIndex = bits.bitNumbers.length-1; bitNumberIndex < bits.bitNumbers.length; bitNumberIndex++, valueIndex--) {
       int bitNumber = bits.bitNumbers[bitNumberIndex];
       if (valueLookup[valueIndex] == '1') {
-        byteValue = BW.setBit(byteValue, bitNumber);
+        byteValue = BitwiseOperators.setBit(byteValue, bitNumber);
       } else {
-        byteValue = BW.clearBit(byteValue, bitNumber);
+        byteValue = BitwiseOperators.clearBit(byteValue, bitNumber);
       }
     }
     return byteValue;
@@ -210,9 +171,9 @@ class MAX30101 {
       int outputValue = inputValue;
 
       if (value == true) {
-        outputValue = BW.setBit(inputValue, bits.bitNumbers[0]);
+        outputValue = BitwiseOperators.setBit(inputValue, bits.bitNumbers[0]);
       } else {
-        outputValue = BW.clearBit(inputValue, bits.bitNumbers[0]);
+        outputValue = BitwiseOperators.clearBit(inputValue, bits.bitNumbers[0]);
       }
 
       return outputValue;
@@ -236,7 +197,7 @@ class MAX30101 {
   /// Check table 8 in datasheet on page 19. You can't just throw in sample rate and pulse width randomly.
   /// 100hz + 1600us is max for that resolution
   /// device is injectable so you can inject mocks / whatever for testing purposes
-  MAX30101(this.wrapper, this.captureSamples, {this.ledPower = 6.4, this.ledsEnabled = 2,
+  Max30101(this.wrapper, this.captureSamples, {this.ledPower = 6.4, this.ledsEnabled = 2,
             this.sampleRate = 100, this.sampleAverage = 1,
             this.pulseWidth = 411, this.adcRange = 16384,
             this.highResMode = true, this.debug = true})
@@ -297,9 +258,9 @@ class MAX30101 {
 
   int lastREDLedCurrentCheck = 0;
 
-  PulseStateMachine currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
+  PulseStateMachine currentPulseDetectorState = PulseStateMachine.pulseIdle;
   double currentBPM = 0;
-  List<double> valuesBPM = List<double>.filled(PULSE_BPM_SAMPLE_SIZE, 0, growable:false);
+  List<double> valuesBPM = List<double>.filled(pulseBpmSampleSize, 0, growable:false);
   double valuesBPMSum = 0;
   int valuesBPMCount = 0;
   int bpmIndex = 0;
@@ -380,7 +341,7 @@ class MAX30101 {
     int startTime = DateTime.now().millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch - startTime < timeoutMillis) {
       int configValue = readRegister('MODE_CONFIG', true);
-      if (! BW.isBitSet(configValue, _registerMap['MODE_CONFIG']!.bits['reset']!.bitNumbers[0])) {
+      if (! BitwiseOperators.isBitSet(configValue, _registerMap['MODE_CONFIG']!.bits['reset']!.bitNumbers[0])) {
         break;
       }
       sleep(Duration(milliseconds: 250));
@@ -520,7 +481,7 @@ class MAX30101 {
           currentSaO2Value = 100.0;
         }
 
-        if (pulsesDetected % RESET_SPO2_EVERY_N_PULSES == 0) {
+        if (pulsesDetected % resetSPO2EveryNPulses == 0) {
           irACValueSqSum = 0;
           redACValueSqSum = 0;
           samplesRecorded = 0;
@@ -542,37 +503,37 @@ class MAX30101 {
     return result;
   }
 
-  double  prev_sensor_value = 0;
-  int values_went_down = 0;
+  double  prevSensorValue = 0;
+  int valuesWentDown = 0;
   int currentBeat = 0;
   int lastBeat = 0;
   bool detectPulse(double sensorValue) {
-    if (sensorValue > PULSE_MAX_THRESHOLD) {
-      currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
-      prev_sensor_value = 0;
+    if (sensorValue > pulseMaxThreshold) {
+      currentPulseDetectorState = PulseStateMachine.pulseIdle;
+      prevSensorValue = 0;
       lastBeat = 0;
       currentBeat = 0;
-      values_went_down = 0;
+      valuesWentDown = 0;
       lastBeatThreshold = 0;
       return false;
     }
 
     switch (currentPulseDetectorState) {
-      case PulseStateMachine.PULSE_IDLE:
-        if (sensorValue >= PULSE_MIN_THRESHOLD) {
-          currentPulseDetectorState = PulseStateMachine.PULSE_TRACE_UP;
-          values_went_down = 0;
+      case PulseStateMachine.pulseIdle:
+        if (sensorValue >= pulseMinThreshold) {
+          currentPulseDetectorState = PulseStateMachine.pulseTraceUp;
+          valuesWentDown = 0;
         }
         break;
 
-      case PulseStateMachine.PULSE_TRACE_UP:
-        if (sensorValue > prev_sensor_value) {
+      case PulseStateMachine.pulseTraceUp:
+        if (sensorValue > prevSensorValue) {
           currentBeat = DateTime.now().millisecondsSinceEpoch;
           lastBeatThreshold = sensorValue;
         }
         else {
           if (debug == true) {
-            printWithTimestamp("Peak reached: $sensorValue $prev_sensor_value");
+            printWithTimestamp("Peak reached: $sensorValue $prevSensorValue");
           }
 
           int beatDuration = currentBeat - lastBeat;
@@ -586,15 +547,9 @@ class MAX30101 {
             printWithTimestamp("rawBPM: $rawBPM");
           }
 
-//This method sometimes glitches, it's better to go through whole moving average everytime
-//IT's a neat idea to optimize the amount of work for moving avg. but while placing, removing finger it can screw up
-//valuesBPMSum -= valuesBPM[bpmIndex];
-//valuesBPM[bpmIndex] = rawBPM;
-//valuesBPMSum += valuesBPM[bpmIndex];
-
           valuesBPM[bpmIndex] = rawBPM;
           valuesBPMSum = 0;
-          for (int i = 0; i < PULSE_BPM_SAMPLE_SIZE; i++) {
+          for (int i = 0; i < pulseBpmSampleSize; i++) {
             valuesBPMSum += valuesBPM[i];
           }
 
@@ -603,9 +558,9 @@ class MAX30101 {
           }
 
           bpmIndex++;
-          bpmIndex = bpmIndex % PULSE_BPM_SAMPLE_SIZE;
+          bpmIndex = bpmIndex % pulseBpmSampleSize;
 
-          if (valuesBPMCount < PULSE_BPM_SAMPLE_SIZE) {
+          if (valuesBPMCount < pulseBpmSampleSize) {
             valuesBPMCount++;
           }
 
@@ -614,24 +569,24 @@ class MAX30101 {
             printWithTimestamp("Avg. BPM: $currentBPM");
           }
 
-          currentPulseDetectorState = PulseStateMachine.PULSE_TRACE_DOWN;
+          currentPulseDetectorState = PulseStateMachine.pulseTraceDown;
 
           return true;
         }
         break;
 
-      case PulseStateMachine.PULSE_TRACE_DOWN:
-        if (sensorValue < prev_sensor_value) {
-          values_went_down++;
+      case PulseStateMachine.pulseTraceDown:
+        if (sensorValue < prevSensorValue) {
+          valuesWentDown++;
         }
 
-        if (sensorValue < PULSE_MIN_THRESHOLD) {
-          currentPulseDetectorState = PulseStateMachine.PULSE_IDLE;
+        if (sensorValue < pulseMinThreshold) {
+          currentPulseDetectorState = PulseStateMachine.pulseIdle;
         }
         break;
     }
 
-    prev_sensor_value = sensorValue;
+    prevSensorValue = sensorValue;
     return false;
   }
 
@@ -672,11 +627,7 @@ class MAX30101 {
   void lowPassButterworthFilter(double x, ButterworthFilterData filterResult) {
     filterResult.v[0] = filterResult.v[1];
 
-//Fs = 100Hz and Fc = 10Hz
     filterResult.v[1] = (2.452372752527856026e-1 * x) + (0.50952544949442879485 * filterResult.v[0]);
-
-//Fs = 100Hz and Fc = 4Hz
-//filterResult->v[1] = (1.367287359973195227e-1 * x) + (0.72654252800536101020 * filterResult->v[0]); //Very precise butterworth filter 
 
     filterResult.result = filterResult.v[0] + filterResult.v[1];
   }
@@ -689,9 +640,9 @@ class MAX30101 {
     filterValues.sum += filterValues.values[filterValues.index];
 
     filterValues.index++;
-    filterValues.index = filterValues.index % MEAN_FILTER_SIZE;
+    filterValues.index = filterValues.index % meanFilterSize;
 
-    if (filterValues.count < MEAN_FILTER_SIZE) {
+    if (filterValues.count < meanFilterSize) {
       filterValues.count++;
     }
 
@@ -699,46 +650,29 @@ class MAX30101 {
     return avg - M;
   }
 
-  /// Writes val to address register on device
   int writeRegister(String registerName, int byteValue, logIt) { // byte arguments
     if (logIt) {
       printWithTimestamp("Writing $byteValue to $registerName");
     }
-    wrapper.writeByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
+    wrapper.writeByteReg(max30101DeviceAddress, _registerMap[registerName]!.address, byteValue);
     return byteValue;
   }
 
   // byte argument, byte return
   int readRegister(String registerName, bool logIt) {
-    var byteValue = wrapper.readByteReg(Max30101DeviceAddress, _registerMap[registerName]!.address);
+    var byteValue = wrapper.readByteReg(max30101DeviceAddress, _registerMap[registerName]!.address);
     if (logIt) {
       printWithTimestamp("Read $byteValue from $registerName");
     }
     return byteValue;
   }
 
-  // Reads num bytes starting from address register on device in to _buff array
-  List<int> readFrom(String registerName, int len, bool logIt) {
-    var byteValuesRead = wrapper.readBytesReg(Max30101DeviceAddress, _registerMap[registerName]!.address, len);
+  // Reads num bytes starting from a particular register address
+  List<int> readFrom(String registerName, int numBytes, bool logIt) {
+    var byteValuesRead = wrapper.readBytesReg(max30101DeviceAddress, _registerMap[registerName]!.address, numBytes);
     if (debug) {
       printWithTimestamp("Read ${byteValuesRead.length} bytes from $registerName : $byteValuesRead");
     }
     return byteValuesRead;
   }
 }
-
-class BW {
-  static int setBit(int byte, int bitNumber) {
-    return byte | 1 << bitNumber;
-  }
-  static int clearBit(int byte, int bitNumber) {
-    return byte & ~(1 << bitNumber);
-  }
-  static int toggleBit(int byte, int bitNumber) {
-    return byte ^ 1 << bitNumber;
-  }
-  static bool isBitSet(int byte, bitNumber) {
-    return ((byte >> bitNumber) & 1) == 1;
-  }
-}
-

@@ -83,6 +83,6 @@ void main(List<String> arguments) async {
     printWithTimestamp("onBeat published $message to $publishTopic");
   }
 
-  MAX30101 max30101 = MAX30101(RealI2CWrapper(1), false, debug:false);
+  Max30101 max30101 = Max30101(RealI2CWrapper(1), false, debug:false);
   max30101.runSampler(onBeat);
 }
