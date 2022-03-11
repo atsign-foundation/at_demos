@@ -7,7 +7,7 @@
 This repo holds the files for The @ Company and Zariot demo for MWC 2022.
 
 For background take a look at the [press release](https://www.zariot.com/blog/zariot-kigen-and-the-company-stem-chaos-in-iot-through-true-e2e-encryption-and-sim-technology/)
-and the white paper [Flipping The Internet of Things](https://www.zariot.com/resources/flipping-the-internet-of-things/)
+and the white paper [Flipping The Internet of Things](https://www.zariot.com/resources/flipping-the-internet-of-things/).
 
 There's a short video overview followed by some Q&A in this episode of
 [Flutter Humpday](https://www.youtube.com/watch?v=zh7sM3RuOZk&t=488s).
@@ -129,7 +129,7 @@ the /boot/start4*.elf files are needed from a more recent Bullseye image.
 
 **raspi-config**
 
-Enable SSH, I2C, SPI, Uart (disable console on Uart)
+Enable SSH, I2C, SPI, Uart (disable console on Uart).
 
 **apt packages**
 
