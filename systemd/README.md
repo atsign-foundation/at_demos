@@ -21,7 +21,7 @@ The services will then start at the next reboot, or can be started manually
 with:
 
 ```bash
-sudo systemctl enable mwc*.service
+sudo systemctl start mwc*.service
 ```
 
 ## Usage
