@@ -1,5 +1,7 @@
 # at_cookbook
 
+<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+
 This is the complete version of the at_cookbook application. Feel free to use the code here as a starting template for your own projects.
 
 ## Getting Started
