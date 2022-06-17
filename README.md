@@ -2,7 +2,7 @@
 
 # Mobile World Congress Demo
 
-This repo holds the files for The @ Company and Zariot demo for MWC 2022.
+This repo holds the files for Atsign and Zariot demo for MWC 2022.
 
 For background take a look at the [press release](https://www.zariot.com/blog/zariot-kigen-and-the-company-stem-chaos-in-iot-through-true-e2e-encryption-and-sim-technology/)
 and the white paper [Flipping The Internet of Things](https://www.zariot.com/resources/flipping-the-internet-of-things/).
@@ -13,16 +13,16 @@ There's a short video overview followed by some Q&A in this episode of
 ## at_cli
 
 A simple script to use the at_cli tool to read from MQTT and send updates to
-an @ sign.
+an Atsign.
 
 This is no longer used in the demo, but left in place as an example.
 
 ## dart/iot_sender - iot_sender
 
-A dart app to read from MQTT and send to an @ sign.
+A dart app to read from MQTT and send to an Atsign.
 
 First modify `lib/config/config.yaml` to hold the correct location for the
-sending @ sign .atKeys file.
+sending Atsign .atKeys file.
 
 ```bash
 cd dart/iot_sender
