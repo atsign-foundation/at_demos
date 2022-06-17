@@ -104,7 +104,7 @@ To prepare your dedicated GitHub repository:
 
 ## @‎library release process
 
-The @ Foundation produces several widgets and libraries that the app developer
+The Atsign Foundation produces several widgets and libraries that the app developer
 can make use of to develop apps on @‎protocol. These libraries are developed in
 Dart & Flutter and published to [pub.dev](https://pub.dev/publishers/atsign.org/packages).
 
@@ -112,7 +112,7 @@ Dart & Flutter and published to [pub.dev](https://pub.dev/publishers/atsign.org/
 
 ## Following the changes
 
-The @ Foundation publishes libraries and widgets to
+The Atsign Foundation publishes libraries and widgets to
 [https://pub.dev/publishers/atsign.org/packages](https://pub.dev/publishers/atsign.org/packages).
 Each of these libraries contains a tab called “Changelog” that shows various
 published versions and a short description of what changes that went in.
@@ -143,8 +143,8 @@ where the issue is a Bug or an Enhancement.
 ![alt_text](images/image6.png "Choose Bug report")
 
 Upon clicking on the “Get started” button against the “Bug Report” you should
-be directed to a page with a bug template provided by the @company. Filling
-out all of the fields in the template gives the @company a better chance to
+be directed to a page with a bug template provided by Atsign. Filling
+out all of the fields in the template gives Atsign a better chance to
 reproduce and fix the bug.
 
 ![alt_text](images/image7.png "Filling a Bug report")
