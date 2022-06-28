@@ -1,6 +1,6 @@
 # at_demos
 
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 
 [![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
