@@ -1,9 +1,9 @@
 # at_demo_data
 
 <!---
-Adding the @‎platform logos gives a nice look for your readme
+Adding the atPlatform logos gives a nice look for your readme
 -->
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 <!---
 Add a badge bar for your package by replacing at_demo_data below with
@@ -21,15 +21,15 @@ your package name below and at_client_sdk with the name of the repo
 The README should be addressed to somebody who's never seen this before.
 But also don't assume that they're a novice.
 -->
-The at_demo_data package is for Flutter developers who would like use [The Virtual Environment (VE)](https://atsign.dev/docs/get-started/the-virtual-environment/) for running demo apps and testing on the @platform. The VE provides a full stack private @platform environment to build and test applications offline. A number preset @signs are included in the VE and the secrets and keys are provided in this package for those test @signs.
+The at_demo_data package is for Flutter developers who would like use [The Virtual Environment (VE)](https://atsign.dev/docs/get-started/the-virtual-environment/) for running demo apps and testing on the atPlatform. The VE provides a full stack private atPlatform environment to build and test applications offline. A number preset atSigns are included in the VE and the secrets and keys are provided in this package for those test atSigns.
 
 <!---
 Give some context and state the intent - we welcome contributions - we want
 pull requests and to hear about issues. Include the boilerplate language
-below to add some context to @‎platform packages 
+below to add some context to atPlatform packages 
 -->
 This open source package is written in Dart, supports Flutter and follows the
-@‎platform's decentralized, edge computing model with the following features: 
+atPlatform's decentralized, edge computing model with the following features: 
 - Cryptographic control of data access through personal data stores
 - No application backend needed
 - End to end encryption where only the data owner has the keys
@@ -109,15 +109,15 @@ int virtualPort = at_demo_data.virtualPort;
 // List of all atsigns
 List<String> atSigns = at_demo_data.allAtsigns;
 
-// PKAM public key String for a particular @sign can be retrieved from 
+// PKAM public key String for a particular atSign can be retrieved from 
 // the pkamPublicKeyMap
 String pkamPublicKey = at_demo_data.pkamPublicKeyMap['@alice🛠'];
 
-// PKAM private key String for a particular @sign can be retrieved from 
+// PKAM private key String for a particular atSign can be retrieved from 
 // the pkamPrivateKeyMap
 String pkamPrivate = at_demo_data.pkamPrivateKeyMap['@alice🛠'];
 
-// CRAM key String for a particular @sign can be retrieved from 
+// CRAM key String for a particular atSign can be retrieved from 
 // the cramKeyMap
 String cramKey = at_demo_data.cramKeyMap['@alice🛠'];
 ```

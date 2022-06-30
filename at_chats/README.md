@@ -1,4 +1,4 @@
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 # at_chats
 
@@ -13,6 +13,6 @@ A brief demo of this at_chats app. It currently offers one-to-one messaging!
 
 ## Getting Started
 
-1. Clone this project from the @ Company repository.
+1. Clone this project from the Atsign repository.
 
 2. To run the app, make sure to have your docker containers running!
