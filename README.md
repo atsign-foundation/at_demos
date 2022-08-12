@@ -9,7 +9,7 @@
 Welcome! We have a collection of demo apps written to help you get a head start on your atPlatform journey. We recommend looking at the apps in the following order:
 
 1. `at_hello_world`: A beginner app that introduces the fundamental atPlatform verbs.
-2. `at_chats`, `at_cookbook`: Intermediate-level applications that build on the `at_hello_world` app to create a messaging service as well as a cookbook.
+2. `at_cookbook`: An intermediate-level application that builds on the `at_hello_world` app to create a cookbook.
 3. `@mosphere`: A production-level application (included in a separate repo) that uses advanced atPlatform verbs to stream large files across multiple Atsigns.
 
 ## Creating your atPlatform application
