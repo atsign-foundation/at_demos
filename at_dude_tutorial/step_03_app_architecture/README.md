@@ -1,3 +1,3 @@
-# at_dude
+# at_dude Step 03
 
-A new Flutter project
+This repo is step O3 for the at_dude tutorial.
