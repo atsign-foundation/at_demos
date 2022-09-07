@@ -53,10 +53,12 @@ packages:
   at_client:
     dependency: "direct main"
     description:
-      name: at_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.37"
+      path: at_client
+      ref: enhance_notify_text_colin
+      resolved-ref: "98bbe85af6c574ddb1abc61507cf8164c5e407a1"
+      url: "https://github.com/atsign-foundation/at_client_sdk.git"
+    source: git
+    version: "3.0.36"
   at_commons:
     dependency: transitive
     description:

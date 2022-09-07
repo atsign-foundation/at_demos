@@ -109,6 +109,6 @@ void main(List<String> args) async {
   logger.info('OK Ready');
 
   logger.info("calling iotListen atSign '$fromAtsign', toAtSign '$toAtsign'");
-  iotListen(atClient, fromAtsign, toAtsign, sendHR: sendHR, sendO2: sendO2);
+  iotListen(notificationService, fromAtsign, toAtsign, sendHR: sendHR, sendO2: sendO2);
   print('listening');
 }
