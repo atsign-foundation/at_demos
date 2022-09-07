@@ -36,7 +36,7 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
+Future<void> iotListen(AtClient? atClient, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
   _sendHR = sendHR;
   _sendO2 = sendO2;
 
@@ -86,7 +86,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
     ..metadata = metaData;
 
   logger.info('calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
-  await atClient.put(key, '42.0');
+  await atClient?.put(key, '42.0');
   logger.info('Initial put complete, AtClient connection should now be authorized');
 
   /// Ok, lets try a subscription
@@ -116,7 +116,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
 
-      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, atClient);
+      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, atClient!);
 
       if (fakingO2SatValues) {
         // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
@@ -131,7 +131,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
 
-      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, atClient);
+      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, atClient!);
     }
 
     if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
@@ -140,7 +140,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       double bpm=double.parse(beatBpmSpo[1]);
       double spo=double.parse(beatBpmSpo[2]);
 
-      await shareHeartRate(bpm, atsign, toAtsign, atClient);
+      await shareHeartRate(bpm, atsign, toAtsign, atClient!);
       await shareO2Sat(spo, atsign, toAtsign, atClient);
     }
   });
