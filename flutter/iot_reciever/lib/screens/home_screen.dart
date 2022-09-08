@@ -42,20 +42,20 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AtClientManager atClientManager = AtClientManager.getInstance();
+    String? currentAtsign;
+    AtClient atClient;
+    atClient = atClientManager.atClient;
+    currentAtsign = atClient.getCurrentAtSign();
     var notificationService = atClientManager.notificationService;
     atClientManager.syncService.sync(onDone: () {
       _logger.info('sync complete');
     });
-    notificationService
-        .subscribe(regex: AtEnv.appNamespace)
-        .listen((notification) {
-      _logger.info(
-          'notification subscription handler got notification with key ${notification.key}');
-      getAtsignData(context, notification.key);
+    notificationService.subscribe(regex: '$currentAtsign:[O2|HR]', shouldDecrypt: true).listen((notification) {
+      _logger.info('notification subscription handler got notification with key ${notification.toJson()}');
+      getAtsignData(context, notification);
     });
     // reset dials if no data comes in checkExpiry(int Seconds)
-    timer = Timer.periodic(
-         const Duration(seconds: 1), (Timer t) => checkExpiry(90));
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => checkExpiry(90));
     setState(() {});
   }
 
@@ -82,10 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           minFontSize: 5,
           maxFontSize: 50,
         ),
-        gradient: const LinearGradient(colors: [
-          Color.fromARGB(255, 173, 83, 78),
-          Color.fromARGB(255, 108, 169, 197)
-        ]),
+        gradient: const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
         actions: [
           PopupMenuButton<String>(
             color: const Color.fromARGB(255, 108, 169, 197),
@@ -126,18 +123,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromARGB(255, 240, 181, 178),
-                    Color.fromARGB(255, 171, 200, 224)
-                  ],
+                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
                 )
               : const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromARGB(255, 240, 181, 178),
-                    Color.fromARGB(255, 171, 200, 224)
-                  ],
+                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
                 ),
           image: const DecorationImage(
             opacity: .15,
@@ -318,69 +309,40 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void getAtsignData(BuildContext context, String notificationKey) async {
-    /// Get the AtClientManager instance
-    var atClientManager = AtClientManager.getInstance();
+  void getAtsignData(BuildContext context, AtNotification notification) async {
+    var notificationJson = notification.toJson();
+    var notificationKey = notificationJson['key'];
+    var keyAtsign = notificationKey.split(':');
+    String sharedByAtsign = notificationJson['from'];
+    String currentAtsign = notificationJson['to'];
+    // String keyAtsign = notificationList[1];
+    // keyAtsign = keyAtsign.replaceAll('.${preference.namespace.toString()}$sharedByAtsign', '');
 
-    Future<AtClientPreference> futurePreference = loadAtClientPreference();
-
-    var preference = await futurePreference;
-
-    String? currentAtsign;
-    late AtClient atClient;
-    atClient = atClientManager.atClient;
-    atClientManager.atClient.setPreferences(preference);
-    currentAtsign = atClient.getCurrentAtSign();
-    _logger.info('getAtsignData: currentAtsign is $currentAtsign');
-
-    //Split the notification to get the key and the sharedByAtsign
-    // Notification looks like this :-
-    // @ai6bh:snackbar.colin@colin
-    var notificationList = notificationKey.split(':');
-    String sharedByAtsign = '@' + notificationList[1].split('@').last;
-    String keyAtsign = notificationList[1];
-    keyAtsign = keyAtsign.replaceAll(
-        '.${preference.namespace.toString()}$sharedByAtsign', '');
-
-    var metaData = Metadata()
-      ..isPublic = false
-      ..isEncrypted = true
-      ..namespaceAware = true;
-
-    var key = AtKey()
-      ..key = keyAtsign
-      ..sharedBy = sharedByAtsign
-      ..sharedWith = currentAtsign
-      ..metadata = metaData;
-
-    // The magic line that picks up the snack
-    var reading = await atClient.get(key);
     // Yes that is all you need to do!
-    var value = reading.value.toString();
-    if (keyAtsign == 'mwc_hr') {
+    var value = keyAtsign[2];
+    if (keyAtsign[1] == 'HR') {
       readings.heartRate = value;
-    // Use this for created at source (reader)
-    //readings.heartTime = reading.metadata?.createdAt?.toString();
-    // Or this f client got the reading (safer for demos!)
+      // Use this for created at source (reader)
+      //readings.heartTime = reading.metadata?.createdAt?.toString();
+      // Or this f client got the reading (safer for demos!)
       readings.heartTime = DateTime.now().toUtc().toString();
     }
-    if (keyAtsign == 'mwc_o2') {
+    if (keyAtsign[1] == 'O2') {
       readings.bloodOxygen = value;
-    // Use this for created at source (reader)
-    // readings.oxygenTime = reading.metadata?.createdAt?.toString();   
-    //Or this f client got the reading (safer for demos!)
+      // Use this for created at source (reader)
+      // readings.oxygenTime = reading.metadata?.createdAt?.toString();
+      //Or this f client got the reading (safer for demos!)
       readings.oxygenTime = DateTime.now().toUtc().toString();
     }
     // Use this for created at source (reader)
-    
+
     //Or this f client got the reading (safer for demos!)
-    var createdAt = reading.metadata?.createdAt;
+    var createdAt = DateTime.fromMillisecondsSinceEpoch(notificationJson['epochMillis']);
     var dateFormat = DateFormat("HH:mm.ss");
-    String dateFormated = dateFormat.format(createdAt!);
+    String dateFormated = dateFormat.format(createdAt);
     readings.sensorName = '$dateFormated UTC | $sharedByAtsign';
     setState(() {});
-    _logger.info(
-        'Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
+    _logger.info('Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
   }
 
   void checkExpiry(int expireSeconds) {

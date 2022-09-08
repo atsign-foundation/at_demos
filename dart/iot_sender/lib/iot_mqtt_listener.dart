@@ -146,7 +146,7 @@ Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, No
   int thisHRPutNo = ++_putCounterHR;
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
     try {
-      await notificationService.notify(NotificationParams.forText(heartRateAsString, toAtsign, shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
+      await notificationService.notify(NotificationParams.forText('HR:$heartRateAsString', toAtsign, shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
           onSuccess: (notification) {
         logger.info('SUCCESS:$notification');
       }, onError: (notification) {
@@ -169,7 +169,7 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, Notificati
   logger.info('Blood Oxygen: $o2SatAsString');
 
     try {
-      await notificationService.notify(NotificationParams.forText(o2SatAsString, toAtsign, shouldEncrypt: true, notifier: 'O2', strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
+      await notificationService.notify(NotificationParams.forText('O2:$o2SatAsString', toAtsign, shouldEncrypt: true, strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
           onSuccess: (notification) {
         logger.info('SUCCESS:$notification');
       }, onError: (notification) {

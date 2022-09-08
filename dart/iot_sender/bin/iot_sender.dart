@@ -86,7 +86,7 @@ void main(List<String> args) async {
     ..atKeysFilePath = atsignFile;
   AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
   await onboardingService.authenticate();
-  AtClient? atClient = await onboardingService.getAtClient();
+  //AtClient? atClient = await onboardingService.getAtClient();
   AtClientManager atClientManager = AtClientManager.getInstance();
   NotificationService notificationService = atClientManager.notificationService;
 

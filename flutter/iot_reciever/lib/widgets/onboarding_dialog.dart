@@ -1,9 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_onboarding_flutter/screens/onboarding_widget.dart';
+import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:iot_reciever/main.dart';
 import 'package:iot_reciever/screens/home_screen.dart';
+import 'package:iot_reciever/screens/onboarding_screen.dart';
 import 'package:iot_reciever/widgets/error_dialog.dart';
 import 'package:at_app_flutter/at_app_flutter.dart' ;
 
@@ -30,16 +31,14 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
 
   Future<void> initKeyChain() async {
     var atSignsList = await _keyChainManager.getAtSignListFromKeychain();
-    if (atSignsList?.isNotEmpty ?? false) {
+    if (atSignsList.isNotEmpty) {
       setState(() {
-        _atSignsList = atSignsList!;
+        _atSignsList = atSignsList;
         _atsign = atSignsList[0];
       });
     } else {
       setState(() {
-        if (atSignsList != null) {
-          _atSignsList = atSignsList;
-        }
+        _atSignsList = atSignsList;
       });
     }
   }
@@ -104,7 +103,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   }
 
   Widget _newOnboard() {
-    return _onboard("", "SETUP NEW @SIGN");
+    return _onboard("@", "SETUP NEW @SIGN");
   }
 
   Widget _onboard(String atSign, String text) {
@@ -119,30 +118,37 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             color: Colors.white),
       ),
       onPressed: () async {
-        var preference = await loadAtClientPreference();
-        Onboarding(
-          atsign: atSign,
-          context: context,
-          appColor: Colors.lightBlue,
-          atClientPreference: preference,
-          domain: AtEnv.rootDomain,
-          rootEnvironment: AtEnv.rootEnvironment,
-          appAPIKey: AtEnv.appApiKey,
-          onboard: (value, atsign) {
-            if ((atsign != null) && !(_atSignsList.contains(atsign))) {
-              setState(() {
-                _atSignsList;
-                _atSignsList.add(atsign);
-                _atsign = atsign;
-              });
-            }
-            Navigator.of(context).pushNamed(HomeScreen.id);
-          },
-          onError: (error) {
-            _handleError(context);
-          },
-        );
-      },
+         var atClientPreference = await loadAtClientPreference();
+          final result = await AtOnboarding.onboard(
+            context: context,
+            atsign: atSign,
+            config: AtOnboardingConfig(
+              atClientPreference: atClientPreference,
+              domain: AtEnv.rootDomain,
+              rootEnvironment: AtEnv.rootEnvironment,
+              appAPIKey: AtEnv.appApiKey,
+              
+            ),
+          );
+          switch (result.status) {
+            case AtOnboardingResultStatus.success:
+              _atsign = result.atsign;
+              // TODO: handle onboard successfully
+              
+                Navigator.pushNamed(context, HomeScreen.id);
+              
+              break;
+            case AtOnboardingResultStatus.error:
+                Navigator.pushNamed(context, OnboardingScreen.id);
+              _handleError(context);
+              break;
+            case AtOnboardingResultStatus.cancel:
+              
+                Navigator.pushNamed(context, OnboardingScreen.id);
+              
+              break;
+          }
+        },
       child: Text(text),
     );
   }
