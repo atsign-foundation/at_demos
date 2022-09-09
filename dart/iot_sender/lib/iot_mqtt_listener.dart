@@ -204,5 +204,5 @@ void onDisconnected() {
 
 /// The successful connect callback
 void onConnected() {
-  print('INFO::OnConnected client callback - Client connection was successful');
+  logger.info('OnConnected client callback - Client connection was successful');
 }
