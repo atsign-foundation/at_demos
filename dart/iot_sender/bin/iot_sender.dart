@@ -1,83 +1,94 @@
-import 'package:at_utils/at_logger.dart';
-import 'package:iot_sender/at_onboarding_cli.dart';
-import 'package:at_client/at_client.dart';
-import 'package:at_commons/at_commons.dart' as common;
-
-import 'package:iot_sender/iot_mqtt_listener.dart';
 import 'dart:io';
 
-void main(List<String> arguments) async {
-  void printUsage() {
-    print('Usage: iot_sender <sender @sign> <receiver @sign> [<mode>]');
-    exit(0);
-  }
+// external packages
+import 'package:args/args.dart';
+import 'package:logging/src/level.dart';
+import 'package:iot_sender/iot_mqtt_listener.dart';
 
-  if (arguments.isEmpty || arguments.length < 2 || arguments.length > 3) {
-    printUsage();
-  }
+// atPlatform packages
+import 'package:at_client/at_client.dart';
+import 'package:at_utils/at_logger.dart';
+import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 
-  AtSignLogger.root_level = 'INFO';
+// Local Packages
+import 'package:iot_sender/home_directory.dart';
+import 'package:iot_sender/check_file_exists.dart';
+
+void main(List<String> args) async {
+  var parser = ArgParser();
+// Args
+  parser.addOption('key-file',
+      abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
+  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Your atSign');
+  parser.addOption('toatsign', abbr: 't', mandatory: true, help: 'Send data to this atSign');
+  // In the future we could specify devices
+  // parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name, used as AtKey:key');
+  parser.addFlag('sendHR', abbr: 'H', help: 'Send Heart Rate');
+  parser.addFlag('sendO2', abbr: 'O', help: 'Send O2 level');
+  parser.addFlag('verbose', abbr: 'v', help: 'More logging');
+
+
+  // Check the arguments
+  String nameSpace = 'fourballcorporate9';
+  String rootDomain = 'root.atsign.org';
+  AtSignLogger.root_level = 'SHOUT';
+
+  dynamic results;
+  String atsignFile;
+  String fromAtsign = 'unknown';
+  String toAtsign = 'unknown';
+  String deviceName = 'unknown';
+  String? homeDirectory = getHomeDirectory();
+  bool sendHR = false;
+  bool sendO2 = false;
 
   final AtSignLogger logger = AtSignLogger('iot_sender');
-
-  String atsign = arguments[0];
-  String toAtsign = arguments[1];
-
-  bool sendHR = true;
-  bool sendO2 = true;
-
-  if (arguments.length > 2) {
-    String mode = arguments[2].toLowerCase();
-    switch(mode) {
-      case 'hr':
-        sendHR = true;
-        break;
-      case 'o2':
-        sendO2 = true;
-        break;
-      case 'hro2':
-        sendHR = true;
-        sendO2 = true;
-        break;
-      default:
-        printUsage();
+  try {
+        // Arg check
+    results = parser.parse(args);
+    fromAtsign = results['atsign'];
+    toAtsign = results['toatsign'];
+    sendHR = results['sendHR'];
+    sendO2 = results['sendO2'];
+    if (results['key-file'] != null) {
+      atsignFile = results['key-file'];
+    } else {
+      atsignFile = '${fromAtsign}_key.atKeys';
+      atsignFile = '$homeDirectory/.atsign/keys/$atsignFile';
     }
+    // Check atKeyFile selected exists
+    if (!await fileExists(atsignFile)) {
+      throw ('\n Unable to find .atKeys file : $atsignFile');
+    }
+  } catch (e) {
+    print(parser.usage);
+    print(e);
+    exit(1);
   }
 
-  OnboardingService onboardingService = OnboardingService(atsign);
-  await onboardingService.authenticate();
+// Now on to the @platform startup
+  if (results['verbose']) {
+    logger.logger.level = Level.INFO;
 
-  var pkam = await onboardingService.privateKey();
-  var encryptSelfKey = await onboardingService.selfEncryptionKey();
-  var encryptPrivateKey = await onboardingService.privateEncryptionKey();
-  var encryptPublicKey = await onboardingService.publicEncryptionKey();
+    AtSignLogger.root_level = 'INFO';
+  }
 
-  String namespace = 'fourballcorporate9';
-  AtClientManager atClientManager = AtClientManager.getInstance();
-  AtClient atClient;
 
-  var preference = AtClientPreference()
-    ..hiveStoragePath = 'lib/hive/client'
-    ..commitLogPath = 'lib/hive/client/commit'
+
+  //onboarding preference builder can be used to set onboardingService parameters
+  AtOnboardingPreference atOnboardingConfig = AtOnboardingPreference()
+    ..hiveStoragePath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
+    ..namespace = nameSpace
+    ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
-    ..privateKey = pkam
-    ..rootDomain = 'root.atsign.org';
-
-  atClientManager = AtClientManager.getInstance();
-  await atClientManager.setCurrentAtSign(atsign, namespace, preference);
-  atClient = atClientManager.atClient;
-
-  await atClient
-      .getLocalSecondary()
-      ?.putValue(common.AT_ENCRYPTION_PRIVATE_KEY, encryptPrivateKey!);
-
-  await atClient
-      .getLocalSecondary()
-      ?.putValue(common.AT_ENCRYPTION_SELF_KEY, encryptSelfKey!);
-
-  await atClient
-      .getLocalSecondary()
-      ?.putValue(common.AT_ENCRYPTION_PUBLIC_KEY+atsign, encryptPublicKey!);
+    ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
+    ..rootDomain = rootDomain
+    ..atKeysFilePath = atsignFile;
+  AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
+  await onboardingService.authenticate();
+  //AtClient? atClient = await onboardingService.getAtClient();
+  AtClientManager atClientManager = AtClientManager.getInstance();
+  NotificationService notificationService = atClientManager.notificationService;
 
   bool syncComplete = false;
   void onSyncDone(syncResult) {
@@ -91,12 +102,13 @@ void main(List<String> arguments) async {
   syncComplete = false;
   atClientManager.syncService.sync(onDone: onSyncDone);
   while (!syncComplete) {
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 500));
+    stderr.write(".");
   }
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-  logger.info("calling iotListen atSign '$atsign', toAtSign '$toAtsign'");
-  iotListen(atClient, atsign, toAtsign, sendHR:sendHR, sendO2:sendO2);
+  logger.info("calling iotListen atSign '$fromAtsign', toAtSign '$toAtsign'");
+  iotListen(notificationService, fromAtsign, toAtsign, sendHR: sendHR, sendO2: sendO2);
   print('listening');
 }

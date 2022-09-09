@@ -36,7 +36,7 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
+Future<void> iotListen(NotificationService notificationService, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
   _sendHR = sendHR;
   _sendO2 = sendO2;
 
@@ -72,21 +72,9 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
     exit(-1);
   }
 
-  /// Let's get the atClient connection authorized before we go any further
-  var metaData = Metadata()
-    ..isPublic = false
-    ..isEncrypted = true
-    ..namespaceAware = true
-    ..ttl = 100000;
-
-  var key = AtKey()
-    ..key = 'mwc_hr'
-    ..sharedBy = atsign
-    ..sharedWith = toAtsign
-    ..metadata = metaData;
 
   logger.info('calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
-  await atClient.put(key, '42.0');
+
   logger.info('Initial put complete, AtClient connection should now be authorized');
 
   /// Ok, lets try a subscription
@@ -116,13 +104,13 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
 
-      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, atClient);
+      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, notificationService);
 
       if (fakingO2SatValues) {
         // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
         currentFakeO2IntValue = getNextFakeO2IntValue();
         double fakeO2DoubleValue = currentFakeO2IntValue/10;
-        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, atClient);
+        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, notificationService);
       }
     }
 
@@ -131,7 +119,7 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
 
-      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, atClient);
+      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, notificationService);
     }
 
     if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
@@ -140,13 +128,13 @@ Future<void> iotListen(AtClient atClient, String atsign, String toAtsign, {bool 
       double bpm=double.parse(beatBpmSpo[1]);
       double spo=double.parse(beatBpmSpo[2]);
 
-      await shareHeartRate(bpm, atsign, toAtsign, atClient);
-      await shareO2Sat(spo, atsign, toAtsign, atClient);
+      await shareHeartRate(bpm, atsign, toAtsign, notificationService);
+      await shareO2Sat(spo, atsign, toAtsign, notificationService);
     }
   });
 }
 
-Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, AtClient atClient) async {
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, NotificationService notificationService) async {
   if (! _sendHR) {
     return;
   }
@@ -154,25 +142,25 @@ Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, At
   String heartRateAsString = heartRate.toStringAsFixed(1);
   logger.info('Heart Rate: $heartRateAsString');
 
-  var metaData = Metadata()
-    ..isPublic = false
-    ..isEncrypted = true
-    ..namespaceAware = true
-    ..ttl = 100000;
-
-  var key = AtKey()
-    ..key = 'mwc_hr'
-    ..sharedBy = atsign
-    ..sharedWith = toAtsign
-    ..metadata = metaData;
 
   int thisHRPutNo = ++_putCounterHR;
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
-  await atClient.put(key, heartRateAsString);
+    try {
+      await notificationService.notify(NotificationParams.forText('HR:$heartRateAsString', toAtsign, shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
+          onSuccess: (notification) {
+        logger.info('SUCCESS:$notification');
+      }, onError: (notification) {
+        logger.info('ERROR:$notification');
+      }, onSentToSecondary: (notification) {
+        logger.info('SENT:$notification');
+      }, waitForFinalDeliveryStatus: false);
+    } catch (e) {
+      logger.severe(e.toString());
+    }
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, AtClient atClient) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, NotificationService notificationService) async {
   if (! _sendO2) {
     return;
   }
@@ -180,21 +168,21 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, AtClient a
   String o2SatAsString = o2Sat.toStringAsFixed(1);
   logger.info('Blood Oxygen: $o2SatAsString');
 
-  var metaData = Metadata()
-    ..isPublic = false
-    ..isEncrypted = true
-    ..namespaceAware = true
-    ..ttl = 100000;
-
-  var key = AtKey()
-    ..key = 'mwc_o2'
-    ..sharedBy = atsign
-    ..sharedWith = toAtsign
-    ..metadata = metaData;
+    try {
+      await notificationService.notify(NotificationParams.forText('O2:$o2SatAsString', toAtsign, shouldEncrypt: true, strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
+          onSuccess: (notification) {
+        logger.info('SUCCESS:$notification');
+      }, onError: (notification) {
+        logger.info('ERROR:$notification');
+      }, onSentToSecondary: (notification) {
+        logger.info('SENT:$notification');
+      }, waitForFinalDeliveryStatus: false);
+    } catch (e) {
+      logger.severe(e.toString());
+    }
 
   int thisO2PutNo = ++_putCounterO2;
   logger.info('calling atClient.put for O2 #$thisO2PutNo');
-  await atClient.put(key, o2SatAsString);
   logger.info('atClient.put #$thisO2PutNo complete');
 }
 
@@ -216,5 +204,5 @@ void onDisconnected() {
 
 /// The successful connect callback
 void onConnected() {
-  print('INFO::OnConnected client callback - Client connection was successful');
+  logger.info('OnConnected client callback - Client connection was successful');
 }
