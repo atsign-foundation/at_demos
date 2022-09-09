@@ -5,7 +5,8 @@ import 'package:at_utils/at_utils.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:at_client/at_client.dart';
-import 'package:at_commons/at_commons.dart';
+//import 'package:at_commons/at_commons.dart';
+import 'package:iot_sender/models/hro2_receiver.dart';
 
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
@@ -15,7 +16,7 @@ Random random = Random();
 int fakeO2IntMinValue = 950;
 int fakeO2IntMaxValue = 995;
 // fakeO2 value in int, convert to double by dividing by 10 when publishing
-int currentFakeO2IntValue = random.nextInt(fakeO2IntMaxValue-fakeO2IntMinValue) + fakeO2IntMinValue;
+int currentFakeO2IntValue = random.nextInt(fakeO2IntMaxValue - fakeO2IntMinValue) + fakeO2IntMinValue;
 
 int getNextFakeO2IntValue() {
   // get random int in range -5..+5
@@ -36,10 +37,7 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(NotificationService notificationService, String atsign, String toAtsign, {bool sendHR = true, bool sendO2 = true}) async {
-  _sendHR = sendHR;
-  _sendO2 = sendO2;
-
+Future<void> iotListen(NotificationService notificationService, String fromAtsign) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -72,7 +70,6 @@ Future<void> iotListen(NotificationService notificationService, String atsign, S
     exit(-1);
   }
 
-
   logger.info('calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
 
   logger.info('Initial put complete, AtClient connection should now be authorized');
@@ -99,18 +96,28 @@ Future<void> iotListen(NotificationService notificationService, String atsign, S
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
+    List<HrO2Receiver> toAtsigns;
+    HrO2Receiver first = HrO2Receiver(sendToAtsign: '@gps_receiver', sendHR: true, sendO2: true);
+    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@wisefrog', sendHR: true, sendO2: true);
+
+    toAtsigns = [first, second];
+
     if (c[0].topic == "mqtt/mwc_hr") {
       double? heartRateDoubleValue = double.tryParse(pt);
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
+      for (var receiver in toAtsigns) {
+        if (receiver.sendHR) {
+          print('Sending to: ${receiver.sendToAtsign}');
+          await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+        }
 
-      await shareHeartRate(heartRateDoubleValue, atsign, toAtsign, notificationService);
-
-      if (fakingO2SatValues) {
-        // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
-        currentFakeO2IntValue = getNextFakeO2IntValue();
-        double fakeO2DoubleValue = currentFakeO2IntValue/10;
-        await shareO2Sat(fakeO2DoubleValue, atsign, toAtsign, notificationService);
+        if (fakingO2SatValues) {
+          // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
+          currentFakeO2IntValue = getNextFakeO2IntValue();
+          double fakeO2DoubleValue = currentFakeO2IntValue / 10;
+          await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+        }
       }
     }
 
@@ -118,68 +125,82 @@ Future<void> iotListen(NotificationService notificationService, String atsign, S
       double? o2SatDoubleValue = double.tryParse(pt);
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
+      for (var receiver in toAtsigns) {
+        if (receiver.sendO2) {
+          await shareO2Sat(o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+        }
+      }
 
-      await shareO2Sat(o2SatDoubleValue, atsign, toAtsign, notificationService);
-    }
+      if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
+        List<String> beatBpmSpo = pt.split(",");
+        bool beat = beatBpmSpo[0] == 'true';
+        double bpm = double.parse(beatBpmSpo[1]);
+        double spo = double.parse(beatBpmSpo[2]);
 
-    if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
-      List<String> beatBpmSpo=pt.split(",");
-      bool beat=beatBpmSpo[0]=='true';
-      double bpm=double.parse(beatBpmSpo[1]);
-      double spo=double.parse(beatBpmSpo[2]);
-
-      await shareHeartRate(bpm, atsign, toAtsign, notificationService);
-      await shareO2Sat(spo, atsign, toAtsign, notificationService);
+        for (var receiver in toAtsigns) {
+          if (receiver.sendHR) {
+            await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, notificationService);
+          }
+          if (receiver.sendO2) {
+            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, notificationService);
+          }
+        }
+      }
     }
   });
 }
 
-Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, NotificationService notificationService) async {
-  if (! _sendHR) {
+Future<void> shareHeartRate(
+    double heartRate, String atsign, String toAtsign, NotificationService notificationService) async {
+  if (!_sendHR) {
     return;
   }
 
   String heartRateAsString = heartRate.toStringAsFixed(1);
   logger.info('Heart Rate: $heartRateAsString');
 
-
   int thisHRPutNo = ++_putCounterHR;
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
-    try {
-      await notificationService.notify(NotificationParams.forText('HR:$heartRateAsString', toAtsign, shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
-          onSuccess: (notification) {
-        logger.info('SUCCESS:$notification');
-      }, onError: (notification) {
-        logger.info('ERROR:$notification');
-      }, onSentToSecondary: (notification) {
-        logger.info('SENT:$notification');
-      }, waitForFinalDeliveryStatus: false);
-    } catch (e) {
-      logger.severe(e.toString());
-    }
+  try {
+    print('SENDING NOTIFICATIO:$heartRateAsString');
+    await notificationService.notify(
+        NotificationParams.forText('HR:$heartRateAsString', toAtsign,
+            shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),
+        checkForFinalDeliveryStatus: false, onSuccess: (notification) {
+      logger.info('SUCCESS:$notification');
+    }, onError: (notification) {
+      logger.info('ERROR:$notification');
+    }, onSentToSecondary: (notification) {
+      logger.info('SENT:$notification');
+    }, waitForFinalDeliveryStatus: false);
+  } catch (e) {
+    logger.severe(e.toString());
+  }
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
 Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, NotificationService notificationService) async {
-  if (! _sendO2) {
+  if (!_sendO2) {
     return;
   }
 
   String o2SatAsString = o2Sat.toStringAsFixed(1);
   logger.info('Blood Oxygen: $o2SatAsString');
 
-    try {
-      await notificationService.notify(NotificationParams.forText('O2:$o2SatAsString', toAtsign, shouldEncrypt: true, strategyEnum: StrategyEnum.latest),checkForFinalDeliveryStatus: false,
-          onSuccess: (notification) {
-        logger.info('SUCCESS:$notification');
-      }, onError: (notification) {
-        logger.info('ERROR:$notification');
-      }, onSentToSecondary: (notification) {
-        logger.info('SENT:$notification');
-      }, waitForFinalDeliveryStatus: false);
-    } catch (e) {
-      logger.severe(e.toString());
-    }
+  try {
+    await notificationService.notify(
+        NotificationParams.forText('O2:$o2SatAsString', toAtsign,
+            shouldEncrypt: true, strategyEnum: StrategyEnum.latest),
+        checkForFinalDeliveryStatus: false, onSuccess: (notification) {
+      logger.info('SUCCESS:$notification');
+    }, onError: (notification) {
+      logger.info('ERROR:$notification');
+    }, onSentToSecondary: (notification) {
+      logger.info('SENT:$notification');
+    }, waitForFinalDeliveryStatus: false);
+  } catch (e) {
+    logger.severe(e.toString());
+  }
 
   int thisO2PutNo = ++_putCounterO2;
   logger.info('calling atClient.put for O2 #$thisO2PutNo');
