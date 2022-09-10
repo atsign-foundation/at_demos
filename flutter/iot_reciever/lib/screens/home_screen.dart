@@ -52,11 +52,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     notificationService.subscribe(regex: '$currentAtsign:[O2|HR]', shouldDecrypt: true).listen((notification) {
       _logger.info('notification subscription handler got notification with key ${notification.toJson()}');
-      getAtsignData(context, notification);
+      if (mounted) {
+        getAtsignData(context, notification);
+      }
     });
     // reset dials if no data comes in checkExpiry(int Seconds)
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => checkExpiry(90));
-    setState(() {});
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => checkExpiry(10));
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -341,7 +345,9 @@ class _HomeScreenState extends State<HomeScreen> {
     var dateFormat = DateFormat("HH:mm.ss");
     String dateFormated = dateFormat.format(createdAt);
     readings.sensorName = '$dateFormated UTC | $sharedByAtsign';
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     _logger.info('Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
   }
 
@@ -354,11 +360,15 @@ class _HomeScreenState extends State<HomeScreen> {
     now = now.subtract(Duration(seconds: expireSeconds));
     if (now.isAfter(heartExpire)) {
       readings.heartRate = '0';
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
     if (now.isAfter(oxygenExpire)) {
       readings.bloodOxygen = '0';
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 }
