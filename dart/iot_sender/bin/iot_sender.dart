@@ -30,7 +30,7 @@ void main(List<String> args) async {
   // Check the arguments
   String nameSpace = 'fourballcorporate9';
   String rootDomain = 'root.atsign.org';
-  AtSignLogger.root_level = 'SHOUT';
+  AtSignLogger.root_level = 'SEVERE';
 
   dynamic results;
   String atsignFile;
