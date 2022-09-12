@@ -98,7 +98,7 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
     List<HrO2Receiver> toAtsigns;
     HrO2Receiver first = HrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true);
-    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: true);
+    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false);
 
     toAtsigns = [first, second];
 
