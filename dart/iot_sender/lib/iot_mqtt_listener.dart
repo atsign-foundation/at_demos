@@ -136,23 +136,26 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
 // pick up both HR and O2
     if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
-      List<String> beatBpmSpo = ['0', '0'];
+      List<String> beatBpmSpo = ['false', '0', '0'];
+      bool hrDetect = false;
       double bpm = 0;
       double spo = 0;
       try {
         beatBpmSpo = pt.split(",");
-         bpm = double.parse(beatBpmSpo[0]);
-         spo = double.parse(beatBpmSpo[1]);
+        hrDetect = beatBpmSpo[0].parseBool();
+        bpm = double.parse(beatBpmSpo[1]);
+        spo = double.parse(beatBpmSpo[2]);
       } catch (e) {
         logger.severe('Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was recieved: $pt');
       }
-
-      for (var receiver in toAtsigns) {
-        if (receiver.sendHR) {
-          await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, notificationService);
-        }
-        if (receiver.sendO2) {
-          await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, notificationService);
+      if (hrDetect) {
+        for (var receiver in toAtsigns) {
+          if (receiver.sendHR) {
+            await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, notificationService);
+          }
+          if (receiver.sendO2) {
+            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, notificationService);
+          }
         }
       }
     }
@@ -234,4 +237,16 @@ void onDisconnected() {
 /// The successful connect callback
 void onConnected() {
   logger.info('OnConnected client callback - Client connection was successful');
+}
+
+extension BoolParsing on String {
+  bool parseBool() {
+    if (toLowerCase() == 'true') {
+      return true;
+    } else if (toLowerCase() == 'false') {
+      return false;
+    }
+
+    throw '"$this" can not be parsed to boolean.';
+  }
 }
