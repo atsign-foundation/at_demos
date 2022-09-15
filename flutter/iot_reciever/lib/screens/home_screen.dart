@@ -31,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   IoT readings = IoT(
-      sensorName: 'ZARIOT / The @ Company',
+      sensorName:'❤️        Atsign / ZARIOT        ❤️',
       heartRate: '0',
       bloodOxygen: '0',
       heartTime: DateTime.now().toString(),
@@ -190,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             medColor: const Color.fromARGB(255, 75, 145, 78),
                             highColor: const Color.fromARGB(255, 161, 52, 44),
                           ),
-        
                       ],
                     ),
                   if (_gridRows == 1)
@@ -228,12 +227,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           highColor: const Color.fromARGB(255, 161, 52, 44),
                         ),
                     ]),
-                  if (_gridRows == 1)
-                    TableRow(children: [
-                      SizedBox(
-                        height: _height,
-                      )
-                    ]),
+                  // if (_gridRows == 1)
+                  //   TableRow(children: [
+                  //     SizedBox(
+                  //       height: _height,
+                  //     )
+                  //   ]),
                   if (_gridRows == 2)
                     TableRow(children: [
                       if (double.parse(readings.heartRate.toString()) == 0)
@@ -314,13 +313,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   ]),
                 ],
               ),
-             AutoSizeText(readings.sensorName,
-            maxFontSize: 75,
-            minFontSize: 50,),
-                        SizedBox(
-                        height: _height,
-                        width: _width,
-                      ),
+              Row(
+                children: [
+                  Expanded(
+                    child: AutoSizeText(
+                      readings.sensorName,
+                      style: TextStyle(fontSize: 100),
+                      textAlign: TextAlign.center,
+                      maxFontSize: 50,
+                      minFontSize: 4,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+              //Some padding for desktops
+
+              SizedBox(
+                height: _height/8,
+                width: _width,
+              ),
             ],
           ),
         ),
@@ -359,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var createdAt = DateTime.fromMillisecondsSinceEpoch(notificationJson['epochMillis']);
     var dateFormat = DateFormat("HH:mm.ss");
     String dateFormated = dateFormat.format(createdAt);
-    readings.sensorName = '$dateFormated UTC | $sharedByAtsign';
+    readings.sensorName = '❤️         $sharedByAtsign | $dateFormated         ❤️';
     if (mounted) {
       setState(() {});
     }
@@ -371,16 +383,26 @@ class _HomeScreenState extends State<HomeScreen> {
     var oxygenExpire = DateTime.parse(readings.oxygenTime.toString());
     heartExpire = heartExpire.toUtc();
     oxygenExpire = oxygenExpire.toUtc();
+    bool noO2 = false;
+    bool noHR = false;
     var now = DateTime.now().toUtc();
     now = now.subtract(Duration(seconds: expireSeconds));
     if (now.isAfter(heartExpire)) {
       readings.heartRate = '0';
+      noHR = true;
       if (mounted) {
         setState(() {});
       }
     }
     if (now.isAfter(oxygenExpire)) {
+      noO2 = true;
       readings.bloodOxygen = '0';
+      if (mounted) {
+        setState(() {});
+      }
+    }
+    if (noHR && noO2) {
+      readings.sensorName = '❤️        Atsign / ZARIOT        ❤️';
       if (mounted) {
         setState(() {});
       }

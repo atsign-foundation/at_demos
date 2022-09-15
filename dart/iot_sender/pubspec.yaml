@@ -22,5 +22,5 @@ dependency_overrides:
   at_client:
     git:
       url: https://github.com/atsign-foundation/at_client_sdk.git
-      ref: enhance_notify_text_colin
+      ref: ignore_offline_notifications
       path: at_client

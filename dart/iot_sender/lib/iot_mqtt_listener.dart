@@ -241,12 +241,11 @@ void onConnected() {
 
 extension BoolParsing on String {
   bool parseBool() {
-    if (toLowerCase() == 'true') {
+    if (toLowerCase().trimLeft().trimRight() == 'true') {
       return true;
-    } else if (toLowerCase() == 'false') {
+    } else if (toLowerCase().trimLeft().trimRight() == 'false') {
       return false;
     }
-
     throw '"$this" can not be parsed to boolean.';
   }
 }
