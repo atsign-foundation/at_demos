@@ -12,11 +12,14 @@ dependency_overrides:
       url: https://github.com/atsign-foundation/at_client_sdk.git
       ref: ignore_offline_notifications
       path: at_client
-  # at_client_mobile: 
-  #   git:
-  #    url: https://github.com/atsign-foundation/at_client_sdk.git
-  #    path: at_client_mobile
-  #    ref: fix_biometric_storage
+#
+# This is needed to compile to Android!
+# remove for anything else
+  at_client_mobile: 
+    git:
+     url: https://github.com/atsign-foundation/at_client_sdk.git
+     path: at_client_mobile
+     ref: fix_biometric_storage
 
 dependencies:
   cupertino_icons: ^1.0.2

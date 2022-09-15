@@ -13,20 +13,13 @@ import pygame
 
 import paho.mqtt.client as mqtt
 
-def on_message(mqttclient, userdata, message):
-    beat_bpm_spo=(str(message.payload.decode("utf-8"))).split(",")
-    print(beat_bpm_spo)
-    beat=beat_bpm_spo[0]=='true'
-    bpm=float(beat_bpm_spo[1])
-    spo=float(beat_bpm_spo[2])
-    display_hro2(beat,bpm,spo)
+pygame.font.init()
+if not pygame.font.get_init( ):
+    pygame.font.init( )
+    if not pygame.font.get_init( ):
+        raise RuntimeError( "pygame doesn't init" )
+defaultFont = pygame.font.SysFont(None,30)
 
-
-mqttclient=mqtt.Client("mwcpydisp")
-mqttclient.connect("localhost")
-mqttclient.loop_start()
-mqttclient.subscribe("mqtt/mwc_beat_hr_o2")
-mqttclient.on_message=on_message
 
 # Very important: the exact pixel size of the TFT screen must be known so we can build graphics at this exact format
 surfaceSize = (320, 240)
@@ -65,7 +58,19 @@ def display_hro2(beat,avg_bpm,spo):
     lcd.blit(defaultFont.render(tidySPO, False, (0, 0, 0)),(10, 50))
     refresh()
 
-pygame.font.init()
-defaultFont = pygame.font.SysFont(None,30)
+def on_message(mqttclient, userdata, message):
+    beat_bpm_spo=(str(message.payload.decode("utf-8"))).split(",")
+    print(beat_bpm_spo)
+    beat=beat_bpm_spo[0]=='true'
+    bpm=float(beat_bpm_spo[1])
+    spo=float(beat_bpm_spo[2])
+    display_hro2(beat,bpm,spo)
+
+
+mqttclient=mqtt.Client("mwcpydisp")
+mqttclient.connect("localhost")
+mqttclient.loop_start()
+mqttclient.subscribe("mqtt/mwc_beat_hr_o2")
+mqttclient.on_message=on_message
 
 input("HRO2 display running. Press enter to stop")
