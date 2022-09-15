@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AtClientManager atClientManager = AtClientManager.getInstance();
+  
     String? currentAtsign;
     AtClient atClient;
     atClient = atClientManager.atClient;

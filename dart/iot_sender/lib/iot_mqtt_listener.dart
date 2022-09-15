@@ -176,7 +176,7 @@ Future<void> shareHeartRate(
   try {
     await notificationService.notify(
         NotificationParams.forText('HR:$heartRateAsString', toAtsign,
-            shouldEncrypt: true, notifier: 'HR', strategyEnum: StrategyEnum.latest),
+            shouldEncrypt: true),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
@@ -201,7 +201,7 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, Notificati
   try {
     await notificationService.notify(
         NotificationParams.forText('O2:$o2SatAsString', toAtsign,
-            shouldEncrypt: true, strategyEnum: StrategyEnum.latest),
+            shouldEncrypt: true, ),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
