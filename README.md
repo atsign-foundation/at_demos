@@ -23,13 +23,12 @@ This is no longer used in the demo, but left in place as an example.
 
 A dart app to read from MQTT and send to an Atsign.
 
-First modify `lib/config/config.yaml` to hold the correct location for the
-sending Atsign .atKeys file.
+First put the sending atSign .atKeys file in ~/.atsign/keys. If you do not have the .atKeys file then register an atSign in and Atsign app and save your keys this will give you the needed key file.
 
 ```bash
 cd dart/iot_sender
 dart pub get
-dart run ./bin/iot_sender.dart "@sendingatsign" "@receivingatsign"
+dart run ./bin/iot_sender.dart -a "@sendingatsign" -o "@receivingatsign"
 ```
 
 When the sender is going to be used repeatedly it should be compiled:
