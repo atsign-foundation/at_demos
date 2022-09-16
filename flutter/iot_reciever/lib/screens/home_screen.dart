@@ -350,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String currentAtsign = notificationJson['to'];
     String shortName = "";
     if (keyAtsign.length > 3) {
-      shortName = keyAtsign[4];
+      shortName = keyAtsign[3];
     }
     var value = keyAtsign[2];
     if (keyAtsign[1] == 'HR') {
