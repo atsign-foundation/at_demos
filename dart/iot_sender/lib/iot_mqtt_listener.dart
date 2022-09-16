@@ -97,8 +97,8 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
     List<HrO2Receiver> toAtsigns;
-    HrO2Receiver first = HrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true);
-    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false);
+    HrO2Receiver first = HrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true, sendToShortname: "world");
+    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false, sendToShortname: "hello");
 
     toAtsigns = [first, second];
 
@@ -110,14 +110,14 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       for (var receiver in toAtsigns) {
         if (receiver.sendHR) {
           print('Sending to: ${receiver.sendToAtsign}');
-          await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+          await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
         }
 
         if (fakingO2SatValues) {
           // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
           currentFakeO2IntValue = getNextFakeO2IntValue();
           double fakeO2DoubleValue = currentFakeO2IntValue / 10;
-          await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+          await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
         }
       }
     }
@@ -129,7 +129,7 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       lastO2SatDoubleValue = o2SatDoubleValue;
       for (var receiver in toAtsigns) {
         if (receiver.sendO2) {
-          await shareO2Sat(o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
+          await shareO2Sat(o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
         }
       }
     }
@@ -151,10 +151,10 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       if (hrDetect) {
         for (var receiver in toAtsigns) {
           if (receiver.sendHR) {
-            await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, notificationService);
+            await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
           if (receiver.sendO2) {
-            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, notificationService);
+            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
           }
         }
       }
@@ -163,7 +163,7 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 }
 
 Future<void> shareHeartRate(
-    double heartRate, String atsign, String toAtsign, NotificationService notificationService) async {
+    double heartRate, String atsign, String toAtsign, String sendToShortname,  NotificationService notificationService) async {
   if (!_sendHR) {
     return;
   }
@@ -175,7 +175,7 @@ Future<void> shareHeartRate(
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
   try {
     await notificationService.notify(
-        NotificationParams.forText('HR:$heartRateAsString', toAtsign,
+        NotificationParams.forText('HR:$heartRateAsString:$sendToShortname', toAtsign,
             shouldEncrypt: true),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
@@ -190,7 +190,7 @@ Future<void> shareHeartRate(
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, NotificationService notificationService) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sendToShortname, NotificationService notificationService) async {
   if (!_sendO2) {
     return;
   }
@@ -200,7 +200,7 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, Notificati
 
   try {
     await notificationService.notify(
-        NotificationParams.forText('O2:$o2SatAsString', toAtsign,
+        NotificationParams.forText('O2:$o2SatAsString:$sendToShortname', toAtsign,
             shouldEncrypt: true, ),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');

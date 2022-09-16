@@ -31,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   IoT readings = IoT(
-      sensorName:'❤️        Atsign / ZARIOT        ❤️',
+      sensorName: '❤️        Atsign / ZARIOT        ❤️',
       heartRate: '0',
       bloodOxygen: '0',
       heartTime: DateTime.now().toString(),
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AtClientManager atClientManager = AtClientManager.getInstance();
-  
+
     String? currentAtsign;
     AtClient atClient;
     atClient = atClientManager.atClient;
@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //Some padding for desktops
 
               SizedBox(
-                height: _height/8,
+                height: _height / 8,
                 width: _width,
               ),
             ],
@@ -344,13 +344,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void getAtsignData(BuildContext context, AtNotification notification) async {
     var notificationJson = notification.toJson();
     var notificationKey = notificationJson['key'];
-    var keyAtsign = notificationKey.split(':');
+    print(notificationKey);
+    List keyAtsign = notificationKey.split(':');
     String sharedByAtsign = notificationJson['from'];
     String currentAtsign = notificationJson['to'];
-    // String keyAtsign = notificationList[1];
-    // keyAtsign = keyAtsign.replaceAll('.${preference.namespace.toString()}$sharedByAtsign', '');
-
-    // Yes that is all you need to do!
+    String shortName = "";
+    if (keyAtsign.length > 3) {
+      shortName = keyAtsign[4];
+    }
     var value = keyAtsign[2];
     if (keyAtsign[1] == 'HR') {
       readings.heartRate = value;
@@ -367,12 +368,11 @@ class _HomeScreenState extends State<HomeScreen> {
       readings.oxygenTime = DateTime.now().toUtc().toString();
     }
     // Use this for created at source (reader)
-
     //Or this f client got the reading (safer for demos!)
     var createdAt = DateTime.fromMillisecondsSinceEpoch(notificationJson['epochMillis']);
     var dateFormat = DateFormat("HH:mm.ss");
     String dateFormated = dateFormat.format(createdAt);
-    readings.sensorName = '❤️         $sharedByAtsign | $dateFormated         ❤️';
+    readings.sensorName = '❤️         $shortName|$sharedByAtsign|$dateFormated         ❤️';
     if (mounted) {
       setState(() {});
     }
