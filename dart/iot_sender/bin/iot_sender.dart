@@ -19,37 +19,32 @@ void main(List<String> args) async {
 // Args
   parser.addOption('key-file',
       abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
-  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Your atSign');
-  parser.addOption('toatsign', abbr: 't', mandatory: true, help: 'Send data to this atSign');
+  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'atSign of this device');
+  parser.addOption('owner', abbr: 'o', mandatory: true, help: 'atSign of the owner of this device');
   // In the future we could specify devices
   // parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name, used as AtKey:key');
-  parser.addFlag('sendHR', abbr: 'H', help: 'Send Heart Rate');
-  parser.addFlag('sendO2', abbr: 'O', help: 'Send O2 level');
+  // parser.addFlag('sendHR', abbr: 'H', help: 'Send Heart Rate');
+  // parser.addFlag('sendO2', abbr: 'O', help: 'Send O2 level');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
-
 
   // Check the arguments
   String nameSpace = 'fourballcorporate9';
   String rootDomain = 'root.atsign.org';
-  AtSignLogger.root_level = 'SHOUT';
+  AtSignLogger.root_level = 'SEVERE';
 
   dynamic results;
   String atsignFile;
   String fromAtsign = 'unknown';
-  String toAtsign = 'unknown';
+  String ownerAtsign = 'unknown';
   String deviceName = 'unknown';
   String? homeDirectory = getHomeDirectory();
-  bool sendHR = false;
-  bool sendO2 = false;
 
   final AtSignLogger logger = AtSignLogger('iot_sender');
   try {
-        // Arg check
+    // Arg check
     results = parser.parse(args);
     fromAtsign = results['atsign'];
-    toAtsign = results['toatsign'];
-    sendHR = results['sendHR'];
-    sendO2 = results['sendO2'];
+    ownerAtsign = results['owner'];
     if (results['key-file'] != null) {
       atsignFile = results['key-file'];
     } else {
@@ -72,8 +67,6 @@ void main(List<String> args) async {
 
     AtSignLogger.root_level = 'INFO';
   }
-
-
 
   //onboarding preference builder can be used to set onboardingService parameters
   AtOnboardingPreference atOnboardingConfig = AtOnboardingPreference()
@@ -108,7 +101,10 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-  logger.info("calling iotListen atSign '$fromAtsign', toAtSign '$toAtsign'");
-  iotListen(notificationService, fromAtsign, toAtsign, sendHR: sendHR, sendO2: sendO2);
-  print('listening');
-}
+
+ 
+    logger.info("calling iotListen atSign '$fromAtsign'");
+    iotListen(notificationService, fromAtsign);
+  }
+
+

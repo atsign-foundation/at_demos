@@ -2,13 +2,15 @@
 
 # Mobile World Congress Demo
 
-This repo holds the files for Atsign and Zariot demo for MWC 2022.
+This repo holds the files for Atsign and Zariot demo for MWC 2022 and IoTExpo 2022.
 
 For background take a look at the [press release](https://www.zariot.com/blog/zariot-kigen-and-the-company-stem-chaos-in-iot-through-true-e2e-encryption-and-sim-technology/)
 and the white paper [Flipping The Internet of Things (IoT)](https://www.zariot.com/resources/flipping-the-internet-of-things/).
 
 There's a short video overview followed by some Q&A in this episode of
 [Flutter Humpday](https://www.youtube.com/watch?v=zh7sM3RuOZk&t=488s).
+
+[The Data Ownership model](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1#G1il8chiwEajA-xlA3A4yQ6hFFAtn3zEWD)
 
 ## at_cli
 

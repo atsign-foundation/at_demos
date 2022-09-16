@@ -7,8 +7,7 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_reciever/models/iot_model.dart';
-import 'package:path_provider/path_provider.dart'
-    show getApplicationSupportDirectory;
+import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
 
 import 'package:iot_reciever/screens/home_screen.dart';
 import 'package:iot_reciever/screens/onboarding_screen.dart';
@@ -37,7 +36,9 @@ Future<AtClientPreference> loadAtClientPreference() async {
     ..namespace = AtEnv.appNamespace
     ..hiveStoragePath = dir.path
     ..commitLogPath = dir.path
-    ..isLocalStoreRequired = true;
+    ..isLocalStoreRequired = true
+    ..fetchOfflineNotifications = false;
+
   // TODO
   // * By default, this configuration is suitable for most applications
   // * In advanced cases you may need to modify [AtClientPreference]
@@ -53,7 +54,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   IoT ioT = IoT(
-      bloodOxygen: '0', heartRate: '0', sensorName: '@ZARIOT', heartTime: DateTime.now().toString(), oxygenTime:DateTime.now().toString());
+      bloodOxygen: '0',
+      heartRate: '0',
+      sensorName: '@ZARIOT',
+      heartTime: DateTime.now().toString(),
+      oxygenTime: DateTime.now().toString());
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
 
   @override

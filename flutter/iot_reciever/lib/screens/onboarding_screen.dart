@@ -3,11 +3,24 @@ import 'package:flutter/material.dart';
 
 import 'package:iot_reciever/widgets/onboarding_dialog.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   static const String id = '/onboarding';
   const OnboardingScreen({Key? key}) : super(key: key);
 
-  
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+
+@override
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
         double _width = MediaQuery.of(context).size.width;
