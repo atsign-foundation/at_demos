@@ -8,7 +8,7 @@ Type=simple
 Restart=on-failure
 RestartSec=3
 WorkingDirectory=/home/pi/git/github.com/atsign-company/mwc_demo/dart/iot_sender
-ExecStart=/usr/bin/screen -DmS mwcsender ./sender "@deviceatsign" "@appatsign"
+ExecStart=/usr/bin/screen -DmS mwcsender ./sender -a "@sendingatsign" -o "@receivingatsign"
 
 [Install]
 WantedBy=multi-user.target
