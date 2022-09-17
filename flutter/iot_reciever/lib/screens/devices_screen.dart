@@ -129,12 +129,13 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
               );
-              if (newReceiver != null) {
+              
                 setState(() {
+                  print(newReceiver.sendToShortname);
                   // radios.add(newradio);
                   // saveHamradio(radios);
                 });
-              }
+             
             },
             child: const Icon(Icons.add),
           ),);

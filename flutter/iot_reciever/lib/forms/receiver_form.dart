@@ -11,12 +11,12 @@ FormBuilderTextField deviceAtsignForm(BuildContext context, String initialvalue)
       name: '@device',
       decoration: const InputDecoration(
         labelText: 'Device\'s atSign',
-        fillColor: Colors.white,
-        focusColor: Colors.lightGreenAccent,
-        labelStyle: TextStyle(),
+        // fillColor: Colors.white,
+        // focusColor: Colors.lightGreenAccent,
+      labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
-      style: const TextStyle(fontSize: 30, letterSpacing: 5));
+      style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
 FormBuilderTextField sendToAtsignForm(BuildContext context, String initialvalue) {
@@ -25,39 +25,44 @@ FormBuilderTextField sendToAtsignForm(BuildContext context, String initialvalue)
       name: '@receiver',
       decoration: const InputDecoration(
         labelText: 'Receiver\'s atSign',
-        fillColor: Colors.white,
-        focusColor: Colors.lightGreenAccent,
-        labelStyle: TextStyle(),
+        // fillColor: Colors.white,
+        // focusColor: Colors.lightGreenAccent,
+      labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
-      style: const TextStyle(fontSize: 30, letterSpacing: 5));
+      style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
 FormBuilderTextField sendToShortnameForm(BuildContext context, String initialvalue) {
   return FormBuilderTextField(
       initialValue: initialvalue.toString(),
-      name: 'Alice',
+      name: 'ShortName',
       decoration: const InputDecoration(
         labelText: 'Patient ID',
-        fillColor: Colors.white,
-        focusColor: Colors.lightGreenAccent,
-        labelStyle: TextStyle(),
+        // fillColor: Colors.white,
+        // focusColor: Colors.lightGreenAccent,
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
-      style: const TextStyle(fontSize: 30, letterSpacing: 5));
+      style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
 FormBuilderCheckbox sendHRForm(BuildContext context, String initialvalue) {
   return FormBuilderCheckbox(
+    
     name: 'sendHR',
-    title: const Text('Send Heart Rate'),
+    title: const Text('Send Heart Rate',style: TextStyle(fontWeight: FontWeight.bold)),
+    initialValue: false,
+    tristate: false,
   );
 }
 
 FormBuilderCheckbox sendO2Form(BuildContext context, String initialvalue) {
   return FormBuilderCheckbox(
     name: 'sendO2',
-    title: const Text('Send Oxygen Saturation'),
+    title: const Text('Send Oxygen Saturation',style: TextStyle(fontWeight: FontWeight.bold)),
+    initialValue: false,
+    tristate: false,
   );
 }
 
