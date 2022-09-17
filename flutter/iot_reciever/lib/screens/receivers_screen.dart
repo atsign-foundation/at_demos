@@ -125,7 +125,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
         backgroundColor: Colors.red,
 
         onPressed: () async {
-          HrO2Receiver newReceiver = await Navigator.push(
+          var newReceiver = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
           );

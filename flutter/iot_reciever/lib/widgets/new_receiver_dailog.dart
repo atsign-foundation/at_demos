@@ -114,7 +114,6 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                               print(sendToShortname);
                               var sendHr = _formKey.currentState!.fields['sendHR']!.value;
                               var sendO2 = _formKey.currentState!.fields['sendO2']!.value;
-                              print(sendHr.toString());
 
                               var newReceiver = HrO2Receiver(
                                   sendToShortname: sendToAtsign,
@@ -123,11 +122,10 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                                   receiverUuid: UniqueKey().toString(),
                                   sendHR: sendHr,
                                   sendO2: sendO2);
-                              print(newReceiver.sendHR.toString());
                               
                               Navigator.pop(context, newReceiver);
                             } else {
-                              print("validation failed");
+                               Navigator.pop(context, null);
                             }
                           },
                         ),

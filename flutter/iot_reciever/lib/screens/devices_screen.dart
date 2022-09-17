@@ -40,104 +40,104 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
       _gridRows = 1;
     }
     return Scaffold(
-        appBar: NewGradientAppBar(
-          title: const AutoSizeText(
-            'Devices',
-            minFontSize: 5,
-            maxFontSize: 50,
-          ),
-          gradient:
-              const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
-          actions: [
-            PopupMenuButton<String>(
-              color: const Color.fromARGB(255, 108, 169, 197),
-              //padding: const EdgeInsets.symmetric(horizontal: 10),
-              icon: const Icon(
-                Icons.menu,
-                size: 20,
-              ),
-              onSelected: (String result) {
-                switch (result) {
-                  case 'CLOSE':
-                    exit(0);
-                  case 'NEW DEVICE':
-                    
-                    break;
-                  default:
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  height: 20,
-                  value: 'CLOSE',
-                  child: Text(
-                    'CLOSE',
-                    style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 5,
-                        backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                        color: Colors.black),
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  height: 20,
-                  value: 'NEW DEVICE',
-                  child: Text(
-                    'NEW DEVICE',
-                    style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 5,
-                        backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                        color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ],
+      appBar: NewGradientAppBar(
+        title: const AutoSizeText(
+          'Devices',
+          minFontSize: 5,
+          maxFontSize: 50,
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            gradient: _gridRows > 1
-                ? const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-                  )
-                : const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-                  ),
-            image: const DecorationImage(
-              opacity: .15,
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-              image: AssetImage(
-                'assets/images/blood-pressure.png',
-              ),
+        gradient: const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+        actions: [
+          PopupMenuButton<String>(
+            color: const Color.fromARGB(255, 108, 169, 197),
+            //padding: const EdgeInsets.symmetric(horizontal: 10),
+            icon: const Icon(
+              Icons.menu,
+              size: 20,
             ),
-          ),
-          child: SingleChildScrollView(
-            child: Column(),
-          ),
-        ),
-                  floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.red,
-            onPressed: () async {
-              HrO2Receiver newReceiver = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
-              );
-              
-                setState(() {
-                  print(newReceiver.sendToShortname);
-                  // radios.add(newradio);
-                  // saveHamradio(radios);
-                });
-              
+            onSelected: (String result) {
+              switch (result) {
+                case 'CLOSE':
+                  exit(0);
+                case 'NEW DEVICE':
+                  break;
+                default:
+              }
             },
-            child: const Icon(Icons.add),
-          ),);
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'CLOSE',
+                child: Text(
+                  'CLOSE',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'NEW DEVICE',
+                child: Text(
+                  'NEW DEVICE',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.white70,
+          gradient: _gridRows > 1
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                )
+              : const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                ),
+          image: const DecorationImage(
+            opacity: .15,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            image: AssetImage(
+              'assets/images/blood-pressure.png',
+            ),
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          var newReceiver = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
+          );
+          if (newReceiver == null) {
+            print('nothin');
+          } else {
+            setState(() {
+              // radios.add(newradio);
+              // saveHamradio(radios);
+            });
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
