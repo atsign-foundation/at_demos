@@ -138,28 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white70,
-          gradient: _gridRows > 1
-              ? const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-                ),
-          image: const DecorationImage(
-            opacity: .15,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-            image: AssetImage(
-              'assets/images/blood-pressure.png',
-            ),
-          ),
-        ),
+        decoration: backgroundGradient(_gridRows),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -354,6 +333,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  BoxDecoration backgroundGradient(int _gridRows) {
+    return BoxDecoration(
+        color: Colors.white70,
+        gradient: _gridRows > 1
+            ? const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+              )
+            : const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+              ),
+        image: const DecorationImage(
+          opacity: .15,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          image: AssetImage(
+            'assets/images/blood-pressure.png',
+          ),
+        ),
+      );
   }
 
   void getAtsignData(BuildContext context, AtNotification notification) async {

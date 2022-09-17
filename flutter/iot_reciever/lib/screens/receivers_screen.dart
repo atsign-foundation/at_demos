@@ -6,7 +6,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
@@ -118,12 +117,13 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
         ),
         child: SingleChildScrollView(
           child: Column(
-            children:[Text('hello')]
+            children:[SizedBox(width: _width, height: _height,)]
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
+
         onPressed: () async {
           HrO2Receiver newReceiver = await Navigator.push(
             context,
@@ -136,7 +136,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
             });
           }
         },
-        child: const Icon(MdiIcons.plus),
+        child:  const Icon(Icons.add),
       ),
     );
   }

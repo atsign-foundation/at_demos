@@ -76,7 +76,7 @@ class ReceiverSubmitForm extends StatelessWidget {
       child: MaterialButton(
         child: const AutoSizeText(
           "Reset",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
           maxLines: 1,
           maxFontSize: 30,
           minFontSize: 10,
