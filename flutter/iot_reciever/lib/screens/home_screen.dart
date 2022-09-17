@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iot_reciever/main.dart';
 import 'package:iot_reciever/models/iot_model.dart';
+import 'package:iot_reciever/screens/receivers_screen.dart';
 import 'package:iot_reciever/widgets/Gaugewidget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -101,7 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
               switch (result) {
                 case 'CLOSE':
                   exit(0);
-                //break;
+                case 'DEVICES':
+                  Navigator.of(context).pushNamed(ReceiversScreen.id);
+                break;
                 default:
               }
             },
@@ -117,7 +120,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       backgroundColor: Color.fromARGB(255, 108, 169, 197),
                       color: Colors.black),
                 ),
-              )
+              ),
+                            const PopupMenuItem<String>(
+                height: 20,
+                value: 'DEVICES',
+                child: Text(
+                  'DEVICES',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
             ],
           ),
         ],
