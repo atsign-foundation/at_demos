@@ -124,6 +124,7 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                                   sendHR: sendHr,
                                   sendO2: sendO2);
                               print(newReceiver.sendHR.toString());
+                              
                               Navigator.pop(context, newReceiver);
                             } else {
                               print("validation failed");
