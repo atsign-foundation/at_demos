@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 import 'dart:math';
 import 'package:at_utils/at_utils.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:at_client/at_client.dart';
 //import 'package:at_commons/at_commons.dart';
-import 'package:iot_sender/models/hro2_receiver.dart';
+import 'package:iot_sender/models/send_hr02_receiver.dart';
 
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
@@ -96,11 +97,18 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-    List<HrO2Receiver> toAtsigns;
-    HrO2Receiver first = HrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true, sendToShortname: "world");
-    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false, sendToShortname: "hello");
 
-    toAtsigns = [first, second];
+String sendersString = '[{"sendToAtsign":"@atgps_receiver","sendHR":"true","sendO2":"true","sendToShortname":"world"},{"sendToAtsign":"@atgps02","sendHR":"true","sendO2":"false","sendToShortname":"hello"}]';
+
+ var senders = jsonDecode(sendersString);
+  
+List <SendHrO2Receiver> toAtsigns= [];;
+
+  for (var i = 0; i < senders.length; i++) {
+    toAtsigns.add(SendHrO2Receiver.fromJson(senders[i]));
+  }
+
+
 
 // pick up HR
     if (c[0].topic == "mqtt/mwc_hr") {
@@ -108,16 +116,18 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
       for (var receiver in toAtsigns) {
-        if (receiver.sendHR) {
+        if (receiver.sendHR.parseBool()) {
           print('Sending to: ${receiver.sendToAtsign}');
-          await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
+          await shareHeartRate(
+              heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
         }
 
         if (fakingO2SatValues) {
           // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
           currentFakeO2IntValue = getNextFakeO2IntValue();
           double fakeO2DoubleValue = currentFakeO2IntValue / 10;
-          await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
+          await shareO2Sat(
+              fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
         }
       }
     }
@@ -128,8 +138,9 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
       for (var receiver in toAtsigns) {
-        if (receiver.sendO2) {
-          await shareO2Sat(o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
+        if (receiver.sendO2.parseBool()) {
+          await shareO2Sat(
+              o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
         }
       }
     }
@@ -150,11 +161,11 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
       }
       if (hrDetect) {
         for (var receiver in toAtsigns) {
-          if (receiver.sendHR) {
+          if (receiver.sendHR.parseBool()) {
             await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
-          if (receiver.sendO2) {
-            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign,receiver.sendToShortname, notificationService);
+          if (receiver.sendO2.parseBool()) {
+            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
         }
       }
@@ -162,8 +173,8 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
   });
 }
 
-Future<void> shareHeartRate(
-    double heartRate, String atsign, String toAtsign, String sendToShortname,  NotificationService notificationService) async {
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendHR) {
     return;
   }
@@ -175,8 +186,7 @@ Future<void> shareHeartRate(
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
   try {
     await notificationService.notify(
-        NotificationParams.forText('HR:$heartRateAsString:$sendToShortname', toAtsign,
-            shouldEncrypt: true),
+        NotificationParams.forText('HR:$heartRateAsString:$sendToShortname', toAtsign, shouldEncrypt: true),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
@@ -190,7 +200,8 @@ Future<void> shareHeartRate(
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sendToShortname, NotificationService notificationService) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendO2) {
     return;
   }
@@ -200,8 +211,11 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sen
 
   try {
     await notificationService.notify(
-        NotificationParams.forText('O2:$o2SatAsString:$sendToShortname', toAtsign,
-            shouldEncrypt: true, ),
+        NotificationParams.forText(
+          'O2:$o2SatAsString:$sendToShortname',
+          toAtsign,
+          shouldEncrypt: true,
+        ),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
