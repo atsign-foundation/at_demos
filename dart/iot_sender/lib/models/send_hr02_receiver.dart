@@ -1,7 +1,7 @@
 class SendHrO2Receiver {
   String sendToAtsign;
-  String sendHR;
-  String sendO2;
+  bool sendHR;
+  bool sendO2;
   String sendToShortname = "";
 
 

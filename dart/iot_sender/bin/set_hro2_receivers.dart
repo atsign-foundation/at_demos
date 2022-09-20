@@ -19,11 +19,9 @@ void main(List<String> args) async {
 // Args
   parser.addOption('key-file',
       abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
-  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'atSign of this device');
-  parser.addOption('owner', abbr: 'o', mandatory: true, help: 'atSign of the owner of this device');
+  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
+  parser.addOption('device', abbr: 'd', mandatory: true, help: 'atSign of the  device');
   parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name');
-  // parser.addFlag('sendHR', abbr: 'H', help: 'Send Heart Rate');
-  // parser.addFlag('sendO2', abbr: 'O', help: 'Send O2 level');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
 
   // Check the arguments
@@ -34,8 +32,8 @@ void main(List<String> args) async {
   dynamic results;
   String atsignFile;
   String fromAtsign = 'unknown';
-  String ownerAtsign = 'unknown';
   String deviceName = 'unknown';
+  String deviceAtsign = 'unknown';
   String? homeDirectory = getHomeDirectory();
 
   final AtSignLogger logger = AtSignLogger('iot_sender');
@@ -43,8 +41,8 @@ void main(List<String> args) async {
     // Arg check
     results = parser.parse(args);
     fromAtsign = results['atsign'];
-    ownerAtsign = results['owner'];
     deviceName = results['device-name'];
+    deviceAtsign = results['device'];
     if (results['key-file'] != null) {
       atsignFile = results['key-file'];
     } else {
@@ -74,15 +72,13 @@ void main(List<String> args) async {
     ..namespace = nameSpace
     ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
-    //..syncIntervalMins = 1
     ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
     ..rootDomain = rootDomain
     ..atKeysFilePath = atsignFile;
   AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
   await onboardingService.authenticate();
-  //AtClient? atClient = await onboardingService.getAtClient();
+  AtClient? atClient = await onboardingService.getAtClient();
   AtClientManager atClientManager = AtClientManager.getInstance();
-  NotificationService notificationService = atClientManager.notificationService;
 
   bool syncComplete = false;
   void onSyncDone(syncResult) {
@@ -102,6 +98,45 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-  logger.info("calling iotListen atSign '$fromAtsign'");
-  iotListen(atClientManager, notificationService, fromAtsign,ownerAtsign, deviceName);
+  String receiversString =
+      '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2":true,"sendToShortname":"wwwwww"},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"hello"}]';
+
+  // logger.info("calling iotListen atSign '$fromAtsign'");
+  // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);
+
+  String? currentAtsign;
+  currentAtsign = atClient?.getCurrentAtSign();
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+
+    ///..ttr = 10
+    ..namespaceAware = true;
+
+  var key = AtKey()
+    ..key = '$deviceName.config'
+    ..sharedWith = currentAtsign
+    ..namespace = atClient?.getPreferences()!.namespace
+    ..sharedBy = fromAtsign
+    ..sharedWith = deviceAtsign
+    ..metadata = metaData;
+
+  try {
+    await atClient?.put(key, receiversString);
+    //exit(0);
+  } catch (e) {
+    print(e.toString());
+  }
+
+  logger.info("Waiting for final sync");
+  syncComplete = false;
+  atClientManager.syncService.sync(onDone: onSyncDone);
+  while (!syncComplete) {
+    await Future.delayed(Duration(milliseconds: 500));
+    stderr.write(".");
+  }
+  logger.info("Final sync complete");
+  logger.info('OK Ready');
+  exit(0);
 }

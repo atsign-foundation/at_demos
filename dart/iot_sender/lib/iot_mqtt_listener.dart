@@ -38,7 +38,8 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(NotificationService notificationService, String fromAtsign) async {
+Future<void> iotListen(AtClientManager atClientManager, NotificationService notificationService, String fromAtsign,
+    String ownerAtsign, String deviceName) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -48,6 +49,8 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
   double lastHeartRateDoubleValue = 0.0;
   double lastO2SatDoubleValue = 0.0;
+
+  AtClient atClient = atClientManager.atClient;
 
   try {
     await client.connect();
@@ -90,33 +93,20 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
   // NOTE When this listenHandler function is called, the caller is not using await
   // i.e. this function can (and will) be called even if previous calls haven't yet completed
-  // TODO If we encounter any more problems because of this, the solution is to have this
-  //  listen handler just add the message to a local Queue, and have another function here
-  //  which is reading from that Queue and doing the actual work
+
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-
-String sendersString = '[{"sendToAtsign":"@atgps_receiver","sendHR":"true","sendO2":"true","sendToShortname":"world"},{"sendToAtsign":"@atgps02","sendHR":"true","sendO2":"false","sendToShortname":"hello"}]';
-
- var senders = jsonDecode(sendersString);
-  
-List <SendHrO2Receiver> toAtsigns= [];;
-
-  for (var i = 0; i < senders.length; i++) {
-    toAtsigns.add(SendHrO2Receiver.fromJson(senders[i]));
-  }
-
-
-
+    List<SendHrO2Receiver> toAtsigns = await getReceivers(atClient, ownerAtsign, deviceName);
+  if (toAtsigns.isNotEmpty) {
 // pick up HR
     if (c[0].topic == "mqtt/mwc_hr") {
       double? heartRateDoubleValue = double.tryParse(pt);
       heartRateDoubleValue ??= lastHeartRateDoubleValue;
       lastHeartRateDoubleValue = heartRateDoubleValue;
       for (var receiver in toAtsigns) {
-        if (receiver.sendHR.parseBool()) {
+        if (receiver.sendHR) {
           print('Sending to: ${receiver.sendToAtsign}');
           await shareHeartRate(
               heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
@@ -138,7 +128,7 @@ List <SendHrO2Receiver> toAtsigns= [];;
       o2SatDoubleValue ??= lastO2SatDoubleValue;
       lastO2SatDoubleValue = o2SatDoubleValue;
       for (var receiver in toAtsigns) {
-        if (receiver.sendO2.parseBool()) {
+        if (receiver.sendO2) {
           await shareO2Sat(
               o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
         }
@@ -161,16 +151,54 @@ List <SendHrO2Receiver> toAtsigns= [];;
       }
       if (hrDetect) {
         for (var receiver in toAtsigns) {
-          if (receiver.sendHR.parseBool()) {
+          if (receiver.sendHR) {
             await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
-          if (receiver.sendO2.parseBool()) {
+          if (receiver.sendO2) {
             await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
         }
       }
     }
+  }
   });
+}
+
+Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String deviceName) async {
+  String receiversString = '';
+  //  '[{"sendToAtsign":"@atgps_receiver","sendHR":"true","sendO2":"true","sendToShortname":"world"},{"sendToAtsign":"@atgps02","sendHR":"true","sendO2":"false","sendToShortname":"hello"}]';
+  String? currentAtsign;
+  currentAtsign = atClient.getCurrentAtSign();
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+    ..namespaceAware = true;
+
+  var key = AtKey()
+    ..key = '$deviceName.config'
+    //..sharedWith = currentAtsign
+    ..namespace = atClient.getPreferences()!.namespace
+    ..sharedBy = ownerAtsign
+    ..metadata = metaData;
+
+  print('Owner:$ownerAtsign  sharedwith:$currentAtsign');
+
+  try {
+    AtValue atReceiversAtValue = await atClient.get(key);
+    receiversString = atReceiversAtValue.value;
+  } catch (e) {
+    print(e.toString());
+  }
+  print("the string: $receiversString");
+  var senders = jsonDecode(receiversString);
+
+  List<SendHrO2Receiver> toAtsigns = [];
+
+  for (var i = 0; i < senders.length; i++) {
+    toAtsigns.add(SendHrO2Receiver.fromJson(senders[i]));
+  }
+  return toAtsigns;
 }
 
 Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, String sendToShortname,
