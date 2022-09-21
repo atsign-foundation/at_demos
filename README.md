@@ -23,7 +23,7 @@ This is no longer used in the demo, but left in place as an example.
 
 A dart app to read from MQTT and send to an Atsign.
 
-First put the sending atSign .atKeys file in ~/.atsign/keys. If you do not have the .atKeys file then register an atSign in and Atsign app and save your keys this will give you the needed key file.
+First put the sending atSign .atKeys file in ~/.atsign/keys. If you do not have the .atKeys file then register an atSign in an Atsign app and save your keys this will give you the needed key file.
 
 ```bash
 cd dart/iot_sender

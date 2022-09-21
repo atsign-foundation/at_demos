@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 import 'dart:math';
 import 'package:at_utils/at_utils.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:at_client/at_client.dart';
 //import 'package:at_commons/at_commons.dart';
-import 'package:iot_sender/models/hro2_receiver.dart';
+import 'package:iot_sender/models/send_hr02_receiver.dart';
 
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
@@ -37,7 +38,8 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(NotificationService notificationService, String fromAtsign) async {
+Future<void> iotListen(AtClientManager atClientManager, NotificationService notificationService, String fromAtsign,
+    String ownerAtsign, String deviceName) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -47,6 +49,8 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
   double lastHeartRateDoubleValue = 0.0;
   double lastO2SatDoubleValue = 0.0;
+
+  AtClient atClient = atClientManager.atClient;
 
   try {
     await client.connect();
@@ -89,72 +93,77 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
 
   // NOTE When this listenHandler function is called, the caller is not using await
   // i.e. this function can (and will) be called even if previous calls haven't yet completed
-  // TODO If we encounter any more problems because of this, the solution is to have this
-  //  listen handler just add the message to a local Queue, and have another function here
-  //  which is reading from that Queue and doing the actual work
+
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-    List<HrO2Receiver> toAtsigns;
-    HrO2Receiver first = HrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true);
-    HrO2Receiver second = HrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false);
+    List<SendHrO2Receiver> toAtsigns = await getReceivers(atClient, ownerAtsign, deviceName);
 
-    toAtsigns = [first, second];
 
+for (var receiver in toAtsigns) {      
+    logger.info('Notification config: '+ receiver.toJson().toString());
+          }
+      
+
+    if (toAtsigns.isNotEmpty) {
 // pick up HR
-    if (c[0].topic == "mqtt/mwc_hr") {
-      double? heartRateDoubleValue = double.tryParse(pt);
-      heartRateDoubleValue ??= lastHeartRateDoubleValue;
-      lastHeartRateDoubleValue = heartRateDoubleValue;
-      for (var receiver in toAtsigns) {
-        if (receiver.sendHR) {
-          print('Sending to: ${receiver.sendToAtsign}');
-          await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
-        }
-
-        if (fakingO2SatValues) {
-          // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
-          currentFakeO2IntValue = getNextFakeO2IntValue();
-          double fakeO2DoubleValue = currentFakeO2IntValue / 10;
-          await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
-        }
-      }
-    }
-
-//pick up O2
-    if (c[0].topic == "mqtt/mwc_o2") {
-      double? o2SatDoubleValue = double.tryParse(pt);
-      o2SatDoubleValue ??= lastO2SatDoubleValue;
-      lastO2SatDoubleValue = o2SatDoubleValue;
-      for (var receiver in toAtsigns) {
-        if (receiver.sendO2) {
-          await shareO2Sat(o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, notificationService);
-        }
-      }
-    }
-
-// pick up both HR and O2
-    if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
-      List<String> beatBpmSpo = ['false', '0', '0'];
-      bool hrDetect = false;
-      double bpm = 0;
-      double spo = 0;
-      try {
-        beatBpmSpo = pt.split(",");
-        hrDetect = beatBpmSpo[0].parseBool();
-        bpm = double.parse(beatBpmSpo[1]);
-        spo = double.parse(beatBpmSpo[2]);
-      } catch (e) {
-        logger.severe('Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was recieved: $pt');
-      }
-      if (hrDetect) {
+      if (c[0].topic == "mqtt/mwc_hr") {
+        double? heartRateDoubleValue = double.tryParse(pt);
+        heartRateDoubleValue ??= lastHeartRateDoubleValue;
+        lastHeartRateDoubleValue = heartRateDoubleValue;
         for (var receiver in toAtsigns) {
           if (receiver.sendHR) {
-            await shareHeartRate(bpm, fromAtsign, receiver.sendToAtsign, notificationService);
+            await shareHeartRate(
+                heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
+
+          if (fakingO2SatValues) {
+            // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
+            currentFakeO2IntValue = getNextFakeO2IntValue();
+            double fakeO2DoubleValue = currentFakeO2IntValue / 10;
+            await shareO2Sat(
+                fakeO2DoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
+          }
+        }
+      }
+
+//pick up O2
+      if (c[0].topic == "mqtt/mwc_o2") {
+        double? o2SatDoubleValue = double.tryParse(pt);
+        o2SatDoubleValue ??= lastO2SatDoubleValue;
+        lastO2SatDoubleValue = o2SatDoubleValue;
+        for (var receiver in toAtsigns) {
           if (receiver.sendO2) {
-            await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, notificationService);
+            await shareO2Sat(
+                o2SatDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
+          }
+        }
+      }
+
+// pick up both HR and O2
+      if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
+        List<String> beatBpmSpo = ['false', '0', '0'];
+        bool hrDetect = false;
+        double bpm = 0;
+        double spo = 0;
+        try {
+          beatBpmSpo = pt.split(",");
+          hrDetect = beatBpmSpo[0].parseBool();
+          bpm = double.parse(beatBpmSpo[1]);
+          spo = double.parse(beatBpmSpo[2]);
+        } catch (e) {
+          logger.severe('Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was recieved: $pt');
+        }
+        if (hrDetect) {
+          for (var receiver in toAtsigns) {
+            if (receiver.sendHR) {
+              await shareHeartRate(
+                  bpm, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
+            }
+            if (receiver.sendO2) {
+              await shareO2Sat(spo, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
+            }
           }
         }
       }
@@ -162,8 +171,40 @@ Future<void> iotListen(NotificationService notificationService, String fromAtsig
   });
 }
 
-Future<void> shareHeartRate(
-    double heartRate, String atsign, String toAtsign, NotificationService notificationService) async {
+Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String deviceName) async {
+  String receiversString = '';
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+    ..namespaceAware = true;
+
+  var key = AtKey()
+    ..key = '$deviceName.config'
+    ..namespace = atClient.getPreferences()!.namespace
+    ..sharedBy = ownerAtsign
+    ..metadata = metaData;
+
+  try {
+    AtValue atReceiversAtValue = await atClient.get(key);
+    receiversString = atReceiversAtValue.value;
+  } catch (e) {
+    logger.severe(e.toString());
+  }
+
+  List<SendHrO2Receiver> toAtsigns = [];
+  if (receiversString.isNotEmpty) {
+    var senders = jsonDecode(receiversString);
+
+    for (var i = 0; i < senders.length; i++) {
+      toAtsigns.add(SendHrO2Receiver.fromJson(senders[i]));
+    }
+  }
+  return toAtsigns;
+}
+
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendHR) {
     return;
   }
@@ -175,8 +216,7 @@ Future<void> shareHeartRate(
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
   try {
     await notificationService.notify(
-        NotificationParams.forText('HR:$heartRateAsString', toAtsign,
-            shouldEncrypt: true),
+        NotificationParams.forText('HR:$heartRateAsString:$sendToShortname', toAtsign, shouldEncrypt: true),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
@@ -190,7 +230,8 @@ Future<void> shareHeartRate(
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, NotificationService notificationService) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendO2) {
     return;
   }
@@ -200,8 +241,11 @@ Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, Notificati
 
   try {
     await notificationService.notify(
-        NotificationParams.forText('O2:$o2SatAsString', toAtsign,
-            shouldEncrypt: true, ),
+        NotificationParams.forText(
+          'O2:$o2SatAsString:$sendToShortname',
+          toAtsign,
+          shouldEncrypt: true,
+        ),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {

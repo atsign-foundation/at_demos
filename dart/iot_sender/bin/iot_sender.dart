@@ -21,8 +21,7 @@ void main(List<String> args) async {
       abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
   parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'atSign of this device');
   parser.addOption('owner', abbr: 'o', mandatory: true, help: 'atSign of the owner of this device');
-  // In the future we could specify devices
-  // parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name, used as AtKey:key');
+  parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name');
   // parser.addFlag('sendHR', abbr: 'H', help: 'Send Heart Rate');
   // parser.addFlag('sendO2', abbr: 'O', help: 'Send O2 level');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
@@ -45,6 +44,7 @@ void main(List<String> args) async {
     results = parser.parse(args);
     fromAtsign = results['atsign'];
     ownerAtsign = results['owner'];
+    deviceName = results['device-name'];
     if (results['key-file'] != null) {
       atsignFile = results['key-file'];
     } else {
@@ -74,6 +74,7 @@ void main(List<String> args) async {
     ..namespace = nameSpace
     ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
+    //..syncIntervalMins = 1
     ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
     ..rootDomain = rootDomain
     ..atKeysFilePath = atsignFile;
@@ -101,10 +102,6 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-
- 
-    logger.info("calling iotListen atSign '$fromAtsign'");
-    iotListen(notificationService, fromAtsign);
-  }
-
-
+  logger.info("calling iotListen atSign '$fromAtsign'");
+  iotListen(atClientManager, notificationService, fromAtsign,ownerAtsign, deviceName);
+}

@@ -4,6 +4,7 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:iot_reciever/main.dart';
 import 'package:iot_reciever/screens/home_screen.dart';
+import 'package:iot_reciever/screens/receivers_screen.dart';
 import 'package:iot_reciever/screens/onboarding_screen.dart';
 import 'package:iot_reciever/widgets/error_dialog.dart';
 import 'package:at_app_flutter/at_app_flutter.dart';
