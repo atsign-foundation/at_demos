@@ -3,7 +3,6 @@ import 'dart:io';
 // external packages
 import 'package:args/args.dart';
 import 'package:logging/src/level.dart';
-import 'package:iot_sender/iot_mqtt_listener.dart';
 
 // atPlatform packages
 import 'package:at_client/at_client.dart';
@@ -18,10 +17,15 @@ void main(List<String> args) async {
   var parser = ArgParser();
 // Args
   parser.addOption('key-file',
-      abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
-  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
-  parser.addOption('device', abbr: 'd', mandatory: true, help: 'atSign of the  device');
-  parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name');
+      abbr: 'k',
+      mandatory: false,
+      help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
+  parser.addOption('atsign',
+      abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
+  parser.addOption('device',
+      abbr: 'd', mandatory: true, help: 'atSign of the  device');
+  parser.addOption('device-name',
+      abbr: 'n', mandatory: true, help: 'Device name');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
 
   // Check the arguments
@@ -68,14 +72,17 @@ void main(List<String> args) async {
 
   //onboarding preference builder can be used to set onboardingService parameters
   AtOnboardingPreference atOnboardingConfig = AtOnboardingPreference()
-    ..hiveStoragePath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
+    ..hiveStoragePath =
+        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
     ..namespace = nameSpace
     ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
-    ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
+    ..commitLogPath =
+        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
     ..rootDomain = rootDomain
     ..atKeysFilePath = atsignFile;
-  AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
+  AtOnboardingService onboardingService =
+      AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
   await onboardingService.authenticate();
   AtClient? atClient = await onboardingService.getAtClient();
   AtClientManager atClientManager = AtClientManager.getInstance();
@@ -98,8 +105,8 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
- 
- String receiversString = '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2": true,"sendToShortname":"bob"},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"world"}]';
+  String receiversString =
+      '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2": true,"sendToShortname":"bob"},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"world"}]';
   logger.info("calling iotListen atSign '$fromAtsign'");
   // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);
 

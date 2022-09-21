@@ -3,19 +3,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_utils/at_logger.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_commons/at_commons.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:iot_reciever/main.dart';
 import 'package:iot_reciever/models/iot_model.dart';
 import 'package:iot_reciever/screens/receivers_screen.dart';
-import 'package:iot_reciever/widgets/Gaugewidget.dart';
+import 'package:iot_reciever/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 final AtSignLogger _logger = AtSignLogger('HomeScreen');
@@ -53,14 +50,18 @@ class _HomeScreenState extends State<HomeScreen> {
     atClientManager.syncService.sync(onDone: () {
       _logger.info('sync complete');
     });
-    notificationService.subscribe(regex: '$currentAtsign:[O2|HR]', shouldDecrypt: true).listen((notification) {
-      _logger.info('notification subscription handler got notification with key ${notification.toJson()}');
+    notificationService
+        .subscribe(regex: '$currentAtsign:[O2|HR]', shouldDecrypt: true)
+        .listen((notification) {
+      _logger.info(
+          'notification subscription handler got notification with key ${notification.toJson()}');
       if (mounted) {
         getAtsignData(context, notification);
       }
     });
     // reset dials if no data comes in checkExpiry(int Seconds)
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => checkExpiry(3));
+    timer =
+        Timer.periodic(const Duration(seconds: 1), (Timer t) => checkExpiry(3));
     if (mounted) {
       setState(() {});
     }
@@ -89,7 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
           minFontSize: 5,
           maxFontSize: 50,
         ),
-        gradient: const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+        gradient: const LinearGradient(colors: [
+          Color.fromARGB(255, 173, 83, 78),
+          Color.fromARGB(255, 108, 169, 197)
+        ]),
         actions: [
           PopupMenuButton<String>(
             color: const Color.fromARGB(255, 108, 169, 197),
@@ -104,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   exit(0);
                 case 'DEVICES':
                   Navigator.of(context).pushNamed(ReceiversScreen.id);
-                break;
+                  break;
                 default:
               }
             },
@@ -121,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.black),
                 ),
               ),
-                            const PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 height: 20,
                 value: 'DEVICES',
                 child: Text(
@@ -313,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: AutoSizeText(
                       readings.sensorName,
-                      style: TextStyle(fontSize: 100),
+                      style: const TextStyle(fontSize: 100),
                       textAlign: TextAlign.center,
                       maxFontSize: 50,
                       minFontSize: 4,
@@ -337,33 +341,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
   BoxDecoration backgroundGradient(int _gridRows) {
     return BoxDecoration(
-        color: Colors.white70,
-        gradient: _gridRows > 1
-            ? const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-              )
-            : const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
-              ),
-        image: const DecorationImage(
-          opacity: .15,
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          image: AssetImage(
-            'assets/images/blood-pressure.png',
-          ),
+      color: Colors.white70,
+      gradient: _gridRows > 1
+          ? const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromARGB(255, 240, 181, 178),
+                Color.fromARGB(255, 171, 200, 224)
+              ],
+            )
+          : const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromARGB(255, 240, 181, 178),
+                Color.fromARGB(255, 171, 200, 224)
+              ],
+            ),
+      image: const DecorationImage(
+        opacity: .15,
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+        image: AssetImage(
+          'assets/images/blood-pressure.png',
         ),
-      );
+      ),
+    );
   }
 
   void getAtsignData(BuildContext context, AtNotification notification) async {
     var notificationJson = notification.toJson();
     var notificationKey = notificationJson['key'];
-    print(notificationKey);
     List keyAtsign = notificationKey.split(':');
     String sharedByAtsign = notificationJson['from'];
     String currentAtsign = notificationJson['to'];
@@ -388,14 +397,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     // Use this for created at source (reader)
     //Or this f client got the reading (safer for demos!)
-    var createdAt = DateTime.fromMillisecondsSinceEpoch(notificationJson['epochMillis']);
+    var createdAt =
+        DateTime.fromMillisecondsSinceEpoch(notificationJson['epochMillis']);
     var dateFormat = DateFormat("HH:mm.ss");
-    String dateFormated = dateFormat.format(createdAt);
-    readings.sensorName = '❤️         $shortName|$sharedByAtsign|$dateFormated         ❤️';
+    String dateFormatted = dateFormat.format(createdAt);
+    readings.sensorName =
+        '❤️         $shortName|$sharedByAtsign|$dateFormatted         ❤️';
     if (mounted) {
       setState(() {});
     }
-    _logger.info('Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
+    _logger.info(
+        'Yay $currentAtsign was just sent a $keyAtsign reading of $value ! From $sharedByAtsign');
   }
 
   void checkExpiry(int expireSeconds) {

@@ -11,7 +11,7 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Receiver extends StatefulWidget {
   const NewHrO2Receiver({Key? key}) : super(key: key);
-  static const String id = '/newradio';
+  static const String id = '/new_receiver';
 
   @override
   _NewHrO2Receiver createState() => _NewHrO2Receiver();
@@ -38,8 +38,10 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
             minFontSize: 5,
             maxFontSize: 50,
           ),
-          gradient:
-              const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+          gradient: const LinearGradient(colors: [
+            Color.fromARGB(255, 173, 83, 78),
+            Color.fromARGB(255, 108, 169, 197)
+          ]),
           actions: [
             PopupMenuButton<String>(
               color: const Color.fromARGB(255, 108, 169, 197),
@@ -108,24 +110,28 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                           onPressed: () {
                             _formKey.currentState!.save();
                             if (_formKey.currentState!.validate()) {
-                              String deviceAtsign = _formKey.currentState!.fields['@device']!.value;
-                              String sendToAtsign = _formKey.currentState!.fields['@receiver']!.value;
-                              String sendToShortname = _formKey.currentState!.fields['ShortName']!.value;
-                              print(sendToShortname);
-                              var sendHr = _formKey.currentState!.fields['sendHR']!.value;
-                              var sendO2 = _formKey.currentState!.fields['sendO2']!.value;
+                              String deviceAtsign = _formKey
+                                  .currentState!.fields['@device']!.value;
+                              String sendToAtsign = _formKey
+                                  .currentState!.fields['@receiver']!.value;
+                              String sendToShortname = _formKey
+                                  .currentState!.fields['ShortName']!.value;
+                              var sendHr = _formKey
+                                  .currentState!.fields['sendHR']!.value;
+                              var sendO2 = _formKey
+                                  .currentState!.fields['sendO2']!.value;
 
                               var newReceiver = HrO2Receiver(
-                                  sendToShortname: sendToAtsign,
+                                  sendToShortname: sendToShortname,
                                   deviceAtsign: deviceAtsign,
                                   sendToAtsign: sendToAtsign,
                                   receiverUuid: UniqueKey().toString(),
                                   sendHR: sendHr,
                                   sendO2: sendO2);
-                              
+
                               Navigator.pop(context, newReceiver);
                             } else {
-                               Navigator.pop(context, null);
+                              Navigator.pop(context, null);
                             }
                           },
                         ),
@@ -154,12 +160,18 @@ BoxDecoration backgroundGradient(int _gridRows) {
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+            colors: [
+              Color.fromARGB(255, 240, 181, 178),
+              Color.fromARGB(255, 171, 200, 224)
+            ],
           )
         : const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+            colors: [
+              Color.fromARGB(255, 240, 181, 178),
+              Color.fromARGB(255, 171, 200, 224)
+            ],
           ),
     image: const DecorationImage(
       opacity: .15,

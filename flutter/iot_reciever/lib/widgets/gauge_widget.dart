@@ -21,7 +21,7 @@ class GaugeWidget extends StatefulWidget {
   final double lowSector;
   final double medSector;
   final double highSector;
-  final double lastvalue;
+  final double lastValue;
 
   // ignore: use_key_in_widget_constructors
   const GaugeWidget(
@@ -30,7 +30,7 @@ class GaugeWidget extends StatefulWidget {
       required this.units,
       required this.value,
       this.decimalPlaces = 2,
-      this.lastvalue = 0,
+      this.lastValue = 0,
       this.bottomRange = 0,
       this.topRange = 100,
       this.highColor = Colors.red,
@@ -162,7 +162,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   setMeter(String value, double reading) {
     switch (value) {
       case 'heartRate':
-          widget.ioT.meterHeartRate = reading.toString();
+        widget.ioT.meterHeartRate = reading.toString();
         break;
       case 'bloodOxygen':
         widget.ioT.meterBloodOxygen = reading.toString();

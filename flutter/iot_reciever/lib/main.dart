@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:iot_reciever/screens/receivers_screen.dart';
-// import 'package:at_onboarding_flutter/at_onboarding_flutter.dart' show Onboarding;
-import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_reciever/models/iot_model.dart';
-import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
+import 'package:path_provider/path_provider.dart'
+    show getApplicationSupportDirectory;
 
 import 'package:iot_reciever/screens/home_screen.dart';
 import 'package:iot_reciever/screens/onboarding_screen.dart';
@@ -39,11 +38,6 @@ Future<AtClientPreference> loadAtClientPreference() async {
     ..commitLogPath = dir.path
     ..isLocalStoreRequired = true
     ..fetchOfflineNotifications = false;
-
-  // TODO
-  // * By default, this configuration is suitable for most applications
-  // * In advanced cases you may need to modify [AtClientPreference]
-  // * Read more here: https://pub.dev/documentation/at_client/latest/at_client/AtClientPreference-class.html
 }
 
 class MyApp extends StatefulWidget {
@@ -69,8 +63,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'HRO2 DISPLAY',
       theme: ThemeData(
-        primarySwatch: Colors.lightBlue,
-        backgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue)
+            .copyWith(background: Colors.white),
       ),
       // * The onboarding screen (first screen)
       routes: {
