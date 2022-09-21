@@ -99,7 +99,7 @@ void main(List<String> args) async {
   logger.info('OK Ready');
 
   String receiversString =
-      '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2":true,"sendToShortname":"wwwwww"},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"hello"}]';
+      '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2":true,"sendToShortname":"......kevin....."},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"hello"}]';
 
   // logger.info("calling iotListen atSign '$fromAtsign'");
   // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);

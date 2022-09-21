@@ -167,8 +167,7 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
 
 Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String deviceName) async {
   String receiversString = '';
-  //  '[{"sendToAtsign":"@atgps_receiver","sendHR":"true","sendO2":"true","sendToShortname":"world"},{"sendToAtsign":"@atgps02","sendHR":"true","sendO2":"false","sendToShortname":"hello"}]';
-
+  
   var metaData = Metadata()
     ..isPublic = false
     ..isEncrypted = true
