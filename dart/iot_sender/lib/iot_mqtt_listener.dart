@@ -99,6 +99,13 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
     List<SendHrO2Receiver> toAtsigns = await getReceivers(atClient, ownerAtsign, deviceName);
+
+
+for (var receiver in toAtsigns) {      
+    logger.info('Notification config: '+ receiver.toJson().toString());
+          }
+      
+
     if (toAtsigns.isNotEmpty) {
 // pick up HR
       if (c[0].topic == "mqtt/mwc_hr") {
@@ -107,7 +114,6 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
         lastHeartRateDoubleValue = heartRateDoubleValue;
         for (var receiver in toAtsigns) {
           if (receiver.sendHR) {
-            print('Sending to: ${receiver.sendToAtsign}');
             await shareHeartRate(
                 heartRateDoubleValue, fromAtsign, receiver.sendToAtsign, receiver.sendToShortname, notificationService);
           }
@@ -167,7 +173,7 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
 
 Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String deviceName) async {
   String receiversString = '';
-  
+
   var metaData = Metadata()
     ..isPublic = false
     ..isEncrypted = true

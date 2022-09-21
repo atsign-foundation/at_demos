@@ -98,10 +98,9 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-  String receiversString =
-      '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2":true,"sendToShortname":"......kevin....."},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"hello"}]';
-
-  // logger.info("calling iotListen atSign '$fromAtsign'");
+ 
+ String receiversString = '[{"sendToAtsign":"@atgps_receiver","sendHR": true,"sendO2": true,"sendToShortname":"bob"},{"sendToAtsign":"@atgps02","sendHR": true,"sendO2": false,"sendToShortname":"world"}]';
+  logger.info("calling iotListen atSign '$fromAtsign'");
   // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);
 
   String? currentAtsign;
