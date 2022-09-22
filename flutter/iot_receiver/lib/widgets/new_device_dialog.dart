@@ -2,19 +2,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_receiver/forms/receiver_form.dart';
-import 'package:iot_receiver/models/hro2_receiver.dart';
+import 'package:iot_receiver/forms/device_form.dart';
+import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
-class NewHrO2Receiver extends StatefulWidget {
-  const NewHrO2Receiver({Key? key}) : super(key: key);
-  static const String id = '/new_receiver';
+class NewHrO2Device extends StatefulWidget {
+  const NewHrO2Device({Key? key}) : super(key: key);
+  static const String id = '/new_device';
 
   @override
-  _NewHrO2Receiver createState() => _NewHrO2Receiver();
+  _NewHrO2Device createState() => _NewHrO2Device();
 }
 
-class _NewHrO2Receiver extends State<NewHrO2Receiver> {
+class _NewHrO2Device extends State<NewHrO2Device> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -77,11 +77,7 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
             child: FormBuilder(
                 key: _formKey,
                 child: Column(children: [
-                  sendToShortnameForm(context, ''),
                   deviceAtsignForm(context, ''),
-                  sendToAtsignForm(context, ''),
-                  sendHRForm(context, ''),
-                  sendO2Form(context, ''),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
@@ -93,7 +89,7 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                         ),
                       ),
                       const Spacer(),
-                      ReceiverSubmitForm(formKey: _formKey),
+                      DeviceSubmitForm(formKey: _formKey),
                       const Spacer(),
                       Expanded(
                         child: MaterialButton(
@@ -109,24 +105,13 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                             if (_formKey.currentState!.validate()) {
                               String deviceAtsign = _formKey
                                   .currentState!.fields['@device']!.value;
-                              String sendToAtsign = _formKey
-                                  .currentState!.fields['@receiver']!.value;
-                              String sendToShortname = _formKey
-                                  .currentState!.fields['ShortName']!.value;
-                              var sendHr = _formKey
-                                  .currentState!.fields['sendHR']!.value;
-                              var sendO2 = _formKey
-                                  .currentState!.fields['sendO2']!.value;
 
-                              var newReceiver = HrO2Receiver(
-                                  sendToShortname: sendToShortname,
-                                  deviceAtsign: deviceAtsign,
-                                  sendToAtsign: sendToAtsign,
-                                  receiverUuid: UniqueKey().toString(),
-                                  sendHR: sendHr,
-                                  sendO2: sendO2);
+                              var newDevice = HrO2Device(
+                                deviceAtsign: deviceAtsign,
+                                deviceUuid: UniqueKey().toString(),
+                              );
 
-                              Navigator.pop(context, newReceiver);
+                              Navigator.pop(context, newDevice);
                             } else {
                               Navigator.pop(context, null);
                             }

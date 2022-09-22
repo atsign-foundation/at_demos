@@ -1,16 +1,12 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
 import 'dart:async';
 import 'dart:io';
-
 import 'package:at_utils/at_logger.dart';
-
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iot_receiver/models/iot_model.dart';
+import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/screens/receivers_screen.dart';
 import 'package:iot_receiver/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
@@ -20,7 +16,7 @@ final AtSignLogger _logger = AtSignLogger('HomeScreen');
 // * Once the onboarding process is completed you will be taken to this screen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.ioT}) : super(key: key);
-  static const String id = '/home';
+  static const String id = '/home_screen';
   final IoT ioT;
 
   @override
@@ -106,8 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
               switch (result) {
                 case 'CLOSE':
                   exit(0);
-                case 'DEVICES':
+                case 'RECEIVERS':
                   Navigator.of(context).pushNamed(ReceiversScreen.id);
+                  break;
+                case 'DEVICES':
+                  Navigator.of(context).pushNamed(DevicesScreen.id);
                   break;
                 default:
               }
@@ -118,6 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 'CLOSE',
                 child: Text(
                   'CLOSE',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'RECEIVERS',
+                child: Text(
+                  'RECEIVERS',
                   style: TextStyle(
                       fontSize: 15,
                       letterSpacing: 5,

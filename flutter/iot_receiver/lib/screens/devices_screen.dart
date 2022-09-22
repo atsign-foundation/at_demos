@@ -3,18 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
-
+import 'package:iot_receiver/widgets/new_device_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
-class ReceiversScreen extends StatefulWidget {
-  const ReceiversScreen({Key? key}) : super(key: key);
-  static const String id = '/receivers';
+class DevicesScreen extends StatefulWidget {
+  const DevicesScreen({Key? key}) : super(key: key);
+  static const String id = '/devices_screen';
   @override
-  State<ReceiversScreen> createState() => _ReceiversScreenState();
+  State<DevicesScreen> createState() => _DevicesScreenState();
 }
 
-class _ReceiversScreenState extends State<ReceiversScreen> {
+class _DevicesScreenState extends State<DevicesScreen> {
   @override
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
@@ -124,15 +123,15 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: () async {
-          var newReceiver = await Navigator.push(
+          var newDevice = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
+            MaterialPageRoute(builder: (context) => const NewHrO2Device()),
           );
-          if (newReceiver == null) {
+          if (newDevice == null) {
           } else {
             setState(() {
-              // receivers.add(newReceiver);
-              // saveReceivers(receivers);
+              // devices.add(newDevice);
+              // saveDevices(devices);
             });
           }
         },
