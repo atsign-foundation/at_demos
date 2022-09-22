@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:iot_reciever/widgets/new_receiver_dialog.dart';
-//import 'package:iot_reciever/screens/home_screen.dart';
+import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
+//import 'package:iot_receiver/screens/home_screen.dart';
 
 class ReceiversScreen extends StatefulWidget {
   const ReceiversScreen({Key? key}) : super(key: key);

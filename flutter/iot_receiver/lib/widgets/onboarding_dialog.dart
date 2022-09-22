@@ -2,10 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
-import 'package:iot_reciever/main.dart';
-import 'package:iot_reciever/screens/home_screen.dart';
-import 'package:iot_reciever/screens/onboarding_screen.dart';
-import 'package:iot_reciever/widgets/error_dialog.dart';
+import 'package:iot_receiver/main.dart';
+import 'package:iot_receiver/screens/home_screen.dart';
+import 'package:iot_receiver/screens/onboarding_screen.dart';
+import 'package:iot_receiver/widgets/error_dialog.dart';
 import 'package:at_app_flutter/at_app_flutter.dart';
 
 import 'package:flutter/material.dart';

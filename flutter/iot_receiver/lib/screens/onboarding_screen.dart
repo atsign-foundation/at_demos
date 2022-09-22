@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-
-import 'package:iot_reciever/widgets/onboarding_dialog.dart';
+import 'package:iot_receiver/widgets/onboarding_dialog.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String id = '/onboarding';
@@ -12,20 +11,17 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-
-@override
+  @override
   void initState() {
     super.initState();
     setState(() {});
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-        double _width = MediaQuery.of(context).size.width;
+    double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-        int _gridRows = 1;
+    int _gridRows = 1;
     if (_width > _height) {
       _gridRows = 2;
     } else {
@@ -34,7 +30,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-    decoration: BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white70,
           gradient: _gridRows > 1
               ? const LinearGradient(

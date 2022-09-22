@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_reciever/widgets/new_receiver_dialog.dart';
+import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 

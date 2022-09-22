@@ -5,7 +5,7 @@ import 'package:timer_builder/timer_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:iot_reciever/models/iot_model.dart';
+import 'package:iot_receiver/models/iot_model.dart';
 
 class GaugeWidget extends StatefulWidget {
   final IoT ioT;
