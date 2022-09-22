@@ -10,9 +10,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:iot_reciever/models/iot_model.dart';
-import 'package:iot_reciever/screens/receivers_screen.dart';
-import 'package:iot_reciever/widgets/gauge_widget.dart';
+import 'package:iot_receiver/models/iot_model.dart';
+import 'package:iot_receiver/screens/receivers_screen.dart';
+import 'package:iot_receiver/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 final AtSignLogger _logger = AtSignLogger('HomeScreen');

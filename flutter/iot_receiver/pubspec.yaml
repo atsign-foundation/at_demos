@@ -1,4 +1,4 @@
-name: iot_reciever
+name: iot_receiver
 version: 1.0.3+11
 publish_to: none
 description: A new Flutter project.

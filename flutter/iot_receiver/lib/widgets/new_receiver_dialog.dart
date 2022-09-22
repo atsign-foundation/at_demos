@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:iot_reciever/forms/receiver_form.dart';
-import 'package:iot_reciever/models/hro2_receiver.dart';
+import 'package:iot_receiver/forms/receiver_form.dart';
+import 'package:iot_receiver/models/hro2_receiver.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Receiver extends StatefulWidget {
