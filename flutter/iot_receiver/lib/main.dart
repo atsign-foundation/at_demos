@@ -1,14 +1,13 @@
 import 'dart:async';
-
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/screens/receivers_screen.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_receiver/models/iot_model.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
-
 import 'package:iot_receiver/screens/home_screen.dart';
 import 'package:iot_receiver/screens/onboarding_screen.dart';
 
@@ -70,7 +69,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         HomeScreen.id: (_) => HomeScreen(ioT: ioT),
         OnboardingScreen.id: (_) => const OnboardingScreen(),
-        ReceiversScreen.id: (_) => const ReceiversScreen()
+        ReceiversScreen.id: (_) => const ReceiversScreen(),
+        DevicesScreen.id: (_) => const DevicesScreen(),
         //Next.id: (_) => const Next(),
       },
       initialRoute: OnboardingScreen.id,

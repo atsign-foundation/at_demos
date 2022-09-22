@@ -1,16 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
-
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
-//import 'package:iot_receiver/screens/home_screen.dart';
 
 class ReceiversScreen extends StatefulWidget {
   const ReceiversScreen({Key? key}) : super(key: key);
-  static const String id = '/receivers';
+  static const String id = '/receivers_screen';
   @override
   State<ReceiversScreen> createState() => _ReceiversScreenState();
 }
@@ -35,7 +31,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
-          'Devices',
+          'Receivers',
           minFontSize: 5,
           maxFontSize: 50,
         ),
