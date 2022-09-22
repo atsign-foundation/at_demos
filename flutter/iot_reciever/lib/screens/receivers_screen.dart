@@ -1,18 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:iot_reciever/widgets/new_receiver_dailog.dart';
+import 'package:iot_reciever/widgets/new_receiver_dialog.dart';
 //import 'package:iot_reciever/screens/home_screen.dart';
-
-import '../models/hro2_receiver.dart';
 
 class ReceiversScreen extends StatefulWidget {
   const ReceiversScreen({Key? key}) : super(key: key);
@@ -45,7 +39,10 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
           minFontSize: 5,
           maxFontSize: 50,
         ),
-        gradient: const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+        gradient: const LinearGradient(colors: [
+          Color.fromARGB(255, 173, 83, 78),
+          Color.fromARGB(255, 108, 169, 197)
+        ]),
         actions: [
           PopupMenuButton<String>(
             color: const Color.fromARGB(255, 108, 169, 197),
@@ -99,12 +96,18 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
               ? const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
                 )
               : const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
                 ),
           image: const DecorationImage(
             opacity: .15,
@@ -116,14 +119,16 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
           ),
         ),
         child: SingleChildScrollView(
-          child: Column(
-            children:[SizedBox(width: _width, height: _height,)]
-          ),
+          child: Column(children: [
+            SizedBox(
+              width: _width,
+              height: _height,
+            )
+          ]),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-
         onPressed: () async {
           var newReceiver = await Navigator.push(
             context,
@@ -131,12 +136,12 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
           );
           if (newReceiver != null) {
             setState(() {
-              // radios.add(newradio);
-              // saveHamradio(radios);
+              // receivers.add(newReceiver);
+              // saveReceivers(receivers);
             });
           }
         },
-        child:  const Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

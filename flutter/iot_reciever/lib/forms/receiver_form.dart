@@ -3,39 +3,43 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-// Some Form teamplating to resuse in New and Edit Radio
+// Some Form templates to reuse in New and Edit for devices, recipients and
+// data selections
 
-FormBuilderTextField deviceAtsignForm(BuildContext context, String initialvalue) {
+FormBuilderTextField deviceAtsignForm(
+    BuildContext context, String initialValue) {
   return FormBuilderTextField(
-      initialValue: initialvalue.toString(),
+      initialValue: initialValue.toString(),
       name: '@device',
       decoration: const InputDecoration(
         labelText: 'Device\'s atSign',
         // fillColor: Colors.white,
         // focusColor: Colors.lightGreenAccent,
-      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
       style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
-FormBuilderTextField sendToAtsignForm(BuildContext context, String initialvalue) {
+FormBuilderTextField sendToAtsignForm(
+    BuildContext context, String initialValue) {
   return FormBuilderTextField(
-      initialValue: initialvalue.toString(),
+      initialValue: initialValue.toString(),
       name: '@receiver',
       decoration: const InputDecoration(
         labelText: 'Receiver\'s atSign',
         // fillColor: Colors.white,
         // focusColor: Colors.lightGreenAccent,
-      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
       style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
-FormBuilderTextField sendToShortnameForm(BuildContext context, String initialvalue) {
+FormBuilderTextField sendToShortnameForm(
+    BuildContext context, String initialValue) {
   return FormBuilderTextField(
-      initialValue: initialvalue.toString(),
+      initialValue: initialValue.toString(),
       name: 'ShortName',
       decoration: const InputDecoration(
         labelText: 'Patient ID',
@@ -47,20 +51,21 @@ FormBuilderTextField sendToShortnameForm(BuildContext context, String initialval
       style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
-FormBuilderCheckbox sendHRForm(BuildContext context, String initialvalue) {
+FormBuilderCheckbox sendHRForm(BuildContext context, String initialValue) {
   return FormBuilderCheckbox(
-    
     name: 'sendHR',
-    title: const Text('Send Heart Rate',style: TextStyle(fontWeight: FontWeight.bold)),
+    title: const Text('Send Heart Rate',
+        style: TextStyle(fontWeight: FontWeight.bold)),
     initialValue: false,
     tristate: false,
   );
 }
 
-FormBuilderCheckbox sendO2Form(BuildContext context, String initialvalue) {
+FormBuilderCheckbox sendO2Form(BuildContext context, String initialValue) {
   return FormBuilderCheckbox(
     name: 'sendO2',
-    title: const Text('Send Oxygen Saturation',style: TextStyle(fontWeight: FontWeight.bold)),
+    title: const Text('Send Oxygen Saturation',
+        style: TextStyle(fontWeight: FontWeight.bold)),
     initialValue: false,
     tristate: false,
   );

@@ -1,19 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_reciever/models/hro2_receiver.dart';
-import 'package:iot_reciever/widgets/new_receiver_dailog.dart';
+import 'package:iot_reciever/widgets/new_receiver_dialog.dart';
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:iot_reciever/screens/home_screen.dart';
-
-import 'package:iot_reciever/screens/receivers_screen.dart';
 
 class ReceiversScreen extends StatefulWidget {
   const ReceiversScreen({Key? key}) : super(key: key);
@@ -46,7 +38,10 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
           minFontSize: 5,
           maxFontSize: 50,
         ),
-        gradient: const LinearGradient(colors: [Color.fromARGB(255, 173, 83, 78), Color.fromARGB(255, 108, 169, 197)]),
+        gradient: const LinearGradient(colors: [
+          Color.fromARGB(255, 173, 83, 78),
+          Color.fromARGB(255, 108, 169, 197)
+        ]),
         actions: [
           PopupMenuButton<String>(
             color: const Color.fromARGB(255, 108, 169, 197),
@@ -100,12 +95,18 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
               ? const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
                 )
               : const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 240, 181, 178), Color.fromARGB(255, 171, 200, 224)],
+                  colors: [
+                    Color.fromARGB(255, 240, 181, 178),
+                    Color.fromARGB(255, 171, 200, 224)
+                  ],
                 ),
           image: const DecorationImage(
             opacity: .15,
@@ -128,11 +129,10 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
             MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
           );
           if (newReceiver == null) {
-            print('nothin');
           } else {
             setState(() {
-              // radios.add(newradio);
-              // saveHamradio(radios);
+              // receivers.add(newReceiver);
+              // saveReceivers(receivers);
             });
           }
         },
