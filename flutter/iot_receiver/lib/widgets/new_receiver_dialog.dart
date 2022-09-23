@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:iot_receiver/forms/receiver_form.dart';
+import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:iot_receiver/models/hro2_receiver.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -78,7 +79,6 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                 key: _formKey,
                 child: Column(children: [
                   sendToShortnameForm(context, ''),
-                  deviceAtsignForm(context, ''),
                   sendToAtsignForm(context, ''),
                   sendHRForm(context, ''),
                   sendO2Form(context, ''),
@@ -119,10 +119,11 @@ class _NewHrO2Receiver extends State<NewHrO2Receiver> {
                                   .currentState!.fields['sendO2']!.value;
 
                               var newReceiver = HrO2Receiver(
-                                  sendToShortname: sendToShortname,
-                                  deviceAtsign: deviceAtsign,
                                   sendToAtsign: sendToAtsign,
-                                  receiverUuid: UniqueKey().toString(),
+                                  sendToShortname: sendToShortname,
+                                  hrO2Device: HrO2Device(
+                                      deviceAtsign: deviceAtsign,
+                                      deviceUuid: deviceAtsign),
                                   sendHR: sendHr,
                                   sendO2: sendO2);
 

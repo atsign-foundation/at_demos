@@ -3,8 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-// Some Form templates to reuse in New and Edit for devices, recipients and
-// data selections
+// Some Form templates to reuse in New and Edit for devices
 
 FormBuilderTextField deviceAtsignForm(
     BuildContext context, String initialValue) {
@@ -18,7 +17,7 @@ FormBuilderTextField deviceAtsignForm(
         labelStyle: TextStyle(fontWeight: FontWeight.bold),
       ),
       validator: FormBuilderValidators.required(),
-      style: const TextStyle(fontSize: 20, letterSpacing: 5));
+      style: const TextStyle(fontSize: 20));
 }
 
 class DeviceSubmitForm extends StatelessWidget {
