@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iot_receiver/widgets/onboarding_dialog.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  static const String id = '/onboarding';
+  static const String id = '/onboarding_screen';
   const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
