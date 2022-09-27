@@ -166,12 +166,11 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                 return delete;
                               }
                             },
-                            onDismissed: (_) {
-                              setState(() {
-                                hrO2ReceiverList.remove(receiver);
-                                _hrO2DataService
-                                    .putReceiverList(hrO2ReceiverList);
-                              });
+                            onDismissed: (_) async {
+                              hrO2ReceiverList.remove(receiver);
+                              await _hrO2DataService
+                                  .putReceiverList(hrO2ReceiverList);
+                              setState(() {});
                             },
                             child: ListTile(
                               shape: RoundedRectangleBorder(

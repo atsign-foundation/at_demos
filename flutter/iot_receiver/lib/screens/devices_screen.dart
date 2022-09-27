@@ -171,11 +171,10 @@ class _DevicesScreenState extends State<DevicesScreen> {
                                 return delete;
                               }
                             },
-                            onDismissed: (_) {
-                              setState(() {
-                                hrO2Devices.remove(device);
-                                _hrO2DataService.putDeviceList(hrO2Devices);
-                              });
+                            onDismissed: (_) async {
+                              hrO2Devices.remove(device);
+                              await _hrO2DataService.putDeviceList(hrO2Devices);
+                              setState(() {});
                             },
                             child: ListTile(
                               shape: RoundedRectangleBorder(
