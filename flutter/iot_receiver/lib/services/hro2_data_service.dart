@@ -8,8 +8,8 @@ import 'package:iot_receiver/models/hro2_receiver.dart';
 class HrO2DataService {
   static final HrO2DataService _singleton = HrO2DataService._internal();
 
-  late HrO2DeviceList devices;
-  late HrO2ReceiverList receivers;
+  // late HrO2DeviceList devices;
+  // late HrO2ReceiverList receivers;
 
   final _logger = AtSignLogger('HrO2DataService');
 
@@ -20,43 +20,115 @@ class HrO2DataService {
   }
 
   Future<bool> delete(AtKey atKey) async {
-    return await AtClientManager.getInstance().atClient.delete(atKey);
+    return AtClientManager.getInstance().atClient.delete(atKey);
+  }
+
+  Future<bool> deleteAllData() async {
+    AtKey deviceAtKey = AtKey()..key = AppConstants.deviceListKey;
+    var deviceKeyDeleted = await delete(deviceAtKey);
+    _logger.info('deleteAllData.deviceKeyDeleted $deviceKeyDeleted');
+    AtKey receiverAtKey = AtKey()..key = AppConstants.receiverListKey;
+    var receiverKeyDeleted = await delete(receiverAtKey);
+    _logger.info('deleteAllData.receiverKeyDeleted $receiverKeyDeleted');
+    return (deviceKeyDeleted && receiverKeyDeleted);
   }
 
   ///Returns `AtFollowsValue` for [atKey].
-  Future<HrO2DeviceList> getDeviceList() async {
+  Future<List<HrO2Device>> getDeviceList() async {
     AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
     var data = await AtClientManager.getInstance().atClient.get(atKey);
     _logger.info('getDeviceList got ${data.value}');
-    var response = HrO2DeviceList(hrO2DeviceList: jsonDecode(data.value));
-    _logger.info('getDeviceList returning $response');
-    return response;
+    List<HrO2Device> hrO2DeviceList;
+    hrO2DeviceList = (json.decode(data.value) as List)
+        .map((i) => HrO2Device.fromJson(i))
+        .toList();
+    _logger.info('getDeviceList returning $hrO2DeviceList');
+    return hrO2DeviceList;
   }
 
-  Future<bool> putDeviceList(HrO2DeviceList hrO2DeviceList) async {
+  Future<bool> putDeviceList(List<HrO2Device> hrO2DeviceList) async {
     AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
-    var value = jsonEncode(hrO2DeviceList.toJson());
+    var value = jsonEncode(hrO2DeviceList);
     var response =
         await AtClientManager.getInstance().atClient.put(atKey, value);
     _logger.info('putDeviceList success = $response');
     return response;
   }
 
-  Future<HrO2ReceiverList> getReceiverList() async {
-    AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
-    var data = await AtClientManager.getInstance().atClient.get(atKey);
-    _logger.info('getReceiverList got ${data.value}');
-    var response = HrO2ReceiverList(hrO2ReceiverList: jsonDecode(data.value));
-    _logger.info('getReceiverList returning $response');
+  Future<bool> addDeviceToList(HrO2Device hrO2Device) async {
+    List<HrO2Device> deviceList = [];
+    deviceList = await getDeviceList().onError((error, stackTrace) async {
+      return deviceList;
+    });
+    deviceList.add(hrO2Device);
+    AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
+    var value = jsonEncode(deviceList);
+    var response =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
+    _logger.info('addDeviceToList success = $response');
     return response;
   }
 
-  Future<bool> putReceiverList(HrO2ReceiverList hrO2ReceiverList) async {
+  Future<bool> removeDeviceFromList(HrO2Device hrO2Device) async {
+    List<HrO2Device> deviceList = [];
+    deviceList = await getDeviceList().onError((error, stackTrace) async {
+      return deviceList;
+    });
+    deviceList.remove(hrO2Device);
+    AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
+    var value = jsonEncode(deviceList);
+    var response =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
+    _logger.info('removeDeviceFromList success = $response');
+    return response;
+  }
+
+  Future<List<HrO2Receiver>> getReceiverList() async {
     AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
-    var value = jsonEncode(hrO2ReceiverList.toJson());
+    var data = await AtClientManager.getInstance().atClient.get(atKey);
+    _logger.info('getReceiverList got ${data.value}');
+    List<HrO2Receiver> hrO2ReceiverList;
+    hrO2ReceiverList = (json.decode(data.value) as List)
+        .map((i) => HrO2Receiver.fromJson(i))
+        .toList();
+    _logger.info('getReceiverList returning $hrO2ReceiverList');
+    return hrO2ReceiverList;
+  }
+
+  Future<bool> putReceiverList(List<HrO2Receiver> hrO2ReceiverList) async {
+    AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
+    var value = jsonEncode(hrO2ReceiverList);
     var response =
         await AtClientManager.getInstance().atClient.put(atKey, value);
     _logger.info('putReceiverList success = $response');
+    return response;
+  }
+
+  Future<bool> addReceiverToList(HrO2Receiver hrO2Receiver) async {
+    List<HrO2Receiver> receiverList = [];
+    receiverList = await getReceiverList().onError((error, stackTrace) async {
+      return receiverList;
+    });
+    receiverList.add(hrO2Receiver);
+    AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
+    var value = jsonEncode(receiverList);
+    var response =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
+    _logger.info('addReceiverToList success = $response');
+    return response;
+  }
+
+  Future<bool> removeReceiverFromList(HrO2Receiver hrO2Receiver) async {
+    List<HrO2Receiver> deviceList = [];
+    deviceList = await getReceiverList().onError((error, stackTrace) async {
+      return deviceList;
+    });
+    deviceList.remove(hrO2Receiver);
+    AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
+    var value = jsonEncode(deviceList);
+    var response =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
+    _logger.info('removeReceiverFromList success = $response');
     return response;
   }
 }

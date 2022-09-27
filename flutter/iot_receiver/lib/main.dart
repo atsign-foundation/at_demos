@@ -6,6 +6,8 @@ import 'package:iot_receiver/screens/receivers_screen.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_receiver/models/iot_model.dart';
+import 'package:iot_receiver/widgets/new_device_dialog.dart';
+import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 import 'package:iot_receiver/screens/home_screen.dart';
@@ -71,6 +73,8 @@ class _MyAppState extends State<MyApp> {
         OnboardingScreen.id: (_) => const OnboardingScreen(),
         ReceiversScreen.id: (_) => const ReceiversScreen(),
         DevicesScreen.id: (_) => const DevicesScreen(),
+        NewHrO2Device.id: (_) => const NewHrO2Device(),
+        NewHrO2Receiver.id: (_) => const NewHrO2Receiver(),
         //Next.id: (_) => const Next(),
       },
       initialRoute: OnboardingScreen.id,
