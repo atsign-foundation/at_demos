@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:iot_receiver/models/iot_model.dart';
 import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/screens/receivers_screen.dart';
+import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -36,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AtClientManager atClientManager = AtClientManager.getInstance();
-
     String? currentAtsign;
     AtClient atClient;
     atClient = atClientManager.atClient;
@@ -108,6 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 'DEVICES':
                   Navigator.of(context).pushNamed(DevicesScreen.id);
                   break;
+                case 'RESET':
+                  HrO2DataService().deleteAllData();
+                  break;
                 default:
               }
             },
@@ -141,6 +144,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 'DEVICES',
                 child: Text(
                   'DEVICES',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'RESET',
+                child: Text(
+                  'RESET',
                   style: TextStyle(
                       fontSize: 15,
                       letterSpacing: 5,

@@ -4,6 +4,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:iot_receiver/forms/device_form.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
+import 'package:iot_receiver/screens/devices_screen.dart';
+import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Device extends StatefulWidget {
@@ -11,11 +13,12 @@ class NewHrO2Device extends StatefulWidget {
   static const String id = '/new_device';
 
   @override
-  _NewHrO2Device createState() => _NewHrO2Device();
+  State<NewHrO2Device> createState() => _NewHrO2DeviceState();
 }
 
-class _NewHrO2Device extends State<NewHrO2Device> {
+class _NewHrO2DeviceState extends State<NewHrO2Device> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final HrO2DataService _hrO2DataService = HrO2DataService();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class _NewHrO2Device extends State<NewHrO2Device> {
     return Scaffold(
         appBar: NewGradientAppBar(
           title: const AutoSizeText(
-            'Devices',
+            'New Device',
             minFontSize: 5,
             maxFontSize: 50,
           ),
@@ -100,18 +103,17 @@ class _NewHrO2Device extends State<NewHrO2Device> {
                             maxFontSize: 30,
                             minFontSize: 10,
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             _formKey.currentState!.save();
                             if (_formKey.currentState!.validate()) {
                               String deviceAtsign = _formKey
                                   .currentState!.fields['@device']!.value;
-
                               var newDevice = HrO2Device(
                                 deviceAtsign: deviceAtsign,
                                 deviceUuid: UniqueKey().toString(),
                               );
-
-                              Navigator.pop(context, newDevice);
+                              await _hrO2DataService.addDeviceToList(newDevice);
+                              Navigator.of(context).pushNamed(DevicesScreen.id);
                             } else {
                               Navigator.pop(context, null);
                             }

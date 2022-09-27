@@ -20,7 +20,19 @@ FormBuilderTextField deviceAtsignForm(
       style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
-FormBuilderTextField sendToAtsignForm(
+FormBuilderDropdown receiverDeviceSelector(BuildContext context, items) {
+  return FormBuilderDropdown(
+    name: "device_selector",
+    items: items,
+    decoration: const InputDecoration(
+      // labelText: 'Select Device',
+      // labelStyle: TextStyle(fontWeight: FontWeight.bold),
+      hintText: 'Select Device',
+    ),
+  );
+}
+
+FormBuilderTextField receiverAtsignForm(
     BuildContext context, String initialValue) {
   return FormBuilderTextField(
       initialValue: initialValue.toString(),
@@ -35,7 +47,7 @@ FormBuilderTextField sendToAtsignForm(
       style: const TextStyle(fontSize: 20, letterSpacing: 5));
 }
 
-FormBuilderTextField sendToShortnameForm(
+FormBuilderTextField receiverShortnameForm(
     BuildContext context, String initialValue) {
   return FormBuilderTextField(
       initialValue: initialValue.toString(),

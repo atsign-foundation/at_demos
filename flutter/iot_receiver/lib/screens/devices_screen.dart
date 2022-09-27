@@ -1,8 +1,10 @@
 import 'dart:io';
-
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:iot_receiver/models/hro2_device.dart';
+import 'package:iot_receiver/screens/receivers_screen.dart';
+import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/new_device_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -14,22 +16,18 @@ class DevicesScreen extends StatefulWidget {
 }
 
 class _DevicesScreenState extends State<DevicesScreen> {
+  final HrO2DataService _hrO2DataService = HrO2DataService();
+
   @override
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     //AtClientManager atClientManager = AtClientManager.getInstance();
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    // double _width = MediaQuery.of(context).size.width;
+    // double _height = MediaQuery.of(context).size.height;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
 
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
-    } else {
-      _gridRows = 1;
-    }
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
@@ -51,26 +49,22 @@ class _DevicesScreenState extends State<DevicesScreen> {
             ),
             onSelected: (String result) {
               switch (result) {
+                case 'NEW DEVICE':
+                  Navigator.of(context).pushNamed(NewHrO2Device.id);
+                  break;
+                case 'DELETE LIST':
+                  AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
+                  HrO2DataService().delete(atKey);
+                  break;
+                case 'RECEIVERS':
+                  Navigator.of(context).pushNamed(ReceiversScreen.id);
+                  break;
                 case 'CLOSE':
                   exit(0);
-                case 'NEW DEVICE':
-                  break;
                 default:
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'CLOSE',
-                child: Text(
-                  'CLOSE',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
               const PopupMenuItem<String>(
                 height: 20,
                 value: 'NEW DEVICE',
@@ -83,45 +77,149 @@ class _DevicesScreenState extends State<DevicesScreen> {
                       color: Colors.black),
                 ),
               ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'DELETE LIST',
+                child: Text(
+                  'DELETE LIST',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'RECEIVERS',
+                child: Text(
+                  'SEE RECEIVERS',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                height: 20,
+                value: 'CLOSE',
+                child: Text(
+                  'CLOSE',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 5,
+                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
+                      color: Colors.black),
+                ),
+              ),
             ],
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white70,
-          gradient: _gridRows > 1
-              ? const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromARGB(255, 240, 181, 178),
-                    Color.fromARGB(255, 171, 200, 224)
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromARGB(255, 240, 181, 178),
-                    Color.fromARGB(255, 171, 200, 224)
-                  ],
-                ),
-          image: const DecorationImage(
-            opacity: .15,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-            image: AssetImage(
-              'assets/images/blood-pressure.png',
-            ),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(),
-        ),
-      ),
+      body: Builder(
+          builder: (context) => FutureBuilder<List<HrO2Device>>(
+              future: _hrO2DataService.getDeviceList(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<HrO2Device>> snapshot) {
+                List<Widget> children;
+                if (snapshot.hasData) {
+                  List<HrO2Device>? hrO2Devices = snapshot.data;
+                  children = <Widget>[
+                    const Text(
+                      "The following devices have been created.",
+                      overflow: TextOverflow.visible,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        // padding: const EdgeInsets.symmetric(
+                        //     vertical: 5, horizontal: 20),
+                        itemCount: hrO2Devices!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final device = hrO2Devices[index];
+                          return Dismissible(
+                            key: Key(device.deviceUuid),
+                            background: Container(
+                              color: Colors.red,
+                              child: const Align(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 16),
+                                    child: Icon(Icons.delete),
+                                  ),
+                                  alignment: Alignment.centerRight),
+                            ),
+                            confirmDismiss: (direction) async {
+                              if (direction == DismissDirection.startToEnd) {
+                                return false;
+                              } else {
+                                bool delete = true;
+                                final snackbarController =
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Delete ${device.deviceAtsign} ?'),
+                                    action: SnackBarAction(
+                                        label: 'Cancel',
+                                        onPressed: () => delete = false),
+                                  ),
+                                );
+                                await snackbarController.closed;
+                                return delete;
+                              }
+                            },
+                            onDismissed: (_) async {
+                              hrO2Devices.remove(device);
+                              await _hrO2DataService.putDeviceList(hrO2Devices);
+                              setState(() {});
+                            },
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                      color: Colors.blue, width: 1),
+                                  borderRadius: BorderRadius.circular(10)),
+                              title: Text(hrO2Devices[index].deviceAtsign),
+                              subtitle: Text(
+                                  "identifier ${hrO2Devices[index].deviceUuid}"),
+                            ),
+                          );
+                        }),
+                  ];
+                } else if (snapshot.hasError) {
+                  children = <Widget>[
+                    const Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                          '${snapshot.error}, please click the + button below to add a device.'),
+                    ),
+                  ];
+                } else {
+                  children = <Widget>[
+                    // DoOnboardWidget(
+                    //     // futurePreference: widget.futurePreference,
+                    //     ),
+                  ];
+                }
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: children,
+                  ),
+                );
+                // child:
+              })),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.green,
         onPressed: () async {
           var newDevice = await Navigator.push(
             context,
