@@ -170,7 +170,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                               setState(() {
                                 hrO2ReceiverList.remove(receiver);
                                 _hrO2DataService
-                                    .removeReceiverFromList(receiver);
+                                    .putReceiverList(hrO2ReceiverList);
                               });
                             },
                             child: ListTile(

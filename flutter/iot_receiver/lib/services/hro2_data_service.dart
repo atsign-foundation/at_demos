@@ -8,9 +8,6 @@ import 'package:iot_receiver/models/hro2_receiver.dart';
 class HrO2DataService {
   static final HrO2DataService _singleton = HrO2DataService._internal();
 
-  // late HrO2DeviceList devices;
-  // late HrO2ReceiverList receivers;
-
   final _logger = AtSignLogger('HrO2DataService');
 
   HrO2DataService._internal();
@@ -69,20 +66,6 @@ class HrO2DataService {
     return response;
   }
 
-  Future<bool> removeDeviceFromList(HrO2Device hrO2Device) async {
-    List<HrO2Device> deviceList = [];
-    deviceList = await getDeviceList().onError((error, stackTrace) async {
-      return deviceList;
-    });
-    deviceList.remove(hrO2Device);
-    AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
-    var value = jsonEncode(deviceList);
-    var response =
-        await AtClientManager.getInstance().atClient.put(atKey, value);
-    _logger.info('removeDeviceFromList success = $response');
-    return response;
-  }
-
   Future<List<HrO2Receiver>> getReceiverList() async {
     AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
     var data = await AtClientManager.getInstance().atClient.get(atKey);
@@ -115,20 +98,6 @@ class HrO2DataService {
     var response =
         await AtClientManager.getInstance().atClient.put(atKey, value);
     _logger.info('addReceiverToList success = $response');
-    return response;
-  }
-
-  Future<bool> removeReceiverFromList(HrO2Receiver hrO2Receiver) async {
-    List<HrO2Receiver> deviceList = [];
-    deviceList = await getReceiverList().onError((error, stackTrace) async {
-      return deviceList;
-    });
-    deviceList.remove(hrO2Receiver);
-    AtKey atKey = AtKey()..key = AppConstants.deviceListKey;
-    var value = jsonEncode(deviceList);
-    var response =
-        await AtClientManager.getInstance().atClient.put(atKey, value);
-    _logger.info('removeReceiverFromList success = $response');
     return response;
   }
 }

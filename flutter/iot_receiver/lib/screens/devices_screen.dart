@@ -174,7 +174,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
                             onDismissed: (_) {
                               setState(() {
                                 hrO2Devices.remove(device);
-                                _hrO2DataService.removeDeviceFromList(device);
+                                _hrO2DataService.putDeviceList(hrO2Devices);
                               });
                             },
                             child: ListTile(

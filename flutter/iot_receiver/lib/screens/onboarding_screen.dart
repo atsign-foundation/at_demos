@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:iot_receiver/widgets/onboarding_dialog.dart';
 
 class OnboardingScreen extends StatefulWidget {
