@@ -20,7 +20,7 @@ class HrO2Receiver {
         receiverAtsign = json['receiverAtsign'],
         sendHR = json['sendHR'],
         sendO2 = json['sendO2'],
-        receiverShortname = json['sendToShortname'];
+        receiverShortname = json['receiverShortname'];
 
   Map<String, dynamic> toJson() => {
         'hrO2Device': hrO2Device.toJson(),

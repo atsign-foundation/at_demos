@@ -185,7 +185,6 @@ class _DevicesScreenState extends State<DevicesScreen> {
                               title: Text(hrO2Devices[index].deviceAtsign),
                               subtitle: Text(
                                   "identifier ${hrO2Devices[index].deviceUuid}"),
-                              trailing: const Icon(Icons.navigate_next),
                             ),
                           );
                         }),

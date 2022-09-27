@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:iot_receiver/models/hro2_receiver.dart';
@@ -7,6 +8,8 @@ import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
+final AtSignLogger _logger = AtSignLogger('ReceiversScreen');
 
 class ReceiversScreen extends StatefulWidget {
   const ReceiversScreen({Key? key}) : super(key: key);
@@ -187,12 +190,13 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                   (hrO2ReceiverList[index].sendO2
                                       ? "sending o2"
                                       : "")),
-                              trailing: const Icon(Icons.navigate_next),
+                              // trailing: const Icon(Icons.navigate_next),
                             ),
                           );
                         }),
                   ];
                 } else if (snapshot.hasError) {
+                  _logger.severe(snapshot.error);
                   children = <Widget>[
                     const Icon(
                       Icons.error_outline,

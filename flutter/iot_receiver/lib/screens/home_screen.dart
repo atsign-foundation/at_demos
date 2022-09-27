@@ -5,13 +5,11 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:iot_receiver/models/iot_model.dart';
 import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/screens/receivers_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/gauge_widget.dart';
-import 'package:iot_receiver/widgets/new_device_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 final AtSignLogger _logger = AtSignLogger('HomeScreen');
@@ -44,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
     atClient = atClientManager.atClient;
     currentAtsign = atClient.getCurrentAtSign();
     readings.currentAtsign = currentAtsign!;
-    checkDeviceSet();
     var notificationService = atClientManager.notificationService;
     atClientManager.syncService.sync(onDone: () {
       _logger.info('sync complete');
@@ -467,18 +464,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         setState(() {});
       }
-    }
-  }
-
-  void checkDeviceSet() async {
-    List<HrO2Device> hrO2DeviceList = [];
-    hrO2DeviceList =
-        await HrO2DataService().getDeviceList().onError((error, stackTrace) {
-      Navigator.of(context).pushNamed(NewHrO2Device.id);
-      return hrO2DeviceList;
-    });
-    if (hrO2DeviceList.isEmpty) {
-      Navigator.of(context).pushNamed(NewHrO2Device.id);
     }
   }
 }
