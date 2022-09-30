@@ -19,7 +19,7 @@ class NewHrO2Receiver extends StatefulWidget {
 
 class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
   final _formKey = GlobalKey<FormBuilderState>();
-  final HrO2DataService _hrO2DataService = HrO2DataService();
+  final Hro2DataService _hrO2DataService = Hro2DataService();
 
   @override
   Widget build(BuildContext context) {

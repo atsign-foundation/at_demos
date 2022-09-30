@@ -5,14 +5,14 @@ import 'package:at_utils/at_logger.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:iot_receiver/models/hro2_receiver.dart';
 
-class HrO2DataService {
-  static final HrO2DataService _singleton = HrO2DataService._internal();
+class Hro2DataService {
+  static final Hro2DataService _singleton = Hro2DataService._internal();
 
   final _logger = AtSignLogger('HrO2DataService');
 
-  HrO2DataService._internal();
+  Hro2DataService._internal();
 
-  factory HrO2DataService() {
+  factory Hro2DataService() {
     return _singleton;
   }
 

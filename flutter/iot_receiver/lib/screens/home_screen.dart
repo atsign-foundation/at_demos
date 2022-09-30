@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:at_utils/at_logger.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iot_receiver/models/iot_model.dart';
-import 'package:iot_receiver/screens/devices_screen.dart';
-import 'package:iot_receiver/screens/receivers_screen.dart';
-import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
+import '../widgets/hro2_drawer_widget.dart';
 
 final AtSignLogger _logger = AtSignLogger('HomeScreen');
 
@@ -90,83 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
         ]),
-        actions: [
-          PopupMenuButton<String>(
-            color: const Color.fromARGB(255, 108, 169, 197),
-            //padding: const EdgeInsets.symmetric(horizontal: 10),
-            icon: const Icon(
-              Icons.menu,
-              size: 20,
-            ),
-            onSelected: (String result) {
-              switch (result) {
-                case 'CLOSE':
-                  exit(0);
-                case 'RECEIVERS':
-                  Navigator.of(context).pushNamed(ReceiversScreen.id);
-                  break;
-                case 'DEVICES':
-                  Navigator.of(context).pushNamed(DevicesScreen.id);
-                  break;
-                case 'RESET':
-                  HrO2DataService().deleteAllData();
-                  break;
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'CLOSE',
-                child: Text(
-                  'CLOSE',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'RECEIVERS',
-                child: Text(
-                  'RECEIVERS',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'DEVICES',
-                child: Text(
-                  'DEVICES',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'RESET',
-                child: Text(
-                  'RESET',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
+      drawer: const HRo2DrawerWidget(),
       body: Container(
         decoration: backgroundGradient(gridRows),
         child: SingleChildScrollView(
@@ -353,7 +276,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               //Some padding for desktops
-
               SizedBox(
                 height: height / 8,
                 width: width,
