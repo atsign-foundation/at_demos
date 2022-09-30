@@ -1,11 +1,9 @@
-import 'dart:io';
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:iot_receiver/models/hro2_receiver.dart';
-import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
+import 'package:iot_receiver/widgets/hro2_drawer_widget.dart';
 import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -19,7 +17,7 @@ class ReceiversScreen extends StatefulWidget {
 }
 
 class _ReceiversScreenState extends State<ReceiversScreen> {
-  final HrO2DataService _hrO2DataService = HrO2DataService();
+  final Hro2DataService _hrO2DataService = Hro2DataService();
 
   @override
   Widget build(BuildContext context) {
@@ -34,84 +32,8 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
         ]),
-        actions: [
-          PopupMenuButton<String>(
-            color: const Color.fromARGB(255, 108, 169, 197),
-            //padding: const EdgeInsets.symmetric(horizontal: 10),
-            icon: const Icon(
-              Icons.menu,
-              size: 20,
-            ),
-            onSelected: (String result) {
-              switch (result) {
-                case 'NEW RECEIVER':
-                  Navigator.of(context).pushNamed(NewHrO2Receiver.id);
-                  break;
-                case 'DELETE LIST':
-                  AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
-                  HrO2DataService().delete(atKey);
-                  break;
-                case 'DEVICES':
-                  Navigator.of(context).pushNamed(DevicesScreen.id);
-                  break;
-                case 'CLOSE':
-                  exit(0);
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'NEW RECEIVER',
-                child: Text(
-                  'NEW RECEIVER',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'DELETE LIST',
-                child: Text(
-                  'DELETE LIST',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'DEVICES',
-                child: Text(
-                  'SEE DEVICES',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'CLOSE',
-                child: Text(
-                  'CLOSE',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
+      drawer: const HRo2DrawerWidget(),
       body: Builder(
           builder: (context) => FutureBuilder<List<HrO2Receiver>>(
               future: _hrO2DataService.getReceiverList(),
@@ -136,16 +58,17 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                         itemCount: hrO2ReceiverList!.length,
                         itemBuilder: (BuildContext context, int index) {
                           final HrO2Receiver receiver = hrO2ReceiverList[index];
+                          const align = Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 16),
+                                child: Icon(Icons.delete),
+                              ));
                           return Dismissible(
                             key: Key(receiver.receiverAtsign),
                             background: Container(
                               color: Colors.red,
-                              child: const Align(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 16),
-                                    child: Icon(Icons.delete),
-                                  ),
-                                  alignment: Alignment.centerRight),
+                              child: align,
                             ),
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
@@ -187,7 +110,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                       ? ", and "
                                       : "") +
                                   (hrO2ReceiverList[index].sendO2
-                                      ? "sending o2"
+                                      ? "sending o2 saturation"
                                       : "")),
                               // trailing: const Icon(Icons.navigate_next),
                             ),

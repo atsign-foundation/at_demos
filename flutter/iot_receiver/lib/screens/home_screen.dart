@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:at_utils/at_logger.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iot_receiver/models/iot_model.dart';
-import 'package:iot_receiver/screens/devices_screen.dart';
-import 'package:iot_receiver/screens/receivers_screen.dart';
-import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/gauge_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
+import '../widgets/hro2_drawer_widget.dart';
 
 final AtSignLogger _logger = AtSignLogger('HomeScreen');
 
@@ -67,17 +65,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     //AtClientManager atClientManager = AtClientManager.getInstance();
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
 
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
     return Scaffold(
       appBar: NewGradientAppBar(
@@ -90,97 +88,22 @@ class _HomeScreenState extends State<HomeScreen> {
           Color.fromARGB(255, 173, 83, 78),
           Color.fromARGB(255, 108, 169, 197)
         ]),
-        actions: [
-          PopupMenuButton<String>(
-            color: const Color.fromARGB(255, 108, 169, 197),
-            //padding: const EdgeInsets.symmetric(horizontal: 10),
-            icon: const Icon(
-              Icons.menu,
-              size: 20,
-            ),
-            onSelected: (String result) {
-              switch (result) {
-                case 'CLOSE':
-                  exit(0);
-                case 'RECEIVERS':
-                  Navigator.of(context).pushNamed(ReceiversScreen.id);
-                  break;
-                case 'DEVICES':
-                  Navigator.of(context).pushNamed(DevicesScreen.id);
-                  break;
-                case 'RESET':
-                  HrO2DataService().deleteAllData();
-                  break;
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'CLOSE',
-                child: Text(
-                  'CLOSE',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'RECEIVERS',
-                child: Text(
-                  'RECEIVERS',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'DEVICES',
-                child: Text(
-                  'DEVICES',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                height: 20,
-                value: 'RESET',
-                child: Text(
-                  'RESET',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 5,
-                      backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                      color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
+      drawer: const HRo2DrawerWidget(),
       body: Container(
-        decoration: backgroundGradient(_gridRows),
+        decoration: backgroundGradient(gridRows),
         child: SingleChildScrollView(
           child: Column(
             children: [
               Table(
                 children: [
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(children: [
                       SizedBox(
-                        height: _height / 16,
+                        height: height / 16,
                       )
                     ]),
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(
                       children: [
                         if (double.parse(readings.heartRate.toString()) == 0)
@@ -217,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                       ],
                     ),
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(children: [
                       if (double.parse(readings.bloodOxygen.toString()) == 0)
                         GaugeWidget(
@@ -258,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //       height: _height,
                   //     )
                   //   ]),
-                  if (_gridRows == 2)
+                  if (gridRows == 2)
                     TableRow(children: [
                       if (double.parse(readings.heartRate.toString()) == 0)
                         GaugeWidget(
@@ -353,10 +276,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               //Some padding for desktops
-
               SizedBox(
-                height: _height / 8,
-                width: _width,
+                height: height / 8,
+                width: width,
               ),
             ],
           ),
@@ -365,10 +287,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  BoxDecoration backgroundGradient(int _gridRows) {
+  BoxDecoration backgroundGradient(int gridRows) {
     return BoxDecoration(
       color: Colors.white70,
-      gradient: _gridRows > 1
+      gradient: gridRows > 1
           ? const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

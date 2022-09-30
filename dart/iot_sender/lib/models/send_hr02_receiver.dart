@@ -1,22 +1,25 @@
 class SendHrO2Receiver {
-  String sendToAtsign;
+  String receiverAtsign;
   bool sendHR;
   bool sendO2;
-  String sendToShortname = "";
+  String receiverShortname = "";
 
-
-  SendHrO2Receiver({required this.sendToAtsign, required this.sendHR, required this.sendO2, required this.sendToShortname});
+  SendHrO2Receiver(
+      {required this.receiverAtsign,
+      required this.sendHR,
+      required this.sendO2,
+      required this.receiverShortname});
 
   SendHrO2Receiver.fromJson(Map<String, dynamic> json)
-      : sendToAtsign = json['sendToAtsign'],
+      : receiverAtsign = json['receiverAtsign'],
         sendHR = json['sendHR'],
         sendO2 = json['sendO2'],
-        sendToShortname = json['sendToShortname'];
+        receiverShortname = json['receiverShortname'];
 
   Map<String, dynamic> toJson() => {
-        'sendToAtsign': sendToAtsign,
+        'receiverAtsign': receiverAtsign,
         'sendHR': sendHR,
         'sendO2': sendO2,
-        'sendToShortname': sendToShortname,
+        'receiverShortname': receiverShortname,
       };
 }

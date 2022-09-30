@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -6,6 +5,7 @@ import 'package:iot_receiver/forms/device_form.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
+import 'package:iot_receiver/widgets/hro2_drawer_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Device extends StatefulWidget {
@@ -18,17 +18,17 @@ class NewHrO2Device extends StatefulWidget {
 
 class _NewHrO2DeviceState extends State<NewHrO2Device> {
   final _formKey = GlobalKey<FormBuilderState>();
-  final HrO2DataService _hrO2DataService = HrO2DataService();
+  final Hro2DataService _hrO2DataService = Hro2DataService();
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
 
     return Scaffold(
@@ -42,45 +42,16 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
             Color.fromARGB(255, 173, 83, 78),
             Color.fromARGB(255, 108, 169, 197)
           ]),
-          actions: [
-            PopupMenuButton<String>(
-              color: const Color.fromARGB(255, 108, 169, 197),
-              //padding: const EdgeInsets.symmetric(horizontal: 10),
-              icon: const Icon(
-                Icons.menu,
-                size: 20,
-              ),
-              onSelected: (String result) {
-                switch (result) {
-                  case 'CLOSE':
-                    exit(0);
-                  default:
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  height: 20,
-                  value: 'CLOSE',
-                  child: Text(
-                    'CLOSE',
-                    style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 5,
-                        backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                        color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
+        drawer: const HRo2DrawerWidget(),
         body: Container(
-          decoration: backgroundGradient(_gridRows),
+          decoration: backgroundGradient(gridRows),
           child: SingleChildScrollView(
             child: FormBuilder(
                 key: _formKey,
                 child: Column(children: [
                   deviceAtsignForm(context, ''),
+                  deviceSensorForm(context, ''),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
@@ -108,12 +79,19 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
                             if (_formKey.currentState!.validate()) {
                               String deviceAtsign = _formKey
                                   .currentState!.fields['@device']!.value;
+                              String sensorName = _formKey
+                                  .currentState!.fields['sensorName']!.value;
                               var newDevice = HrO2Device(
                                 deviceAtsign: deviceAtsign,
+                                sensorName:
+                                    sensorName.isNotEmpty ? sensorName : '',
                                 deviceUuid: UniqueKey().toString(),
                               );
                               await _hrO2DataService.addDeviceToList(newDevice);
-                              Navigator.of(context).pushNamed(DevicesScreen.id);
+                              if (mounted) {
+                                Navigator.of(context)
+                                    .pushNamed(DevicesScreen.id);
+                              }
                             } else {
                               Navigator.pop(context, null);
                             }
@@ -126,8 +104,8 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
                   Row(
                     children: [
                       SizedBox(
-                        width: _width,
-                        height: _height,
+                        width: width,
+                        height: height,
                       )
                     ],
                   )
@@ -137,10 +115,10 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
   }
 }
 
-BoxDecoration backgroundGradient(int _gridRows) {
+BoxDecoration backgroundGradient(int gridRows) {
   return BoxDecoration(
     color: Colors.white70,
-    gradient: _gridRows > 1
+    gradient: gridRows > 1
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

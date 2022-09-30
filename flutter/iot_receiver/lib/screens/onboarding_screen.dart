@@ -18,20 +18,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white70,
-          gradient: _gridRows > 1
+          gradient: gridRows > 1
               ? const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,

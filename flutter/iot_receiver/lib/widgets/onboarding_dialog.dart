@@ -12,7 +12,7 @@ class OnboardingDialog extends StatefulWidget {
   const OnboardingDialog({Key? key}) : super(key: key);
 
   @override
-  _OnboardingDialogState createState() => _OnboardingDialogState();
+  State<OnboardingDialog> createState() => _OnboardingDialogState();
 }
 
 class _OnboardingDialogState extends State<OnboardingDialog> {
@@ -69,13 +69,13 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                   color: Colors.black),
               items: _atSignsList
                   .map((atsign) => DropdownMenuItem(
+                        value: atsign,
                         child: SizedBox(
                             width: 210,
                             child: AutoSizeText(
                               atsign.toLowerCase(),
                               overflow: TextOverflow.ellipsis,
                             )),
-                        value: atsign,
                       ))
                   .toList(),
               onChanged: (String? value) {
@@ -136,15 +136,23 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                 setState(() {});
               }
             }
-            Navigator.pushNamed(context, HomeScreen.id);
+            if (mounted) {
+              Navigator.pushNamed(context, HomeScreen.id);
+            }
 
             break;
           case AtOnboardingResultStatus.error:
-            Navigator.pushNamed(context, OnboardingScreen.id);
-            _handleError(context);
+            if (mounted) {
+              Navigator.pushNamed(context, OnboardingScreen.id);
+            }
+            if (mounted) {
+              _handleError(context);
+            }
             break;
           case AtOnboardingResultStatus.cancel:
-            Navigator.pushNamed(context, OnboardingScreen.id);
+            if (mounted) {
+              Navigator.pushNamed(context, OnboardingScreen.id);
+            }
 
             break;
         }

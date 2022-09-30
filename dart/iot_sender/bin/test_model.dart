@@ -4,10 +4,16 @@ import 'package:iot_sender/models/send_hr02_receiver.dart';
 
 void main() {
   List<SendHrO2Receiver> toAtsigns = [];
-  SendHrO2Receiver first =
-      SendHrO2Receiver(sendToAtsign: '@atgps_receiver', sendHR: true, sendO2: true, sendToShortname: "world");
-  SendHrO2Receiver second =
-      SendHrO2Receiver(sendToAtsign: '@atgps02', sendHR: true, sendO2: false, sendToShortname: "hello");
+  SendHrO2Receiver first = SendHrO2Receiver(
+      receiverAtsign: '@atgps_receiver',
+      sendHR: true,
+      sendO2: true,
+      receiverShortname: "world");
+  SendHrO2Receiver second = SendHrO2Receiver(
+      receiverAtsign: '@atgps02',
+      sendHR: true,
+      sendO2: false,
+      receiverShortname: "hello");
 
   toAtsigns.add(first);
   toAtsigns.add(second);
@@ -23,12 +29,10 @@ void main() {
 
   print(x[0]['sendHR']);
 
-
   for (var a = 0; a < x.length; a++) {
     toAtsigns.add(SendHrO2Receiver.fromJson(x[a]));
   }
-   p = jsonEncode(toAtsigns);
+  p = jsonEncode(toAtsigns);
 
   print(p);
-
 }
