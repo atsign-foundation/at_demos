@@ -67,17 +67,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // * Getting the AtClientManager instance to use below
     //AtClientManager atClientManager = AtClientManager.getInstance();
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio;
 
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
     return Scaffold(
       appBar: NewGradientAppBar(
@@ -168,19 +168,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Container(
-        decoration: backgroundGradient(_gridRows),
+        decoration: backgroundGradient(gridRows),
         child: SingleChildScrollView(
           child: Column(
             children: [
               Table(
                 children: [
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(children: [
                       SizedBox(
-                        height: _height / 16,
+                        height: height / 16,
                       )
                     ]),
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(
                       children: [
                         if (double.parse(readings.heartRate.toString()) == 0)
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                       ],
                     ),
-                  if (_gridRows == 1)
+                  if (gridRows == 1)
                     TableRow(children: [
                       if (double.parse(readings.bloodOxygen.toString()) == 0)
                         GaugeWidget(
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //       height: _height,
                   //     )
                   //   ]),
-                  if (_gridRows == 2)
+                  if (gridRows == 2)
                     TableRow(children: [
                       if (double.parse(readings.heartRate.toString()) == 0)
                         GaugeWidget(
@@ -355,8 +355,8 @@ class _HomeScreenState extends State<HomeScreen> {
               //Some padding for desktops
 
               SizedBox(
-                height: _height / 8,
-                width: _width,
+                height: height / 8,
+                width: width,
               ),
             ],
           ),
@@ -365,10 +365,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  BoxDecoration backgroundGradient(int _gridRows) {
+  BoxDecoration backgroundGradient(int gridRows) {
     return BoxDecoration(
       color: Colors.white70,
-      gradient: _gridRows > 1
+      gradient: gridRows > 1
           ? const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

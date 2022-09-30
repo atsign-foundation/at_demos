@@ -136,16 +136,17 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                         itemCount: hrO2ReceiverList!.length,
                         itemBuilder: (BuildContext context, int index) {
                           final HrO2Receiver receiver = hrO2ReceiverList[index];
+                          const align = Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 16),
+                                child: Icon(Icons.delete),
+                              ));
                           return Dismissible(
                             key: Key(receiver.receiverAtsign),
                             background: Container(
                               color: Colors.red,
-                              child: const Align(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 16),
-                                    child: Icon(Icons.delete),
-                                  ),
-                                  alignment: Alignment.centerRight),
+                              child: align,
                             ),
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
@@ -187,7 +188,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                       ? ", and "
                                       : "") +
                                   (hrO2ReceiverList[index].sendO2
-                                      ? "sending o2"
+                                      ? "sending o2 saturation"
                                       : "")),
                               // trailing: const Icon(Icons.navigate_next),
                             ),

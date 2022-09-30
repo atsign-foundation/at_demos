@@ -146,11 +146,11 @@ class _DevicesScreenState extends State<DevicesScreen> {
                             background: Container(
                               color: Colors.red,
                               child: const Align(
+                                  alignment: Alignment.centerRight,
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 16),
                                     child: Icon(Icons.delete),
-                                  ),
-                                  alignment: Alignment.centerRight),
+                                  )),
                             ),
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
@@ -181,7 +181,10 @@ class _DevicesScreenState extends State<DevicesScreen> {
                                   side: const BorderSide(
                                       color: Colors.blue, width: 1),
                                   borderRadius: BorderRadius.circular(10)),
-                              title: Text(hrO2Devices[index].deviceAtsign),
+                              title: Text(hrO2Devices[index].deviceAtsign +
+                                  (hrO2Devices[index].sensorName.isNotEmpty
+                                      ? " with [${hrO2Devices[index].sensorName} sensor]"
+                                      : "")),
                               subtitle: Text(
                                   "identifier ${hrO2Devices[index].deviceUuid}"),
                             ),

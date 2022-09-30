@@ -23,13 +23,13 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
 
     return Scaffold(
@@ -76,7 +76,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
           ],
         ),
         body: Container(
-          decoration: backgroundGradient(_gridRows),
+          decoration: backgroundGradient(gridRows),
           child: SingleChildScrollView(
             child: FormBuilder(
                 key: _formKey,
@@ -92,8 +92,8 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                                   snapshot.data
                                       ?.map((item) =>
                                           DropdownMenuItem<HrO2Device>(
-                                            child: Text(item.deviceAtsign),
                                             value: item,
+                                            child: Text(item.deviceAtsign),
                                           ))
                                       .toList());
                             } else {
@@ -134,7 +134,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                               String receiverAtsign = _formKey
                                   .currentState!.fields['@receiver']!.value;
                               String receiverShortname = _formKey
-                                  .currentState!.fields['ShortName']!.value;
+                                  .currentState!.fields['shortName']!.value;
                               var sendHr = _formKey
                                   .currentState!.fields['sendHR']!.value;
                               var sendO2 = _formKey
@@ -147,8 +147,10 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                                   sendO2: sendO2);
                               await _hrO2DataService
                                   .addReceiverToList(newReceiver);
-                              Navigator.of(context)
-                                  .pushNamed(ReceiversScreen.id);
+                              if (mounted) {
+                                Navigator.of(context)
+                                    .pushNamed(ReceiversScreen.id);
+                              }
                             } else {
                               Navigator.pop(context, null);
                             }
@@ -158,24 +160,24 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                       const SizedBox(width: 20)
                     ],
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: _width,
-                        height: _height,
-                      )
-                    ],
-                  )
+                  // Row(
+                  //   children: [
+                  //     SizedBox(
+                  //       width: _width,
+                  //       height: _height,
+                  //     )
+                  //   ],
+                  // )
                 ])),
           ),
         ));
   }
 }
 
-BoxDecoration backgroundGradient(int _gridRows) {
+BoxDecoration backgroundGradient(int gridRows) {
   return BoxDecoration(
     color: Colors.white70,
-    gradient: _gridRows > 1
+    gradient: gridRows > 1
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

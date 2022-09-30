@@ -57,23 +57,23 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   Widget build(BuildContext context) {
     double read = getValue(widget.value);
     double reading = getMeter(widget.value);
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height - 160;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height - 160;
     // var mediaQuery = MediaQuery.of(context);
     // var _width = mediaQuery.size.width * mediaQuery.devicePixelRatio;
     // var _height = mediaQuery.size.height * mediaQuery.devicePixelRatio -160;
-    double _size;
-    double _font;
-    if (_width > _height + 160) {
-      _size = _width / 2;
-      _font = _size / 9;
+    double size;
+    double font;
+    if (width > height + 160) {
+      size = width / 2;
+      font = size / 9;
     } else {
-      _size = _height / 2;
-      if (_width < _height / 2) {
-        _size = _width;
+      size = height / 2;
+      if (width < height / 2) {
+        size = width;
       }
     }
-    _font = _size / 9;
+    font = size / 9;
 
     var step = (this.widget.topRange - this.widget.bottomRange) / 250;
     return TimerBuilder.periodic(const Duration(milliseconds: 5),
@@ -93,14 +93,14 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
       return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         PrettyGauge(
-          valueWidget: displayReading(read, _font, widget.decimalPlaces),
-          gaugeSize: _size,
+          valueWidget: displayReading(read, font, widget.decimalPlaces),
+          gaugeSize: size,
           startMarkerStyle: TextStyle(
-              fontSize: _font / 4,
+              fontSize: font / 4,
               color: Colors.black87,
               fontWeight: FontWeight.bold),
           endMarkerStyle: TextStyle(
-              fontSize: _font / 4,
+              fontSize: font / 4,
               color: Colors.black87,
               fontWeight: FontWeight.bold),
           currentValueDecimalPlaces: widget.decimalPlaces,
@@ -112,7 +112,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
             GaugeSegment('High', widget.highSector, widget.highColor),
           ],
           currentValue: reading,
-          displayWidget: displayUnits(widget.units, _font),
+          displayWidget: displayUnits(widget.units, font),
         )
       ]);
     });
@@ -173,7 +173,7 @@ class _GaugeWidgetState extends State<GaugeWidget> {
   }
 
   Widget displayReading(double reading, double fontSize, int decimalPlaces) {
-    double _max = 200;
+    double max = 200;
     // Make sure the decimal place if supplied meets Darts bounds (0-20)
     if (decimalPlaces < 0) {
       decimalPlaces = 0;
@@ -181,14 +181,14 @@ class _GaugeWidgetState extends State<GaugeWidget> {
     if (decimalPlaces > 20) {
       decimalPlaces = 20;
     }
-    if (fontSize > _max) {
-      fontSize = _max;
+    if (fontSize > max) {
+      fontSize = max;
     }
     return Column(
       children: [
         AutoSizeText(reading.toStringAsFixed(decimalPlaces),
             minFontSize: fontSize.truncateToDouble(),
-            maxFontSize: _max,
+            maxFontSize: max,
             style: TextStyle(
                 fontSize: fontSize / 2,
                 color: Colors.black87,
@@ -199,22 +199,22 @@ class _GaugeWidgetState extends State<GaugeWidget> {
 
   Widget displayUnits(String units, double fontSize) {
     fontSize = fontSize * .3;
-    double _max = 200;
-    if (fontSize > _max) {
-      fontSize = _max;
+    double max = 200;
+    if (fontSize > max) {
+      fontSize = max;
     }
     return Column(
       children: [
         AutoSizeText(widget.measurement,
             minFontSize: fontSize.truncateToDouble(),
-            maxFontSize: _max,
+            maxFontSize: max,
             style: TextStyle(
                 fontSize: fontSize / 2,
                 color: Colors.black87,
                 fontWeight: FontWeight.bold)),
         AutoSizeText(units,
             minFontSize: fontSize.truncateToDouble(),
-            maxFontSize: _max,
+            maxFontSize: max,
             style: TextStyle(
                 fontSize: fontSize / 2,
                 color: Colors.black87,

@@ -22,13 +22,13 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    int _gridRows = 1;
-    if (_width > _height) {
-      _gridRows = 2;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    int gridRows = 1;
+    if (width > height) {
+      gridRows = 2;
     } else {
-      _gridRows = 1;
+      gridRows = 1;
     }
 
     return Scaffold(
@@ -75,12 +75,13 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
           ],
         ),
         body: Container(
-          decoration: backgroundGradient(_gridRows),
+          decoration: backgroundGradient(gridRows),
           child: SingleChildScrollView(
             child: FormBuilder(
                 key: _formKey,
                 child: Column(children: [
                   deviceAtsignForm(context, ''),
+                  deviceSensorForm(context, ''),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
@@ -108,12 +109,19 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
                             if (_formKey.currentState!.validate()) {
                               String deviceAtsign = _formKey
                                   .currentState!.fields['@device']!.value;
+                              String sensorName = _formKey
+                                  .currentState!.fields['sensorName']!.value;
                               var newDevice = HrO2Device(
                                 deviceAtsign: deviceAtsign,
+                                sensorName:
+                                    sensorName.isNotEmpty ? sensorName : '',
                                 deviceUuid: UniqueKey().toString(),
                               );
                               await _hrO2DataService.addDeviceToList(newDevice);
-                              Navigator.of(context).pushNamed(DevicesScreen.id);
+                              if (mounted) {
+                                Navigator.of(context)
+                                    .pushNamed(DevicesScreen.id);
+                              }
                             } else {
                               Navigator.pop(context, null);
                             }
@@ -126,8 +134,8 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
                   Row(
                     children: [
                       SizedBox(
-                        width: _width,
-                        height: _height,
+                        width: width,
+                        height: height,
                       )
                     ],
                   )
@@ -137,10 +145,10 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
   }
 }
 
-BoxDecoration backgroundGradient(int _gridRows) {
+BoxDecoration backgroundGradient(int gridRows) {
   return BoxDecoration(
     color: Colors.white70,
-    gradient: _gridRows > 1
+    gradient: gridRows > 1
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

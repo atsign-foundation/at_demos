@@ -5,6 +5,8 @@
         "cupertino",
         "fourballcorporate",
         "Millis",
+        "Mosquitto",
+        "mqtt",
         "ZARIOT"
     ]
 }

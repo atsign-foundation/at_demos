@@ -5,21 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 // Some Form templates to reuse in New and Edit for devices
 
-FormBuilderTextField deviceAtsignForm(
-    BuildContext context, String initialValue) {
-  return FormBuilderTextField(
-      initialValue: initialValue.toString(),
-      name: '@device',
-      decoration: const InputDecoration(
-        labelText: 'Device\'s atSign',
-        // fillColor: Colors.white,
-        // focusColor: Colors.lightGreenAccent,
-        labelStyle: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      validator: FormBuilderValidators.required(),
-      style: const TextStyle(fontSize: 20, letterSpacing: 5));
-}
-
 FormBuilderDropdown receiverDeviceSelector(BuildContext context, items) {
   return FormBuilderDropdown(
     name: "device_selector",
@@ -51,7 +36,7 @@ FormBuilderTextField receiverShortnameForm(
     BuildContext context, String initialValue) {
   return FormBuilderTextField(
       initialValue: initialValue.toString(),
-      name: 'ShortName',
+      name: 'shortName',
       decoration: const InputDecoration(
         labelText: 'Patient ID',
         // fillColor: Colors.white,

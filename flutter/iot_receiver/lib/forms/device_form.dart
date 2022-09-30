@@ -20,6 +20,20 @@ FormBuilderTextField deviceAtsignForm(
       style: const TextStyle(fontSize: 20));
 }
 
+FormBuilderTextField deviceSensorForm(
+    BuildContext context, String initialValue) {
+  return FormBuilderTextField(
+      initialValue: initialValue.toString(),
+      name: 'sensorName',
+      decoration: const InputDecoration(
+        labelText: 'Sensor Name',
+        // fillColor: Colors.white,
+        // focusColor: Colors.lightGreenAccent,
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      style: const TextStyle(fontSize: 20));
+}
+
 class DeviceSubmitForm extends StatelessWidget {
   const DeviceSubmitForm({
     Key? key,
