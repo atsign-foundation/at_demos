@@ -6,6 +6,7 @@ import 'package:iot_receiver/forms/device_form.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
 import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
+import 'package:iot_receiver/widgets/hro2_drawer_widget.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Device extends StatefulWidget {
@@ -42,38 +43,8 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
             Color.fromARGB(255, 173, 83, 78),
             Color.fromARGB(255, 108, 169, 197)
           ]),
-          actions: [
-            PopupMenuButton<String>(
-              color: const Color.fromARGB(255, 108, 169, 197),
-              //padding: const EdgeInsets.symmetric(horizontal: 10),
-              icon: const Icon(
-                Icons.menu,
-                size: 20,
-              ),
-              onSelected: (String result) {
-                switch (result) {
-                  case 'CLOSE':
-                    exit(0);
-                  default:
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  height: 20,
-                  value: 'CLOSE',
-                  child: Text(
-                    'CLOSE',
-                    style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 5,
-                        backgroundColor: Color.fromARGB(255, 108, 169, 197),
-                        color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
+        drawer: const HRo2DrawerWidget(),
         body: Container(
           decoration: backgroundGradient(gridRows),
           child: SingleChildScrollView(
