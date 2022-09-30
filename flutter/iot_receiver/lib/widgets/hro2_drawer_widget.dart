@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_receiver/screens/onboarding_screen.dart';
 import '../services/hro2_data_service.dart';
 import '../screens/devices_screen.dart';
 import '../screens/home_screen.dart';
@@ -50,6 +51,12 @@ class HRo2DrawerWidget extends StatelessWidget {
             title: const Text('Add a new receiver'),
             onTap: () {
               Navigator.of(context).pushNamed(NewHrO2Receiver.id);
+            },
+          ),
+          ListTile(
+            title: const Text('Change atSign'),
+            onTap: () async {
+              Navigator.of(context).pushNamed(OnboardingScreen.id);
             },
           ),
           ListTile(

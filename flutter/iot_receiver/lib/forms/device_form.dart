@@ -11,7 +11,7 @@ FormBuilderTextField deviceAtsignForm(
       initialValue: initialValue.toString(),
       name: '@device',
       decoration: const InputDecoration(
-        labelText: 'Device\'s atSign',
+        labelText: 'Device atSign',
         // fillColor: Colors.white,
         // focusColor: Colors.lightGreenAccent,
         labelStyle: TextStyle(fontWeight: FontWeight.bold),
