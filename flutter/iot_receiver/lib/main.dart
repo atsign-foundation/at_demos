@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:iot_receiver/screens/data_owners_screen.dart';
 import 'package:iot_receiver/screens/devices_screen.dart';
 import 'package:iot_receiver/screens/receivers_screen.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:iot_receiver/models/iot_model.dart';
+import 'package:iot_receiver/widgets/new_data_owner_dialog.dart';
 import 'package:iot_receiver/widgets/new_device_dialog.dart';
 import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
 import 'package:path_provider/path_provider.dart'
@@ -73,8 +75,10 @@ class _MyAppState extends State<MyApp> {
         OnboardingScreen.id: (_) => const OnboardingScreen(),
         ReceiversScreen.id: (_) => const ReceiversScreen(),
         DevicesScreen.id: (_) => const DevicesScreen(),
+        DataOwnersScreen.id: (_) => const DataOwnersScreen(),
         NewHrO2Device.id: (_) => const NewHrO2Device(),
         NewHrO2Receiver.id: (_) => const NewHrO2Receiver(),
+        NewHrO2DataOwner.id: (_) => const NewHrO2DataOwner(),
         //Next.id: (_) => const Next(),
       },
       initialRoute: OnboardingScreen.id,
