@@ -184,6 +184,7 @@ Future<List<HrO2DataOwner>> getDataOwners(AtClient atClient, String ownerAtsign,
   String dataOwnersJson = '';
   //Using a Set first dedupes the list we eventually send back
   Set<HrO2DataOwner> dataOwners = {};
+  const String libraryNamespace = 'iot_receiver';
 
   var metaData = Metadata()
     ..isPublic = false
@@ -191,7 +192,7 @@ Future<List<HrO2DataOwner>> getDataOwners(AtClient atClient, String ownerAtsign,
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$sensorName.dataowners'
+    ..key = 'device_data_owner.$libraryNamespace'
     ..namespace = atClient.getPreferences()!.namespace
     ..sharedBy = ownerAtsign
     ..metadata = metaData;
@@ -213,7 +214,7 @@ Future<List<HrO2DataOwner>> getDataOwners(AtClient atClient, String ownerAtsign,
 
 Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String sensorName) async {
   String receiversString = '';
-  print(ownerAtsign + ',' + sensorName);
+  const String libraryNamespace = 'iot_receiver';
 
   var metaData = Metadata()
     ..isPublic = false
@@ -221,7 +222,7 @@ Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsig
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$sensorName.config'
+    ..key = 'receiver_list.$libraryNamespace'
     ..namespace = atClient.getPreferences()!.namespace
     ..sharedBy = ownerAtsign
     ..metadata = metaData;
@@ -232,7 +233,6 @@ Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsig
   } catch (e) {
     logger.severe(e.toString());
   }
-  print(receiversString);
 
   List<SendHrO2Receiver> toAtsigns = [];
   if (receiversString.isNotEmpty) {
