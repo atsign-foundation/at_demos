@@ -17,16 +17,12 @@ void main(List<String> args) async {
   var parser = ArgParser();
 // Args
   parser.addOption('key-file',
-      abbr: 'k',
-      mandatory: false,
-      help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
-  parser.addOption('atsign',
-      abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
-  parser.addOption('device',
-      abbr: 'd', mandatory: true, help: 'atSign of the  device');
-  parser.addOption('device-name',
-      abbr: 'n', mandatory: true, help: 'Device name');
+      abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
+  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
+  parser.addOption('device', abbr: 'd', mandatory: true, help: 'atSign of the  device');
+  parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Device name');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
+  parser.addFlag('remove', abbr: 'r', help: 'remove atKey');
 
   // Check the arguments
   String nameSpace = 'fourballcorporate9';
@@ -69,20 +65,18 @@ void main(List<String> args) async {
 
     AtSignLogger.root_level = 'INFO';
   }
+  bool remove = results['remove'];
 
   //onboarding preference builder can be used to set onboardingService parameters
   AtOnboardingPreference atOnboardingConfig = AtOnboardingPreference()
-    ..hiveStoragePath =
-        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
+    ..hiveStoragePath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
     ..namespace = nameSpace
     ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
-    ..commitLogPath =
-        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
+    ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
     ..rootDomain = rootDomain
     ..atKeysFilePath = atsignFile;
-  AtOnboardingService onboardingService =
-      AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
+  AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
   await onboardingService.authenticate();
   AtClient? atClient = await onboardingService.getAtClient();
   AtClientManager atClientManager = AtClientManager.getInstance();
@@ -129,11 +123,19 @@ void main(List<String> args) async {
     ..sharedWith = deviceAtsign
     ..metadata = metaData;
 
-  try {
-    await atClient?.put(key, receiversString);
-    //exit(0);
-  } catch (e) {
-    print(e.toString());
+  if (remove) {
+    try {
+      await atClient?.delete(key);
+    } catch (e) {
+      print(e.toString());
+    }
+  } else {
+    try {
+      await atClient?.put(key, receiversString);
+      //exit(0);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   logger.info("Waiting for final sync");
