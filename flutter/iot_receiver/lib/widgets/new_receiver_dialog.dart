@@ -87,7 +87,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                   ),
                   Builder(
                       builder: (context) => FutureBuilder<List<HrO2DataOwner>>(
-                          future: _hrO2DataService.getDeviceDataOwnerList(),
+                          future: _hrO2DataService.getDataOwners(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<HrO2DataOwner>> snapshot) {
                             if (snapshot.hasData) {
@@ -150,8 +150,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                                   hrO2Device: device,
                                   sendHR: sendHr,
                                   sendO2: sendO2);
-                              await _hrO2DataService
-                                  .addReceiverToList(newReceiver);
+                              await _hrO2DataService.putReceiver(newReceiver);
                               if (mounted) {
                                 Navigator.of(context)
                                     .pushNamed(ReceiversScreen.id);

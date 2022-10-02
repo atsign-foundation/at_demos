@@ -21,7 +21,6 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _hrO2DataService.getDataOwners();
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
@@ -37,7 +36,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
       drawer: const HRo2DrawerWidget(),
       body: Builder(
           builder: (context) => FutureBuilder<List<HrO2DataOwner>>(
-              future: _hrO2DataService.getDataOwnerList(),
+              future: _hrO2DataService.getDataOwners(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<HrO2DataOwner>> snapshot) {
                 List<Widget> children;
@@ -93,8 +92,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
                             },
                             onDismissed: (_) async {
                               hrO2DataOwnerList.remove(dataOwner);
-                              await _hrO2DataService
-                                  .putDataOwnerList(hrO2DataOwnerList);
+                              await _hrO2DataService.putDataOwner(dataOwner);
                               setState(() {});
                             },
                             child: ListTile(
@@ -103,7 +101,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
                                       color: Colors.blue, width: 1),
                                   borderRadius: BorderRadius.circular(10)),
                               title: Text(
-                                  hrO2DataOwnerList[index].dataOwnerAtsign),
+                                  "${hrO2DataOwnerList[index].dataOwnerAtsign}[${hrO2DataOwnerList[index].hrO2Device.deviceAtsign}]"),
                               subtitle: Text(
                                   "${hrO2DataOwnerList[index].hrO2Device.deviceAtsign} ${hrO2DataOwnerList[index].hrO2Device.sensorName.isNotEmpty ? hrO2DataOwnerList[index].hrO2Device.sensorName : ""}"),
                               // trailing: const Icon(Icons.navigate_next),

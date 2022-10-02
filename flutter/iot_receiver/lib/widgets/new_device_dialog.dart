@@ -87,7 +87,7 @@ class _NewHrO2DeviceState extends State<NewHrO2Device> {
                                     sensorName.isNotEmpty ? sensorName : '',
                                 deviceUuid: UniqueKey().toString(),
                               );
-                              await _hrO2DataService.addDeviceToList(newDevice);
+                              await _hrO2DataService.putDevice(newDevice);
                               if (mounted) {
                                 Navigator.of(context)
                                     .pushNamed(DevicesScreen.id);
