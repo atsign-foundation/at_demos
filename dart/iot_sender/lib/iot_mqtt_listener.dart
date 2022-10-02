@@ -113,7 +113,6 @@ Future<void> iotListen(
     List<SendHrO2Receiver> toAtsigns = [];
 
     // Get list of dataOwners
-    //
     List<HrO2DataOwner> dataOwnerAtsigns = await getDataOwners(atClient, ownerAtsign, deviceName);
     
     // Add DataOwners to the list of receivers automatically
