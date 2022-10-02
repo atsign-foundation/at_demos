@@ -17,15 +17,11 @@ void main(List<String> args) async {
   var parser = ArgParser();
 // Args
   parser.addOption('key-file',
-      abbr: 'k',
-      mandatory: false,
-      help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
-  parser.addOption('atsign',
-      abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
-  parser.addOption('device',
-      abbr: 'd', mandatory: true, help: 'atSign of the  device');
-  parser.addOption('device-name',
-      abbr: 'n', mandatory: true, help: 'Sensor name');
+      abbr: 'k', mandatory: false, help: 'This device\'s atSign\'s atKeys file if not in ~/.atsign/keys/');
+  parser.addOption('atsign', abbr: 'a', mandatory: true, help: 'Device Manager\'s atSign');
+  parser.addOption('device', abbr: 'd', mandatory: true, help: 'atSign of the  device');
+  parser.addOption('device-name', abbr: 'n', mandatory: true, help: 'Sensor name');
+  parser.addFlag('remove', abbr: 'r', help: 'Remove atKey');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
 
   // Check the arguments
@@ -69,20 +65,18 @@ void main(List<String> args) async {
 
     AtSignLogger.root_level = 'INFO';
   }
+  bool remove = results['remove'];
 
   //onboarding preference builder can be used to set onboardingService parameters
   AtOnboardingPreference atOnboardingConfig = AtOnboardingPreference()
-    ..hiveStoragePath =
-        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
+    ..hiveStoragePath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage'
     ..namespace = nameSpace
     ..downloadPath = '$homeDirectory/.$nameSpace/files'
     ..isLocalStoreRequired = true
-    ..commitLogPath =
-        '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
+    ..commitLogPath = '$homeDirectory/.$nameSpace/$fromAtsign/$deviceName/storage/commitLog'
     ..rootDomain = rootDomain
     ..atKeysFilePath = atsignFile;
-  AtOnboardingService onboardingService =
-      AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
+  AtOnboardingService onboardingService = AtOnboardingServiceImpl(fromAtsign, atOnboardingConfig);
   await onboardingService.authenticate();
   AtClient? atClient = await onboardingService.getAtClient();
   AtClientManager atClientManager = AtClientManager.getInstance();
@@ -105,14 +99,14 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-   String dataOwnersJson =
+  String dataOwnersJson =
       '[{"hrO2Device":{"deviceAtsign":"@piw2","deviceUuid":"uuid01","sensorName":"piw2"},"dataOwnerAtsign":"@wisefrog"}]';
 
-   logger.info("calling iotListen atSign '$fromAtsign'");
+  logger.info("calling iotListen atSign '$fromAtsign'");
 
   String? currentAtsign;
   currentAtsign = atClient?.getCurrentAtSign();
- const String libraryNamespace = 'iot_receiver';
+  const String libraryNamespace = 'iot_receiver';
   var metaData = Metadata()
     ..isPublic = false
     ..isEncrypted = true
@@ -127,12 +121,19 @@ void main(List<String> args) async {
     ..sharedBy = fromAtsign
     ..sharedWith = deviceAtsign
     ..metadata = metaData;
-
-  try {
-    await atClient?.put(key, dataOwnersJson);
-    //exit(0);
-  } catch (e) {
-    print(e.toString());
+  if (remove) {
+    try{
+    await atClient?.delete(key);
+    }catch (e) {
+      print(e.toString());
+    }
+  } else {
+    try {
+      await atClient?.put(key, dataOwnersJson);
+      //exit(0);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   logger.info("Waiting for final sync");

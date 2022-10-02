@@ -211,6 +211,7 @@ Future<List<HrO2DataOwner>> getDataOwners(AtClient atClient, String ownerAtsign,
     dataOwnersJson = dataOwnersAtValue.value;
   } catch (e) {
     logger.severe(e.toString());
+    return ([]);
   }
 
   List dataOwnerslist = jsonDecode(dataOwnersJson);
@@ -241,6 +242,7 @@ Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsig
     receiversString = atReceiversAtValue.value;
   } catch (e) {
     logger.severe(e.toString());
+    return ([]);
   }
 
   List<SendHrO2Receiver> toAtsigns = [];
