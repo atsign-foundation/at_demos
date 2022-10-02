@@ -2,23 +2,22 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_receiver/forms/receiver_form.dart';
+import 'package:iot_receiver/forms/data_owner_form.dart';
 import 'package:iot_receiver/models/hro2_data_owner.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
-import 'package:iot_receiver/models/hro2_receiver.dart';
-import 'package:iot_receiver/screens/receivers_screen.dart';
+import 'package:iot_receiver/screens/data_owners_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
-class NewHrO2Receiver extends StatefulWidget {
-  const NewHrO2Receiver({Key? key}) : super(key: key);
-  static const String id = '/new_receiver';
+class NewHrO2DataOwner extends StatefulWidget {
+  const NewHrO2DataOwner({Key? key}) : super(key: key);
+  static const String id = '/new_dataOwner';
 
   @override
-  State<NewHrO2Receiver> createState() => _NewHrO2ReceiverState();
+  State<NewHrO2DataOwner> createState() => _NewHrO2DataOwnerState();
 }
 
-class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
+class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
   final _formKey = GlobalKey<FormBuilderState>();
   final Hro2DataService _hrO2DataService = Hro2DataService();
 
@@ -36,7 +35,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
     return Scaffold(
         appBar: NewGradientAppBar(
           title: const AutoSizeText(
-            'New Receiver',
+            'New DataOwner',
             minFontSize: 5,
             maxFontSize: 50,
           ),
@@ -82,33 +81,26 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
             child: FormBuilder(
                 key: _formKey,
                 child: Column(children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
                   Builder(
-                      builder: (context) => FutureBuilder<List<HrO2DataOwner>>(
-                          future: _hrO2DataService.getDeviceDataOwnerList(),
+                      builder: (context) => FutureBuilder<List<HrO2Device>>(
+                          future: _hrO2DataService.getDeviceList(),
                           builder: (BuildContext context,
-                              AsyncSnapshot<List<HrO2DataOwner>> snapshot) {
+                              AsyncSnapshot<List<HrO2Device>> snapshot) {
                             if (snapshot.hasData) {
-                              return receiverDeviceSelector(
+                              return dataOwnerDeviceSelector(
                                   context,
                                   snapshot.data
                                       ?.map((item) =>
                                           DropdownMenuItem<HrO2Device>(
-                                            value: item.hrO2Device,
-                                            child: Text(
-                                                item.hrO2Device.deviceAtsign),
+                                            value: item,
+                                            child: Text(item.deviceAtsign),
                                           ))
                                       .toList());
                             } else {
                               return const Text("loading");
                             }
                           })),
-                  receiverShortnameForm(context, ''),
-                  receiverAtsignForm(context, ''),
-                  sendHRForm(context, ''),
-                  sendO2Form(context, ''),
+                  dataOwnerAtsignForm(context, ''),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
@@ -120,7 +112,7 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                         ),
                       ),
                       const Spacer(),
-                      ReceiverSubmitForm(formKey: _formKey),
+                      DataOwnerSubmitForm(formKey: _formKey),
                       const Spacer(),
                       Expanded(
                         child: MaterialButton(
@@ -136,25 +128,17 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                             if (_formKey.currentState!.validate()) {
                               HrO2Device device = _formKey.currentState!
                                   .fields['device_selector']!.value;
-                              String receiverAtsign = _formKey
-                                  .currentState!.fields['@receiver']!.value;
-                              String receiverShortname = _formKey
-                                  .currentState!.fields['shortName']!.value;
-                              var sendHr = _formKey
-                                  .currentState!.fields['sendHR']!.value;
-                              var sendO2 = _formKey
-                                  .currentState!.fields['sendO2']!.value;
-                              var newReceiver = HrO2Receiver(
-                                  receiverAtsign: receiverAtsign,
-                                  receiverShortname: receiverShortname,
-                                  hrO2Device: device,
-                                  sendHR: sendHr,
-                                  sendO2: sendO2);
+                              String dataOwnerAtsign = _formKey
+                                  .currentState!.fields['@dataOwner']!.value;
+                              var newDataOwner = HrO2DataOwner(
+                                dataOwnerAtsign: dataOwnerAtsign,
+                                hrO2Device: device,
+                              );
                               await _hrO2DataService
-                                  .addReceiverToList(newReceiver);
+                                  .addDataOwnerToList(newDataOwner);
                               if (mounted) {
                                 Navigator.of(context)
-                                    .pushNamed(ReceiversScreen.id);
+                                    .pushNamed(DataOwnersScreen.id);
                               }
                             } else {
                               Navigator.pop(context, null);
