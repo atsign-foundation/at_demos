@@ -99,6 +99,25 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
+  // If the mqtt subject is "mqtt/mwc_beat_hr_o2" but no pulse has been found
+  // just return and do not bother doing anything else.
+    if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
+      if (c[0].topic == "mqtt/mwc_beat_hr_o2") {
+        List<String> beatBpmSpo = ['false', '0', '0'];
+        bool hrDetect = false;
+        try {
+          beatBpmSpo = pt.split(",");
+          hrDetect = beatBpmSpo[0].parseBool();
+        } catch (e) {
+          logger.severe('Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was received: $pt');
+        }
+        if (!hrDetect) {
+         logger.info('Data received on mqtt but no pulse found: $pt');
+          return;
+        }
+      }
+    }
+
     // Set of Receivers (prevents dupes)
     // To the set first we add the data owners
     // Then we add the receivers that the dataowners want to add
