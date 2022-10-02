@@ -106,9 +106,10 @@ void main(List<String> args) async {
   logger.info('OK Ready');
 
   String receiversString =
-      '[{"receiverAtsign":"@wisefrog","sendHR": true,"sendO2": true,"receiverShortname":"bob"},{"receiverAtsign":"@atgps02","sendHR": true,"sendO2": false,"receiverShortname":"world"}]';
+      '[{"receiverAtsign":"@colin","sendHR": true,"sendO2": true,"receiverShortname":"bob"},{"receiverAtsign":"@ai6bh","sendHR": true,"sendO2": false,"receiverShortname":"world"}]';
   logger.info("calling iotListen atSign '$fromAtsign'");
   // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);
+  const String libraryNamespace = 'iot_receiver';
 
   String? currentAtsign;
   currentAtsign = atClient?.getCurrentAtSign();
@@ -121,7 +122,7 @@ void main(List<String> args) async {
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$deviceName.config'
+    ..key = 'receiver_list.$libraryNamespace'
     ..sharedWith = currentAtsign
     ..namespace = atClient?.getPreferences()!.namespace
     ..sharedBy = fromAtsign
