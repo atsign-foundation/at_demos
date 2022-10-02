@@ -8,6 +8,8 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:at_client/at_client.dart';
 //import 'package:at_commons/at_commons.dart';
 import 'package:iot_sender/models/send_hr02_receiver.dart';
+import 'package:iot_sender/models/hro2_data_owner.dart';
+import 'package:iot_sender/models/hro2_device.dart';
 
 final client = MqttServerClient('localhost', '');
 final AtSignLogger logger = AtSignLogger('iotListen');
@@ -17,8 +19,7 @@ Random random = Random();
 int fakeO2IntMinValue = 950;
 int fakeO2IntMaxValue = 995;
 // fakeO2 value in int, convert to double by dividing by 10 when publishing
-int currentFakeO2IntValue =
-    random.nextInt(fakeO2IntMaxValue - fakeO2IntMinValue) + fakeO2IntMinValue;
+int currentFakeO2IntValue = random.nextInt(fakeO2IntMaxValue - fakeO2IntMinValue) + fakeO2IntMinValue;
 
 int getNextFakeO2IntValue() {
   // get random int in range -5..+5
@@ -39,12 +40,8 @@ bool _sendO2 = true;
 int _putCounterHR = 0;
 int _putCounterO2 = 0;
 
-Future<void> iotListen(
-    AtClientManager atClientManager,
-    NotificationService notificationService,
-    String fromAtsign,
-    String ownerAtsign,
-    String deviceName) async {
+Future<void> iotListen(AtClientManager atClientManager, NotificationService notificationService, String fromAtsign,
+    String ownerAtsign, String deviceName) async {
   client.logging(on: false);
   client.setProtocolV311();
   client.keepAlivePeriod = 20;
@@ -74,17 +71,14 @@ Future<void> iotListen(
     logger.info('Mosquitto client connected');
   } else {
     /// Use status here rather than state if you also want the broker return code.
-    logger.severe(
-        'ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
+    logger.severe('ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
     client.disconnect();
     exit(-1);
   }
 
-  logger.info(
-      'calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
+  logger.info('calling atClient.put for HeartRate to ensure AtClient connection goes through authorization exchange');
 
-  logger.info(
-      'Initial put complete, AtClient connection should now be authorized');
+  logger.info('Initial put complete, AtClient connection should now be authorized');
 
   /// Ok, lets try a subscription
   logger.info('Subscribing to the mqtt/mwc_hr topic');
@@ -104,12 +98,18 @@ Future<void> iotListen(
 
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
     final recMess = c![0].payload as MqttPublishMessage;
-    final pt =
-        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+    final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-    List<SendHrO2Receiver> toAtsigns =
-        await getReceivers(atClient, ownerAtsign, deviceName);
+    // Get list of dataOwners
+    //
+    List<HrO2DataOwner> dataOwnerAtsigns = await getDataOwners(atClient, ownerAtsign, deviceName);
+    List<SendHrO2Receiver> toAtsigns = [];
+    for (HrO2DataOwner owner in dataOwnerAtsigns) {
+      var addtoAtsigns = await getReceivers(atClient, owner.dataOwnerAtsign, owner.hrO2Device.sensorName);
+      toAtsigns.addAll(addtoAtsigns);
+    }
 
+// Send notifications
     for (var receiver in toAtsigns) {
       logger.info('Notification config: ' + receiver.toJson().toString());
     }
@@ -122,11 +122,7 @@ Future<void> iotListen(
         lastHeartRateDoubleValue = heartRateDoubleValue;
         for (var receiver in toAtsigns) {
           if (receiver.sendHR) {
-            await shareHeartRate(
-                heartRateDoubleValue,
-                fromAtsign,
-                receiver.receiverAtsign,
-                receiver.receiverShortname,
+            await shareHeartRate(heartRateDoubleValue, fromAtsign, receiver.receiverAtsign, receiver.receiverShortname,
                 notificationService);
           }
 
@@ -134,11 +130,7 @@ Future<void> iotListen(
             // get random int between 0 and 101, then subtract 50 to get a number in range -50..+50
             currentFakeO2IntValue = getNextFakeO2IntValue();
             double fakeO2DoubleValue = currentFakeO2IntValue / 10;
-            await shareO2Sat(
-                fakeO2DoubleValue,
-                fromAtsign,
-                receiver.receiverAtsign,
-                receiver.receiverShortname,
+            await shareO2Sat(fakeO2DoubleValue, fromAtsign, receiver.receiverAtsign, receiver.receiverShortname,
                 notificationService);
           }
         }
@@ -152,11 +144,7 @@ Future<void> iotListen(
         for (var receiver in toAtsigns) {
           if (receiver.sendO2) {
             await shareO2Sat(
-                o2SatDoubleValue,
-                fromAtsign,
-                receiver.receiverAtsign,
-                receiver.receiverShortname,
-                notificationService);
+                o2SatDoubleValue, fromAtsign, receiver.receiverAtsign, receiver.receiverShortname, notificationService);
           }
         }
       }
@@ -173,18 +161,17 @@ Future<void> iotListen(
           bpm = double.parse(beatBpmSpo[1]);
           spo = double.parse(beatBpmSpo[2]);
         } catch (e) {
-          logger.severe(
-              'Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was received: $pt');
+          logger.severe('Error in message sent to mqtt/mwc_beat_hr_o2 format HR,O2 and this was received: $pt');
         }
         if (hrDetect) {
           for (var receiver in toAtsigns) {
             if (receiver.sendHR) {
-              await shareHeartRate(bpm, fromAtsign, receiver.receiverAtsign,
-                  receiver.receiverShortname, notificationService);
+              await shareHeartRate(
+                  bpm, fromAtsign, receiver.receiverAtsign, receiver.receiverShortname, notificationService);
             }
             if (receiver.sendO2) {
-              await shareO2Sat(spo, fromAtsign, receiver.receiverAtsign,
-                  receiver.receiverShortname, notificationService);
+              await shareO2Sat(
+                  spo, fromAtsign, receiver.receiverAtsign, receiver.receiverShortname, notificationService);
             }
           }
         }
@@ -193,9 +180,10 @@ Future<void> iotListen(
   });
 }
 
-Future<List<SendHrO2Receiver>> getReceivers(
-    AtClient atClient, String ownerAtsign, String deviceName) async {
-  String receiversString = '';
+Future<List<HrO2DataOwner>> getDataOwners(AtClient atClient, String ownerAtsign, String sensorName) async {
+  String dataOwnersJson = '';
+  //Using a Set first dedupes the list we eventually send back
+  Set<HrO2DataOwner> dataOwners = {};
 
   var metaData = Metadata()
     ..isPublic = false
@@ -203,7 +191,37 @@ Future<List<SendHrO2Receiver>> getReceivers(
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$deviceName.config'
+    ..key = '$sensorName.dataowners'
+    ..namespace = atClient.getPreferences()!.namespace
+    ..sharedBy = ownerAtsign
+    ..metadata = metaData;
+
+  try {
+    AtValue dataOwnersAtValue = await atClient.get(key);
+    dataOwnersJson = dataOwnersAtValue.value;
+  } catch (e) {
+    logger.severe(e.toString());
+  }
+
+  List dataOwnerslist = jsonDecode(dataOwnersJson);
+
+  for (var i = 0; i < dataOwnerslist.length; i++) {
+    dataOwners.add(HrO2DataOwner.fromJson(dataOwnerslist[i]));
+  }
+  return (dataOwners.toList());
+}
+
+Future<List<SendHrO2Receiver>> getReceivers(AtClient atClient, String ownerAtsign, String sensorName) async {
+  String receiversString = '';
+  print(ownerAtsign + ',' + sensorName);
+
+  var metaData = Metadata()
+    ..isPublic = false
+    ..isEncrypted = true
+    ..namespaceAware = true;
+
+  var key = AtKey()
+    ..key = '$sensorName.config'
     ..namespace = atClient.getPreferences()!.namespace
     ..sharedBy = ownerAtsign
     ..metadata = metaData;
@@ -214,6 +232,7 @@ Future<List<SendHrO2Receiver>> getReceivers(
   } catch (e) {
     logger.severe(e.toString());
   }
+  print(receiversString);
 
   List<SendHrO2Receiver> toAtsigns = [];
   if (receiversString.isNotEmpty) {
@@ -226,8 +245,8 @@ Future<List<SendHrO2Receiver>> getReceivers(
   return toAtsigns;
 }
 
-Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign,
-    String sendToShortname, NotificationService notificationService) async {
+Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendHR) {
     return;
   }
@@ -239,9 +258,7 @@ Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign,
   logger.info('calling atClient.put for HeartRate #$thisHRPutNo');
   try {
     await notificationService.notify(
-        NotificationParams.forText(
-            'HR:$heartRateAsString:$sendToShortname', toAtsign,
-            shouldEncrypt: true),
+        NotificationParams.forText('HR:$heartRateAsString:$sendToShortname', toAtsign, shouldEncrypt: true),
         checkForFinalDeliveryStatus: false, onSuccess: (notification) {
       logger.info('SUCCESS:$notification');
     }, onError: (notification) {
@@ -255,8 +272,8 @@ Future<void> shareHeartRate(double heartRate, String atsign, String toAtsign,
   logger.info('atClient.put #$thisHRPutNo complete');
 }
 
-Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign,
-    String sendToShortname, NotificationService notificationService) async {
+Future<void> shareO2Sat(double o2Sat, String atsign, String toAtsign, String sendToShortname,
+    NotificationService notificationService) async {
   if (!_sendO2) {
     return;
   }
@@ -295,12 +312,10 @@ void onSubscribed(String topic) {
 /// The unsolicited disconnect callback
 void onDisconnected() {
   logger.info('OnDisconnected client callback - Client disconnection');
-  if (client.connectionStatus!.disconnectionOrigin ==
-      MqttDisconnectionOrigin.solicited) {
+  if (client.connectionStatus!.disconnectionOrigin == MqttDisconnectionOrigin.solicited) {
     logger.info('OnDisconnected callback is solicited, this is correct');
   } else {
-    logger.severe(
-        'OnDisconnected callback is unsolicited or none, this is incorrect - exiting');
+    logger.severe('OnDisconnected callback is unsolicited or none, this is incorrect - exiting');
     exit(-1);
   }
 }

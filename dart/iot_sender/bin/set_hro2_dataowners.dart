@@ -25,7 +25,7 @@ void main(List<String> args) async {
   parser.addOption('device',
       abbr: 'd', mandatory: true, help: 'atSign of the  device');
   parser.addOption('device-name',
-      abbr: 'n', mandatory: true, help: 'Device name');
+      abbr: 'n', mandatory: true, help: 'Sensor name');
   parser.addFlag('verbose', abbr: 'v', help: 'More logging');
 
   // Check the arguments
@@ -105,10 +105,10 @@ void main(List<String> args) async {
   logger.info("Initial sync complete");
   logger.info('OK Ready');
 
-  String receiversString =
-      '[{"receiverAtsign":"@wisefrog","sendHR": true,"sendO2": true,"receiverShortname":"bob"},{"receiverAtsign":"@atgps02","sendHR": true,"sendO2": false,"receiverShortname":"world"}]';
-  logger.info("calling iotListen atSign '$fromAtsign'");
-  // iotListen(atClientManager,notificationService, ownerAtsign, fromAtsign);
+   String dataOwnersJson =
+      '[{"hrO2Device":{"deviceAtsign":"@piw2","deviceUuid":"uuid01","sensorName":"piw2"},"dataOwnerAtsign":"@wisefrog"}]';
+
+   logger.info("calling iotListen atSign '$fromAtsign'");
 
   String? currentAtsign;
   currentAtsign = atClient?.getCurrentAtSign();
@@ -121,7 +121,7 @@ void main(List<String> args) async {
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$deviceName.config'
+    ..key = '$deviceName.dataowners'
     ..sharedWith = currentAtsign
     ..namespace = atClient?.getPreferences()!.namespace
     ..sharedBy = fromAtsign
@@ -129,7 +129,7 @@ void main(List<String> args) async {
     ..metadata = metaData;
 
   try {
-    await atClient?.put(key, receiversString);
+    await atClient?.put(key, dataOwnersJson);
     //exit(0);
   } catch (e) {
     print(e.toString());
