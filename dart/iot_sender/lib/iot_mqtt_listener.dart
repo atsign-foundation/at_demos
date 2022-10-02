@@ -100,10 +100,21 @@ Future<void> iotListen(AtClientManager atClientManager, NotificationService noti
     final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
+    // List of Receivers
+    // To the list first we add the data owners
+    // Then we add the receivers that the dataowners want to add
+    List<SendHrO2Receiver> toAtsigns = [];
+
     // Get list of dataOwners
     //
     List<HrO2DataOwner> dataOwnerAtsigns = await getDataOwners(atClient, ownerAtsign, deviceName);
-    List<SendHrO2Receiver> toAtsigns = [];
+    
+    // Add DataOwners to the list of receivers automatically
+    for(HrO2DataOwner owner in dataOwnerAtsigns){
+    toAtsigns.add(SendHrO2Receiver(receiverAtsign: owner.dataOwnerAtsign, sendHR: true, sendO2: true, receiverShortname: owner.dataOwnerAtsign));
+    }
+
+
     for (HrO2DataOwner owner in dataOwnerAtsigns) {
       var addtoAtsigns = await getReceivers(atClient, owner.dataOwnerAtsign, owner.hrO2Device.sensorName);
       toAtsigns.addAll(addtoAtsigns);

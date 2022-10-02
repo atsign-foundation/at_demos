@@ -112,7 +112,7 @@ void main(List<String> args) async {
 
   String? currentAtsign;
   currentAtsign = atClient?.getCurrentAtSign();
-
+ const String libraryNamespace = 'iot_receiver';
   var metaData = Metadata()
     ..isPublic = false
     ..isEncrypted = true
@@ -121,7 +121,7 @@ void main(List<String> args) async {
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = '$deviceName.dataowners'
+    ..key = 'device_data_owner.$libraryNamespace'
     ..sharedWith = currentAtsign
     ..namespace = atClient?.getPreferences()!.namespace
     ..sharedBy = fromAtsign
