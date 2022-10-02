@@ -115,7 +115,7 @@ void main(List<String> args) async {
     ..namespaceAware = true;
 
   var key = AtKey()
-    ..key = 'device_data_owner.$libraryNamespace'
+    ..key = 'data_owner_list.$libraryNamespace'
     ..sharedWith = currentAtsign
     ..namespace = atClient?.getPreferences()!.namespace
     ..sharedBy = fromAtsign
