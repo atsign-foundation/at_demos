@@ -159,15 +159,24 @@ class Hro2DataService {
         .atClient
         .put(deviceOwnerKey, dataOwnerJson);
     _logger.info('addDataOwnerToList success = $deviceOwnerSuccess');
+// share information to the data owner
+    var sharedDataOwnerJson = jsonEncode(hrO2DataOwner);
     AtKey dataOwnerKey = AtKey()
       ..key = AppConstants.deviceDataOwnerKey
       ..sharedWith = hrO2DataOwner.dataOwnerAtsign;
-    var sharedDataOwnerJson = jsonEncode(hrO2DataOwner);
     var sharedDataOwnerSuccess = await AtClientManager.getInstance()
         .atClient
         .put(dataOwnerKey, sharedDataOwnerJson);
     _logger.info('shareDeviceSuccess success = $sharedDataOwnerSuccess');
-    return deviceOwnerSuccess && sharedDataOwnerSuccess;
+    // Share the same object to the device
+    dataOwnerKey.sharedWith = hrO2DataOwner.hrO2Device.deviceAtsign;
+    var deviceDataOwnerSuccess = await AtClientManager.getInstance()
+        .atClient
+        .put(dataOwnerKey, sharedDataOwnerJson);
+    _logger.info('deviceDataOwnerSuccess success = $deviceDataOwnerSuccess');
+    return deviceOwnerSuccess &&
+        sharedDataOwnerSuccess &&
+        deviceDataOwnerSuccess;
   }
 }
 
