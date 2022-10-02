@@ -21,6 +21,8 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _hrO2DataService.getReceivers();
+
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
