@@ -97,9 +97,10 @@ class Hro2DataService {
     });
     receiverList.add(hrO2Receiver);
     AtKey atKey = AtKey()..key = AppConstants.receiverListKey;
-    var value = jsonEncode(receiverList);
-    var receiverSuccess =
-        await AtClientManager.getInstance().atClient.put(atKey, value);
+    var receiverListJson = jsonEncode(receiverList);
+    var receiverSuccess = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, receiverListJson);
     _logger.info('addReceiverToList success = $receiverSuccess');
     AtKey dataOwnerKey = AtKey()
       ..key = AppConstants.deviceReceiverKey
@@ -109,7 +110,12 @@ class Hro2DataService {
         .atClient
         .put(dataOwnerKey, sharedReceiverJson);
     _logger.info('shareDeviceSuccess success = $sharedReceiverSuccess');
-    return receiverSuccess && receiverSuccess;
+    atKey.sharedWith = hrO2Receiver.hrO2Device.deviceAtsign;
+    var deviceReceiverSuccess = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, receiverListJson);
+    _logger.info('deviceDataOwnerSuccess success = $deviceReceiverSuccess');
+    return receiverSuccess && deviceReceiverSuccess;
   }
 
   Future<List<HrO2DataOwner>> getDataOwnerList() async {
@@ -153,11 +159,11 @@ class Hro2DataService {
       return dataOwnerList;
     });
     dataOwnerList.add(hrO2DataOwner);
-    AtKey deviceOwnerKey = AtKey()..key = AppConstants.dataOwnerListKey;
-    var dataOwnerJson = jsonEncode(dataOwnerList);
+    AtKey listKey = AtKey()..key = AppConstants.dataOwnerListKey;
+    var dataOwnerListJson = jsonEncode(dataOwnerList);
     var deviceOwnerSuccess = await AtClientManager.getInstance()
         .atClient
-        .put(deviceOwnerKey, dataOwnerJson);
+        .put(listKey, dataOwnerListJson);
     _logger.info('addDataOwnerToList success = $deviceOwnerSuccess');
 // share information to the data owner
     var sharedDataOwnerJson = jsonEncode(hrO2DataOwner);
@@ -172,7 +178,7 @@ class Hro2DataService {
     dataOwnerKey.sharedWith = hrO2DataOwner.hrO2Device.deviceAtsign;
     var deviceDataOwnerSuccess = await AtClientManager.getInstance()
         .atClient
-        .put(dataOwnerKey, sharedDataOwnerJson);
+        .put(listKey, dataOwnerListJson);
     _logger.info('deviceDataOwnerSuccess success = $deviceDataOwnerSuccess');
     return deviceOwnerSuccess &&
         sharedDataOwnerSuccess &&
