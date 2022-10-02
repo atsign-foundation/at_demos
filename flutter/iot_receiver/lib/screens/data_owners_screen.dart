@@ -21,6 +21,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _hrO2DataService.getDataOwners();
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
