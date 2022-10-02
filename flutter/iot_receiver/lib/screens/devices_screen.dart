@@ -34,7 +34,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
       drawer: const HRo2DrawerWidget(),
       body: Builder(
           builder: (context) => FutureBuilder<List<HrO2Device>>(
-              future: _hrO2DataService.getDeviceList(),
+              future: _hrO2DataService.getDevices(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<HrO2Device>> snapshot) {
                 List<Widget> children;
@@ -88,7 +88,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
                             },
                             onDismissed: (_) async {
                               hrO2Devices.remove(device);
-                              await _hrO2DataService.putDeviceList(hrO2Devices);
+                              await _hrO2DataService.deleteDevice(device);
                               setState(() {});
                             },
                             child: ListTile(

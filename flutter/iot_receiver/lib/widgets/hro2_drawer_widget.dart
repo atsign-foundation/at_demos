@@ -2,8 +2,10 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iot_receiver/screens/data_owners_screen.dart';
+import 'package:iot_receiver/screens/device_owners_screen.dart';
 import 'package:iot_receiver/screens/onboarding_screen.dart';
 import 'package:iot_receiver/widgets/new_data_owner_dialog.dart';
+import 'package:iot_receiver/widgets/new_device_owner_dialog.dart';
 import '../services/hro2_data_service.dart';
 import '../screens/devices_screen.dart';
 import '../screens/home_screen.dart';
@@ -71,9 +73,16 @@ class _HRo2DrawerWidgetState extends State<HRo2DrawerWidget> {
             ),
           if (isAdmin)
             ListTile(
-              title: const Text('Add a new data owner'),
+              title: const Text('See all device owners'),
               onTap: () {
-                Navigator.of(context).pushNamed(NewHrO2DataOwner.id);
+                Navigator.of(context).pushNamed(DeviceOwnersScreen.id);
+              },
+            ),
+          if (isAdmin)
+            ListTile(
+              title: const Text('Add a new device owner'),
+              onTap: () {
+                Navigator.of(context).pushNamed(NewHrO2DeviceOwner.id);
               },
             ),
           if (isAdmin)
@@ -81,6 +90,13 @@ class _HRo2DrawerWidgetState extends State<HRo2DrawerWidget> {
               title: const Text('See all data owners'),
               onTap: () {
                 Navigator.of(context).pushNamed(DataOwnersScreen.id);
+              },
+            ),
+          if (isAdmin)
+            ListTile(
+              title: const Text('Add a new data owner'),
+              onTap: () {
+                Navigator.of(context).pushNamed(NewHrO2DataOwner.id);
               },
             ),
           ListTile(

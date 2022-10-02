@@ -1,30 +1,31 @@
 import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_receiver/models/hro2_receiver.dart';
+import 'package:iot_receiver/models/hro2_device_owner.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:iot_receiver/widgets/hro2_drawer_widget.dart';
-import 'package:iot_receiver/widgets/new_receiver_dialog.dart';
+import 'package:iot_receiver/widgets/new_device_owner_dialog.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
-final AtSignLogger _logger = AtSignLogger('ReceiversScreen');
+final AtSignLogger _logger = AtSignLogger('DeviceOwnersScreen');
 
-class ReceiversScreen extends StatefulWidget {
-  const ReceiversScreen({Key? key}) : super(key: key);
-  static const String id = '/receivers_screen';
+class DeviceOwnersScreen extends StatefulWidget {
+  const DeviceOwnersScreen({Key? key}) : super(key: key);
+  static const String id = '/device_owners_screen';
   @override
-  State<ReceiversScreen> createState() => _ReceiversScreenState();
+  State<DeviceOwnersScreen> createState() => _DeviceOwnersScreenState();
 }
 
-class _ReceiversScreenState extends State<ReceiversScreen> {
+class _DeviceOwnersScreenState extends State<DeviceOwnersScreen> {
   final Hro2DataService _hrO2DataService = Hro2DataService();
 
   @override
   Widget build(BuildContext context) {
+    _hrO2DataService.getDeviceOwners();
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
-          'Receivers',
+          'Device Owners',
           minFontSize: 5,
           maxFontSize: 50,
         ),
@@ -35,16 +36,16 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
       ),
       drawer: const HRo2DrawerWidget(),
       body: Builder(
-          builder: (context) => FutureBuilder<List<HrO2Receiver>>(
-              future: _hrO2DataService.getReceivers(),
+          builder: (context) => FutureBuilder<List<HrO2DeviceOwner>>(
+              future: _hrO2DataService.getDeviceOwners(),
               builder: (BuildContext context,
-                  AsyncSnapshot<List<HrO2Receiver>> snapshot) {
+                  AsyncSnapshot<List<HrO2DeviceOwner>> snapshot) {
                 List<Widget> children;
                 if (snapshot.hasData) {
-                  List<HrO2Receiver>? hrO2ReceiverList = snapshot.data;
+                  List<HrO2DeviceOwner>? hrO2DeviceOwnerList = snapshot.data;
                   children = <Widget>[
                     const Text(
-                      "The following receivers have been created.",
+                      "The following deviceOwners have been created.",
                       overflow: TextOverflow.visible,
                     ),
                     const SizedBox(
@@ -55,9 +56,10 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                         shrinkWrap: true,
                         // padding: const EdgeInsets.symmetric(
                         //     vertical: 5, horizontal: 20),
-                        itemCount: hrO2ReceiverList!.length,
+                        itemCount: hrO2DeviceOwnerList!.length,
                         itemBuilder: (BuildContext context, int index) {
-                          final HrO2Receiver receiver = hrO2ReceiverList[index];
+                          final HrO2DeviceOwner deviceOwner =
+                              hrO2DeviceOwnerList[index];
                           const align = Align(
                               alignment: Alignment.centerRight,
                               child: Padding(
@@ -65,7 +67,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                 child: Icon(Icons.delete),
                               ));
                           return Dismissible(
-                            key: Key(receiver.receiverAtsign),
+                            key: Key(deviceOwner.deviceOwnerAtsign),
                             background: Container(
                               color: Colors.red,
                               child: align,
@@ -79,7 +81,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        'Delete ${receiver.receiverAtsign} ?'),
+                                        'Delete ${deviceOwner.deviceOwnerAtsign} ?'),
                                     action: SnackBarAction(
                                         label: 'Cancel',
                                         onPressed: () => delete = false),
@@ -90,8 +92,9 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                               }
                             },
                             onDismissed: (_) async {
-                              hrO2ReceiverList.remove(receiver);
-                              await _hrO2DataService.putReceiver(receiver);
+                              hrO2DeviceOwnerList.remove(deviceOwner);
+                              await _hrO2DataService
+                                  .putDeviceOwner(deviceOwner);
                               setState(() {});
                             },
                             child: ListTile(
@@ -99,18 +102,10 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                   side: const BorderSide(
                                       color: Colors.blue, width: 1),
                                   borderRadius: BorderRadius.circular(10)),
-                              title:
-                                  Text(hrO2ReceiverList[index].receiverAtsign),
-                              subtitle: Text((hrO2ReceiverList[index].sendHR
-                                      ? "sending heart rate"
-                                      : "") +
-                                  (hrO2ReceiverList[index].sendHR &&
-                                          hrO2ReceiverList[index].sendO2
-                                      ? ", and "
-                                      : "") +
-                                  (hrO2ReceiverList[index].sendO2
-                                      ? "sending o2 saturation"
-                                      : "")),
+                              title: Text(
+                                  hrO2DeviceOwnerList[index].deviceOwnerAtsign),
+                              subtitle: Text(
+                                  "${hrO2DeviceOwnerList[index].hrO2Device.deviceAtsign} ${hrO2DeviceOwnerList[index].hrO2Device.sensorName.isNotEmpty ? hrO2DeviceOwnerList[index].hrO2Device.sensorName : ""}"),
                               // trailing: const Icon(Icons.navigate_next),
                             ),
                           );
@@ -127,7 +122,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Text(
-                          '${snapshot.error}, please click the + button below to add a receiver.'),
+                          '${snapshot.error}, please click the + button below to add a deviceOwner.'),
                     ),
                   ];
                 } else {
@@ -150,15 +145,15 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () async {
-          var newReceiver = await Navigator.push(
+          var newDeviceOwner = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const NewHrO2Receiver()),
+            MaterialPageRoute(builder: (context) => const NewHrO2DeviceOwner()),
           );
-          if (newReceiver == null) {
+          if (newDeviceOwner == null) {
           } else {
             setState(() {
-              // receivers.add(newReceiver);
-              // saveReceivers(receivers);
+              // deviceOwners.add(newDeviceOwner);
+              // saveDeviceOwners(deviceOwners);
             });
           }
         },

@@ -2,22 +2,22 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:iot_receiver/forms/data_owner_form.dart';
-import 'package:iot_receiver/models/hro2_data_owner.dart';
+import 'package:iot_receiver/forms/device_owner_form.dart';
 import 'package:iot_receiver/models/hro2_device.dart';
-import 'package:iot_receiver/screens/data_owners_screen.dart';
+import 'package:iot_receiver/models/hro2_device_owner.dart';
+import 'package:iot_receiver/screens/device_owners_screen.dart';
 import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
-class NewHrO2DataOwner extends StatefulWidget {
-  const NewHrO2DataOwner({Key? key}) : super(key: key);
-  static const String id = '/new_dataOwner';
+class NewHrO2DeviceOwner extends StatefulWidget {
+  const NewHrO2DeviceOwner({Key? key}) : super(key: key);
+  static const String id = '/new_deviceOwner';
 
   @override
-  State<NewHrO2DataOwner> createState() => _NewHrO2DataOwnerState();
+  State<NewHrO2DeviceOwner> createState() => _NewHrO2DeviceOwnerState();
 }
 
-class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
+class _NewHrO2DeviceOwnerState extends State<NewHrO2DeviceOwner> {
   final _formKey = GlobalKey<FormBuilderState>();
   final Hro2DataService _hrO2DataService = Hro2DataService();
 
@@ -35,7 +35,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
     return Scaffold(
         appBar: NewGradientAppBar(
           title: const AutoSizeText(
-            'New DataOwner',
+            'New DeviceOwner',
             minFontSize: 5,
             maxFontSize: 50,
           ),
@@ -87,7 +87,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                           builder: (BuildContext context,
                               AsyncSnapshot<List<HrO2Device>> snapshot) {
                             if (snapshot.hasData) {
-                              return dataOwnerDeviceSelector(
+                              return deviceOwnerDeviceSelector(
                                   context,
                                   snapshot.data
                                       ?.map((item) =>
@@ -100,7 +100,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                               return const Text("loading");
                             }
                           })),
-                  dataOwnerAtsignForm(context, ''),
+                  deviceOwnerAtsignForm(context, ''),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
@@ -112,7 +112,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                         ),
                       ),
                       const Spacer(),
-                      DataOwnerSubmitForm(formKey: _formKey),
+                      DeviceOwnerSubmitForm(formKey: _formKey),
                       const Spacer(),
                       Expanded(
                         child: MaterialButton(
@@ -128,16 +128,17 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                             if (_formKey.currentState!.validate()) {
                               HrO2Device device = _formKey.currentState!
                                   .fields['device_selector']!.value;
-                              String dataOwnerAtsign = _formKey
-                                  .currentState!.fields['@dataOwner']!.value;
-                              var newDataOwner = HrO2DataOwner(
-                                dataOwnerAtsign: dataOwnerAtsign,
+                              String deviceOwnerAtsign = _formKey
+                                  .currentState!.fields['@deviceOwner']!.value;
+                              var newDeviceOwner = HrO2DeviceOwner(
+                                deviceOwnerAtsign: deviceOwnerAtsign,
                                 hrO2Device: device,
                               );
-                              await _hrO2DataService.putDataOwner(newDataOwner);
+                              await _hrO2DataService
+                                  .putDeviceOwner(newDeviceOwner);
                               if (mounted) {
                                 Navigator.of(context)
-                                    .pushNamed(DataOwnersScreen.id);
+                                    .pushNamed(DeviceOwnersScreen.id);
                               }
                             } else {
                               Navigator.pop(context, null);
