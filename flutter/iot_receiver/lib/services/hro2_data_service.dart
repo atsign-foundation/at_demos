@@ -46,11 +46,7 @@ class Hro2DataService {
         .atClient
         .getAtKeys(regex: AppConstants.deviceKey);
     for (var element in keys) {
-      var data = await AtClientManager.getInstance()
-          .AtClientManager
-          .getInstance()
-          .atClient
-          .get(element);
+      var data = await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getDevices got ${data.value}');
       try {
         HrO2Device hrO2Device = HrO2Device.fromJson(jsonDecode(data.value));
@@ -235,7 +231,7 @@ class Hro2DataService {
         hrO2DataOwnerList.add(hrO2DataOwner);
       } catch (error) {
         // found some dirty data, consider deleting
-        _logger.severe('getDataOwners error $error for ${atKey.key}');
+        _logger.severe('getDataOwners error $error for ${element.key}');
         // await atClient.delete(element);
       }
     }
