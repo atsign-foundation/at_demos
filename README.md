@@ -123,7 +123,7 @@ GNU screens.
 ### Software config
 
 [Raspberry Pi OS Buster 2021-05-28](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/)
-is needed for compatability with the PiTFT HAT. To get it to boot from SSD
+is needed for compatibility with the PiTFT HAT. To get it to boot from SSD
 the /boot/start4*.elf files are needed from a more recent Bullseye image.
 
 **raspi-config**
