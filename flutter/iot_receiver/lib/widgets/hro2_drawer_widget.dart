@@ -105,14 +105,13 @@ class _HRo2DrawerWidgetState extends State<HRo2DrawerWidget> {
               Navigator.of(context).pushNamed(OnboardingScreen.id);
             },
           ),
-          if (isAdmin)
-            ListTile(
-              title: const Text('Reset app data'),
-              onTap: () async {
-                Hro2DataService().deleteAllData();
-                Navigator.of(context).pop();
-              },
-            ),
+          ListTile(
+            title: const Text('Reset app data'),
+            onTap: () async {
+              Hro2DataService().deleteAllData();
+              Navigator.of(context).pop();
+            },
+          ),
           ListTile(
             title: const Text('Close'),
             onTap: () {
