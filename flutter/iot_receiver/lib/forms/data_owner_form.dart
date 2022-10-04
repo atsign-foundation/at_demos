@@ -21,7 +21,7 @@ FormBuilderTextField dataOwnerAtsignForm(
     BuildContext context, String initialValue) {
   return FormBuilderTextField(
       initialValue: initialValue.toString(),
-      name: '@dataOwner',
+      name: 'data_owner',
       decoration: const InputDecoration(
         labelText: 'Data Owner\'s atSign',
         // fillColor: Colors.white,
