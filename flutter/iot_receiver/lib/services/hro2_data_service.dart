@@ -124,7 +124,7 @@ class Hro2DataService {
       HrO2Receiver rec = HrO2Receiver.fromJson(atKeyString);
       if (rec.receiverAtsign == hrO2Receiver.receiverAtsign) {
         _logger.info('deleteReceiver deleting ${hrO2Receiver.receiverAtsign}\'s entry');
-        delete(key);
+        await delete(key);
       }
     }
     return true;
