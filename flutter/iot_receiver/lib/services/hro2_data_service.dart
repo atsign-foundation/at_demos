@@ -160,7 +160,7 @@ class Hro2DataService {
       } catch (error) {
         // found some dirty data, consider deleting
         _logger.severe('getDataOwners error $error for ${element.key}');
-        // await atClient.delete(element);
+        await AtClientManager.getInstance().atClient.delete(element);
       }
     }
     return hrO2DataOwnerList;
@@ -182,7 +182,8 @@ class Hro2DataService {
   }
 
   Future<bool> deleteDataOwner(HrO2DataOwner hrO2DataOwner) async {
-    bool response = false;
+    bool deleteSuccess = false;
+    bool deviceUpdated = false;
     List<AtKey> keys = await AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: AppConstants.dataOwnerKey);
@@ -194,10 +195,11 @@ class Hro2DataService {
       if (owner.dataOwnerAtsign == hrO2DataOwner.dataOwnerAtsign) {
         _logger.info(
             'deleteDataOwner deleting ${hrO2DataOwner.dataOwnerAtsign}\'s entry');
-        response = await delete(key);
+        deleteSuccess = await delete(key);
+        deviceUpdated = await updateDeviceDataOwners(hrO2DataOwner.hrO2Device);
       }
     }
-    return response;
+    return deleteSuccess && deviceUpdated;
   }
 
   Future<List<HrO2DeviceOwner>> getDeviceOwners() async {
@@ -234,18 +236,22 @@ class Hro2DataService {
   }
 
   Future<bool> deleteDeviceOwner(HrO2DeviceOwner hrO2DeviceOwner) async {
+    bool deleteSuccess = false;
     List<AtKey> keys = await AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: AppConstants.deviceOwnerKey);
     _logger.info('deleteDeviceOwner processing ${keys.length} items');
     for (var key in keys) {
-      var data = await AtClientManager.getInstance().atClient.get(key);
-      if (data.value == hrO2DeviceOwner) {
-        _logger.info('deleteReceiver deleting $key');
-        delete(key);
+      AtValue data = await AtClientManager.getInstance().atClient.get(key);
+      var ownerJson = jsonDecode(data.value);
+      HrO2DeviceOwner owner = HrO2DeviceOwner.fromJson(ownerJson);
+
+      if (owner.deviceOwnerAtsign == hrO2DeviceOwner.deviceOwnerAtsign) {
+        _logger.info('deleteDeviceOwner deleting $key');
+        deleteSuccess = await delete(key);
       }
     }
-    return true;
+    return deleteSuccess;
   }
 
   Future<bool> updateDeviceReceivers(HrO2Device hrO2Device) async {
