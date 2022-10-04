@@ -17,4 +17,12 @@ class HrO2DataOwner {
         'hrO2Device': hrO2Device.toJson(),
         'dataOwnerAtsign': dataOwnerAtsign,
       };
+
+  @override
+  bool operator ==(Object other) {
+    return hashCode == other.hashCode;
+  }
+
+  @override
+  int get hashCode => dataOwnerAtsign.hashCode;
 }

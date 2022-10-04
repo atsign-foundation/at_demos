@@ -92,7 +92,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
                             },
                             onDismissed: (_) async {
                               hrO2DataOwnerList.remove(dataOwner);
-                              await _hrO2DataService.putDataOwner(dataOwner);
+                              await _hrO2DataService.deleteDataOwner(dataOwner);
                               setState(() {});
                             },
                             child: ListTile(
@@ -132,7 +132,7 @@ class _DataOwnersScreenState extends State<DataOwnersScreen> {
                 }
                 return Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: children,
