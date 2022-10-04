@@ -91,7 +91,7 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                             },
                             onDismissed: (_) async {
                               hrO2ReceiverList.remove(receiver);
-                              await _hrO2DataService.putReceiver(receiver);
+                              await _hrO2DataService.deleteReceiver(receiver);
                               setState(() {});
                             },
                             child: ListTile(
