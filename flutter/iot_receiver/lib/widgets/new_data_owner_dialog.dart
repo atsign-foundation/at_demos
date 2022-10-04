@@ -86,7 +86,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                           future: _hrO2DataService.getDevices(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<HrO2Device>> snapshot) {
-                            if (snapshot.hasData) {
+                            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                               return dataOwnerDeviceSelector(
                                   context,
                                   snapshot.data
@@ -129,7 +129,7 @@ class _NewHrO2DataOwnerState extends State<NewHrO2DataOwner> {
                               HrO2Device device = _formKey.currentState!
                                   .fields['device_selector']!.value;
                               String dataOwnerAtsign = _formKey
-                                  .currentState!.fields['@dataOwner']!.value;
+                                  .currentState!.fields['data_owner']!.value;
                               var newDataOwner = HrO2DataOwner(
                                 dataOwnerAtsign: dataOwnerAtsign,
                                 hrO2Device: device,

@@ -19,4 +19,13 @@ class HrO2Device {
         'deviceUuid': deviceUuid,
         'sensorName': sensorName,
       };
+
+  @override
+  int get hashCode => super.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    // other != null && this.deviceUuid == other.deviceUuid;
+    return true;
+  }
 }

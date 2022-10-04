@@ -90,15 +90,19 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                           future: _hrO2DataService.getDataOwners(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<HrO2DataOwner>> snapshot) {
-                            if (snapshot.hasData) {
+                            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                              List<HrO2Device> devices = [];
+                              var data = snapshot.data;
+                              for (var owner in data!) {
+                                devices.add(owner.hrO2Device);
+                              }
                               return receiverDeviceSelector(
                                   context,
-                                  snapshot.data
-                                      ?.map((item) =>
+                                  devices
+                                      .map((device) =>
                                           DropdownMenuItem<HrO2Device>(
-                                            value: item.hrO2Device,
-                                            child: Text(
-                                                item.hrO2Device.deviceAtsign),
+                                            value: device,
+                                            child: Text(device.deviceAtsign),
                                           ))
                                       .toList());
                             } else {
