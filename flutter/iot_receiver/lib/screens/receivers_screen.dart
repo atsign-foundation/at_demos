@@ -64,54 +64,62 @@ class _ReceiversScreenState extends State<ReceiversScreen> {
                                 padding: EdgeInsets.only(right: 16),
                                 child: Icon(Icons.delete),
                               ));
-                          return Dismissible(
-                            key: Key(receiver.receiverAtsign),
-                            background: Container(
-                              color: Colors.red,
-                              child: align,
-                            ),
-                            confirmDismiss: (direction) async {
-                              if (direction == DismissDirection.startToEnd) {
-                                return false;
-                              } else {
-                                bool delete = true;
-                                final snackbarController =
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Delete ${receiver.receiverAtsign} ?'),
-                                    action: SnackBarAction(
-                                        label: 'Cancel',
-                                        onPressed: () => delete = false),
-                                  ),
-                                );
-                                await snackbarController.closed;
-                                return delete;
-                              }
+                          return GestureDetector(
+                            onTap: () async{
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>  NewHrO2Receiver(hrO2Receiver: receiver,)),
+                              );
                             },
-                            onDismissed: (_) async {
-                              hrO2ReceiverList.remove(receiver);
-                              await _hrO2DataService.deleteReceiver(receiver);
-                              setState(() {});
-                            },
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.blue, width: 1),
-                                  borderRadius: BorderRadius.circular(10)),
-                              title:
-                                  Text(hrO2ReceiverList[index].receiverAtsign),
-                              subtitle: Text((hrO2ReceiverList[index].sendHR
-                                      ? "sending heart rate"
-                                      : "") +
-                                  (hrO2ReceiverList[index].sendHR &&
-                                          hrO2ReceiverList[index].sendO2
-                                      ? ", and "
-                                      : "") +
-                                  (hrO2ReceiverList[index].sendO2
-                                      ? "sending o2 saturation"
-                                      : "")),
-                              // trailing: const Icon(Icons.navigate_next),
+                            child: Dismissible(
+                              key: Key(receiver.receiverAtsign),
+                              background: Container(
+                                color: Colors.red,
+                                child: align,
+                              ),
+                              confirmDismiss: (direction) async {
+                                if (direction == DismissDirection.startToEnd) {
+                                  return false;
+                                } else {
+                                  bool delete = true;
+                                  final snackbarController =
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Delete ${receiver.receiverAtsign} ?'),
+                                      action: SnackBarAction(
+                                          label: 'Cancel',
+                                          onPressed: () => delete = false),
+                                    ),
+                                  );
+                                  await snackbarController.closed;
+                                  return delete;
+                                }
+                              },
+                              onDismissed: (_) async {
+                                hrO2ReceiverList.remove(receiver);
+                                await _hrO2DataService.deleteReceiver(receiver);
+                                setState(() {});
+                              },
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                    side: const BorderSide(
+                                        color: Colors.blue, width: 1),
+                                    borderRadius: BorderRadius.circular(10)),
+                                title:
+                                    Text(hrO2ReceiverList[index].receiverAtsign),
+                                subtitle: Text((hrO2ReceiverList[index].sendHR
+                                        ? "sending heart rate"
+                                        : "") +
+                                    (hrO2ReceiverList[index].sendHR &&
+                                            hrO2ReceiverList[index].sendO2
+                                        ? ", and "
+                                        : "") +
+                                    (hrO2ReceiverList[index].sendO2
+                                        ? "sending o2 saturation"
+                                        : "")),
+                                // trailing: const Icon(Icons.navigate_next),
+                              ),
                             ),
                           );
                         }),
