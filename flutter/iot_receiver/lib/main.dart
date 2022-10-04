@@ -43,7 +43,7 @@ Future<AtClientPreference> loadAtClientPreference() async {
     ..commitLogPath = dir.path
     ..isLocalStoreRequired = true
     ..syncIntervalMins = 1
-    ..fetchOfflineNotifications = false;
+    ..fetchOfflineNotifications = true;
 }
 
 class MyApp extends StatefulWidget {

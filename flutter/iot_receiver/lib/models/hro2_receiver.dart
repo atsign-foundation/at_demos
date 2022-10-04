@@ -29,4 +29,13 @@ class HrO2Receiver {
         'sendO2': sendO2,
         'receiverShortname': receiverShortname,
       };
+  
+  
+  @override
+  bool operator ==(Object other) {
+    return hashCode == other.hashCode;
+  }
+
+  @override
+  int get hashCode => receiverAtsign.hashCode;
 }

@@ -146,7 +146,7 @@ class Hro2DataService {
     List<HrO2DataOwner> hrO2DataOwnerList = [];
     var keys = await AtClientManager.getInstance()
         .atClient
-        .getAtKeys(regex: AppConstants.dataOwnerKey);
+        .getAtKeys(regex: AppConstants.dataOwnerKey, sharedBy: "@mwcmanager");
     for (var element in keys) {
       var data = await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getDataOwners got ${data.value}');

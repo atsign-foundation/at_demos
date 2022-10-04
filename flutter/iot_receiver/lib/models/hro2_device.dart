@@ -21,11 +21,10 @@ class HrO2Device {
       };
 
   @override
-  int get hashCode => super.hashCode;
+  bool operator ==(Object other) {
+    return hashCode == other.hashCode;
+  }
 
   @override
-  bool operator ==(Object other) {
-    // other != null && this.deviceUuid == other.deviceUuid;
-    return true;
-  }
+  int get hashCode => deviceUuid.hashCode;
 }
