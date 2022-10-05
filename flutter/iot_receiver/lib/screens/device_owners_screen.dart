@@ -94,7 +94,7 @@ class _DeviceOwnersScreenState extends State<DeviceOwnersScreen> {
                             onDismissed: (_) async {
                               hrO2DeviceOwnerList.remove(deviceOwner);
                               await _hrO2DataService
-                                  .putDeviceOwner(deviceOwner);
+                                  .deleteDeviceOwner(deviceOwner);
                               setState(() {});
                             },
                             child: ListTile(

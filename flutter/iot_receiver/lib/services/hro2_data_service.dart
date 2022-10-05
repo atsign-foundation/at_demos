@@ -22,7 +22,8 @@ class Hro2DataService {
   }
 
   Future<bool> deleteAllForKey(String key) async {
-    var atKeys = await AtClientManager.getInstance().atClient.getAtKeys(regex: key);
+    var atKeys =
+        await AtClientManager.getInstance().atClient.getAtKeys(regex: key);
     for (var atKey in atKeys) {
       await delete(atKey);
     }
@@ -41,7 +42,9 @@ class Hro2DataService {
   Future<List<HrO2Device>> getDevices() async {
     List<HrO2Device> hrO2DeviceList = [];
     // var atClient = AtClientManager.getInstance().atClient;
-    var keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.deviceKey);
+    var keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.deviceKey);
     for (var element in keys) {
       var data = await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getDevices got ${data.value}');
@@ -61,33 +64,43 @@ class Hro2DataService {
   Future<bool> putDevice(HrO2Device hrO2Device) async {
     AtKey atKey = AtKey()..key = AppConstants.deviceKey;
     var value = jsonEncode(hrO2Device);
-    var response = await AtClientManager.getInstance().atClient.put(atKey, value);
+    var response =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
     _logger.info('putDeviceList success = $response');
     return response;
   }
 
   Future<bool> deleteDevice(HrO2Device hrO2Device) async {
-    List<AtKey> keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.deviceKey);
+    bool response = false;
+    List<AtKey> keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.deviceKey);
     _logger.info('deleteDevice processing ${keys.length} items');
     for (var key in keys) {
-      var data = await AtClientManager.getInstance().atClient.get(key);
-      if (data.value == hrO2Device) {
-        _logger.info('deleteDevice deleting $key');
-        delete(key);
+      AtValue data = await AtClientManager.getInstance().atClient.get(key);
+      var atKeyString = jsonDecode(data.value);
+      HrO2Device device = HrO2Device.fromJson(atKeyString);
+      if (device.deviceAtsign == hrO2Device.deviceAtsign) {
+        _logger.info(
+            'deleteReceiver deleting ${hrO2Device.deviceAtsign}\'s entry');
+        response = await delete(key);
       }
     }
-    return true;
+    return response;
   }
 
   Future<List<HrO2Receiver>> getReceivers() async {
     List<HrO2Receiver> hrO2ReceiverList = [];
     // var atClient = _atClient;
-    var keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.receiverKey);
+    var keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.receiverKey);
     for (var element in keys) {
       var data = await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getReceivers got ${data.value}');
       try {
-        HrO2Receiver hrO2Receiver = HrO2Receiver.fromJson(jsonDecode(data.value));
+        HrO2Receiver hrO2Receiver =
+            HrO2Receiver.fromJson(jsonDecode(data.value));
         hrO2ReceiverList.add(hrO2Receiver);
       } catch (error) {
         // found some dirty data, consider deleting
@@ -101,33 +114,35 @@ class Hro2DataService {
 
   Future<bool> putReceiver(HrO2Receiver hrO2Receiver) async {
     AtKey atKey = AtKey()
-      // ..sharedWith = hrO2Receiver.receiverAtsign
+      ..sharedWith = hrO2Receiver.receiverAtsign
       ..key = AppConstants.receiverKey;
     var value = jsonEncode(hrO2Receiver);
-    var success = await AtClientManager.getInstance().atClient.put(atKey, value);
+    var success =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
     _logger.info('putReceiver success = $success');
-    // now, share the list with the device
-    List<HrO2Receiver> receiverList = await getReceivers();
-    atKey.key = AppConstants.receiverListKey;
-    atKey.sharedWith = hrO2Receiver.hrO2Device.deviceAtsign;
-    var receiverSuccess = await AtClientManager.getInstance().atClient.put(atKey, jsonEncode(receiverList));
-    _logger.info('putReceiver success = $receiverSuccess');
+    var receiverSuccess = await updateDeviceReceivers(hrO2Receiver.hrO2Device);
     return success && receiverSuccess;
   }
 
   Future<bool> deleteReceiver(HrO2Receiver hrO2Receiver) async {
-    List<AtKey> keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.receiverKey);
-    _logger.info('deleteDevice processing ${keys.length} items');
+    bool deleteSuccess = false;
+    bool deviceUpdated = false;
+    List<AtKey> keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.receiverKey);
+    _logger.info('deleteReceiver processing ${keys.length} items');
     for (var key in keys) {
       AtValue data = await AtClientManager.getInstance().atClient.get(key);
       var atKeyString = jsonDecode(data.value);
       HrO2Receiver rec = HrO2Receiver.fromJson(atKeyString);
       if (rec.receiverAtsign == hrO2Receiver.receiverAtsign) {
-        _logger.info('deleteReceiver deleting ${hrO2Receiver.receiverAtsign}\'s entry');
-        await delete(key);
+        _logger.info(
+            'deleteReceiver deleting ${hrO2Receiver.receiverAtsign}\'s entry');
+        deleteSuccess = await delete(key);
+        deviceUpdated = await updateDeviceReceivers(hrO2Receiver.hrO2Device);
       }
     }
-    return true;
+    return deleteSuccess && deviceUpdated;
   }
 
   Future<List<HrO2DataOwner>> getDataOwners() async {
@@ -139,12 +154,13 @@ class Hro2DataService {
       var data = await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getDataOwners got ${data.value}');
       try {
-        HrO2DataOwner hrO2DataOwner = HrO2DataOwner.fromJson(jsonDecode(data.value));
+        HrO2DataOwner hrO2DataOwner =
+            HrO2DataOwner.fromJson(jsonDecode(data.value));
         hrO2DataOwnerList.add(hrO2DataOwner);
       } catch (error) {
         // found some dirty data, consider deleting
         _logger.severe('getDataOwners error $error for ${element.key}');
-        // await atClient.delete(element);
+        await AtClientManager.getInstance().atClient.delete(element);
       }
     }
     return hrO2DataOwnerList;
@@ -155,24 +171,49 @@ class Hro2DataService {
     AtKey atKey = AtKey()
       ..sharedWith = hrO2DataOwner.dataOwnerAtsign
       ..key = AppConstants.dataOwnerKey;
-    var success = await AtClientManager.getInstance().atClient.put(atKey, jsonEncode(hrO2DataOwner));
+    var success = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, jsonEncode(hrO2DataOwner));
     _logger.info('putDataOwner success = $success');
-    List<HrO2DataOwner> owners = await getDataOwners();
-    atKey.key = AppConstants.dataOwnerListKey;
-    atKey.sharedWith = hrO2DataOwner.hrO2Device.deviceAtsign;
-    var dataOwnerSuccess = await AtClientManager.getInstance().atClient.put(atKey, jsonEncode(owners));
-    _logger.info('putDataOwner success = $dataOwnerSuccess');
+    var dataOwnerSuccess =
+        await updateDeviceDataOwners(hrO2DataOwner.hrO2Device);
+    _logger.info('putDataOwner updateDevice success = $dataOwnerSuccess');
     return success && dataOwnerSuccess;
+  }
+
+  Future<bool> deleteDataOwner(HrO2DataOwner hrO2DataOwner) async {
+    bool deleteSuccess = false;
+    bool deviceUpdated = false;
+    List<AtKey> keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.dataOwnerKey);
+    _logger.info('deleteDataOwner processing ${keys.length} items');
+    for (var key in keys) {
+      AtValue data = await AtClientManager.getInstance().atClient.get(key);
+      var atKeyString = jsonDecode(data.value);
+      HrO2DataOwner owner = HrO2DataOwner.fromJson(atKeyString);
+      if (owner.dataOwnerAtsign == hrO2DataOwner.dataOwnerAtsign) {
+        _logger.info(
+            'deleteDataOwner deleting ${hrO2DataOwner.dataOwnerAtsign}\'s entry');
+        deleteSuccess = await delete(key);
+        deviceUpdated = await updateDeviceDataOwners(hrO2DataOwner.hrO2Device);
+      }
+    }
+    return deleteSuccess && deviceUpdated;
   }
 
   Future<List<HrO2DeviceOwner>> getDeviceOwners() async {
     List<HrO2DeviceOwner> hrO2DeviceOwnerList = [];
-    var keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.deviceOwnerKey);
+    var keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.deviceOwnerKey);
     for (var element in keys) {
-      var deviceOwnerData = await AtClientManager.getInstance().atClient.get(element);
+      var deviceOwnerData =
+          await AtClientManager.getInstance().atClient.get(element);
       _logger.info('getDeviceOwners got ${deviceOwnerData.value}');
       try {
-        HrO2DeviceOwner hrO2DeviceOwner = HrO2DeviceOwner.fromJson(jsonDecode(deviceOwnerData.value));
+        HrO2DeviceOwner hrO2DeviceOwner =
+            HrO2DeviceOwner.fromJson(jsonDecode(deviceOwnerData.value));
         hrO2DeviceOwnerList.add(hrO2DeviceOwner);
       } catch (error) {
         // found some dirty data, consider deleting
@@ -187,22 +228,56 @@ class Hro2DataService {
     AtKey atKey = AtKey()
       ..key = AppConstants.deviceOwnerKey
       ..sharedWith = hrO2DeviceOwner.deviceOwnerAtsign;
-    var response = await AtClientManager.getInstance().atClient.put(atKey, jsonEncode(hrO2DeviceOwner));
+    var response = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, jsonEncode(hrO2DeviceOwner));
     _logger.info('putDeviceOwner success = $response');
     return response;
   }
 
   Future<bool> deleteDeviceOwner(HrO2DeviceOwner hrO2DeviceOwner) async {
-    List<AtKey> keys = await AtClientManager.getInstance().atClient.getAtKeys(regex: AppConstants.deviceOwnerKey);
+    bool deleteSuccess = false;
+    List<AtKey> keys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: AppConstants.deviceOwnerKey);
     _logger.info('deleteDeviceOwner processing ${keys.length} items');
     for (var key in keys) {
-      var data = await AtClientManager.getInstance().atClient.get(key);
-      if (data.value == hrO2DeviceOwner) {
-        _logger.info('deleteReceiver deleting $key');
-        delete(key);
+      AtValue data = await AtClientManager.getInstance().atClient.get(key);
+      var ownerJson = jsonDecode(data.value);
+      HrO2DeviceOwner owner = HrO2DeviceOwner.fromJson(ownerJson);
+
+      if (owner.deviceOwnerAtsign == hrO2DeviceOwner.deviceOwnerAtsign) {
+        _logger.info('deleteDeviceOwner deleting $key');
+        deleteSuccess = await delete(key);
       }
     }
-    return true;
+    return deleteSuccess;
+  }
+
+  Future<bool> updateDeviceReceivers(HrO2Device hrO2Device) async {
+    // update the device list of HrO2Receiver objects
+    AtKey atKey = AtKey()
+      ..sharedWith = hrO2Device.deviceAtsign
+      ..key = AppConstants.receiverListKey;
+    List<HrO2Receiver> receiverList = await getReceivers();
+    var success = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, jsonEncode(receiverList));
+    _logger.info('updateDeviceReceivers success = $success');
+    return success;
+  }
+
+  Future<bool> updateDeviceDataOwners(HrO2Device hrO2Device) async {
+    // update the device list of HrO2DataOwner objects
+    AtKey atKey = AtKey()
+      ..sharedWith = hrO2Device.deviceAtsign
+      ..key = AppConstants.dataOwnerListKey;
+    List<HrO2DataOwner> owners = await getDataOwners();
+    var success = await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, jsonEncode(owners));
+    _logger.info('updateDeviceDataOwners success = $success');
+    return success;
   }
 }
 
@@ -213,8 +288,10 @@ class AppConstants {
   static const String deviceKey = 'device.$libraryNamespace';
   static const String deviceListKey = 'device_list.$libraryNamespace';
   static const String deviceOwnerKey = 'device_owner.$libraryNamespace';
-  static const String deviceOwnerListKey = 'device_owner_list.$libraryNamespace';
-  static const String deviceDataOwnerKey = 'device_data_owner.$libraryNamespace';
+  static const String deviceOwnerListKey =
+      'device_owner_list.$libraryNamespace';
+  static const String deviceDataOwnerKey =
+      'device_data_owner.$libraryNamespace';
   static const String deviceReceiverKey = 'device_receiver.$libraryNamespace';
   static const String receiverKey = 'receiver.$libraryNamespace';
   static const int responseTimeLimit = 30;
