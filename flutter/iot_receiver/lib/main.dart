@@ -42,8 +42,8 @@ Future<AtClientPreference> loadAtClientPreference() async {
     ..hiveStoragePath = dir.path
     ..commitLogPath = dir.path
     ..isLocalStoreRequired = true
-    ..syncIntervalMins = 1
-    ..fetchOfflineNotifications = true;
+    ..syncIntervalMins = 1;
+  // ..fetchOfflineNotifications = true;
 }
 
 class MyApp extends StatefulWidget {

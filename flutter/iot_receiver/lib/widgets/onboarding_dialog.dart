@@ -107,8 +107,8 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   Widget _onboard(String atSign, String text) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.blueAccent,
+        // foregroundColor: Colors.black,
+        // backgroundColor: Colors.blueAccent,
         textStyle: const TextStyle(
             // fontFamily: 'LED',
             fontSize: 30,
