@@ -11,7 +11,8 @@ import 'package:iot_receiver/services/hro2_data_service.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class NewHrO2Receiver extends StatefulWidget {
-  const NewHrO2Receiver({Key? key}) : super(key: key);
+  final HrO2Receiver? hrO2Receiver;
+  const NewHrO2Receiver({Key? key, this.hrO2Receiver}) : super(key: key);
   static const String id = '/new_receiver';
 
   @override
@@ -104,15 +105,17 @@ class _NewHrO2ReceiverState extends State<NewHrO2Receiver> {
                                             value: device,
                                             child: Text(device.deviceAtsign),
                                           ))
-                                      .toList());
+                                      .toList(),
+                                  initialValue: widget.hrO2Receiver?.hrO2Device,
+                                );
                             } else {
                               return const Text("loading");
                             }
                           })),
-                  receiverShortnameForm(context, ''),
-                  receiverAtsignForm(context, ''),
-                  sendHRForm(context, ''),
-                  sendO2Form(context, ''),
+                  receiverShortnameForm(context, initialValue: widget.hrO2Receiver?.receiverShortname),
+                  receiverAtsignForm(context, initialValue: widget.hrO2Receiver?.receiverAtsign),
+                  sendHRForm(context, initialValue: widget.hrO2Receiver?.sendHR),
+                  sendO2Form(context, initialValue: widget.hrO2Receiver?.sendO2),
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 20),
