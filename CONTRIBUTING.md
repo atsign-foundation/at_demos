@@ -13,7 +13,8 @@ For small changes, especially documentation, you can simply use the "Edit" butto
 to update the Markdown file, and start the
 [pull request](https://help.github.com/articles/about-pull-requests/) process.
 Use the preview tab in GitHub to make sure that it is properly
-formatted before committing.
+formatted before committing. Please follow the
+[conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
 A pull request will cause integration tests to run automatically, so please review
 the results of the pipeline and correct any mistakes that are reported.
 
