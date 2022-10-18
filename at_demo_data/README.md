@@ -38,7 +38,7 @@ atPlatform's decentralized, edge computing model with the following features:
 
 We call giving people control of access to their data “flipping the internet”
 and you can learn more about how it works by reading this
-[overview](https://atsign.dev/docs/overview/).
+[overview](https://atsign.com/flip-the-internet/).
 
 <!---
 Does this package publish to pub.dev or similar? This README will be the
