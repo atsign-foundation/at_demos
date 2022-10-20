@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+import 'package:at_dude/commands/reset_command.dart';
 import 'package:at_dude/services/services.dart';
 import 'package:at_dude/utils/texts.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
@@ -56,6 +57,39 @@ class _MyAppState extends State<MyApp> {
                       await OnboardCommand().run();
                     },
                     child: const Text(Texts.onboardAtsign),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.black,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text(
+                              'Or',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ]),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await ResetCommand().run();
+                    },
+                    child: Text(Texts.resetApp),
                   ),
                 ],
               ),
