@@ -64,7 +64,7 @@ class Hro2DataService {
       // ..ttl = 10000
       ..ttr = -1;
     AtKey atKey = AtKey()
-      ..sharedWith = '@demopatient01'
+      ..sharedWith = hrO2Device.deviceAtsign
       ..metadata = metadata
       ..key = AppConstants.deviceKey;
     var value = jsonEncode(hrO2Device);
