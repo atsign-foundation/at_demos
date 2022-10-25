@@ -9,5 +9,6 @@
         "mqtt",
         "mwcmanager",
         "ZARIOT"
-    ]
+    ],
+    "cmake.configureOnOpen": false
 }

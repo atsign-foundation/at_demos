@@ -21,7 +21,7 @@ class _DeviceOwnersScreenState extends State<DeviceOwnersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _hrO2DataService.getDeviceOwners();
+    // _hrO2DataService.getDeviceOwners();
     return Scaffold(
       appBar: NewGradientAppBar(
         title: const AutoSizeText(
