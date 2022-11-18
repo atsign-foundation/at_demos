@@ -4,6 +4,7 @@
 
 
 [![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/at_demos/badge)](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/at_demos)
 
 
 Welcome! We have a collection of demo apps written to help you get a head start on your atPlatform journey. We recommend looking at the apps in the following order:
