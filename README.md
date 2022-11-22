@@ -1,5 +1,8 @@
 <img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
+[![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/mwc_demo/badge)](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/mwc_demo)
+
 # Mobile World Congress Demo
 
 This repo holds the files for Atsign and Zariot demo for MWC 2022 and IoTExpo 2022.
