@@ -1,4 +1,4 @@
-package com.example.chefcookbook
+package com.example.at_cookbook_refactored
 
 import io.flutter.embedding.android.FlutterActivity
 
