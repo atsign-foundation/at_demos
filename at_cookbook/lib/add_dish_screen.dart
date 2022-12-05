@@ -1,8 +1,5 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:chefcookbook/components/rounded_button.dart';
-import 'package:at_commons/at_commons.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:chefcookbook/constants.dart' as constant;
+import 'package:at_cookbook_refactored/rounded_button.dart';
 import 'package:flutter/material.dart';
 
 class DishScreen extends StatelessWidget {
@@ -111,14 +108,15 @@ class DishScreen extends StatelessWidget {
   }
 
   Future<void> _update(BuildContext context) async {
+    String splitter = '@@';
     String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
 
     FormState? form = _formKey.currentState;
     if (form!.validate()) {
-      String _values = _description! + constant.splitter + _ingredients!;
+      String _values = _description! + splitter + _ingredients!;
 
       if (_imageURL != null) {
-        _values += constant.splitter + _imageURL!;
+        _values += splitter + _imageURL!;
       }
 
       AtKey atKey = AtKey();

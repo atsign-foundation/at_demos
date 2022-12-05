@@ -1,10 +1,8 @@
+import 'dart:core';
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_commons/at_commons.dart';
-import 'package:chefcookbook/components/dish_widget.dart';
-import 'package:chefcookbook/constants.dart' as constant;
+import 'package:at_cookbook_refactored/dish_widget.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'dart:core';
 import 'package:at_client/src/service/sync_service.dart';
 
 class OtherScreen extends StatefulWidget {
@@ -15,6 +13,7 @@ class OtherScreen extends StatefulWidget {
 }
 
 class _OtherScreenState extends State<OtherScreen> {
+  final String splitter = '@@';
   final String? atSign =
       AtClientManager.getInstance().atClient.getCurrentAtSign();
 
@@ -60,7 +59,7 @@ class _OtherScreenState extends State<OtherScreen> {
                       print(snapshot.data);
                       List<DishWidget> dishWidgets = <DishWidget>[];
                       dishAttributes.forEach((String? key, String? value) {
-                        List<String> valueArr = value!.split(constant.splitter);
+                        List<String> valueArr = value!.split(splitter);
                         dishWidgets.add(
                           DishWidget(
                             title: key,
@@ -82,8 +81,10 @@ class _OtherScreenState extends State<OtherScreen> {
                                     Icons.keyboard_arrow_left,
                                   ),
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(
-                                        context, HomeScreen.id);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => HomeScreen()));
                                   },
                                 ),
                                 const Text(

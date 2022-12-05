@@ -1,15 +1,11 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:chefcookbook/components/dish_widget.dart';
-import 'package:chefcookbook/constants.dart' as constant;
-import 'package:chefcookbook/constants.dart';
+import 'package:at_cookbook_refactored/dish_widget.dart';
 import 'add_dish_screen.dart';
 import 'other_screen.dart';
-import 'package:at_commons/at_commons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final String id = 'home';
+  static final String id = 'HomeScreen';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -21,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   String atSign =
       AtClientManager.getInstance().atClient.getCurrentAtSign().toString();
+
+  final String splitter = '@@';
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
                     print(snapshot.data);
                     List<DishWidget> dishWidgets = <DishWidget>[];
                     for (String attributes in dishAttributes) {
-                      List<String> attributesList =
-                          attributes.split(constant.splitter);
+                      List<String> attributesList = attributes.split(splitter);
                       if (attributesList.length >= 3) {
                         DishWidget dishWidget = DishWidget(
                           title: attributesList[0],
@@ -83,8 +80,10 @@ class _HomeScreenState extends State<HomeScreen>
                                       Icons.keyboard_arrow_right,
                                     ),
                                     onPressed: () {
-                                      Navigator.pushReplacementNamed(
-                                          context, OtherScreen.id);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => OtherScreen()));
                                     },
                                   )
                                 ]),
@@ -111,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen>
         child: const Icon(Icons.add),
         backgroundColor: const Color(0XFF7B3F00),
         onPressed: () async {
-          Navigator.pushNamed(context, DishScreen.id)
-              .then((Object? value) => setState(() {}));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => DishScreen()));
         },
       ),
     );
@@ -121,9 +120,13 @@ class _HomeScreenState extends State<HomeScreen>
   Future<List<String>> _scan() async {
     List<AtKey> response;
 
+    //TODO: Create valid regex argument to get just namespace of app
+    //String regex = '^(?!cached).*at_cookbook_refactored.*';
+    String regex = ".*";
     response =
         await AtClientManager.getInstance().atClient.getAtKeys(regex: regex);
-    response.retainWhere((AtKey element) => !element.metadata!.isCached);
+    //     await AtClientManager.getInstance().atClient.getAtKeys(regex: regex);
+    // response.retainWhere((AtKey element) => !element.metadata!.isCached);
 
     List<String> responseList = <String>[];
 
@@ -133,12 +136,12 @@ class _HomeScreenState extends State<HomeScreen>
               AtClientManager.getInstance().atClient.getCurrentAtSign())) {
         continue;
       }
+      try {
+        String value = (await _lookup(atKey)).value;
+        value = atKey.key! + splitter + (value ?? '');
 
-      String? value = (await _lookup(atKey)).value;
-
-      value = atKey.key! + constant.splitter + (value ?? "");
-
-      responseList.add(value);
+        responseList.add(value);
+      } catch (e) {}
     }
 
     return responseList;

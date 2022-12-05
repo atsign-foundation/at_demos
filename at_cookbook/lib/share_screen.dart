@@ -1,8 +1,6 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:chefcookbook/components/dish_widget.dart';
-import 'package:chefcookbook/components/rounded_button.dart';
-import 'package:at_commons/at_commons.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:at_cookbook_refactored/dish_widget.dart';
+import 'package:at_cookbook_refactored/rounded_button.dart';
 import 'package:flutter/material.dart';
 
 class ShareScreen extends StatefulWidget {

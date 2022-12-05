@@ -1,5 +1,4 @@
-import 'package:chefcookbook/screens/dish_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:at_cookbook_refactored/dish_page.dart';
 import 'package:flutter/material.dart';
 
 class DishWidget extends StatelessWidget {
