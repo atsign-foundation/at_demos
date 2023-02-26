@@ -8,7 +8,7 @@ Type=simple
 ExecStartPre=/bin/sleep 30
 Restart=always
 RestartSec=3
-ExecStart=/usr/bin/screen -DmS mwcdisplay /home/pi/git/github.com/atsign-company/mwc_demo/python/display_hro2_from_mqtt.py
+ExecStart=/usr/bin/screen -DmS mwcdisplay /home/pi/git/github.com/atsign-foundation/mwc_demo/python/display_hro2_from_mqtt.py
 
 [Install]
 WantedBy=multi-user.target
