@@ -21,14 +21,14 @@ Docker version 23.0.5, build bc4487a
 
 If you are running an x64 machine, you have to edit the Dockerfiles to get the sshnp binaries for an x64 machine. Go through each Dockerfile and edit the `wget` and `tar` commands similar to:
 
-```
+```dockerfile
 RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
 RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
 ```
 
 If you are running an arm64 machine, you do not have to edit the Dockerfiles (as the demo has them set to arm64 already). They should look like this:
 
-```
+```dockerfile
 RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
 RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
 ```
@@ -173,7 +173,7 @@ Once running, let it run in the background and move onto the next step.
 
 7. Lastly, open the `sshnp` terminal and run the `.startup.sh` script
 
-```
+```sh
 root@b3b94028c184:/atsign# sh .startup.sh
 ssh-keygen: generating new host keys: DSA 
 Generating public/private ed25519 key pair.
@@ -185,7 +185,7 @@ Your identification has been saved in /atsign/.ssh/id_ed25519
 
 Running the `sshnp` script should give you an output at the end similar to:
 
-```
+```sh
 ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519 
 ```
 
@@ -193,7 +193,7 @@ ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519
 
 Run the command in the container (e.g. `ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 `)
 
-```
+```sh
 root@7452c3c9e744:/atsign# ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 
 ...
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
@@ -233,7 +233,7 @@ Usage of each of the binaries (taken from the [sshnp](https://github.com/atsign-
 
 `sshnp` usage (example: `./sshnp -f @soccer99 -t @66dear32 -h @48leo -d docker -s id_ed25519.pub -v`)
 
-```
+```sh
 Version : 3.1.2
 -k, --key-file             Sending atSign's atKeys file if not in ~/.atsign/keys/
 -f, --from (mandatory)     Sending atSign
@@ -254,7 +254,7 @@ Version : 3.1.2
 
 `sshnpd` usage (example: `./sshnpd -a @66dear32 -m @the50 -d docker -s -u -v`) 
 
-```
+```sh
 -k, --keyFile                Sending atSign's keyFile if not in ~/.atsign/keys/
 -a, --atsign (mandatory)     atSign of this device
 -m, --manager (mandatory)    Managers atSign, that this device will accept triggers from
@@ -267,7 +267,7 @@ Version : 3.1.2
 
 `sshrvd` usage (example: `./sshrvd -a @48leo -i 172.17.0.2 -v -s`)
 
-```
+```sh
 Version : 3.1.2
 -k, --key-file              atSign's atKeys file if not in ~/.atsign/keys/
 -a, --atsign (mandatory)    atSign for sshrvd
