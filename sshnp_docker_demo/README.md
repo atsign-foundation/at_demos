@@ -39,7 +39,7 @@ Note this IP address for later.
 
 ### 3. Setting up the Shell Scripts
 
-1. Edit shell scripts `.startup.sh` in each of the three folders. 
+1. Edit shell scripts `.startup.sh` in each of the three folders. (A) - sshnp, (B) - sshnpd, (C) - sshrvd.
 
 (A) The `sshnp/.startup.sh` script:
 
@@ -47,7 +47,7 @@ Note this IP address for later.
 - replace `@sshnp` with your sshnp atSign (e.g. `@soccer99`)
 - replace `@sshnpd` with your sshnpd atSign (e.g. `@66dear32`)
 - replace `@sshrvd` with your sshrvd atSign (e.g. `@48leo`)
-- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`)
+- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`). This is just an arbitrary string, so you can have some fun with it!
 
 ```sh
 #!/bin/bash
@@ -104,33 +104,6 @@ sh db.sh
 root@6a83b17a9499:/atsign#
 ```
 
-3. Run the `.startup.sh` inside `sshrvd` container with `sh .startup.sh`
-
-```sh
-root@6a83b17a9499:/atsign# sh .startup.sh
-ssh-keygen: generating new host keys: DSA 
-Generating public/private ed25519 key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /atsign/.ssh/id_ed25519
-Your public key has been saved in /atsign/.ssh/id_ed25519.pub
-The key fingerprint is:
-SHA256:B8Xa+nYMlIdw2tLnQRuwSsNB9eVTE02PC/vymJoqK9A john@example.com
-The key's randomart image is:
-+--[ED25519 256]--+
-|       .oo+.  .+=|
-|       ..ooooo o+|
-|        =O.+oo+ .|
-|       .++B =o o |
-|   .    S+.+...  |
-|  . E   ... ..   |
-|   .     . o. .  |
-|    . .   o.o=   |
-|     ..o.oooo .  |
-+----[SHA256]-----+
-INFO|2023-05-29 18:29:05.683549|AtClientManager|setCurrentAtSign called with atSign @48leo
-```
-
 3. Next, let's docker build `sshnpd`
 
 ```sh
@@ -146,9 +119,60 @@ cd sshnp
 sh db.sh
 ```
 
+5. Open the `sshrvd` terminal and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)
 
+```sh
+root@6a83b17a9499:/atsign# sh .startup.sh
+ssh-keygen: generating new host keys: DSA 
+Generating public/private ed25519 key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /atsign/.ssh/id_ed25519
+Your public key has been saved in /atsign/.ssh/id_ed25519.pub
+...
+```
 
+6. Now, open the `sshnpd` terminal and run the `.startup.sh` script
 
+```sh
+root@105fd65cb88e:/atsign# sh .startup.sh
+ssh-keygen: generating new host keys: DSA 
+INFO|2023-05-29 18:37:37.310524|AtClientManager|setCurrentAtSign called with atSign @66dear32
+...
+```
+
+7. Lastly, open the `sshnp` terminal and run the `.startup.sh` script
+
+```
+root@b3b94028c184:/atsign# sh .startup.sh
+ssh-keygen: generating new host keys: DSA 
+Generating public/private ed25519 key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /atsign/.ssh/id_ed25519
+...
+```
+
+Running the `sshnp` script should give you an output at the end similar to:
+
+```
+ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519 
+```
+
+8. Ssh into the `sshnpd` container (through the `sshnp` docker container)!
+
+Run the command in the container (e.g. `ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 `)
+
+```
+root@7452c3c9e744:/atsign# ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 
+...
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+...
+atsign@105fd65cb88e:~$ ls
+sshnp
+atsign@105fd65cb88e:~$ echo Hurray!
+Hurray!
+```
 
 ## Structure
 
