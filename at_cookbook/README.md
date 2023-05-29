@@ -1,3 +1,3 @@
 # at_cookbook_refactored
 
-A new Flutter demo
+A new Flutter project
