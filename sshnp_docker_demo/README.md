@@ -9,7 +9,7 @@ This is a demo of sshing into one docker container from another docker container
 1. Install [Docker](https://www.docker.com/products/docker-desktop/) and open it in the background. Check that you have docker installed. Run this in your terminal. Your output should be similar:
 
 ```sh
-docker --verison
+docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
