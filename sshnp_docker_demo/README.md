@@ -1,8 +1,10 @@
 # sshnp_docker_demo
 
-This is a demo of sshing into one docker container from another docker container without having ports open (not even port 22). This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports).
+This is a demo of sshing into one docker container from another docker container without having ports open (not even port 22). There are three docker containers: `sshnp`, `sshnpd`, and `sshrvd`. This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports).
 
 ## Getting Started
+
+Follow these steps to get sshnp working on your machine using Docker.
 
 ### 1. Prerequisites
 
