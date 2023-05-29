@@ -17,6 +17,24 @@ Docker version 23.0.5, build bc4487a
 
 3. For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`
 
+4. Edit the Dockerfiles according to your system architecture.
+
+If you are running an x64 machine, you have to edit the Dockerfiles to get the sshnp binaries for an x64 machine. Go through each Dockerfile and edit the `wget` and `tar` commands similar to:
+
+```
+RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
+RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
+```
+
+If you are running an arm64 machine, you do not have to edit the Dockerfiles (as the demo has them set to arm64 already). They should look like this:
+
+```
+RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
+RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
+```
+
+If you 
+
 ### 2. Finding IP of sshrvd
 
 This is a tedious but short step that we need to do to find the IP of the sshrvd docker container.
@@ -36,6 +54,13 @@ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshr
 ```
 
 Note this IP address for later.
+
+Close the docker container with `Ctrl + D`
+
+```
+root@7452c3c9e744:/atsign# 
+exit
+```
 
 ### 3. Setting up the Shell Scripts
 
@@ -104,7 +129,7 @@ sh db.sh
 root@6a83b17a9499:/atsign#
 ```
 
-3. Next, let's docker build `sshnpd`
+3. Next, let's docker build `sshnpd` using the `db.sh` shell script.
 
 ```sh
 cd sshnpd
@@ -112,11 +137,12 @@ sh db.sh
 root@4636ff324650:/atsign#
 ```
 
-4. Lastly, let's docker build `sshnp`
+4. Lastly, let's docker build `sshnp` using the `db.sh` shell script.
 
 ```sh
 cd sshnp
 sh db.sh
+root@4636ff324651:/atsign#
 ```
 
 5. Open the `sshrvd` terminal and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)
@@ -132,6 +158,8 @@ Your public key has been saved in /atsign/.ssh/id_ed25519.pub
 ...
 ```
 
+Once running, let it run in the background and move onto the next step.
+
 6. Now, open the `sshnpd` terminal and run the `.startup.sh` script
 
 ```sh
@@ -140,6 +168,8 @@ ssh-keygen: generating new host keys: DSA
 INFO|2023-05-29 18:37:37.310524|AtClientManager|setCurrentAtSign called with atSign @66dear32
 ...
 ```
+
+Once running, let it run in the background and move onto the next step.
 
 7. Lastly, open the `sshnp` terminal and run the `.startup.sh` script
 
@@ -194,10 +224,12 @@ Each directory contains:
 - makes `~/.ssh`
 - makes `~/.atsign/keys`
 - copies over `~/.startup.sh`
-- sets up user with name "atsign". if you are changing the user's name, then change it in each Dockerfile as well as the `.startup.sh` scripts.
+- sets up user with name "atsign". if you are changing the user's name, then change it in each Dockerfile ENV variable as well as replace "atsign" in the three `.startup.sh` scripts.
 <!-- TODO -->
 
 ## Usage
+
+Usage of each of the binaries (taken from the [sshnp](https://github.com/atsign-foundation/sshnoports) repo)
 
 `sshnp` usage (example: `./sshnp -f @soccer99 -t @66dear32 -h @48leo -d docker -s id_ed25519.pub -v`)
 
@@ -246,8 +278,3 @@ Version : 3.1.2
 -s, --[no-]snoop            Snoop on traffic passing through service
 FormatException: Option atsign is mandatory.
 ```
-
-## tmp notes
-
-- run everything as root
-- run commands 1 by 1 in shell script
