@@ -4,4 +4,4 @@ docker image prune -f
 docker stop sshrvd
 docker container rm sshrvd
 docker build -t sshrvd .
-docker run -it --name sshnprvd sshrvd
+docker run -it --name sshrvd sshrvd
