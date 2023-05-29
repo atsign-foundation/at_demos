@@ -13,11 +13,9 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). 
+2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
 
-3. For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`
-
-4. Edit the Dockerfiles according to your system architecture.
+3. Edit the Dockerfiles according to your system architecture.
 
 If you are running an x64 machine, you have to edit the Dockerfiles to get the sshnp binaries for an x64 machine. Go through each Dockerfile and edit the `wget` and `tar` commands similar to:
 
@@ -32,8 +30,6 @@ If you are running an arm64 machine, you do not have to edit the Dockerfiles (as
 RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
 RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
 ```
-
-If you 
 
 ### 2. Finding IP of sshrvd
 
