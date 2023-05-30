@@ -212,10 +212,9 @@ This is a demo involving three directories (each representing a docker container
 
 Each directory contains:
 
-- `keys/` where you store your `.atKeys`
-- `db.sh` docker build shell script
-- `.startup.sh` script to run on container startup (to start sshnp binary). The Dockerfile copies this file over.
-- `Dockerfile` image build instructions
+- `keys/` where you store your `.atKeys`, copide to Docker container
+- `db.sh` docker build shell script (copies root Dockerfile)
+- `.startup.sh` script copied to Docker container
 
 ## The Dockerfile
 
