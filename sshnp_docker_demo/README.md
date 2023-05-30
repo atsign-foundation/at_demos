@@ -219,11 +219,13 @@ Each directory contains:
 
 ## The Dockerfile
 
+- works inside of `~`
+- ${USER} var specifies the user of the machine
 - makes `~/.ssh`
-- makes `~/.atsign/keys`
+- makes `~/.atsign/keys` and copies keys over to container
 - copies over `~/.startup.sh`
 - sets up user with name "atsign". if you are changing the user's name, then change it in each Dockerfile ENV variable as well as replace "atsign" in the three `.startup.sh` scripts.
-<!-- TODO -->
+- installs [sshnp](https://github.com/atsign-foundation/sshnoports) binaries from releases on github
 
 ## Usage
 
