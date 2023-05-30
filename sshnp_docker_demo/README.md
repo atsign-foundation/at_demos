@@ -17,25 +17,9 @@ Docker version 23.0.5, build bc4487a
 
 2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
 
-3. Edit the Dockerfiles according to your system architecture.
-
-If you are running an x64 machine, you have to edit the Dockerfiles to get the sshnp binaries for an x64 machine. Go through each Dockerfile and edit the `wget` and `tar` commands similar to:
-
-```dockerfile
-RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
-RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
-```
-
-If you are running an arm64 machine, you do not have to edit the Dockerfiles (as the demo has them set to arm64 already). They should look like this:
-
-```dockerfile
-RUN wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-x64.tgz
-RUN tar -xvf sshnp-linux-x64.tgz ; rm -rf sshnp-linux-x64.tgz
-```
-
 ### 2. Finding IP of sshrvd
 
-This is a tedious but short step that we need to do to find the IP of the sshrvd docker container.
+This is a tedious but short step where we need to do to find the IP of the sshrvd docker container.
 
 Let's build and run the `sshrvd` docker container by running
 
@@ -53,7 +37,7 @@ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshr
 
 Note this IP address for later.
 
-Close the docker container with `Ctrl + D`
+Stop the docker container with `Ctrl + D`
 
 ```
 root@7452c3c9e744:/atsign# 
@@ -70,7 +54,7 @@ exit
 - replace `@sshnp` with your sshnp atSign (e.g. `@soccer99`)
 - replace `@sshnpd` with your sshnpd atSign (e.g. `@66dear32`)
 - replace `@sshrvd` with your sshrvd atSign (e.g. `@48leo`)
-- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`). This is just an arbitrary string, so you can have some fun with it!
+- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`). This is just a string, so have fun with it!
 
 ```sh
 #!/bin/bash
@@ -275,5 +259,4 @@ Version : 3.1.2
 -i, --ip (mandatory)        FQDN/IP address sent to clients
 -v, --[no-]verbose          More logging
 -s, --[no-]snoop            Snoop on traffic passing through service
-FormatException: Option atsign is mandatory.
 ```
