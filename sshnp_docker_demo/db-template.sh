@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#
+# DO NOT RUN THIS SCRIPT. THIS IS MEANT TO BE RAN IN ONE OF THE THERE DIRECTORIES
+#
+
+if [ -z "$1" ]
+then
+    echo "Usage: ./db.sh <sshnp/sshnpd/sshrvd>"
+    exit 1
+fi
+
+rm Dockerfile
+cp ../Dockerfile .
+docker container prune -f
+docker image prune -f
+docker stop $1
+docker container rm $1
+docker build -t $1 .
+docker run -it --name $1 $1
+rm Dockerfile
