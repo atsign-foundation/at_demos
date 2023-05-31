@@ -1,4 +1,5 @@
 FROM ubuntu
+# FROM debian:stable-20230522-slim@sha256:d828cca5497a2519da9c6d42372066895fa28a69f1e8a46a38ce8f750bd2adf0
 
 ENV USER=atsign
 ENV HOMEDIR=/${USER}
@@ -12,7 +13,8 @@ RUN mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd
 COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
 COPY .startup.sh ${HOMEDIR}
 
-RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl ; \ 
+RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
+    touch ${HOMEDIR}/.ssh/authorized_keys ; \
     set -eux; \
     case "$(dpkg --print-architecture)" in \
     amd64) \
@@ -27,8 +29,7 @@ RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping i
     VERSION=$(curl --silent "https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")') ; \
     wget https://github.com/atsign-foundation/sshnoports/releases/download/v${VERSION}/sshnp-linux-${ARCH}.tgz ; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
-    rm sshnp-linux-${ARCH}.tgz; \
-    touch ${HOMEDIR}/.ssh/authorized_keys ; \
+    rm sshnp-linux-${ARCH}.tgz ; \
     addgroup --gid ${GROUP_ID} ${USER} ; \
     sysctl -w net.ipv4.ping_group_range="0 1024" ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash --home ${HOMEDIR} ${USER} ; \
