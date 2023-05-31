@@ -28,7 +28,7 @@ RUN set -eux; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
     rm sshnp-linux-${ARCH}.tgz ; \
     addgroup --gid ${GROUP_ID} ${USER} ; \
-    sysctl -w net.ipv4.ping_group_range="0 1024" ; \
+    #sysctl -w net.ipv4.ping_group_range="0 1024" ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash \
       --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
