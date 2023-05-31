@@ -22,16 +22,12 @@ RUN set -eux; \
     riscv64) \
     ARCH="riscv64";; \
     esac; \
-    wget https://github.com/atsign-foundation/sshnoports/releases/download/v3.1.2/sshnp-linux-${ARCH}.tgz ; \
+    VERSION=$(curl --silent "https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")') ; \
+    wget https://github.com/atsign-foundation/sshnoports/releases/download/v${VERSION}/sshnp-linux-${ARCH}.tgz ; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
-    rm sshnp-linux-${ARCH}.tgz
-
-RUN touch ${HOMEDIR}/.ssh/authorized_keys
-
-COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
-COPY .startup.sh ${HOMEDIR}
-
-RUN addgroup --gid ${GROUP_ID} ${USER} ; \
+    rm sshnp-linux-${ARCH}.tgz; \
+    touch ${HOMEDIR}/.ssh/authorized_keys ; \
+    addgroup --gid ${GROUP_ID} ${USER} ; \
     sysctl -w net.ipv4.ping_group_range="0 1024" ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
