@@ -32,7 +32,7 @@ RUN set -eux; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
     chown -R ${USER}:${USER} ${HOMEDIR}
-    # chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
-    # chmod 755 ${HOMEDIR}/.startup.sh
+# chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
+# chmod 755 ${HOMEDIR}/.startup.sh
 
 # ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
