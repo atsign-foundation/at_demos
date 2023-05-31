@@ -9,9 +9,11 @@ WORKDIR ${HOMEDIR}
 
 RUN mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd 
 
-RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat telnet net-tools nmap iperf3 tmux traceroute nano vim watch
+COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
+COPY .startup.sh ${HOMEDIR}
 
-RUN set -eux; \
+RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl ; \ 
+    set -eux; \
     case "$(dpkg --print-architecture)" in \
     amd64) \
     ARCH="x64";; \
