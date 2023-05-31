@@ -37,7 +37,8 @@ RUN set -eux ; \
     chown -R ${USER}:${USER} ${HOMEDIR}
 
 COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
-COPY .startup.sh ${HOMEDIR}
+COPY --chmod=755 .startup.sh ${HOMEDIR}
+
 # chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
 # chmod 755 ${HOMEDIR}/.startup.sh
 
