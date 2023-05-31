@@ -8,15 +8,12 @@ ENV GROUP_ID=1024
 
 WORKDIR ${HOMEDIR}
 
-RUN mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd 
-
-COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
-COPY .startup.sh ${HOMEDIR}
-
-RUN apt-get update && apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
-    touch ${HOMEDIR}/.ssh/authorized_keys
-    
-RUN set -eux; \
+RUN set -eux ; \
+    apt-get update; \
+    apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat \
+        telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg; \
+    mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd ; \
+    touch ${HOMEDIR}/.ssh/authorized_keys ; \
     case "$(dpkg --print-architecture)" in \
     amd64) \
     ARCH="x64";; \
@@ -27,8 +24,10 @@ RUN set -eux; \
     riscv64) \
     ARCH="riscv64";; \
     esac; \
-    VERSION=$(curl --silent "https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")') ; \
-    wget https://github.com/atsign-foundation/sshnoports/releases/download/v${VERSION}/sshnp-linux-${ARCH}.tgz ; \
+    URL="https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest"; \
+    VERSION=$(curl --silent ${URL} | grep -Po '"tag_name": "v\K.*?(?=")') ; \
+    URLP="https://github.com/atsign-foundation/sshnoports/releases/download"; \
+    wget "${URLP}/v${VERSION}/sshnp-linux-${ARCH}.tgz" ; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
     rm sshnp-linux-${ARCH}.tgz ; \
     addgroup --gid ${GROUP_ID} ${USER} ; \
@@ -36,6 +35,9 @@ RUN set -eux; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
     chown -R ${USER}:${USER} ${HOMEDIR}
+
+COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
+COPY .startup.sh ${HOMEDIR}
 # chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
 # chmod 755 ${HOMEDIR}/.startup.sh
 
