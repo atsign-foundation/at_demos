@@ -11,7 +11,6 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat \
       telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg; \
-    touch ${HOMEDIR}/.ssh/authorized_keys; \
     case "$(dpkg --print-architecture)" in \
       amd64) \
         ARCH="x64";; \
@@ -34,11 +33,11 @@ RUN set -eux; \
       --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
     chown -R ${USER}:${USER} ${HOMEDIR}; \
-    mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd 
-# chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
-# chmod 755 ${HOMEDIR}/.startup.sh
+    mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd; \
+    touch ${HOMEDIR}/.ssh/authorized_keys; \
+    chmod 600 ${HOMEDIR}/.ssh/authorized_keys
 
 COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
-COPY .startup.sh ${HOMEDIR}
+COPY --chmod=755 .startup.sh ${HOMEDIR}
 
 # ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
