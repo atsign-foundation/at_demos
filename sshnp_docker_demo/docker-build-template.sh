@@ -17,8 +17,7 @@ then
     exit 1
 fi
 
-rm Dockerfile
-cp ../Dockerfile .
+cp -rf ../Dockerfile .
 sudo docker stop $1
 sudo docker container rm $1
 sudo docker build -t $1 .
