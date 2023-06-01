@@ -10,6 +10,13 @@ then
     exit 1
 fi
 
+# Check if keys/ contains at least one `.atKeys` file
+if [ ! "$(ls -A keys/*.atKeys)" ]
+then
+    echo "No keys found in keys/ directory."
+    exit 1
+fi
+
 rm Dockerfile
 cp ../Dockerfile .
 docker stop $1
