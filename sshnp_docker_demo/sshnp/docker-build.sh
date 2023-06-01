@@ -1,2 +1,2 @@
 #!/bin/bash
-../docker-build-template.sh sshnp
+../script-templates/docker-build-template.sh sshnp
