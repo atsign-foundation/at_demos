@@ -1,4 +1,4 @@
-FROM debian:stable-20230522-slim@sha256:d828cca5497a2519da9c6d42372066895fa28a69f1e8a46a38ce8f750bd2adf0
+FROM ubuntu:22.04@sha256:dfd64a3b4296d8c9b62aa3309984f8620b98d87e47492599ee20739e8eb54fbf
 
 ENV USER=atsign
 ENV HOMEDIR=/${USER}
@@ -28,7 +28,7 @@ RUN set -eux; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
     rm sshnp-linux-${ARCH}.tgz ; \
     addgroup --gid ${GROUP_ID} ${USER} ; \
-    #sysctl -w net.ipv4.ping_group_range="0 1024" ; \
+    sysctl -w net.ipv4.ping_group_range="0 1024" ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash \
       --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
@@ -40,4 +40,4 @@ RUN set -eux; \
 COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
 COPY --chmod=755 .startup.sh ${HOMEDIR}
 
-# ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
+ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
