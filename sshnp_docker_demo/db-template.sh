@@ -12,8 +12,6 @@ fi
 
 rm Dockerfile
 cp ../Dockerfile .
-docker container prune -f
-docker image prune -f
 docker stop $1
 docker container rm $1
 docker build -t $1 .
