@@ -15,7 +15,7 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
+2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). Instructions on how to get your atSign and its keys file can be found [here](https://www.youtube.com/watch?v=8xJnbsuF4C8). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
 
 ### 2. Finding IP of sshrvd
 
