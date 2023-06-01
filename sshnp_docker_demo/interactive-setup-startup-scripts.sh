@@ -41,6 +41,10 @@ read email
 echo "Enter your device name (optional, Enter to skip):"
 read deviceName
 
+cp -rf script-templates/.startup-sshnp-template.sh sshnp/.startup.sh
+cp -rf script-templates/.startup-sshnpd-template.sh sshnpd/.startup.sh
+cp -rf script-templates/.startup-sshrvd-template.sh sshrvd/.startup.sh
+
 # replace `<@sshnp>` with `sshnp` in sshnp/.startup.sh and sshnpd/.startup.sh
 sed -ri "" "s/<@sshnp>/$sshnp/g" sshnp/.startup.sh
 sed -ri "" "s/<@sshnp>/$sshnp/g" sshnpd/.startup.sh
@@ -54,9 +58,24 @@ sed -ri "" "s/<@sshrvd>/$sshrvd/g" sshnp/.startup.sh
 sed -ri "" "s/<@sshrvd>/$sshrvd/g" sshrvd/.startup.sh
 
 # replace `john@example.com` with `email` in sshnp/.startup.sh and sshrvd/.startup.sh
-sed -ri "" "s/john@example.com/$email/g" sshnp/.startup.sh
-sed -ri "" "s/john@example.com/$email/g" sshrvd/.startup.sh
+# if email is not empty string
+if [[ ! -z "$email" ]]
+then
+    sed -ri "" "s/john@example.com/$email/g" sshnp/.startup.sh
+    sed -ri "" "s/john@example.com/$email/g" sshrvd/.startup.sh
+fi
 
 # replace`<deviceName>` with `deviceName` in sshnp/.startup.sh and sshnpd/.startup.sh
-sed -ri "" "s/<deviceName>/$deviceName/g" sshnp/.startup.sh
-sed -ri "" "s/<deviceName>/$deviceName/g" sshnpd/.startup.sh
+if [[ ! -z "$deviceName" ]]
+then
+    sed -ri "" "s/<deviceName>/$deviceName/g" sshnp/.startup.sh
+    sed -ri "" "s/<deviceName>/$deviceName/g" sshnpd/.startup.sh
+fi
+
+# finished setup with atSigns
+echo "\nFinished setup with arguments:"
+echo "sshnp: $sshnp"
+echo "sshnpd: $sshnpd"
+echo "sshrvd: $sshrvd"
+echo "email: $email"
+echo "deviceName: $deviceName"
