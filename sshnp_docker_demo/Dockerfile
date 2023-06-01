@@ -50,4 +50,4 @@ COPY --chown=${USER}:${USER} --from=buildimage /app/sshnp ${HOMEDIR}/sshnp
 COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
 COPY --chmod=755 .startup.sh ${HOMEDIR}
 
-ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
+# ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]
