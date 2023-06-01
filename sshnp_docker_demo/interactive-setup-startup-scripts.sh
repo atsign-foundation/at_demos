@@ -68,8 +68,8 @@ fi
 # replace`<deviceName>` with `deviceName` in sshnp/.startup.sh and sshnpd/.startup.sh
 if [[ ! -z "$deviceName" ]]
 then
-    sed -ri "" "s/<deviceName>/$deviceName/g" sshnp/.startup.sh
-    sed -ri "" "s/<deviceName>/$deviceName/g" sshnpd/.startup.sh
+    sed -ri "" "s/deviceName/$deviceName/g" sshnp/.startup.sh
+    sed -ri "" "s/deviceName/$deviceName/g" sshnpd/.startup.sh
 fi
 
 # finished setup with atSigns
