@@ -195,7 +195,8 @@ lib/generated_plugin_registrant.dart
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -381,3 +382,5 @@ fabric.properties
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
+###
+at_dude_tutorial/step_07_send_dude_screen
