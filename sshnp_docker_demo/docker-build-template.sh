@@ -22,4 +22,9 @@ sudo docker stop $1
 sudo docker container rm $1
 sudo docker build -t $1 .
 sudo docker run -it --name $1 $1
-rm Dockerfile
+
+# if docker file exists, remove it
+if [ -f Dockerfile ]
+then
+    rm Dockerfile
+fi
