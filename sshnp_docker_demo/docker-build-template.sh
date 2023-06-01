@@ -19,8 +19,8 @@ fi
 
 rm Dockerfile
 cp ../Dockerfile .
-docker stop $1
-docker container rm $1
-docker build -t $1 .
-docker run -it --name $1 $1
+sudo docker stop $1
+sudo docker container rm $1
+sudo docker build -t $1 .
+sudo docker run -it --name $1 $1
 rm Dockerfile
