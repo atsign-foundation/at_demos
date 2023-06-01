@@ -25,7 +25,7 @@ Let's build and run the `sshrvd` docker container by running
 
 ```sh
 cd sshrvd
-sh db.sh
+./docker-build.sh
 ```
 
 Now, in another terminal window, find the IP address of the `sshrvd` docker container.
