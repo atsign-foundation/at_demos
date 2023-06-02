@@ -21,71 +21,60 @@ Docker version 23.0.5, build bc4487a
 
 This is a tedious but short step where we need to do to find the IP of the sshrvd docker container.
 
-Let's build and run the `sshrvd` docker container by running
+1. Let's build and run the `sshrvd` docker container by running
 
 ```sh
 cd sshrvd
 ./docker-build.sh
 ```
 
-Now, in another terminal window, find the IP address of the `sshrvd` docker container.
+2. Now, in another terminal window, find the IP address of the `sshrvd` docker container.
 
 ```sh
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshrvd
 172.**.*.*
 ```
 
-Note this IP address for later.
-
-Stop the docker container with `Ctrl + D`
+3. Note this IP address for later. Stop the docker container with `Ctrl + D`
 
 ```
 root@7452c3c9e744:/atsign# 
 exit
 ```
 
-### 3. Setting up the Shell Scripts
+### 3. Setting up the `.startup` Shell Scripts
 
-1. Edit shell scripts `.startup.sh` in each of the three folders. (A) - sshnp, (B) - sshnpd, (C) - sshrvd.
+1. We will generate a `.startup.sh` for each container. 
 
-(A) The `sshnp/.startup.sh` script:
+In the root of the project, run the `interactive-setup-startup-scripts.sh` script.
 
-- replace `john@example.com` with your email
-- replace `@sshnp` with your sshnp atSign (e.g. `@soccer99`)
-- replace `@sshnpd` with your sshnpd atSign (e.g. `@66dear32`)
-- replace `@sshrvd` with your sshrvd atSign (e.g. `@48leo`)
-- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`). This is just a string, so have fun with it!
+Example:
 
 ```sh
-#!/bin/bash
-ssh-keygen -A
-ssh-keygen -o -a 100 -t ed25519 -f /atsign/.ssh/id_ed25519 -C "john@example.com"
-/usr/sbin/sshd -D -o "ListenAddress 127.0.0.1" -o "PasswordAuthentication no"  &
-sudo -u atsign /atsign/sshnp/sshnp -f @sshnp -t @sshnpd -h @sshrvd -d deviceName -s id_ed25519.pub -v
+./interactive-setup-startup-scripts.sh
+Enter your sshnp atSign (e.g. "@sshnp"):
+@soccer99
+Enter your sshnpd atSign (e.g. "@sshnpd"):
+@22easy
+Enter your sshrvd atSign (e.g. "@sshrvd"):
+@48leo
+Enter your email (optional, Enter to skip):
+
+Enter your device name (optional, Enter to skip):
+docker
+\nFinished setup with arguments:
+sshnp: @soccer99
+sshnpd: @22easy
+sshrvd: @48leo
+email: 
+deviceName: docker
 ```
 
-(B) The `sshnpd/.startup.sh` script:
+This will generate `sshnp/.startup.sh`, `sshnpd/.startup.sh`, `sshrvd/.startup.sh` which will be used by the Docker containers.
 
-- replace `@sshnp` with your sshnp atSign (e.g. `@soccer99`)
-- replace `@sshnpd` with your sshnpd atSign (e.g. `@66dear32`)
-- replace `deviceName` with the name of your device. This has to be the same throughout the rest of the scripts (e.g. `docker`)
+2. Edit the <ip> in the `sshrvd/.startup.sh` script with the IP we obtained from Step 2.
 
-```sh
-#!/bin/bash
-ssh-keygen -A
-/usr/sbin/sshd -D -o "ListenAddress 127.0.0.1" -o "PasswordAuthentication no"  &
-while true
-do
-sudo -u atsign /atsign/sshnp/sshnpd -a @sshnpd -m @sshnp -d deviceName -s -u -v
-sleep 3
-done
-```
-
-(C) The `sshrvd/.startup.sh` script:
-
-- replace `john@example.com` with your email
-- replace `<ip>` with the ip from Step 2 (e.g. `12.23.2.3`)
-- replace `@sshrvd` with your sshnpd atSign (e.g. `@48leo`)
+Your `sshrvd/.startup.sh` should be similar to:
 
 ```sh
 #!/bin/bash
@@ -94,7 +83,7 @@ ssh-keygen -o -a 100 -t ed25519 -f /atsign/.ssh/id_ed25519 -C "john@example.com"
 /usr/sbin/sshd -D -o "ListenAddress 127.0.0.1" -o "PasswordAuthentication no"  &
 while true
 do
-sudo -u atsign /atsign/sshnp/sshrvd -a @sshrvd -i <ip> -v -s
+sudo -u atsign /atsign/sshnp/sshrvd -a @48leo -i 172.17.*.* -v -s
 sleep 3
 done
 ```
@@ -103,15 +92,15 @@ done
 
 1. Open three terminals side-by-side
 
-2. First let's docker build `sshrvd` using the `db.sh` shell script.
+2. First let's docker build `sshrvd` using the `docker-build.sh` shell script.
 
 ```sh
 cd sshrvd
-sh db.sh
+./docker-build.sh
 root@6a83b17a9499:/atsign#
 ```
 
-3. Next, let's docker build `sshnpd` using the `db.sh` shell script.
+3. Next, let's docker build `sshnpd` using the `docker-build.sh` shell script.
 
 ```sh
 cd sshnpd
@@ -119,7 +108,7 @@ sh db.sh
 root@4636ff324650:/atsign#
 ```
 
-4. Lastly, let's docker build `sshnp` using the `db.sh` shell script.
+4. Lastly, let's docker build `sshnp` using the `docker-build.sh` shell script.
 
 ```sh
 cd sshnp
@@ -127,10 +116,10 @@ sh db.sh
 root@4636ff324651:/atsign#
 ```
 
-5. Open the `sshrvd` terminal and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)
+5. Open the `sshrvd` terminal that has the running docker container, and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)
 
 ```sh
-root@6a83b17a9499:/atsign# sh .startup.sh
+root@6a83b17a9499:/atsign# ./startup.sh
 ssh-keygen: generating new host keys: DSA 
 Generating public/private ed25519 key pair.
 Enter passphrase (empty for no passphrase): 
@@ -145,7 +134,7 @@ Once running, let it run in the background and move onto the next step.
 6. Now, open the `sshnpd` terminal and run the `.startup.sh` script
 
 ```sh
-root@105fd65cb88e:/atsign# sh .startup.sh
+root@105fd65cb88e:/atsign# ./startup.sh
 ssh-keygen: generating new host keys: DSA 
 INFO|2023-05-29 18:37:37.310524|AtClientManager|setCurrentAtSign called with atSign @66dear32
 ...
@@ -156,7 +145,7 @@ Once running, let it run in the background and move onto the next step.
 7. Lastly, open the `sshnp` terminal and run the `.startup.sh` script
 
 ```sh
-root@b3b94028c184:/atsign# sh .startup.sh
+root@b3b94028c184:/atsign# ./startup.sh
 ssh-keygen: generating new host keys: DSA 
 Generating public/private ed25519 key pair.
 Enter passphrase (empty for no passphrase): 
@@ -171,7 +160,7 @@ Running the `sshnp` script should give you an output at the end similar to:
 ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519 
 ```
 
-8. Ssh into the `sshnpd` container (through the `sshnp` docker container)!
+8. Simply run this command in the `sshnp` container. This will ssh you into the `sshnpd` container!
 
 Run the command in the container (e.g. `ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 `)
 
@@ -197,8 +186,11 @@ This is a demo involving three directories (each representing a docker container
 Each directory contains:
 
 - `keys/` where you store your `.atKeys`, copide to Docker container
-- `db.sh` docker build shell script (copies root Dockerfile)
-- `.startup.sh` script copied to Docker container
+- `docker-build.sh` docker build shell script (copies root Dockerfile)
+
+Each directory, there will be a generated file at some point during this tutorial:
+- `.startup.sh` script copied to Docker container, used to run the corresponding binary (sshnp, sshnpd, sshrvd)
+- `Dockerfile` dockerfile copied from the root Dockerfile
 
 ## The Dockerfile
 
