@@ -105,6 +105,7 @@ done
 
 1. Open three terminals side-by-side
 
+#### Terminal 1
 2. First let's docker build `sshrvd` using the `docker-build.sh` shell script.*
 
 ```sh
@@ -112,7 +113,7 @@ cd sshrvd
 ./docker-build.sh
 root@6a83b17a9499:/atsign#
 ```
-
+#### Terminal 2
 3. Next, let's docker build `sshnpd` using the `docker-build.sh` shell script.
 
 ```sh
@@ -121,6 +122,7 @@ cd sshnpd
 root@4636ff324650:/atsign#
 ```
 
+#### Terminal 3
 4. Lastly, let's docker build `sshnp` using the `docker-build.sh` shell script.
 
 ```sh
