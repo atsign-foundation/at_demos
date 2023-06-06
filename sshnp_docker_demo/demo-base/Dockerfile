@@ -1,11 +1,16 @@
-FROM debian:stable-20230522-slim@sha256:d828cca5497a2519da9c6d42372066895fa28a69f1e8a46a38ce8f750bd2adf0 AS buildimage
+FROM ubuntu:22.04@sha256:dfd64a3b4296d8c9b62aa3309984f8620b98d87e47492599ee20739e8eb54fbf
+
+ENV USER=atsign
+ENV HOMEDIR=/${USER}
+ENV USER_ID=1024
+ENV GROUP_ID=1024 
 
 WORKDIR /app
 
 RUN set -eux ; \
     apt-get update ; \
     apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat \
-    telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
+        telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
     case "$(dpkg --print-architecture)" in \
         amd64) \
             ARCH="x64";; \
@@ -21,28 +26,16 @@ RUN set -eux ; \
     URLP="https://github.com/atsign-foundation/sshnoports/releases/download" ; \
     wget "${URLP}/v${VERSION}/sshnp-linux-${ARCH}.tgz" ; \
     tar -xvf sshnp-linux-${ARCH}.tgz ; \
-    rm sshnp-linux-${ARCH}.tgz ;
-
-FROM ubuntu:22.04@sha256:dfd64a3b4296d8c9b62aa3309984f8620b98d87e47492599ee20739e8eb54fbf
-
-ENV USER=atsign
-ENV HOMEDIR=/${USER}
-ENV USER_ID=1024
-ENV GROUP_ID=1024
-
-WORKDIR ${HOMEDIR}
-
-RUN set -eux ; \
-    apt-get update ; \
-    apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat \
-        telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
+    rm sshnp-linux-${ARCH}.tgz ; \
     addgroup --gid ${GROUP_ID} ${USER} ; \
     sysctl -w net.ipv4.ping_group_range="0 1024" ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash \
         --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
     mkdir -p ${HOMEDIR}/.sshnp ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd ${HOMEDIR}/sshnp ; \
+    cd ${HOMEDIR} ; \
+    cp -r /app/sshnp/* ${HOMEDIR}/sshnp/ ; \
     touch ${HOMEDIR}/.ssh/authorized_keys ; \
     chown -R ${USER}:${USER} ${HOMEDIR} ; 
 
-COPY --chown=${USER}:${USER} --from=buildimage /app/sshnp ${HOMEDIR}/sshnp
+WORKDIR ${HOMEDIR}
