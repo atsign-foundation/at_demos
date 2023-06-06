@@ -41,13 +41,8 @@ RUN set -eux ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash \
         --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
-    mkdir -p ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd ${HOMEDIR}/sshnp ; \
+    mkdir -p ${HOMEDIR}/.sshnp ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd ${HOMEDIR}/sshnp ; \
     touch ${HOMEDIR}/.ssh/authorized_keys ; \
-    # chmod 600 ${HOMEDIR}/.ssh/authorized_keys ; \
-    chown -R ${USER}:${USER} ${HOMEDIR} ;
+    chown -R ${USER}:${USER} ${HOMEDIR} ; 
 
 COPY --chown=${USER}:${USER} --from=buildimage /app/sshnp ${HOMEDIR}/sshnp
-COPY keys/*.atKeys ${HOMEDIR}/.atsign/keys
-COPY --chmod=755 .startup.sh ${HOMEDIR}
-
-# ENTRYPOINT [ "sh", "/atsign/.startup.sh" ]

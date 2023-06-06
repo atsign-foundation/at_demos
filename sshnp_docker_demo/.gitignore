@@ -1,6 +1,0 @@
-sshnp/Dockerfile
-sshnpd/Dockerfile
-sshrvd/Dockerfile
-sshnp/.startup.sh
-sshnpd/.startup.sh
-sshrvd/.startup.sh

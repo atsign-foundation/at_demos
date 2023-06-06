@@ -17,14 +17,12 @@ then
     exit 1
 fi
 
-cp -rf ../Dockerfile .
-sudo docker stop $1
-sudo docker container rm $1
-sudo docker build -t $1 .
-sudo docker run -it --name $1 $1
+BASE_IMAGE_NAME=atsigncompany/sshnp_docker_demo_base
+CUSTOM_IMAGE_NAME=atsigncompany/sshnp_docker_demo_$1
+CONTAINER_NAME=sshnp_docker_demo_$1
 
-# if docker file exists, remove it
-if [ -f Dockerfile ]
-then
-    rm Dockerfile
-fi
+sudo docker build -t $BASE_IMAGE_NAME -f ../demo-base/Dockerfile ../demo-base
+sudo docker build -t $CUSTOM_IMAGE_NAME .
+sudo docker stop $CONTAINER_NAME
+sudo docker container rm $CONTAINER_NAME
+sudo docker run -it --name $CONTAINER_NAME $CUSTOM_IMAGE_NAME
