@@ -15,7 +15,17 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). Instructions on how to get your atSign and its keys file can be found [here](https://www.youtube.com/watch?v=8xJnbsuF4C8). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
+2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`. If you need help getting your `.atKeys` files, see [1A. Getting your .atKeys](#1a-getting-your-atkeys).
+
+#### 1A. Getting your .atKeys
+
+<!-- TODO INCLUDE "GETTING YOUR ATKEYS" VIDEO WHEN IT IS UPLOADED -->
+
+1. Go to [my.atsign.com/go](https://my.atsign.com/go) and get as many atSigns as you need (2 if you are using Atsign's rendezvous service, 3 if you are using you will be running your own rendezvous service).
+
+2. Once you have checked out with your brand new atSigns, be sure to go through each of them and press the orange "Activate" button. This will open your atSign for activation
+
+3. Use [at_onboarding_cli/at_activate](https://github.com/atsign-foundation/at_libraries/tree/trunk/packages/at_onboarding_cli) (if you prefer a command-line approach) or download one of our [apps](https://atsign.com/apps/) (such as [atmospherePro](https://atsign.com/apps/atmospherepro/)) to utilize the onboarding widget to generate your `.atKeys` files. You will need to generate a `.atKeys` file for each of your atSigns. Be sure to not lose these keys as they are used to authenticate into an atSign's atServer.
 
 ### 2. Finding IP of sshrvd*
 
