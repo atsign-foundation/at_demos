@@ -34,7 +34,7 @@ cd sshrvd
 2. Now, in another terminal window, find the IP address of the `sshrvd` docker container.
 
 ```sh
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshrvd
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshnp_docker_demo_sshrvd
 172.**.*.*
 ```
 
