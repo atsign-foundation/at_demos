@@ -15,11 +15,14 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 3 atSigns and their associated `.atKeys` files (one for each docker container). Instructions on how to get your atSign and its keys file can be found [here](https://www.youtube.com/watch?v=8xJnbsuF4C8). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
+2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). Instructions on how to get your atSign and its keys file can be found [here](https://www.youtube.com/watch?v=8xJnbsuF4C8). For each of your atSigns, put the `.atKeys` file into the `keys/` directory. For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`.
 
-### 2. Finding IP of sshrvd
+### 2. Finding IP of sshrvd*
+
+If you are using a rendezvous service serviced by Atsign, you may skip any of the `sshrvd` steps denoted by the *
 
 This is a tedious but short step where we need to do to find the IP of the sshrvd docker container.
+
 
 1. Let's build and run the `sshrvd` docker container by running
 
@@ -72,7 +75,7 @@ deviceName: docker
 
 This will generate `sshnp/.startup.sh`, `sshnpd/.startup.sh`, `sshrvd/.startup.sh` which will be used by the Docker containers.
 
-2. Edit the <ip> in the `sshrvd/.startup.sh` script with the IP we obtained from Step 2.
+2. Edit the <ip> in the `sshrvd/.startup.sh` script with the IP we obtained from Step 2.*
 
 Your `sshrvd/.startup.sh` should be similar to:
 
@@ -92,7 +95,7 @@ done
 
 1. Open three terminals side-by-side
 
-2. First let's docker build `sshrvd` using the `docker-build.sh` shell script.
+2. First let's docker build `sshrvd` using the `docker-build.sh` shell script.*
 
 ```sh
 cd sshrvd
@@ -104,7 +107,7 @@ root@6a83b17a9499:/atsign#
 
 ```sh
 cd sshnpd
-sh db.sh
+./docker-build.sh
 root@4636ff324650:/atsign#
 ```
 
@@ -112,11 +115,11 @@ root@4636ff324650:/atsign#
 
 ```sh
 cd sshnp
-sh db.sh
+./docker-build.sh
 root@4636ff324651:/atsign#
 ```
 
-5. Open the `sshrvd` terminal that has the running docker container, and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)
+5. Open the `sshrvd` terminal that has the running docker container, and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)*
 
 ```sh
 root@6a83b17a9499:/atsign# ./startup.sh
@@ -183,14 +186,16 @@ This is a demo involving three directories (each representing a docker container
 2. `sshnpd/` the linux device running the sshnp daemon
 3. `sshrvd/` the rendezvous point
 
-Each directory contains:
+Additional directories:
 
-- `keys/` where you store your `.atKeys`, copide to Docker container
-- `docker-build.sh` docker build shell script (copies root Dockerfile)
+- `demo-base/` contains the base docker image
+- `script-templates/` contains the templates for the `.startup.sh` scripts and a `docker-build-template.sh` used by the three `docker-build.sh`s
 
-Each directory, there will be a generated file at some point during this tutorial:
-- `.startup.sh` script copied to Docker container, used to run the corresponding binary (sshnp, sshnpd, sshrvd)
-- `Dockerfile` dockerfile copied from the root Dockerfile
+Each directory contains (or will contain):
+
+- `keys/` where you store your `.atKeys`, copied to Docker container
+- `docker-build.sh` docker build shell script, builds custom docker image, custom image uses demo-base as base image
+- `.startup.sh` a generated script after running `interactive-setup-startup-scripts.sh`
 
 ## The Dockerfile
 
