@@ -15,7 +15,14 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`. If you need help getting your `.atKeys` files, see [1A. Getting your .atKeys](#1a-getting-your-atkeys).
+2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). 
+ 
+Regardless of running a rendevous service or not, you will need to add your atKey files within the following dirs:
+- sshnp/keys/
+- sshnpd/keys/
+- sshrvd/keys/
+
+For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`. If you need help getting your `.atKeys` files, see [1A. Getting your .atKeys](#1a-getting-your-atkeys).
 
 #### 1A. Getting your .atKeys
 
