@@ -7,14 +7,14 @@ RUN set -eux ; \
     apt-get install -y openssh-server wget sudo iputils-ping iproute2 ncat \
     telnet net-tools nmap iperf3 tmux traceroute nano vim watch curl dpkg ; \
     case "$(dpkg --print-architecture)" in \
-    amd64) \
-    ARCH="x64";; \
-    armhf) \
-    ARCH="arm";; \
-    arm64) \
-    ARCH="arm64";; \
-    riscv64) \
-    ARCH="riscv64";; \
+        amd64) \
+            ARCH="x64";; \
+        armhf) \
+            ARCH="arm";; \
+        arm64) \
+            ARCH="arm64";; \
+        riscv64) \
+            ARCH="riscv64";; \
     esac; \
     URL="https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest" ; \
     VERSION=$(curl --silent ${URL} | grep -Po '"tag_name": "v\K.*?(?=")') ; \
