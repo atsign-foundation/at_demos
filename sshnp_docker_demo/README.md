@@ -24,7 +24,7 @@ git --version
 git version 2.39.0
 ```
 
-3. You will need 2 atSigns and their associated `.atKeys` files, one for each docker container. See [1A. Getting your .atKeys](#1a-getting-your-atkeys) to learn how to get your atKeys.
+3. You will need 2 atSigns and their associated `.atKeys` files, one for each docker container. One atSign will be the client (sshnp) address while the other atSign will be the device (sshnpd) address. See [1A. Getting your .atKeys](#1a-getting-your-atkeys) to learn how to get your atKeys.
 
 4. Git clone this repository, and change into the demo directory to ensure it was cloned properly.
 
