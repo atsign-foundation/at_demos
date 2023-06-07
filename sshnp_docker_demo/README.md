@@ -62,8 +62,6 @@ Next, let's set up the sshnpd container.
 
 3. Run the `docker-build.sh` script inside of `sshnpd/`. 
 
-You may need to enter your user password to allow the script to run `sudo` commands. If run successfully, your terminal sesssion should be running the docker container.
-
 ```sh
 cd sshnpd
 ./docker-build.sh
@@ -80,11 +78,21 @@ If run successfully, your terminal session should be running the docker containe
 atsign@c602e7e77fa9:~$ 
 ```
 
-4. Once inside the docker container, install sshnpd using `./install_sshnpd -c <@client_atsign> -d <@device_atsign> -n <deviceName>`
+4. Run the `./install_sshnpd` script
 
 ```sh
 cd sshnp
-./install_sshnpd -c @sshnp_atsign -d @sshnpd_atsign -n docker
+./install_sshnpd
+```
+
+Example:
+
+```sh
+atsign@244ecc19dcca:~$ cd sshnp/
+atsign@244ecc19dcca:~/sshnp$ ./install_sshnpd
+Client address (e.g. @alice_client): @soccer99
+Device address (e.g. @alice_device): @22easy
+Device name: docker
 ```
 
 This will install and run the sshnpd inside of the docker container.
@@ -105,7 +113,7 @@ INFO|2023-06-07 16:13:34.097561|Monitor (@22easy)|monitor started for @22easy wi
 
 Once the daemon is running successfully, you may move onto [Step 3. Setting up the sshnp Docker Container (Client)](#3-setting-up-the-sshnp-docker-container-client).
 
-The next steps are for setting up the daemon manually in case something goes wrong.
+The next step is for setting up the daemon manually in case something goes wrong. Exiting the Docker container via `Ctrl + D` and restarting from step 1 can also be done.
 
 6. If the daemon was not started successfully, follow the next steps.
 
@@ -142,6 +150,8 @@ cd sshnp
 ./docker-build.sh
 ```
 
+You may need to `chmod +x docker-build.sh` to make the script executable.
+
 You may need to enter your password to allow the script to run `sudo` commands.
 
 If run successfully, your terminal sesssion should be running the docker container:
@@ -150,18 +160,30 @@ If run successfully, your terminal sesssion should be running the docker contain
 atsign@f868301cecf8:~$ 
 ```
 
-4. Run the `install_sshnp` script from within the `sshnp` directory inside the docker container. `./install_sshnp -c <@client_atsign> -d <@device_atsign> -h <region am, eu, ap>`
-
-Replace `@sshnp_atsign` with your sshnp atSign, `@sshnpd_atsign` with your sshnpd atSign, and `am` with your region (am, eu, ap).
+4. Run the `install_sshnp` script
 
 ```sh
-cd sshnp
-./install_sshnp -c @sshnp_atsign -d @sshnpd_atsign -h am
+cd sshnp ; 
+./install_sshnp
+```
+
+Example:
+
+```sh
+atsign@37dec765a093:~$ cd sshnp/
+atsign@37dec765a093:~/sshnp$ ./install_sshnp
+Client address (e.g. @alice_client): @soccer99
+Device address (e.g. @alice_device): @22easy
+Pick your default region:
+  am: Americas
+  ap: Asia Pacific
+  eu: Europe
+> am
 ```
 
 5. Now run the custom sshnp script it generated.
 
-Replace `@sshnpd_atsign` with your sshnpd atSign (e.g. ``~/.local/bin/sshnp@alice docker`).
+Replace `@sshnpd_atsign` with your sshnpd atSign.
 
 ```sh
 ~/.local/bin/sshnp@sshnpd_atsign docker
