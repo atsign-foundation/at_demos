@@ -1,6 +1,8 @@
 # sshnp_docker_demo
 
-This is a demo of sshing into one docker container from another docker container without having ports open (not even port 22). There are three docker containers: `sshnp`, `sshnpd`, and `sshrvd`. This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports).
+This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports). [sshnp](https://github.com/atsign-foundation/sshnoports) allows you ssh into any remote device/host without that device having any open ports.
+
+There are two docker containers: `sshnp` and `sshnpd`.
 
 ## Getting Started
 
@@ -15,11 +17,28 @@ docker --version
 Docker version 23.0.5, build bc4487a
 ```
 
-2. You will need 2 atSigns and their associated `.atKeys` files. If you will be running your own rendezvous service, you will instead need 3 atSigns (one for each docker container). For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`. If you need help getting your `.atKeys` files, see [1A. Getting your .atKeys](#1a-getting-your-atkeys).
+2. Install [git](https://git-scm.com/downloads) and open it in the background. Check that you have git installed. Run this in your terminal. Your output should be similar:
+
+```sh
+git --version
+git version 2.39.0
+```
+
+2. You will need 2 atSigns and their associated `.atKeys` files, one for each docker container. See [1A. Getting your .atKeys](#1a-getting-your-atkeys) to learn how to get your atKeys.
+
+3. Git clone this repository, and change into the demo directory to ensure it was cloned properly.
+
+```sh
+git clone https://github.com/atsign-foundation/at_demos.git
+cd at_demos/sshnp_docker_demo
+ls
+```
 
 #### 1A. Getting your .atKeys
 
 <!-- TODO INCLUDE "GETTING YOUR ATKEYS" VIDEO WHEN IT IS UPLOADED -->
+
+If you already have your `.atKeys` files, you may skip this step.
 
 1. Go to [my.atsign.com/go](https://my.atsign.com/go) and get as many atSigns as you need (2 if you are using Atsign's rendezvous service, 3 if you are using you will be running your own rendezvous service).
 
@@ -27,145 +46,108 @@ Docker version 23.0.5, build bc4487a
 
 3. Use [at_onboarding_cli/at_activate](https://github.com/atsign-foundation/at_libraries/tree/trunk/packages/at_onboarding_cli) (if you prefer a command-line approach) or download one of our [apps](https://atsign.com/apps/) (such as [atmospherePro](https://atsign.com/apps/atmospherepro/)) to utilize the onboarding widget to generate your `.atKeys` files. You will need to generate a `.atKeys` file for each of your atSigns. Be sure to not lose these keys as they are used to authenticate into an atSign's atServer.
 
-### 2. Finding IP of sshrvd*
+### 2. Setting up the sshnpd Docker Container
 
-If you are using a rendezvous service serviced by Atsign, you may skip any of the `sshrvd` steps denoted by the *
+Next, let's set up the sshnpd container.
 
-This is a tedious but short step where we need to do to find the IP of the sshrvd docker container.
+1. Put your sshnpd atSign's `.atKeys` file in `sshnpd/keys`. Your file structure should be similar to `sshnpd/keys/@alice_key.atKeys`.
 
+2. Open up a fresh terminal.
 
-1. Let's build and run the `sshrvd` docker container by running
+3. Run the `docker-build.sh` script inside of `sshnpd/`. 
 
-```sh
-cd sshrvd
-./docker-build.sh
-```
-
-2. Now, in another terminal window, find the IP address of the `sshrvd` docker container.
-
-```sh
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshnp_docker_demo_sshrvd
-172.**.*.*
-```
-
-3. Note this IP address for later. Stop the docker container with `Ctrl + D`
-
-```
-root@7452c3c9e744:/atsign# 
-exit
-```
-
-### 3. Setting up the `.startup` Shell Scripts
-
-1. We will generate a `.startup.sh` for each container. 
-
-In the root of the project, run the `interactive-setup-startup-scripts.sh` script.
-
-Example:
-
-```sh
-./interactive-setup-startup-scripts.sh
-Enter your sshnp atSign (e.g. "@sshnp"):
-@soccer99
-Enter your sshnpd atSign (e.g. "@sshnpd"):
-@22easy
-Enter your sshrvd atSign (e.g. "@sshrvd"):
-@48leo
-Enter your email (optional, Enter to skip):
-
-Enter your device name (optional, Enter to skip):
-docker
-\nFinished setup with arguments:
-sshnp: @soccer99
-sshnpd: @22easy
-sshrvd: @48leo
-email: 
-deviceName: docker
-```
-
-This will generate `sshnp/.startup.sh`, `sshnpd/.startup.sh`, `sshrvd/.startup.sh` which will be used by the Docker containers.
-
-2. Edit the <ip> in the `sshrvd/.startup.sh` script with the IP we obtained from Step 2.*
-
-Your `sshrvd/.startup.sh` should be similar to:
-
-```sh
-#!/bin/bash
-ssh-keygen -A
-ssh-keygen -o -a 100 -t ed25519 -f /atsign/.ssh/id_ed25519 -C "john@example.com"
-/usr/sbin/sshd -D -o "ListenAddress 127.0.0.1" -o "PasswordAuthentication no"  &
-while true
-do
-sudo -u atsign /atsign/sshnp/sshrvd -a @48leo -i 172.17.*.* -v -s
-sleep 3
-done
-```
-
-### 4. Running the Shell Scripts
-
-1. Open three terminals side-by-side
-
-2. First let's docker build `sshrvd` using the `docker-build.sh` shell script.*
-
-```sh
-cd sshrvd
-./docker-build.sh
-root@6a83b17a9499:/atsign#
-```
-
-3. Next, let's docker build `sshnpd` using the `docker-build.sh` shell script.
+You may need to enter your user password to allow the script to run `sudo` commands. If run successfully, your terminal sesssion should be running the docker container.
 
 ```sh
 cd sshnpd
 ./docker-build.sh
-root@4636ff324650:/atsign#
 ```
 
-4. Lastly, let's docker build `sshnp` using the `docker-build.sh` shell script.
+Output should be similar to:
+
+```sh
+...
+atsign@c602e7e77fa9:~$ 
+```
+
+4. Once inside the docker container, install sshnpd using `./install_sshnpd -c <@client_atsign> -d <@device_atsign> -n <deviceName>`
+
+```sh
+cd sshnp
+./install_sshnpd -c @sshnp_atsign -d @sshnpd_atsign -n docker
+```
+
+This will install and run the sshnpd inside of the docker container. Optionally, you may run `tmux a` to see logs.
+
+```sh
+tmux a
+```
+
+Once the daemon is running, you may move onto [Step 4. Setting up sshnp](#4-setting-up-sshnp). The next steps are for setting up the daemon manually in case something goes wrong.
+
+5. Optionally, you can ensure that the daemon has started by attaching to the tmux session which was started by the `install_sshnpd` script.
+
+To attach to the tmux session, simply run:
+
+```sh
+tmux a
+```
+
+You should see a line similar to the following, if the daemon started successfully:
+
+```
+INFO|2023-06-07 16:13:34.097561|Monitor (@22easy)|monitor started for @22easy with last notification time: null 
+```
+
+To detach, press `ctrl+b` and then `d`.
+
+6. If your daemon has not been started up correctly and want to start it up again, 
+
+First ensure the tmux session is killed with `tmux kill-ses` and then run the `sshnpd@sshnp_atsign` script inside of `~/.local/bin`. This is a custom script generated by the `install_sshnpd` script.
+
+Replace `@sshnp_atsign` with the atSign you are using for `sshnp`.
+
+```sh
+tmux kill-ses
+cd ~/.local/bin
+./sshnpd@sshnp_atsign
+```
+
+### 3. Setting up sshnp
+
+1. Put your sshnp atSign's `.atKeys` inside of `sshnp/keys/`. Your file structure should be similar to `sshnp/keys/@alice_key.atKeys`.
+
+2. Open up a fresh terminal.
+
+3. Next, let's build the `sshnp` docker container using the `docker-build.sh` shell script.
 
 ```sh
 cd sshnp
 ./docker-build.sh
-root@4636ff324651:/atsign#
 ```
 
-5. Open the `sshrvd` terminal that has the running docker container, and run the `.startup.sh` script. (Press Enter to enter a blank password for the keypairs)*
+You may need to enter your password to allow the script to run `sudo` commands.
+
+If run successfully, your terminal sesssion should be running the docker container:
 
 ```sh
-root@6a83b17a9499:/atsign# ./startup.sh
-ssh-keygen: generating new host keys: DSA 
-Generating public/private ed25519 key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /atsign/.ssh/id_ed25519
-Your public key has been saved in /atsign/.ssh/id_ed25519.pub
-...
+atsign@f868301cecf8:~$ 
 ```
 
-Once running, let it run in the background and move onto the next step.
-
-6. Now, open the `sshnpd` terminal and run the `.startup.sh` script
+4. Run the `install_sshnp` script from within the `sshnp` directory inside the docker container. `./install_sshnp -c <@client_atsign> -d <@device_atsign> -h <region am, eu, ap>`
 
 ```sh
-root@105fd65cb88e:/atsign# ./startup.sh
-ssh-keygen: generating new host keys: DSA 
-INFO|2023-05-29 18:37:37.310524|AtClientManager|setCurrentAtSign called with atSign @66dear32
-...
+cd sshnp
+./install_sshnp -c @sshnp_atsign -d @sshnpd_atsign -h am
 ```
 
-Once running, let it run in the background and move onto the next step.
-
-7. Lastly, open the `sshnp` terminal and run the `.startup.sh` script
+5. Now run the custom sshnp script it generated.
 
 ```sh
-root@b3b94028c184:/atsign# ./startup.sh
-ssh-keygen: generating new host keys: DSA 
-Generating public/private ed25519 key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /atsign/.ssh/id_ed25519
-...
+~/.local/bin/sshnp@sshnpd_atsign docker
 ```
+
+6. You should receive an ssh command to run after running the `sshnp` script. Copy and run this command.
 
 Running the `sshnp` script should give you an output at the end similar to:
 
@@ -173,49 +155,26 @@ Running the `sshnp` script should give you an output at the end similar to:
 ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519 
 ```
 
-8. Simply run this command in the `sshnp` container. This will ssh you into the `sshnpd` container!
-
-Run the command in the container (e.g. `ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 `)
+7. You should be ssh'd into the other docker container. (Hurray!)
 
 ```sh
-root@7452c3c9e744:/atsign# ssh -p 34325 atsign@localhost -i /atsign/.ssh/id_ed25519 
-...
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-...
-atsign@105fd65cb88e:~$ ls
-sshnp
-atsign@105fd65cb88e:~$ echo Hurray!
-Hurray!
+atsign@77fe899b6732:~$ ps -a
+  PID TTY          TIME CMD
+   27 pts/0    00:00:00 bash
+   76 pts/1    00:00:00 sshnpd@soccer99
+   79 pts/1    00:00:01 dart:sshnpd
+  224 pts/2    00:00:00 ps
+atsign@77fe899b6732:~$ echo yay
+yay
 ```
 
 ## Structure
 
-This is a demo involving three directories (each representing a docker container):
-
-1. `sshnp/` the client machine
-2. `sshnpd/` the linux device running the sshnp daemon
-3. `sshrvd/` the rendezvous point
-
-Additional directories:
-
-- `demo-base/` contains the base docker image
-- `script-templates/` contains the templates for the `.startup.sh` scripts and a `docker-build-template.sh` used by the three `docker-build.sh`s
-
-Each directory contains (or will contain):
-
-- `keys/` where you store your `.atKeys`, copied to Docker container
-- `docker-build.sh` docker build shell script, builds custom docker image, custom image uses demo-base as base image
-- `.startup.sh` a generated script after running `interactive-setup-startup-scripts.sh`
+<!-- TODO -->
 
 ## The Dockerfile
 
-- works inside of `~`
-- ${USER} var specifies the user of the machine
-- makes `~/.ssh`
-- makes `~/.atsign/keys` and copies keys over to container
-- copies over `~/.startup.sh`
-- sets up user with name "atsign". if you are changing the user's name, then change it in each Dockerfile ENV variable as well as replace "atsign" in the three `.startup.sh` scripts.
-- installs [sshnp](https://github.com/atsign-foundation/sshnoports) binaries from releases on github
+<!-- TODO -->
 
 ## Usage
 

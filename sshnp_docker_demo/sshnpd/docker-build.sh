@@ -1,2 +1,2 @@
 #!/bin/bash
-../script-templates/docker-build-template.sh sshnpd
+../templates/docker-build-template.sh sshnpd

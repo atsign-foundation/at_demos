@@ -36,6 +36,11 @@ RUN set -eux ; \
     cd ${HOMEDIR} ; \
     cp -r /app/sshnp/* ${HOMEDIR}/sshnp/ ; \
     touch ${HOMEDIR}/.ssh/authorized_keys ; \
-    chown -R ${USER}:${USER} ${HOMEDIR} ; 
+    chown -R ${USER}:${USER} ${HOMEDIR} ; \
+    ex +"%s/^%sudo.*$/%sudo ALL=(ALL:ALL) NOPASSWD:ALL/g" -scwq! /etc/sudoers ;
 
 WORKDIR ${HOMEDIR}
+
+USER ${USER}
+
+ENTRYPOINT sudo service ssh start && bash
