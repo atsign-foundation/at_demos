@@ -21,7 +21,14 @@ BASE_IMAGE_NAME=atsigncompany/sshnp_docker_demo_base
 CUSTOM_IMAGE_NAME=atsigncompany/sshnp_docker_demo_$1
 CONTAINER_NAME=sshnp_docker_demo_$1
 
-sudo docker build -t $BASE_IMAGE_NAME -f ../demo-base/Dockerfile ../demo-base
+# try to docker pull, if it doesn't work, build local image
+sudo docker pull $BASE_IMAGE_NAME
+if [ $? -ne 0 ]
+then
+    echo "Could not pull $BASE_IMAGE_NAME. Building local image."
+    sudo docker build -t $BASE_IMAGE_NAME -f ../demo-base/Dockerfile ../demo-base
+fi
+
 sudo docker build -t $CUSTOM_IMAGE_NAME .
 sudo docker stop $CONTAINER_NAME
 sudo docker container rm $CONTAINER_NAME
