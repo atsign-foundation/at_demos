@@ -24,12 +24,12 @@ CONTAINER_NAME=sshnp_docker_demo_${TYPE}
 NETWORK_NAME=sshnp_docker_demo_network_${TYPE}
 
 # try to docker pull, if it doesn't work, build local image
-# sudo docker pull $BASE_IMAGE_NAME
-# if [ $? -ne 0 ]
-# then
-#     echo "Could not pull $BASE_IMAGE_NAME. Building local image."
+sudo docker pull $BASE_IMAGE_NAME
+if [ $? -ne 0 ]
+then
+    echo "Could not pull $BASE_IMAGE_NAME. Building local image."
     sudo docker build -t $BASE_IMAGE_NAME -f ../demo-base/Dockerfile ../demo-base
-# fi
+fi
 
 # create device network
 sudo docker network rm $NETWORK_NAME
