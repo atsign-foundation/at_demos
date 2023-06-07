@@ -78,18 +78,16 @@ If run successfully, your terminal session should be running the docker containe
 atsign@c602e7e77fa9:~$ 
 ```
 
-4. Run the `./install_sshnpd` script
+4. Install sshnpd inside the container:
 
 ```sh
-cd sshnp
-./install_sshnpd
+bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 ```
 
 Example:
 
 ```sh
-atsign@244ecc19dcca:~$ cd sshnp/
-atsign@244ecc19dcca:~/sshnp$ ./install_sshnpd
+atsign@712f0eea57ed:~$ bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 Client address (e.g. @alice_client): @soccer99
 Device address (e.g. @alice_device): @22easy
 Device name: docker
@@ -117,7 +115,7 @@ The next step is for setting up the daemon manually in case something goes wrong
 
 6. If the daemon was not started successfully, follow the next steps.
 
-To detach, press `ctrl+b` and then `d`.
+To detach, press `Ctrl+b` and then `d`.
 
 Then kill the session
 
@@ -160,18 +158,16 @@ If run successfully, your terminal sesssion should be running the docker contain
 atsign@f868301cecf8:~$ 
 ```
 
-4. Run the `install_sshnp` script
+4. Install sshnp inside the container:
 
 ```sh
-cd sshnp
-./install_sshnp
+bash -c "$(curl -fsSL https://getsshnp.noports.com)"
 ```
 
 Example:
 
 ```sh
-atsign@37dec765a093:~$ cd sshnp/
-atsign@37dec765a093:~/sshnp$ ./install_sshnp
+atsign@d49297a4f505:~$ bash -c "$(curl -fsSL https://getsshnp.noports.com)"
 Client address (e.g. @alice_client): @soccer99
 Device address (e.g. @alice_device): @22easy
 Pick your default region:
@@ -183,10 +179,10 @@ Pick your default region:
 
 5. Now run the custom sshnp script it generated.
 
-Replace `@sshnpd_atsign` with your sshnpd atSign.
+Replace `@sshnpd` with your sshnpd atSign.
 
 ```sh
-~/.local/bin/sshnp@sshnpd_atsign docker
+~/.local/bin/sshnp@sshnpd docker
 ```
 
 6. You should receive an ssh command to run after running the `sshnp` script. Copy and run this command.
@@ -220,43 +216,45 @@ yay
 
 ## Quick Start
 
-Same as [Getting Started](#getting-started) but a lot quicker.
+[Getting Started](#getting-started) but a lot quicker.
 
-1. Put your @sshnp atKeys in `sshnp/keys` and @sshnpd atKeys in `sshnpd/keys`
+1. Put your @sshnp atKeys inside of sshnp/keys and your @sshnpd atKeys inside sshnpd/keys. Your file structure should be similar to sshnp/keys/@alice_key.atKeys and sshnpd/keys/@alice_key.atKeys.
 
-2. Open a new terminal and start the sshnpd docker container
-
-```sh
-cd sshnpd ; ./docker-build.sh
-```
-
-3. In the sshnpd docker container:
-
-Change `@client` and `@device` accordingly
+2. Start up the sshnpd docker container
 
 ```sh
-cd sshnp ; ./install_sshnpd -c @client -d @device -n docker ; tmux a ; cd ..
+cd sshnpd
+./docker-build.sh
 ```
 
-4. Open another terminal and start the sshnp docker container
+3. Install sshnpd inside the container:
 
 ```sh
-cd sshnp ; ./docker-build.sh
+bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 ```
 
-5. In the sshnp docker container:
-
-Change `@client`, `@device`, and `am` accordingly
+4. In another terminal, start up the sshnp docker container
 
 ```sh
-cd sshnp ; ./install_sshnp -c @client -d @device -h am ; $(~/.local/bin/sshnp@22easy docker) ; cd ..
+cd sshnp
+./docker-build.sh
 ```
 
-6. Hurray! You should be ssh'd
+5. Install sshnp inside the container:
 
 ```sh
-ps -a
+bash -c "$(curl -fsSL https://getsshnp.noports.com)"
 ```
+
+6. Run the custom sshnp script it generated.
+
+Replace `@sshnpd` with your sshnpd atSign.
+
+```sh
+$(~/.local/bin/sshnp@sshnpd docker)
+```
+
+7. Done!
 
 ## Usage
 
