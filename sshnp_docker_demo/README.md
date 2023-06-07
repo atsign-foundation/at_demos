@@ -163,7 +163,7 @@ atsign@f868301cecf8:~$
 4. Run the `install_sshnp` script
 
 ```sh
-cd sshnp ; 
+cd sshnp
 ./install_sshnp
 ```
 
