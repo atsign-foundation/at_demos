@@ -196,6 +196,42 @@ yay
 
 <!-- TODO -->
 
+## Quick Start
+
+1. Open a new terminal and start the sshnpd docker container
+
+```sh
+cd sshnpd ; ./docker-build.sh
+```
+
+2. In the sshnpd docker container:
+
+Change `@client` and `@device` accordingly
+
+```sh
+cd sshnp ; ./install_sshnpd -c @client -d @device -n docker ; tmux a ; cd ..
+```
+
+3. Open another terminal and start the sshnp docker container
+
+```sh
+cd sshnp ; ./docker-build.sh
+```
+
+4. In the sshnp docker container:
+
+Change `@client`, `@device`, and `am` accordingly
+
+```sh
+cd sshnp ; ./install_sshnp -c @client -d @device -h am ; $(~/.local/bin/sshnp@22easy docker) ; cd ..
+```
+
+5. Hurray! You should be ssh'd
+
+```sh
+ps -a
+```
+
 ## Usage
 
 Usage of each of the binaries (taken from the [sshnp](https://github.com/atsign-foundation/sshnoports) repo)
