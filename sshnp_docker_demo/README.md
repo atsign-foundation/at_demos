@@ -46,9 +46,9 @@ docker login
 
 If you already have your `.atKeys` files, you may skip this step.
 
-1. Go to [my.atsign.com/go](https://my.atsign.com/go) and get as many atSigns as you need (2 if you are using Atsign's rendezvous service, 3 if you are using you will be running your own rendezvous service).
+1. Go to [my.atsign.com/go](https://my.atsign.com/go) and get 2 atSigns.
 
-2. Once you have checked out with your brand new atSigns, be sure to go through each of them and press the orange "Activate" button. This will open your atSign for activation
+2. Once purchased, be sure to go through each of them and press the orange "Activate" button. This will open your atSign for activation
 
 3. Use [at_onboarding_cli/at_activate](https://github.com/atsign-foundation/at_libraries/tree/trunk/packages/at_onboarding_cli) (if you prefer a command-line approach) or download one of our [apps](https://atsign.com/apps/) (such as [atmospherePro](https://atsign.com/apps/atmospherepro/)) to utilize the onboarding widget to generate your `.atKeys` files. You will need to generate a `.atKeys` file for each of your atSigns. Be sure to not lose these keys as they are used to authenticate into an atSign's atServer.
 
