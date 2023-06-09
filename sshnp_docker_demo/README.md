@@ -173,6 +173,10 @@ Running the `sshnp` script should give you an output at the end similar to:
 ssh -p 44743 atsign@localhost -i /atsign/.ssh/id_ed25519 
 ```
 
+If the ssh connection was not established successfully, try running Step 5 again as the command may have expired.
+
+You can also wrap the shell script in `$()` to run the command automatically. Example: `$(~/.local/bin/sshnp@sshnpd docker)`
+
 7. You should be ssh'd into the other docker container. (Hurray!)
 
 ```sh
