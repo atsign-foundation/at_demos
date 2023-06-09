@@ -26,21 +26,3 @@ WORKDIR ${HOMEDIR}
 USER ${USER}
 
 ENTRYPOINT sudo service ssh start && bash
-
-# Useful code for manually downloading sshnp binaries, might be useful later
-# case "$(dpkg --print-architecture)" in \
-#     amd64) \
-#         ARCH="x64";; \
-#     armhf) \
-#         ARCH="arm";; \
-#     arm64) \
-#         ARCH="arm64";; \
-#     riscv64) \
-#         ARCH="riscv64";; \
-# esac; \
-# URL="https://api.github.com/repos/atsign-foundation/sshnoports/releases/latest" ; \
-# VERSION=$(curl --silent ${URL} | grep -Po '"tag_name": "v\K.*?(?=")') ; \
-# URLP="https://github.com/atsign-foundation/sshnoports/releases/download" ; \
-# wget "${URLP}/v${VERSION}/sshnp-linux-${ARCH}.tgz" ; \
-# tar -xvf sshnp-linux-${ARCH}.tgz ; \
-# rm sshnp-linux-${ARCH}.tgz ; \
