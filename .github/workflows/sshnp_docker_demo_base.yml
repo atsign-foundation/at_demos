@@ -2,6 +2,7 @@ name: sshnp_docker_demo_base
 on:
   schedule:
     - cron: '35 11 * * 5' # 11 35 on friday
+  workflow_dispatch:
 
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
