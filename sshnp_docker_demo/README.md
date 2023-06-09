@@ -81,13 +81,13 @@ atsign@c602e7e77fa9:~$
 4. Install sshnpd inside the container:
 
 ```sh
-bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 ```
 
 Example:
 
 ```sh
-atsign@712f0eea57ed:~$ bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
+atsign@712f0eea57ed:~$ /bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 Client address (e.g. @alice_client): @soccer99
 Device address (e.g. @alice_device): @22easy
 Device name: docker
@@ -161,7 +161,7 @@ atsign@f868301cecf8:~$
 4. Install sshnp inside the container:
 
 ```sh
-bash -c "$(curl -fsSL https://getsshnp.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)"
 ```
 
 Example:
@@ -230,7 +230,7 @@ cd sshnpd
 3. Install sshnpd inside the container:
 
 ```sh
-bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 ```
 
 4. In another terminal, start up the sshnp docker container
@@ -243,7 +243,7 @@ cd sshnp
 5. Install sshnp inside the container:
 
 ```sh
-bash -c "$(curl -fsSL https://getsshnp.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)"
 ```
 
 6. Run the custom sshnp script it generated.
