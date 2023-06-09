@@ -1,10 +1,7 @@
-name: VE_base
+name: sshnp_docker_demo_base
 on:
-  workflow_dispatch:
   schedule:
-    # - cron: '0 0 * * *' # every day, 00:00
-    # - cron: '0 0 * * 0' # every week, 00:00 Sunday
-    - cron: '5 * * * *' # every 5 minutes, temporarily set to 5 minutes for testing
+    - cron: '0 0 * * 0' # every week, 00:00 Sunday
 
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
