@@ -84,6 +84,7 @@ atsign@c602e7e77fa9:~$
 /bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
 ```
 
+Note that the device name should be the same throughout the demo.
 Example:
 
 ```sh
@@ -179,7 +180,7 @@ Pick your default region:
 
 5. Now run the custom sshnp script it generated.
 
-Replace `@sshnpd` with your sshnpd atSign.
+Replace `@sshnpd` with your sshnpd atSign and `docker` with the device name that was specified in [Step 2](#2-setting-up-the-sshnpd-docker-container-device).
 
 ```sh
 ~/.local/bin/sshnp@sshnpd docker
