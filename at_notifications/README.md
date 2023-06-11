@@ -13,7 +13,14 @@ A summary of the `bin/` files:
 
 1. To run this demo, you will need 2 atSigns and thier .atKeys in `~/.atsign/keys` directory.
 
-2. Simply start your subscriber with the following command:
+2. Git clone the git repository and `cd` into the `bin` folder.
+
+```sh
+git clone https://github.com/atsign-foundation/at_demos.git
+cd at_demos/at_notifications/bin
+```
+
+3. Simply start your subscriber with the following command:
 
 ```sh
 dart run subscribe.dart -a @subscriber -r ".*@notifier"
@@ -26,7 +33,7 @@ Authenticated as @subscriber
 Subscribed to notifications with regex ".*"
 ```
 
-3. Run the notify program to send a notification to the subscriber:
+4. Run the notify program to send a notification to the subscriber:
 
 ```sh
 dart run send-notification.dart -f @notifier -t @subscriber -m "hello, world"
