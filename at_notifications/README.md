@@ -29,10 +29,10 @@ Subscribed to notifications with regex ".*"
 3. Run the notify program to send a notification to the subscriber:
 
 ```sh
-dart run notify-the-subscriber.dart -f @notifier -t @subscriber -m "hello, world"
+dart run send-notification.dart -f @notifier -t @subscriber -m "hello, world"
 ```
 
-4. You should see a similar output in the subscriber's terminal:
+You should see a similar output in the subscriber's terminal:
 
 ```sh
 [NOTIFICATION RECEIVED] =>
