@@ -4,6 +4,16 @@ This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports
 
 There are two docker containers: `sshnp` and `sshnpd`.
 
+## Structure
+
+- `demo-base/` contains Dockerfile [base image](https://hub.docker.com/r/atsigncompany/sshnp_docker_demo_base)
+- `sshnp/` the client docker container
+- `sshnpd` the device docker container
+- `templates` shell script templates
+- `clean.sh` run this script if you want to start the demo from scratch
+- `README.md` demo guide & documentation
+
+
 ## Getting Started
 
 Follow these steps to get sshnp working on your machine using Docker.
@@ -190,14 +200,6 @@ atsign@77fe899b6732:~$ echo yay
 yay
 ```
 
-## Structure
-
-<!-- TODO -->
-
-## The Dockerfile
-
-<!-- TODO -->
-
 ## Quick Start
 
 [Getting Started](#getting-started) but a lot quicker.
@@ -240,7 +242,33 @@ $(~/.local/bin/sshnp@sshnpd docker)
 
 7. Done!
 
-## Usage
+## Troubleshooting
+
+### sshnpd
+
+If you are having trouble getting the sshnpd daemon to run, try the following:
+
+1. While in the tmux session, `Ctrl + C` to stop the daemon.
+
+If you are not in the tmux session, you may need to run `tmux a` to get into the session.
+
+If you need to start a new tmux session, run `tmux new`. To detach, you can do `Ctrl + B` then `D`.
+
+2. Run the daemon manually:
+
+Replace `@sshnp` with your sshnp atSign.
+
+```sh
+~/.local/bin/sshnpd@sshnp
+```
+
+3. If it is still not working, check that your keys are in the correct directory.
+
+```sh
+ls ~/.atsign/keys
+```
+
+## Binary Usage
 
 Usage of each of the binaries (taken from the [sshnp](https://github.com/atsign-foundation/sshnoports) repo)
 
@@ -291,28 +319,6 @@ Version : 3.1.2
 -s, --[no-]snoop            Snoop on traffic passing through service
 ```
 
-## Troubleshooting
+## The Dockerfile
 
-### sshnpd
-
-If you are having trouble getting the sshnpd daemon to run, try the following:
-
-1. While in the tmux session, `Ctrl + C` to stop the daemon.
-
-If you are not in the tmux session, you may need to run `tmux a` to get into the session.
-
-If you need to start a new tmux session, run `tmux new`. To detach, you can do `Ctrl + B` then `D`.
-
-2. Run the daemon manually:
-
-Replace `@sshnp` with your sshnp atSign.
-
-```sh
-~/.local/bin/sshnpd@sshnp
-```
-
-3. If it is still not working, check that your keys are in the correct directory.
-
-```sh
-ls ~/.atsign/keys
-```
+<!-- TODO -->
