@@ -1,61 +1,61 @@
 
 
+
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:at_client/at_client.dart';
+import 'package:at_notifications/constants.dart';
 import 'package:at_notifications/util.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_utils/at_utils.dart';
 
+// subscriber: @subscriber
+// notifier: @notifier
+// dart run subscribe-to-notifier.dart -f @subscriber -t @notifier
 void main(List<String> arguments) async {
 	final ArgParser argParser = ArgParser();
-    argParser.addOption('from', abbr: 'f', help: 'the subscriber', mandatory: true);
-    argParser.addOption('to', abbr: 't', help: 'the notifier', mandatory: true);
-    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: 'at_notifications_demo');
-    argParser.addOption('regex', abbr: 'r', help: 'the regex to filter notifications with', mandatory: false, defaultsTo: '.*');
-    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: false);
-    argParser.addFlag('subscribetonotifier', abbr: 'z', help: 'subscribe strictly to notifications from the notifier', negatable: true, defaultsTo: true);
-    argParser.addFlag('decrypt', abbr: 'd', help: 'should decrypt notifications', negatable: true, defaultsTo: true);
+    argParser.addOption('atsign', abbr: 'a', help: 'atSign listening for notifications', mandatory: true);
+    argParser.addOption('regex', abbr: 'r', help: 'the regex to filter notifications with', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_regex);
+    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_namespace);
+    argParser.addFlag('decrypt', abbr: 'd', help: 'should decrypt notifications', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_shouldDecrypt);
+    argParser.addFlag('showstats', abbr: 's', help: 'shows stats notifications', negatable: true, defaultsTo: false);
+    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_verbose);
 
-    late ArgResults argResults;
+    final ArgResults argResults = argParser.parse(arguments);
+
+    late String atSign;
+    late String regex;
+    late String namespace;
+    late bool shouldDecrypt;
+    late bool showStats;
+    late bool verbose;
 
     try {
-        argResults = argParser.parse(arguments);
+        atSign = AtUtils.fixAtSign(argResults['atsign']);
+        regex = argResults['regex'];
+        namespace = argResults['namespace'];
+        shouldDecrypt = argResults['decrypt'];
+        showStats = argResults['showstats'];
+        verbose = argResults['verbose'];
     } catch (e) {
         stdout.writeln(argParser.usage);
-    }
-
-    final String subscriber = AtUtils.fixAtSign(argResults['from']);
-    final String notifier = AtUtils.fixAtSign(argResults['to']);
-    final String namespace = argResults['namespace'];
-    String regex = argResults['regex'];
-    final bool verbose = argResults['verbose'];
-    final bool subscribeToNotifier = argResults['subscribetonotifier'];
-    final bool shouldDecrypt = argResults['decrypt'];
-
-    //                           | subscribeToNotifier | subscribeToNotifier
-    //                           | true                | false
-    // --------------------------|---------------------|---------------
-    // regex provided true       | use regex provided  | use regex provided 
-    // regex provided false      | '${notifier}'       | '.*'
-    
-    if(subscribeToNotifier && regex == '.*') {
-        regex = notifier;
+        stdout.writeln(e);
+        exit(0);
     }
 
     AtSignLogger.root_level = verbose ? 'info' : 'warning';
 
-    final AtOnboardingPreference preference = AtNotificationsDemoUtil.generatePreference(subscriber, namespace);
+    final AtOnboardingPreference preference = AtNotificationsDemoUtil.generatePreference(atSign, namespace);
 
-    final AtOnboardingService atOnboardingService = AtOnboardingServiceImpl(subscriber, preference);
+    final AtOnboardingService atOnboardingService = AtOnboardingServiceImpl(atSign, preference);
     final bool pkamAutheneticated = await atOnboardingService.authenticate();
 
     if(!pkamAutheneticated) {
-        throw Exception('Unable to authenticate $subscriber');
+        throw Exception('Unable to authenticate $atSign');
     }
 
-    stdout.writeln('Authenticated as $subscriber');
+    stdout.writeln('Authenticated as $atSign');
 
     final AtClient atClient = atOnboardingService.atClient!;
 
@@ -67,10 +67,12 @@ void main(List<String> arguments) async {
     );
 
     stream.listen((AtNotification atNotification) {
-        _printAtNotification(atNotification);
+        if(!showStats || atNotification.id != -1) {
+            _printAtNotification(atNotification);
+        }
     });
 
-    stdout.writeln('Subscribed to notifications from "$notifier" with regex "$regex"');
+    stdout.writeln('Listening for notifications with regex "$regex"');
 
 }
 
