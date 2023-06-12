@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:at_notifications/constants.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:version/version.dart';
@@ -42,6 +43,9 @@ class AtNotificationsDemoUtil {
             ..commitLogPath = '${getHomeDirectory()}/.atsign/temp/$atSign/commitlog'
             ..downloadPath = '${getHomeDirectory()}/.atsign/temp/$atSign/download'
             ..hiveStoragePath = '${getHomeDirectory()}/.atsign/temp/$atSign/hive'
+            ..rootDomain = AtNotificationsDemoConstants.default_rootDomain
+            ..rootPort = AtNotificationsDemoConstants.default_rootPort
+            ..syncIntervalMins = 1
             ;
         return pref;
     }
