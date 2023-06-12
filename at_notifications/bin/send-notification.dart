@@ -18,13 +18,7 @@ void main(List<String> arguments) async {
     argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_namespace);
     argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_verbose);
 
-    late ArgResults argResults;
-
-    try {
-        argResults = argParser.parse(arguments);
-    } catch (e) {
-        stdout.writeln(argParser.usage);
-    }
+    final ArgResults argResults = argParser.parse(arguments);
 
     late String notifier;
     late String subscriber;
