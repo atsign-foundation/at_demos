@@ -215,8 +215,10 @@ cd sshnpd
 
 3. Install sshnpd inside the container:
 
+Replace `@client` with your client atSign, `@device` with your device atSign, and `deviceName` with the name you would like to name your devoce.
+
 ```sh
-/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)" -- -c @client -d @device -n deviceName
 ```
 
 4. In another terminal, start up the sshnp docker container
@@ -228,8 +230,10 @@ cd sshnp
 
 5. Install sshnp inside the container:
 
+Replace `@client` with your client atSign, `@device` with your device atSign, and `<am/eu/ap>` with the region you would like to use (e.g. `am`).
+
 ```sh
-/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)" -- -c @client -d @device -h <am/eu/ap>
 ```
 
 6. Run the custom sshnp script it generated.
