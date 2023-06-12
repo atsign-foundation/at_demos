@@ -45,7 +45,7 @@ void main(List<String> arguments) async {
     final bool pkamAutheneticated = await atOnboardingService.authenticate();
 
     if(!pkamAutheneticated) {
-        throw Exception('Unable to authenticate $subscriber');
+        throw Exception('Unable to authenticate $notifier');
     }
 
     stdout.writeln('Authenticated as $notifier');
