@@ -52,7 +52,7 @@ docker login
 
 #### 1A. Getting your .atKeys
 
-<!-- TODO INCLUDE "GETTING YOUR ATKEYS" VIDEO WHEN IT IS UPLOADED -->
+[(2 minute video) How to get your atKeys](https://www.youtube.com/watch?v=tDqrLKSKes8)
 
 If you already have your `.atKeys` files, you may skip this step.
 
