@@ -4,6 +4,16 @@ This demo involves using [sshnp](https://github.com/atsign-foundation/sshnoports
 
 There are two docker containers: `sshnp` and `sshnpd`.
 
+## Structure
+
+- `demo-base/` contains Dockerfile [base image](https://hub.docker.com/r/atsigncompany/sshnp_docker_demo_base)
+- `sshnp/` the client docker container
+- `sshnpd` the device docker container
+- `templates` shell script templates
+- `clean.sh` run this script if you want to start the demo from scratch
+- `README.md` demo guide & documentation
+
+
 ## Getting Started
 
 Follow these steps to get sshnp working on your machine using Docker.
@@ -42,7 +52,7 @@ docker login
 
 #### 1A. Getting your .atKeys
 
-<!-- TODO INCLUDE "GETTING YOUR ATKEYS" VIDEO WHEN IT IS UPLOADED -->
+[(2 minute video) How to get your atKeys](https://www.youtube.com/watch?v=tDqrLKSKes8)
 
 If you already have your `.atKeys` files, you may skip this step.
 
@@ -190,14 +200,6 @@ atsign@77fe899b6732:~$ echo yay
 yay
 ```
 
-## Structure
-
-<!-- TODO -->
-
-## The Dockerfile
-
-<!-- TODO -->
-
 ## Quick Start
 
 [Getting Started](#getting-started) but a lot quicker.
@@ -213,8 +215,10 @@ cd sshnpd
 
 3. Install sshnpd inside the container:
 
+Replace `@client` with your client atSign, `@device` with your device atSign, and `deviceName` with the name you would like to name your devoce.
+
 ```sh
-/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnpd.noports.com)" -- -c @client -d @device -n deviceName
 ```
 
 4. In another terminal, start up the sshnp docker container
@@ -226,8 +230,10 @@ cd sshnp
 
 5. Install sshnp inside the container:
 
+Replace `@client` with your client atSign, `@device` with your device atSign, and `<am/eu/ap>` with the region you would like to use (e.g. `am`).
+
 ```sh
-/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)"
+/bin/bash -c "$(curl -fsSL https://getsshnp.noports.com)" -- -c @client -d @device -h <am/eu/ap>
 ```
 
 6. Run the custom sshnp script it generated.
@@ -240,7 +246,33 @@ $(~/.local/bin/sshnp@sshnpd docker)
 
 7. Done!
 
-## Usage
+## Troubleshooting
+
+### sshnpd
+
+If you are having trouble getting the sshnpd daemon to run, try the following:
+
+1. While in the tmux session, `Ctrl + C` to stop the daemon.
+
+If you are not in the tmux session, you may need to run `tmux a` to get into the session.
+
+If you need to start a new tmux session, run `tmux new`. To detach, you can do `Ctrl + B` then `D`.
+
+2. Run the daemon manually:
+
+Replace `@sshnp` with your sshnp atSign.
+
+```sh
+~/.local/bin/sshnpd@sshnp
+```
+
+3. If it is still not working, check that your keys are in the correct directory.
+
+```sh
+ls ~/.atsign/keys
+```
+
+## Binary Usage
 
 Usage of each of the binaries (taken from the [sshnp](https://github.com/atsign-foundation/sshnoports) repo)
 
@@ -291,28 +323,6 @@ Version : 3.1.2
 -s, --[no-]snoop            Snoop on traffic passing through service
 ```
 
-## Troubleshooting
+## The Dockerfile
 
-### sshnpd
-
-If you are having trouble getting the sshnpd daemon to run, try the following:
-
-1. While in the tmux session, `Ctrl + C` to stop the daemon.
-
-If you are not in the tmux session, you may need to run `tmux a` to get into the session.
-
-If you need to start a new tmux session, run `tmux new`. To detach, you can do `Ctrl + B` then `D`.
-
-2. Run the daemon manually:
-
-Replace `@sshnp` with your sshnp atSign.
-
-```sh
-~/.local/bin/sshnpd@sshnp
-```
-
-3. If it is still not working, check that your keys are in the correct directory.
-
-```sh
-ls ~/.atsign/keys
-```
+<!-- TODO -->

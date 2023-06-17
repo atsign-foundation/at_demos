@@ -16,10 +16,12 @@ RUN set -eux ; \
     useradd --system --uid ${USER_ID} --gid ${GROUP_ID} --shell /bin/bash \
         --home ${HOMEDIR} ${USER} ; \
     usermod -aG sudo ${USER} ; \
-    mkdir -p ${HOMEDIR}/.sshnp ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd ${HOMEDIR}/sshnp ; \
+    mkdir -p ${HOMEDIR}/.sshnp ${HOMEDIR}/.atsign/keys ${HOMEDIR}/.ssh /run/sshd  ; \
     touch ${HOMEDIR}/.ssh/authorized_keys ; \
     chown -R ${USER}:${USER} ${HOMEDIR} ; \
-    ex +"%s/^%sudo.*$/%sudo ALL=(ALL:ALL) NOPASSWD:ALL/g" -scwq! /etc/sudoers ;
+    ex +"%s/^%sudo.*$/%sudo ALL=(ALL:ALL) NOPASSWD:ALL/g" -scwq! /etc/sudoers ; \
+    sed -E -i 's|^#?(PasswordAuthentication)\s.*|\1 no|' /etc/ssh/sshd_config ; \
+    sed -i 's/#ListenAddress 0.0.0.0/ListenAddress 127.0.0.1/g' /etc/ssh/sshd_config ;
 
 WORKDIR ${HOMEDIR}
 
