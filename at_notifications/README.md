@@ -1,17 +1,17 @@
 # at_notifications
 
-This is a demo of using `.notify` and `.subscribe` to send/receive notifications in the atPlatform.
+This is a demo using `.notify` and `.subscribe` to send/receive notifications in the atPlatform.
 
 Demo uses [at_client] as the core dependency to utilize the atProtocol and [at_onboarding_cli] to authenticate atSigns to their atServers.
 
 A summary of the `bin/` files:
 
-- `subscribe-to-notifier.dart` @subscriber is listens for notifications received from @notifier
+- `subscribe-to-notifier.dart` @subscriber listens for notifications received from @notifier
 - `notifiy-the-subscriber.dart` @notifier sends a notification to @subscriber
 
 ## Getting Started
 
-1. To run this demo, you will need 2 atSigns and thier .atKeys in `~/.atsign/keys` directory.
+1. To run this demo, you will need 2 atSigns and their .atKeys in `~/.atsign/keys` directory.
 
 2. Git clone the git repository and `cd` into the `bin` folder.
 
