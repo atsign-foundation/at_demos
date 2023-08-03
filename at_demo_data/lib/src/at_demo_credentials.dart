@@ -25,6 +25,9 @@ class AliceKeys {
   /// AES key for `@alice🛠`
   static const String _aliceAesKey =
       'vR+w/lx9qitj/W2+SfFxbjeRM8VdaYGsxG6lxYCVQ0w=';
+
+  static const String _aliceApkamSymmetricKey =
+      'L3czUyrn44iOhBIYMkoNkLfriNeXcWwOH6PDHugBTY0=';
 }
 
 /// All keys class for `@ashish🛠`
@@ -52,6 +55,9 @@ class AshishKeys {
   /// AES key for `@ashish🛠`
   static const String _ashishAesKey =
       'xGClLauE1qGLredkswXPBKNnUzNiAwG7XL3gv0jQQN4=';
+
+  static const String _ashishApkamSymmetricKey =
+      'Ud3CMD14E6DyutUlKBa2kjFj+kPlB3+Hf7CpCiNdDJ4=';
 }
 
 /// All keys class for `@barbara🛠`
@@ -79,6 +85,9 @@ class BarbaraKeys {
   /// AES key for `@barbara🛠`
   static const String _barbaraAesKey =
       '5fwTqTnFJ6xyhTf9t70seOlbxe2KvqFO5w3UWkPDGac=';
+
+  static const String _barbaraApkamSymmetricKey =
+      'zWq0K1DX+wM7AizdUsZfRT5Qe4sAy+u+qOwQYxIVcEU=';
 }
 
 /// All keys class for `@bob🛠`
@@ -106,6 +115,9 @@ class BobKeys {
   /// AES key for `@bob🛠`
   static const String _bobAesKey =
       'TZHYMVJoAroWr+Yf/gPN9RNC63qvCRKXiBhWDj5un4E=';
+
+  static const String _bobApkamSymmetricKey =
+      '8QHaELcv0QBSBLTc/dpNHenbuZeT95+0GDwq3Lugbt8=';
 }
 
 /// All keys class for `@colin🛠`
@@ -133,6 +145,9 @@ class ColinKeys {
   /// AES key for `@colin🛠`
   static const String _colinAesKey =
       'wQjp3HXO5cIsIR7lL74ySwtjJ7VP3OLBJKsLiLuRFcM=';
+
+  static const String _colinApkamSymmetricKey =
+      'xpmA6M/9K5bDEpJPGwH5gk3B+aLeReLJXSuIRq3jL70=';
 }
 
 /// All the keys for `@egbiometric🛠`
@@ -160,6 +175,9 @@ class EgBiometricKeys {
   /// AES key for `@egbiometric🛠`
   static const String _egBiometricAesKey =
       '6EI4LavFXYHC/layLd+3ouXNyEUG9gyPk/ji7C3iidA=';
+
+  static const String _egBiometricApkamSymmetricKey =
+      '8XwV3ijbI501guymko92UZeEEFuGhZFSkDhucLWr7Zs=';
 }
 
 /// All keys class for `@egcovidlab🛠`
@@ -187,6 +205,9 @@ class EgCovidLabKeys {
   /// AES key for `@egcovidlab🛠`
   static const String _egCovidLabAesKey =
       'ZIiuBBvtCSRlC9kEZ0K+1vCOKQ/JQvf7Vx82idT7UrA=';
+
+  static const String _egCovidApkamSymmetricKey =
+      'HJ7YPNZHyQXT3hOx5JaaAWUXnnA/SuEBpGgP/fq3Qk8=';
 }
 
 /// All keys class for `@egcreditbureau🛠`
@@ -214,6 +235,9 @@ class EgCreditBureauKeys {
   /// AES Key for `@egcreditbureau🛠`
   static const String _egCreditBureauAesKey =
       'SgGiUL55OIxq+pU51g5Hn90seYS5+w5weQNVevo9Xa4=';
+
+  static const String _egCreditApkamSymmetricKey =
+      'BtJqw2vBfg2by7TmqTM/mZii7fzkv9G0VP2dwQKn2qE=';
 }
 
 /// All keys class for `@eggovagency🛠`
@@ -241,6 +265,9 @@ class EgGovAgencyKeys {
   /// AES key for `@eggovagency🛠`
   static const String _egGovAgencyAesKey =
       'zk2XLGrWXMIvgQC9vLLRn3bnsdXZ1NfROS7GAQaZbgs=';
+
+  static const String _egGovApkamSymmetricKey =
+      'Jk3toSj6uGUgEcUvkOkY4EPMXCR4CnZpeLnMYvnQVs0=';
 }
 
 /// All keys class for `@emoji🦄🛠`
@@ -268,6 +295,9 @@ class EmojiKeys {
   /// AES key for `emoji🦄🛠`
   static const String _emojiAesKey =
       'JYKQzePXSDT5eDGw+CCLMx7o3m+MiN3Ykkhc+2Xq1IY=';
+
+  static const String _emojiApkamSymmetricKey =
+      'ZeJpFsd/VO138yh4KkJqTF7D16mI/WbL4OJqceNp4KI=';
 }
 
 /// All keys class for `@eve🛠`
@@ -295,6 +325,9 @@ class EveKeys {
   /// AES key for `@eve🛠`
   static const String _eveAesKey =
       'rc98zzkVUQSB7jLffAtNI71xj0fUKidSXCwM0yknycI=';
+
+  static const String _eveApkamSymmetricKey =
+      'SJKyV6L4rYA2SB8r7PWl0nRnSry3+aazt6MPiRxAzbM=';
 }
 
 /// All keys class for `@jagan🛠`
@@ -322,6 +355,9 @@ class JaganKeys {
   /// AES key for `@jagan🛠`
   static const String _jaganAesKey =
       'u7WlCn0lal6s4I7yR1sRanhfKaRQtqdVNOgI/F2izl8=';
+
+  static const String _jaganApkamSymmetricKey =
+      'cOLGDtn7106a/4DFEUpeGP76CLcyUkYhdPC0Jqf8mb0=';
 }
 
 /// All keys class for `@kevin🛠`
@@ -349,6 +385,9 @@ class KevinKeys {
   /// AES key for `@kevin🛠`
   static const String _kevinAesKey =
       '/1wmMjcbIMYfdV09lDIysEm8KSWiVEe2UX8G9AteObc=';
+
+  static const String _kevinApkamSymmetricKey =
+      'hKKC4wBaHazyOyvUFrtolU3qpjGokJSIAtY3XP1sIfI=';
 }
 
 /// All keys class for `@murali🛠`
@@ -376,6 +415,9 @@ class MuraliKeys {
   /// AES key for `@murali🛠`
   static const String _muraliAesKey =
       '7l00PvmXMD9i1z0Q72O7RNQc6D9/9k9FrqfvCZcEBqs=';
+
+  static const String _muraliApkamSymmetricKey =
+      'S2e/rEr28kzOlirkSBNYCoRMd0Orh8h8M4JE7bnzC74=';
 }
 
 /// All keys class for `@naresh🛠`
@@ -403,6 +445,9 @@ class NareshKeys {
   /// AES key for `@naresh🛠`
   static const String _nareshAesKey =
       'PZBVVg6AzUdzeuj01tozYB7EoQ6N+pj/ghdu21IhnFQ=';
+
+  static const String _nareshApkamSymmetricKey =
+      'KcnMMvXYAnGoFA+T9sBw+IeiI04dsWqneLtZc88i00Y=';
 }
 
 /// All keys class for `@naresh🛠`
@@ -430,6 +475,9 @@ class PurnimaKeys {
   /// AES key for `@purnima🛠`
   static const String _purnimaAesKey =
       'A+PLEY7DkKBUqx7Gy/Dt3P/rnehaN9td2E9sVuepiBQ=';
+
+  static const String _purnimaApkamSymmetricKey =
+      'm6fOwRXTMdYPLhjjI5Hq3zfF8OXz3byQWIPo/DPgQFM=';
 }
 
 /// All keys class for `@sameeraja🛠`
@@ -457,6 +505,9 @@ class SameerajaKeys {
   /// AES key for `@sameeraja🛠`
   static const String _sameerajaAesKey =
       'GAnfgPgtcuHywoiZAzQTKwTPMP2T2YkPk1MjNjWvWQ0=';
+
+  static const String _sameerajaApkamSymmetricKey =
+      'MvT6ySjAvsqFS/zJHmnkXojr8tpNokKXVqs1IR9Rr98=';
 }
 
 /// All keys class for `@sitaram🛠`
@@ -484,6 +535,9 @@ class SitaramKeys {
   /// AES key for `@sitaram🛠`
   static const String _sitaramAesKey =
       'REqkIcl9HPekt0T7+rZhkrBvpysaPOeC2QL1PVuWlus=';
+
+  static const String _sitaramApkamSymmetricKey =
+      'KsmGhxHU+2f1DITP4QQqvziX5UuQ8G/YgIpwoMqUZpo=';
 }
 
 /// List of all demo At-Signs.
@@ -647,4 +701,26 @@ Map<String, String> aesKeyMap = <String, String>{
   '@purnima🛠': PurnimaKeys._purnimaAesKey,
   '@sameeraja🛠': SameerajaKeys._sameerajaAesKey,
   '@sitaram🛠': SitaramKeys._sitaramAesKey,
+};
+
+// APKAM symmetric keys
+Map<String, String> apkamSymmetricKeyMap = <String, String>{
+  '@alice🛠': AliceKeys._aliceApkamSymmetricKey,
+  '@ashish🛠': AshishKeys._ashishApkamSymmetricKey,
+  '@barbara🛠': BarbaraKeys._barbaraApkamSymmetricKey,
+  '@bob🛠': BobKeys._bobApkamSymmetricKey,
+  '@colin🛠': ColinKeys._colinApkamSymmetricKey,
+  '@egbiometric🛠': EgBiometricKeys._egBiometricApkamSymmetricKey,
+  '@egcovidlab🛠': EgCovidLabKeys._egCovidApkamSymmetricKey,
+  '@egcreditbureau🛠': EgCreditBureauKeys._egCreditApkamSymmetricKey,
+  '@eggovagency🛠': EgGovAgencyKeys._egGovApkamSymmetricKey,
+  '@emoji🦄🛠': EmojiKeys._emojiApkamSymmetricKey,
+  '@eve🛠': EveKeys._eveApkamSymmetricKey,
+  '@jagan🛠': JaganKeys._jaganApkamSymmetricKey,
+  '@kevin🛠': KevinKeys._kevinApkamSymmetricKey,
+  '@murali🛠': MuraliKeys._muraliApkamSymmetricKey,
+  '@naresh🛠': NareshKeys._nareshApkamSymmetricKey,
+  '@purnima🛠': PurnimaKeys._purnimaApkamSymmetricKey,
+  '@sameeraja🛠': SameerajaKeys._sameerajaApkamSymmetricKey,
+  '@sitaram🛠': SitaramKeys._sitaramApkamSymmetricKey,
 };
