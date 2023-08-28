@@ -1,0 +1,13 @@
+root_server:
+  # The port on which root server runs.
+  port: 64
+  host: 'root.atsign.org'
+
+log:
+  debug: false
+
+auth:
+  required: true # Authentication required for the Verb or not
+  mode: pkam     # Mode of Authentication (cram or pkam)
+  key_file_location: '/home/pi/.atKeys/@bagelcompulsoryatomic_key.atKeys' # File path which contains PKAM/CRAM secret
+  at_sign: '@bagelcompulsoryatomic'

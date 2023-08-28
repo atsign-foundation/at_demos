@@ -1,0 +1,15 @@
+[Unit]
+Description=MWC sender in a screen
+After=network-online.target
+
+[Service]
+User=<username>
+Type=simple
+ExecStartPre=/bin/sleep 30
+Restart=always
+RestartSec=3
+WorkingDirectory=/home/pi/git/github.com/atsign-foundation/mwc_demo/dart/iot_sender
+ExecStart=/usr/bin/screen -DmS mwcsender ./sender -a "@sendingatsign" -o "@receivingatsign" -n <devicename> -v
+
+[Install]
+WantedBy=multi-user.target
