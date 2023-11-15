@@ -16,6 +16,21 @@ You can download the latest version of Raspberry Pi OS (previously called Raspbi
 ### 2. Setting up the Raspberry Pi
 Once you have installed the OS on the microSD card, insert the card into the Raspberry Pi. Connect the Raspberry Pi to a monitor using the HDMI to microHDMI cable. Connect the power supply to the Raspberry Pi. Connect the Raspberry Pi to the internet using an ethernet cable or a WiFi connection. 
 
+### 3. Setting up SSH
+SSH is disabled by default on the Raspberry Pi. To enable SSH,you can do this two ways:
+#### Using the GUI: 
+Menu > Preferences > Raspberry Pi Configuration > Interfaces > Enable SSH
+#### Using the command line:
+Enter the following command:
+```
+sudo raspi-config
+```
+Select Interfacing Options > SSH > Yes
+
+
+#### Using command line rather than Desktop OS
+If you are using the command line rather than the Desktop OS, you can follow the instructions [here](https://www.raspberrypi.com/documentation/computers/remote-access.html#boot-output).
+
 ### 3. Installing sshnp
 Once you have set up the Raspberry Pi, you can install sshnp by following the instructions [here](https://www.noports.com). Once you have purchased a license (or have obtained a free trial), you can follow the installation instructions [here](https://www.noports.com/sshnoports-installation).
 
