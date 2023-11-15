@@ -3,7 +3,7 @@
 The demonstration features the utilization of a Raspberry Pi 3 Model B. This documentation guides you through the process of setting up a Raspberry Pi from scratch, encompassing the following steps:
 
 ### What you will need
-- Raspberry Pi 3 Model B
+- Raspberry Pi 4 Model B
 - MicroSD card (8GB or more preferably)
 - MicroSD card reader
 - Power supply (5V, 2.5A)
