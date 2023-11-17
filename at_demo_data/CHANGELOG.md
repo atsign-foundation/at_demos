@@ -1,3 +1,5 @@
+## 1.0.2
+- **Feat**: Added demo atsigns for apkam
 ## 1.0.1
 - **Feat**: Added demo credentials for apkam symmetric key
 - **Chore**: Updated documentation.
