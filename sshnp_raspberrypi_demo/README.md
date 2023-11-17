@@ -14,12 +14,20 @@ The demonstration features the utilization of a Raspberry Pi 3 Model B. This doc
 You can download the latest version of Raspberry Pi OS (previously called Raspbian) from the official website [here](https://www.raspberrypi.org/downloads/raspbian/). Follow the instructions on the website to install the OS on a microSD card.
 
 ### 2. Setting up the Raspberry Pi
-Once you have installed the OS on the microSD card, insert the card into the Raspberry Pi. Connect the Raspberry Pi to a monitor using the HDMI to microHDMI cable. Connect the power supply to the Raspberry Pi. Connect the Raspberry Pi to the internet using an ethernet cable or a WiFi connection. 
+After installing the OS on the microSD card, insert it into the Raspberry Pi. Connect the Pi to a monitor using an HDMI to microHDMI cable and plug in the power supply.
+
+Boot up the Raspberry Pi, and follow the on-screen instructions to set it up. This involves selecting your country, language, and keyboard layout. Connect to the internet via Ethernet or WiFi and create a sudo user with a username and password if prompted.
+
+Software updates may be required, which will take a few minutes. After the update, reboot the Raspberry Pi when prompted.
 
 ### 3. Setting up SSH
 SSH is disabled by default on the Raspberry Pi. To enable SSH,you can do this two ways:
 #### Using the GUI: 
 Menu > Preferences > Raspberry Pi Configuration > Interfaces > Enable SSH
+![](pi-preferences.png)
+
+![](ssh-enabled.png)
+
 #### Using the command line:
 Enter the following command:
 ```
@@ -33,6 +41,36 @@ If you are using the command line rather than the Desktop OS, you can follow the
 
 ### 3. Installing sshnp
 Once you have set up the Raspberry Pi, you can install sshnp by following the instructions [here](https://www.noports.com). Once you have purchased a license (or have obtained a free trial), you can follow the installation instructions [here](https://www.noports.com/sshnoports-installation).
+
+*note* If you already have the keys to your atSigns and the atSigns are activated, proceed with the instructions below (same steps as 3.5 on [noports.com/installation](https://www.noports.com/sshnoports-installation)):
+#### What you will need for this step
+- atKeys files (on your client machine)
+- IP address of your device
+- username of your device
+- The home directory of your device
+
+How to get the IP address of your device:
+```bash
+hostname -I
+```
+or click on the network icon on the top right corner of the screen and select "Connection Information"
+![](wifi-info.png)
+
+#### On your device
+The device home directory is typically '/home/<username>'. Double check by running the following command:
+```bash
+echo $HOME
+```
+
+```bash
+mkdir -p <device home directory>/.atsign/keys
+```
+
+#### On your client machine
+```bash
+scp ~/.atsign/keys/<device address>_key.atKeys <user>@<host>:<device home directory>/.atsign/keys/<device address>_key.atKeys
+```
+
 
 ### 4. Running the demo
 You can connect to your device from any machine with the following commands:
