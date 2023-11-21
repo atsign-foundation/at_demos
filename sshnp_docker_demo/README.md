@@ -19,8 +19,9 @@ Docker version 23.0.5, build bc4487a
  
 Regardless of running a rendevous service or not, you will need to add your atKey files within the following dirs:
 - sshnp/keys/
-- sshnpd/keys/
-- sshrvd/keys/
+- sshnpd/keys/ 
+- sshrvd/keys/ \
+*NOTE*: You don't need keys in the sshrvd if you aren't running sshrvd yourself
 
 For example, your file structure should be similar to:`sshnp/keys/@sshnp_key.atKeys`, `sshnpd/keys/@sshnpd_key.atKeys`, `sshrvd/keys/@sshrvd_key.atKeys`. If you need help getting your `.atKeys` files, see [1A. Getting your .atKeys](#1a-getting-your-atkeys).
 
