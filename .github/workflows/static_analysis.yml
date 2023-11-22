@@ -27,25 +27,25 @@ jobs:
           go-version: 'stable'
 
       # Runs dart lint rules
-      - name: Install dependencies and run analyze
+      - name: Install dependencies and run analyze - mwc_demo/dart/iot_sender
         working-directory: ./mwc_demo/dart/iot_sender/
         run: |
           dart pub get
           dart analyze
 
-      - name: Install dependencies and run analyze
+      - name: Install dependencies and run analyze - at_notifications
         working-directory: ./at_notifications/
         run: |
           dart pub get
           dart analyze
 
-      - name: Install dependencies and run analyze
+      - name: Install dependencies and run analyze - at_demo_data
         working-directory: ./at_demo_data/
         run: |
           dart pub get
           dart analyze
 
-      - name: Install dependencies and run analyze
+      - name: Install dependencies and run analyze - at_data_share
         working-directory: ./at_data_share/
         run: |
           dart pub get
