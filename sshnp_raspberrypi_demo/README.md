@@ -1,6 +1,6 @@
 # SSHNP with a Raspberry Pi Demo
 
-The demonstration features the utilization of a Raspberry Pi 3 Model B. This documentation guides you through the process of setting up a Raspberry Pi from scratch, encompassing the following steps:
+The demonstration features the utilization of a Raspberry Pi 4 Model B. This documentation guides you through the process of setting up a Raspberry Pi from scratch, encompassing the following steps:
 
 ### What you will need
 - Raspberry Pi 4 Model B
@@ -11,7 +11,7 @@ The demonstration features the utilization of a Raspberry Pi 3 Model B. This doc
 - HDMI to microHDMI cable 
 
 ### 1. Downloading the latest version of Raspbian OS 
-You can download the latest version of Raspberry Pi OS (previously called Raspbian) from the official website [here](https://www.raspberrypi.org/downloads/raspbian/). Follow the instructions on the website to install the OS on a microSD card.
+You can download the latest version of Raspberry Pi OS (previously called Raspbian) from the official website [here](https://www.raspberrypi.com/software/). Follow the instructions on the website to install the OS on a microSD card.
 
 ### 2. Setting up the Raspberry Pi
 After installing the OS on the microSD card, insert it into the Raspberry Pi. Connect the Pi to a monitor using an HDMI to microHDMI cable and plug in the power supply.
