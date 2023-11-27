@@ -572,7 +572,7 @@ class SrieKeys {
 class SachinKeys {
   /// CRAM key for `@sachin`
   static const String _sachinCRAMKey =
-      '5feafc244bfb18c36ecd04a2ebd12457cf5f7a5c54ec3225cbbb6ba9e31ddadb668251aa777166e3a66f1cdd31e2db68f33de8e2d696d3c95aeb0b8cb980cb06';
+      'c883aecc627ebe54af505254a531afa19bcbaecdbe4e666fea73f34bf68c6ead2a28704cc6f7c67f6e6ff624095610af100219f51e9554ea47bb5b4ba2853c2e';
 
   /// PKAM private key for `@sachin`
   static const String _sachinPKAMPrivateKey =
