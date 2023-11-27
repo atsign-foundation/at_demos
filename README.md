@@ -13,5 +13,7 @@ Welcome! We have a collection of demo apps written to help you get a head start 
 
 2. `at_notifications`: A demo using `.notify` and `.subscribe` to send/receive notifications in the atPlatform. Demo uses [at_client] as the core dependency to utilize the atProtocol and [at_onboarding_cli] to authenticate atSigns to their atServers. To begin, follow the steps outlined in the [README](./at_notifications/README.md) of at_notifications to get started!
 
+3. `sshnp_raspberrypi_demo`: A demo establishing an SSH connection between a Raspberry Pi 4 Model B and a client device without requiring any open ports on the host machine (not even port 22). To begin, follow the steps outlined in the [README](./sshnp_raspberrypi_demo/README.md) of sshnp_raspberrypi_demo to get started!
+
 
 We are super glad that you are beginning your journey as an atDev. We highly recommend that you join our discord dev community for troubleshooting, dev updates, and much more!
