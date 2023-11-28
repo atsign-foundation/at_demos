@@ -1,3 +1,5 @@
+## 1.0.3
+- **Fix**: Fixed duplicate cram keys for apkam atsigns
 ## 1.0.2
 - **Feat**: Added demo atsigns for apkam
 ## 1.0.1
