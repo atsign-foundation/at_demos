@@ -34,7 +34,7 @@ def run_pump_for_seconds(seconds: int, verbose: bool = True):
         print('Running pump for %s seconds' % seconds)
         print('HIGH')
     GPIO.output(DC_WATER_PUMP, GPIO.HIGH)
-    sleep(q_seconds)
+    sleep(seconds)
     if(verbose):
         print('LOW')
     GPIO.output(DC_WATER_PUMP, GPIO.LOW)
