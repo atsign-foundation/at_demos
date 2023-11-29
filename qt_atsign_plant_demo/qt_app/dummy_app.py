@@ -8,6 +8,7 @@ import datetime
 import queue
 import json
 from time import sleep
+from helper import get_datapoints, run_pump_for_seconds
 
 PLANT_ATSIGN_STR = '@qt_plant'
 QT_APP_ATSIGN_STR = '@qt_app'
@@ -21,7 +22,7 @@ def main():
     #  2. Run pump for X seconds
     #  3. Exit
 
-    atclient = AtClient(plant_atsign, queue=queue.Queue(
+    atclient = AtClient(qt_app_atsign, queue=queue.Queue(
         maxsize=100), verbose=False)
     
     # print menu
@@ -37,43 +38,21 @@ def main():
             dd = datetime.datetime.now().day
             yyyy = datetime.datetime.now().year
             for i in range(100):
-                day_timestamps_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(mm) + '-' + str(dd) + '-' + str(yyyy) + '.days.qtplant' + str(plant_atsign))
-                try:
-                    day_timestamps_sharedkey_data = atclient.get(day_timestamps_sharedkey) # form `[timestamp1, timestamp2, ...]`
-                except:
-                    print("No timestamps found for %s-%s-%s" % (mm, dd, yyyy))
-                    break
-                timestamps = day_timestamps_sharedkey_data[1:-1].split(', ')
-                timestamps = [float(timestamp) for timestamp in timestamps]
-                datapoints = []
-                for timestamp in timestamps:
-                    timestamp_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(timestamp) + '.datapoints.qtplant' + str(plant_atsign))
-                    try:
-                        timestamp_sharedkey_data = atclient.get(timestamp_sharedkey)
-                    except:
-                        print("No data found for timestamp %s" % timestamp)
-                        continue
-                    # print("Timestamp data found (%s): %s" %(timestamp, timestamp_sharedkey_data))
-                    timestamp_sharedkey_data = json.loads(timestamp_sharedkey_data)
-                    water_level = timestamp_sharedkey_data['water_level']
-                    soil_moisture = timestamp_sharedkey_data['soil_moisture']
-                    temperature = timestamp_sharedkey_data['temperature']
-                    humidity = timestamp_sharedkey_data['humidity']
-                    datapoints.append({'timestamp': timestamp, 'water_level': water_level, 'soil_moisture': soil_moisture, 'temperature': temperature, 'humidity': humidity})
+                datapoints = get_datapoints(atclient, qt_app_atsign, plant_atsign, mm, dd, yyyy)
                 print('\nWater Level | Soil Moisture | Temperature | Humidity | Timestamp')
                 print('------------|---------------|-------------|----------|----------')
                 for datapoint in datapoints:
-                    water_level = datapoint['water_level']
-                    soil_moisture = datapoint['soil_moisture']
-                    temperature = datapoint['temperature']
-                    humidity = datapoint['humidity']
-                    timestamp = datapoint['timestamp']
+                    water_level = datapoint.water_level
+                    soil_moisture = datapoint.soil_moisture
+                    temperature = datapoint.temperature
+                    humidity = datapoint.humidity
+                    timestamp = datapoint.timestamp
                     print('%.2f        | %.2f          | %.2f       | %.2f    | %s' % (water_level, soil_moisture, temperature, humidity, timestamp))
                 print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
                 sleep(1)
         elif (choice == 2):
             seconds = int(input("Enter seconds: "))
-
+            run_pump_for_seconds(atclient, qt_app_atsign, plant_atsign, seconds)
         elif (choice == 3):
             print("Exiting...")
             break

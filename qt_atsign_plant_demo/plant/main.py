@@ -58,7 +58,7 @@ def log_data(client: AtClient):
     dd = int(datetime.datetime.fromtimestamp(timestamp).strftime('%d'))
     yyyy = int(datetime.datetime.fromtimestamp(timestamp).strftime('%Y'))
     
-    timestamp_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(timestamp) + '.qtdemodata' + str(plant_atsign))
+    timestamp_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(timestamp) + '.datapoints.qtplant' + str(plant_atsign))
     timestamp_sharedkey_data = {
         'water_level': water_level,
         'soil_moisture': soil_moisture,
@@ -67,7 +67,7 @@ def log_data(client: AtClient):
     }
     timestamp_sharedkey_data = json.dumps(timestamp_sharedkey_data)
     
-    day_timestamps_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(mm) + '-' + str(dd) + '-' + str(yyyy) + '.qtdemo' + str(plant_atsign))
+    day_timestamps_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(mm) + '-' + str(dd) + '-' + str(yyyy) + '.days.qtplant' + str(plant_atsign))
     try:
         day_timestamps_sharedkey_data = client.get(day_timestamps_sharedkey)
         day_timestamps_sharedkey_data = day_timestamps_sharedkey_data[1:-1] # remove brackets
@@ -93,7 +93,7 @@ def log_data(client: AtClient):
 def main():    
     # start monitor on a thread
     atclient = AtClient(plant_atsign, queue=queue.Queue(maxsize=100), verbose=False)
-    threading.Thread(target=atclient.start_monitor, args=("qtdemo",)).start()
+    threading.Thread(target=atclient.start_monitor, args=("qtplant",)).start()
 
     while True:
         try:
@@ -127,11 +127,12 @@ def main():
                     print("Seconds (%s): %s\n" %(type(q_seconds), str(q_seconds)))
                     run_pump_for_seconds(q_seconds)
             except Exception as e:
+                # print(e)
                 pass
         except Exception as e:
+            # print(e)
             pass
         ss = datetime.datetime.now().second
-        print(ss)
         # log data every minute
         if( ss == 0 ):
             log_data(atclient)
