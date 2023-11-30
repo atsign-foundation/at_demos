@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 from at_client.connections.notification.atevents import AtEvent, AtEventType
 from at_client.util.encryptionutil import EncryptionUtil
 from at_client.common.keys import AtKey, Metadata, SharedKey
@@ -66,8 +66,16 @@ def log_data(client: AtClient):
         'humidity': humidity
     }
     timestamp_sharedkey_data = json.dumps(timestamp_sharedkey_data)
+    timestamp_sharedkey.metadata = Metadata(
+        ttr = -1, # do not refersh, this data will never change
+        ccd = True, # if plant deletes it, the app will not be able to read it
+    )
     
     day_timestamps_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(mm) + '-' + str(dd) + '-' + str(yyyy) + '.days.qtplant' + str(plant_atsign))
+    day_timestamps_sharedkey.metadata = Metadata(
+        ttr = -1, # do not refersh, this data will never change
+        ccd = True, # if plant deletes it, the app will not be able to read it
+    )
     try:
         day_timestamps_sharedkey_data = client.get(day_timestamps_sharedkey)
         day_timestamps_sharedkey_data = day_timestamps_sharedkey_data[1:-1] # remove brackets
@@ -133,8 +141,8 @@ def main():
             # print(e)
             pass
         ss = datetime.datetime.now().second
-        # log data every minute
-        if( ss == 0 ):
+        # log_data every 5 seconds
+        if ss % 5 == 0:
             log_data(atclient)
         sleep(1)
 
