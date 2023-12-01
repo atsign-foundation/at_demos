@@ -6,8 +6,8 @@ Demo uses [at_client] as the core dependency to utilize the atProtocol and [at_o
 
 A summary of the `bin/` files:
 
-- `subscribe-to-notifier.dart` @subscriber listens for notifications received from @notifier
-- `notifiy-the-subscriber.dart` @notifier sends a notification to @subscriber
+- `subscribe.dart` @subscriber listens for notifications received from @notifier
+- `send_notification.dart` @notifier sends a notification to @subscriber
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ git clone https://github.com/atsign-foundation/at_demos.git
 cd at_demos/at_notifications/bin
 ```
 
-3. Simply start your subscriber with the following command:
+3. Start your subscriber with the following command:
 
 ```sh
 dart run subscribe.dart -a @subscriber -r ".*@notifier"
@@ -33,10 +33,10 @@ Authenticated as @subscriber
 Subscribed to notifications with regex ".*"
 ```
 
-4. Run the notify program to send a notification to the subscriber:
+4. Run the program to send a notification to the subscriber:
 
 ```sh
-dart run send-notification.dart -f @notifier -t @subscriber -m "hello, world"
+dart run send_notification.dart -f @notifier -t @subscriber -m "hello, world"
 ```
 
 You should see a similar output in the subscriber's terminal:
@@ -73,12 +73,12 @@ dart run subscribe.dart
                        (defaults to on)
 ```
 
-## send-notification.dart
+## send_notification.dart
 
 Usage
 
 ```sh
-dart run send-notification.dart
+dart run send_notification.dart
 -f, --from (mandatory)    the atSign sending the notification (must be authenticated with keys)
 -t, --to (mandatory)      the atSign listening for notifications
 -m, --message             the message to send
