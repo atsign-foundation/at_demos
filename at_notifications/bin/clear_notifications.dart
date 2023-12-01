@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -14,7 +12,7 @@ import 'package:at_utils/at_utils.dart';
 void main(List<String> arguments) async {
     final ArgParser argParser = ArgParser();
     argParser.addOption('atsign', abbr: 'a', help: 'the atSign to clear notifications for', mandatory: true);
-    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_namespace);
+    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.defaultNamespace);
     argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: true);
 
     final ArgResults argResults = argParser.parse(arguments);
@@ -37,9 +35,9 @@ void main(List<String> arguments) async {
     final AtOnboardingPreference preference = AtNotificationsDemoUtil.generatePreference(atSign, namespace);
 
     final AtOnboardingService atOnboardingService = AtOnboardingServiceImpl(atSign, preference);
-    final bool pkamAutheneticated = await atOnboardingService.authenticate();
+    final bool pkamAuthenticated = await atOnboardingService.authenticate();
 
-    if(!pkamAutheneticated) {
+    if(!pkamAuthenticated) {
         throw Exception('Unable to authenticate as $atSign');
     }
 

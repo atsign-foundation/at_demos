@@ -16,11 +16,11 @@ import 'package:at_utils/at_utils.dart';
 void main(List<String> arguments) async {
 	final ArgParser argParser = ArgParser();
     argParser.addOption('atsign', abbr: 'a', help: 'atSign listening for notifications', mandatory: true);
-    argParser.addOption('regex', abbr: 'r', help: 'the regex to filter notifications with', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_regex);
-    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_namespace);
-    argParser.addFlag('decrypt', abbr: 'd', help: 'should decrypt notifications', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_shouldDecrypt);
+    argParser.addOption('regex', abbr: 'r', help: 'the regex to filter notifications with', mandatory: false, defaultsTo: AtNotificationsDemoConstants.defaultRegex);
+    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.defaultNamespace);
+    argParser.addFlag('decrypt', abbr: 'd', help: 'should decrypt notifications', negatable: true, defaultsTo: AtNotificationsDemoConstants.defaultShouldDecrypt);
     argParser.addFlag('showstats', abbr: 's', help: 'shows stats notifications', negatable: true, defaultsTo: false);
-    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_verbose);
+    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.defaultVerbose);
 
     final ArgResults argResults = argParser.parse(arguments);
 
@@ -49,9 +49,9 @@ void main(List<String> arguments) async {
     final AtOnboardingPreference preference = AtNotificationsDemoUtil.generatePreference(atSign, namespace);
 
     final AtOnboardingService atOnboardingService = AtOnboardingServiceImpl(atSign, preference);
-    final bool pkamAutheneticated = await atOnboardingService.authenticate();
+    final bool pkamAuthenticated = await atOnboardingService.authenticate();
 
-    if(!pkamAutheneticated) {
+    if(!pkamAuthenticated) {
         throw Exception('Unable to authenticate $atSign');
     }
 
@@ -67,7 +67,7 @@ void main(List<String> arguments) async {
     );
 
     stream.listen((AtNotification atNotification) {
-        if(!showStats || atNotification.id != -1) {
+        if(!showStats || atNotification.id != '-1') {
             _printAtNotification(atNotification);
         }
     });

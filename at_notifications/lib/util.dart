@@ -37,14 +37,13 @@ class AtNotificationsDemoUtil {
         AtOnboardingPreference pref = AtOnboardingPreference()
             ..atKeysFilePath = getAtKeysFilePath(atSign)
             ..namespace = namespace
-            ..useAtChops = true
             ..atProtocolEmitted = Version(2, 0, 0)
             ..isLocalStoreRequired = true
             ..commitLogPath = '${getHomeDirectory()}/.atsign/temp/$atSign/commitlog'
             ..downloadPath = '${getHomeDirectory()}/.atsign/temp/$atSign/download'
             ..hiveStoragePath = '${getHomeDirectory()}/.atsign/temp/$atSign/hive'
-            ..rootDomain = AtNotificationsDemoConstants.default_rootDomain
-            ..rootPort = AtNotificationsDemoConstants.default_rootPort
+            ..rootDomain = AtNotificationsDemoConstants.defaultRootDomain
+            ..rootPort = AtNotificationsDemoConstants.defaultRootPort
             ..syncIntervalMins = 1
             ;
         return pref;
