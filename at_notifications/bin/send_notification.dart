@@ -9,14 +9,14 @@ import 'package:at_notifications/util.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_utils/at_utils.dart';
 
-// dart run send-notification.dart -f @notifier -t @subscriber -m "lemonade"
+// dart run send_notification.dart -f @notifier -t @subscriber -m "lemonade"
 void main(List<String> arguments) async {
     final ArgParser argParser = ArgParser();
     argParser.addOption('from', abbr: 'f', help: 'the atSign sending the notification (must be authenticated with keys)', mandatory: true);
     argParser.addOption('to', abbr: 't', help: 'the atSign listening for notifications', mandatory: true);
     argParser.addOption('message', abbr: 'm', help: 'the message to send', mandatory: false, defaultsTo: 'Hello, World!');
-    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.default_namespace);
-    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.default_verbose);
+    argParser.addOption('namespace', abbr: 'n', help: 'namespace of the app', mandatory: false, defaultsTo: AtNotificationsDemoConstants.defaultNamespace);
+    argParser.addFlag('verbose', abbr: 'v', help: 'more logging', negatable: true, defaultsTo: AtNotificationsDemoConstants.defaultVerbose);
 
     final ArgResults argResults = argParser.parse(arguments);
 
@@ -59,7 +59,6 @@ void main(List<String> arguments) async {
     final Metadata metadata = Metadata()
         ..isEncrypted = true
         ..isPublic = false
-        ..ttr = -1 // ttr must be -1 for a notification's value to be sent
     ;
 
     final AtKey atKey = AtKey()
