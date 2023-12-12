@@ -21,7 +21,7 @@ void main(List<String> args) async {
     var rpc = AtRpc(
       atClient: atClient,
       baseNameSpace: atClient.getPreferences()!.namespace!,
-      domainNameSpace: 'at_rpc_demo',
+      domainNameSpace: 'at_rpc_arithmetic_demo',
       callbacks: DemoRpcServer(),
       allowList: allowList,
     );

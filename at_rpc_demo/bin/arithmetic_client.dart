@@ -19,7 +19,7 @@ void main(List<String> args) async {
     var rpc = AtRpcClient(
         atClient: atClient,
         baseNameSpace: atClient.getPreferences()!.namespace!,
-        domainNameSpace: 'at_rpc_demo',
+        domainNameSpace: 'at_rpc_arithmetic_demo',
         serverAtsign: serverAtsign);
 
     stdout.writeln('Sends input to an rpc server which will'
