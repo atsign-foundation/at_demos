@@ -1,30 +1,18 @@
 name: at_rpc_demo
-description: A sample command-line application.
+description: Sample client and server programs demonstrating use of the at_client package's AtRpc library
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+publish_to: none
 
 environment:
   sdk: ^3.1.0
 
 # Add regular dependencies here.
 dependencies:
-  at_client: ^3.0.68
-  at_cli_commons: ^1.0.3
+  at_client: ^3.0.69
+  at_cli_commons: ^1.0.4
   chalkdart: ^2.0.9
   math_expressions: ^2.4.0
   # path: ^1.8.0
-
-dependency_overrides:
-  at_client: # Will be ^3.0.69
-    git:
-      url: https://github.com/atsign-foundation/at_client_sdk.git
-      path: packages/at_client
-      ref: gkc/at_client/feat/add-AtRpcClient
-  at_cli_commons:
-    git:
-      url: https://github.com/atsign-foundation/at_libraries.git
-      path: packages/at_cli_commons
-      ref: gkc/at_cli_commons/handle-malformatted-atsigns
 
 dev_dependencies:
   lints: ^3.0.0
