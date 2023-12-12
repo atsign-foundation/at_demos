@@ -1,6 +1,6 @@
 name: at_rpc_demo
 description: Sample client and server programs demonstrating use of the at_client package's AtRpc library
-version: 1.0.0
+version: 1.1.0
 publish_to: none
 
 environment:
