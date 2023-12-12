@@ -1,7 +1,7 @@
 name: at_rpc_demo
-description: A sample command-line application.
+description: Sample client and server programs demonstrating use of the at_client package's AtRpc library
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+publish_to: none
 
 environment:
   sdk: ^3.1.0
