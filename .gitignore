@@ -373,6 +373,12 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# Python bytecode
+**/__pycache__/
+
+# Generated Qt QML type registrations
+qt_atsign_plant_demo/qt_app/io/
+
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
