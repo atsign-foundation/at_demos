@@ -1,7 +1,8 @@
 module PlantMonitor
 singleton AppSettings 1.0 AppSettings.qml
 singleton Constants 1.0 Constants.qml
-Graphs 1.0 Graphs.qml
+GraphsLive 1.0 GraphsLive.qml
+GraphsHistorical 1.0 GraphsHistorical.qml
 Stats 1.0 Stats.qml
 Home 1.0 Home.qml
 DataTile 1.0 DataTile.qml

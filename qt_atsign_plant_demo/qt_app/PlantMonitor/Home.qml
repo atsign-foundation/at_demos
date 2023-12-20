@@ -160,6 +160,10 @@ Page {
                 anchors.left: parent.left
                 anchors.bottom: bottomMenu.top
             }
+            //            StateChangeScript {
+            //                name: "enteringMobileLayout"
+            //                script: console.log("entering mobileLayout state")
+            //            }
         },
         State {
             name: "desktopLayout"
@@ -200,6 +204,19 @@ Page {
                 target: stackView
                 anchors.left: sideMenu.right
                 anchors.bottom: parent.bottom
+            }
+
+            StateChangeScript {
+                name: "enteringDesktopLayout"
+
+                script: {
+                    if (Constants.isSmallDesktopLayout) {
+
+                        console.log("entering small desktop state")
+                    } else if (Constants.isBigDesktopLayout) {
+                        console.log("entering big desktop state")
+                    }
+                }
             }
         },
         State {
@@ -242,6 +259,10 @@ Page {
                 anchors.left: sideMenu.right
                 anchors.bottom: parent.bottom
             }
+            //            StateChangeScript {
+            //                name: "enteringSmallLayout"
+            //                script: console.log("entering smallLayout state")
+            //            }
         }
     ]
 }

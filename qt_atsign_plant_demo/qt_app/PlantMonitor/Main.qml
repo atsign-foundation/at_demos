@@ -23,7 +23,8 @@ Window {
         repeat: true
         running: true
         onTriggered: {
-            MyMonitor.get_plant_info()
+
+            //            MyMonitor.get_plant_info()
             // Constants.timeStep++
         }
     }

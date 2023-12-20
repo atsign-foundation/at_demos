@@ -25,7 +25,7 @@ GridLayout {
                 antialiasing: true
                 legend.visible: true
                 backgroundColor: Constants.accentColor
-                theme: AppSettings.isDarkTheme ? ChartView.ChartThemeDark : ChartView.ChartThemeLight
+                plotAreaColor: Constants.accentColor
 
                 // X-axis definition
                 ValueAxis {
@@ -40,20 +40,19 @@ GridLayout {
                     min: 0
                     max: 50
                 }
-                
+
                 LineSeries {
                     id: lineSeries
                     axisX: xAxis
                     axisY: yAxis
                     name: modelData
-                    color: "green"
 
                     Connections {
                         target: MyMonitor
 
                         function onModel_changed() {
                             //log MyMonitor.dataSize
-                            console.log("MyMonitor.dataSize: " + MyMonitor.dataSize)
+                            //console.log("MyMonitor.dataSize: " + MyMonitor.dataSize)
                             lineSeries.clear()
                             var min = 100
                             var max = 0
@@ -77,8 +76,7 @@ GridLayout {
                                             MyMonitor.model[modelData][i][0], y)
 
                                 // log what is being appended
-                                console.log("appending: " + MyMonitor.model[modelData][i][0] + ", "
-                                            + MyMonitor.model[modelData][i][1])
+                                // console.log("appending: " + MyMonitor.model[modelData][i][0] + ", " + MyMonitor.model[modelData][i][1])
                             }
                         }
                     }

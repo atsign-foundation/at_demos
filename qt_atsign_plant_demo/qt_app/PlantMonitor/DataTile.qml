@@ -9,7 +9,7 @@ Pane {
 
     property bool isSmallLayout: false
     property string name
-
+    visible: name !== "Timestamp"
     width: internal.width
     height: internal.height
 
@@ -54,11 +54,9 @@ Pane {
         }
 
         Column {
-            id: title
-
+            id: dataColumn
             Layout.fillWidth: true
 
-            //            spacing: internal.titleSpacing
             Label {
                 text: root.name
                 font.pixelSize: internal.fontSize
@@ -69,14 +67,12 @@ Pane {
 
             Label {
                 id: currentValue
-                text: "Current Value: "
-                      + (root.name === "Humidity"
-                         || root.name === "Soil Moisture"
-                         || root.name === "Water Level" ? MyMonitor.model[root.name][0][1]
-                                                          + "%" : MyMonitor.model[root.name][0][1])
+                text: "Current Value: " + (root.name === "Temperature" ? MyMonitor.notificationModel[root.name][0] : MyMonitor.notificationModel[root.name][0] + "%")
                 font.pixelSize: internal.fontSize
                 font.weight: 300
                 font.family: "Liberation Mono"
+                //top padding of 10
+                topPadding: 20
                 color: Constants.primaryTextColor
                 //                //on component complete print done
                 //                onTextChanged: {
@@ -89,10 +85,19 @@ Pane {
                 //                }
             }
             Label {
-                text: "Weekly Average: "
+                text: "7 Day Average: "
                 font.pixelSize: internal.fontSize
                 font.family: "Liberation Mono"
                 color: Constants.primaryTextColor
+                topPadding: 10
+            }
+
+            Label {
+                text: "30 Day Average: "
+                font.pixelSize: internal.fontSize
+                font.family: "Liberation Mono"
+                color: Constants.primaryTextColor
+                topPadding: 10
             }
         }
     }
@@ -130,9 +135,12 @@ Pane {
                 titleSpacing: 8
                 columnMargin: 7
                 iconSize: 42
-                fontSize: 32
+                fontSize: 24
                 switchMargin: 9
             }
+            //            StateChangeScript {
+            //                script: console.log("DataTile entered desktopLayout")
+            //            }
         },
         State {
             name: "mobileLayout"
@@ -154,6 +162,9 @@ Pane {
                 target: root
                 isSmallLayout: true
             }
+            //            StateChangeScript {
+            //                script: console.log("DataTile entered mobileLayout")
+            //            }
         },
         State {
             name: "smallLayout"
@@ -175,6 +186,9 @@ Pane {
                 fontSize: 12
                 switchMargin: 9
             }
+            //            StateChangeScript {
+            //                script: console.log("DataTile entered smallLayout")
+            //            }
         }
     ]
 

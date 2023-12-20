@@ -5,14 +5,14 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    readonly property int width: 1440
-    readonly property int height: 1080
+    readonly property int width: 1024
+    readonly property int height: 600
     readonly property int tickRate: 5000
     property int timeStep: 0
     property string currentView: "Home"
 
-    property bool isBigDesktopLayout: true
-    property bool isSmallDesktopLayout: false
+    property bool isBigDesktopLayout: false
+    property bool isSmallDesktopLayout: true
     property bool isMobileLayout: false
     property bool isSmallLayout: false
 

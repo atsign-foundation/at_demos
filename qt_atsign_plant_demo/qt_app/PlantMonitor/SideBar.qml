@@ -7,6 +7,7 @@ Column {
     id: root
 
     property alias menuOptions: repeater.model
+    property string graphType: "Live"
     leftPadding: internal.leftPadding
     spacing: internal.spacing
 
@@ -106,7 +107,6 @@ Column {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            //                            anchors.fill: parent
                             Image {
                                 source: AppSettings.isDarkTheme ? "Images/sun" : "Images/moon"
                             }
@@ -133,17 +133,19 @@ Column {
                         ListElement {
                             label: qsTr("Live")
                             selected: false
+                            iconSource: "Images/live"
                         }
                         ListElement {
                             label: qsTr("Historical")
                             selected: false
+                            iconSource: "Images/historical"
                         }
                     }
                     width: internal.delegateWidth
                     height: 88
                     visible: (Constants.isBigDesktopLayout
                               || Constants.isSmallDesktopLayout)
-                             && columnItem.active && columnItem.view == "Graphs"
+                             && columnItem.active && columnItem.name == "Graphs"
                     delegate: Item {
                         id: graphTypeItem
                         width: internal.delegateWidth
@@ -153,7 +155,6 @@ Column {
                             anchors.fill: parent
                             radius: 12
                             opacity: 0.1
-                            // if selected green if not red
                             color: if (AppSettings.isDarkTheme) {
                                        model.selected ? Qt.lighter(
                                                             "#2CDE85") : "#002125"
@@ -167,29 +168,47 @@ Column {
                             id: graphRowLayout
 
                             width: Constants.isBigDesktopLayout ? 190 : 18
-                            spacing: 6
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.horizontalCenter: parent.horizontalCenter
-
-                            //                            anchors.fill: parent
-                            Image {
-                                source: AppSettings.isDarkTheme ? "Images/sun" : "Images/moon"
+                            anchors.centerIn: parent
+                            Item {
+                                id: iconAndLabel
+                                Layout.preferredWidth: internal.iconWidth
+                                Layout.preferredHeight: internal.iconWidth
+                                Layout.alignment: Qt.AlignVCenter
+                                Image {
+                                    id: graphOptionIcon
+                                    source: iconSource
+                                }
+                                MultiEffect {
+                                    anchors.fill: graphOptionIcon
+                                    source: graphOptionIcon
+                                    colorization: 1
+                                    colorizationColor: Constants.iconColor
+                                }
                             }
+
                             Label {
                                 text: label
                                 Layout.fillWidth: true
                                 color: Constants.primaryTextColor
                                 visible: internal.isNameVisible
+                                Layout.alignment: Qt.AlignVCenter
                             }
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                for (var i = 0; i < graphsListView.model.count; i++) {
-                                    graphsListView.model.get(i).selected = false
+                                if (!model.selected) {
+                                    for (var i = 0; i < graphsListView.model.count; i++) {
+                                        graphsListView.model.get(
+                                                    i).selected = false
+                                    }
+                                    model.selected = true
+                                    graphType = model.label
+                                    stackView.replace(
+                                                "Graphs" + graphType + ".qml",
+                                                StackView.Immediate)
                                 }
-                                model.selected = true
                             }
                         }
                     }
@@ -203,11 +222,6 @@ Column {
                             //stops replacing of the view if "Settings" was active
                             //and the currently displayed view was reselected.
                             switch (columnItem.view) {
-                            case "Graphs":
-                                if (!(stackView.currentItem instanceof Graphs))
-                                    stackView.replace("Graphs.qml",
-                                                      StackView.Immediate)
-                                break
                             case "Stats":
                                 if (!(stackView.currentItem instanceof Stats))
                                     stackView.replace("Stats.qml",
@@ -215,8 +229,14 @@ Column {
                                 break
                             }
                         } else if (columnItem.view != Constants.currentView) {
-                            stackView.replace(columnItem.view + ".qml",
-                                              StackView.Immediate)
+                            if (columnItem.view != "Graphs") {
+                                stackView.replace(columnItem.view + ".qml",
+                                                  StackView.Immediate)
+                            }
+                            // clear graph type selection
+                            for (var i = 0; i < graphsListView.model.count; i++) {
+                                graphsListView.model.get(i).selected = false
+                            }
                         }
                     }
                     Constants.currentView = columnItem.view

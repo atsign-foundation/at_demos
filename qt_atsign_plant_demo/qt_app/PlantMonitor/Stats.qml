@@ -23,22 +23,76 @@ Pane {
 
         Label {
             id: heading
-
             text: qsTr("Welcome")
             font: Constants.desktopTitleFont
             color: Constants.primaryTextColor
             elide: Text.ElideRight
+            topPadding: 10
         }
+        RowLayout {
 
-        Label {
-            id: heading2
+            Label {
+                id: heading2
 
-            text: qsTr("Here's the list of your plant health data")
-            font.pixelSize: 24
-            font.weight: 600
-            font.family: "Liberation Mono"
-            color: Constants.accentTextColor
-            elide: Text.ElideRight
+                text: qsTr("Here's the list of your plant health data")
+                font.pixelSize: 24
+                font.weight: 600
+                font.family: "Liberation Mono"
+                color: Constants.accentTextColor
+                elide: Text.ElideRight
+            }
+            Button {
+                id: requestWaterButton
+                text: "Feed Plant"
+                width: 100
+                height: 50
+                onClicked: {
+                    MyMonitor.run_pump_for_seconds()
+                    enabled = false
+                    text = "Watering..."
+                    cooldown.start()
+                }
+
+                // animation blink
+                SequentialAnimation {
+                    id: blink
+                    loops: Animation.Infinite
+                    running: !requestWaterButton.enabled
+                    PauseAnimation {
+                        duration: 1000
+                    }
+                    PropertyAnimation {
+                        target: requestWaterButton
+                        property: "opacity"
+                        from: 1
+                        to: 0
+                        duration: 1000
+                    }
+                    PauseAnimation {
+                        duration: 1000
+                    }
+                    PropertyAnimation {
+                        target: requestWaterButton
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 1000
+                    }
+                }
+
+                Timer {
+                    id: cooldown
+                    interval: 10000
+                    running: false
+                    repeat: false
+                    onTriggered: {
+                        console.log("timer finished")
+                        requestWaterButton.enabled = true
+                        requestWaterButton.text = "Feed Plant"
+                        requestWaterButton.opacity = 1
+                    }
+                }
+            }
         }
     }
 
@@ -56,7 +110,7 @@ Pane {
         delegatePreferredWidth: internal.delegatePreferredWidth
         delegatePreferredHeight: internal.delegatePreferredHeight
 
-        columns: root.width < 1140 ? 1 : 2
+        columns: 2 //root.width < 1140 ? 1 : 2
     }
 
     DataSwipeView {
@@ -90,12 +144,12 @@ Pane {
             when: Constants.isBigDesktopLayout || Constants.isSmallDesktopLayout
             PropertyChanges {
                 target: heading
-                text: qsTr("Welcome")
-                font: Constants.desktopTitleFont
+                text: qsTr("Plant Monitor Data")
+                font: Constants.mobileTitleFont
             }
             PropertyChanges {
                 target: heading2
-                visible: true
+                visible: false
             }
             PropertyChanges {
                 target: scrollView
@@ -114,6 +168,9 @@ Pane {
                 target: root
                 leftPadding: 27
             }
+            //            StateChangeScript {
+            //                script: console.log("Stats entered desktopLayout")
+            //            }
         },
         State {
             name: "mobileLayout"
@@ -144,6 +201,9 @@ Pane {
                 target: root
                 leftPadding: 27
             }
+            //            StateChangeScript {
+            //                script: console.log("Stats entered mobileLayout")
+            //            }
         },
         State {
             name: "smallLayout"
@@ -174,6 +234,9 @@ Pane {
                 target: root
                 leftPadding: 11
             }
+            //            StateChangeScript {
+            //                script: console.log("Stats entered smallLayout")
+            //            }
         }
     ]
 }
