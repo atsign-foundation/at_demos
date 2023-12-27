@@ -14,6 +14,14 @@ class AliceKeys {
   static const String _alicePKAMPublicKey =
       'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg1THrbmEpXMDXUtci4GBNaARF2ghWYz6tC5PcO8oyjqioDwlp7lVZcufhgZGD2Dd5j124vyx8t0qlTP/LObK8WvgvLOY5NqUCOgYBv0VufVzOr6xrsNKVEKC9GzMkMbUfFwBVYHeeIg3IKeGTyxB+qHQIAa2gLZCBKX8EsLTGliQmkv2J96umaFTsS/juwxw9nSVpsMIwCcg6hA3njVbjR1p5o9mZ3lVw57GOHzkdyGXXBgKzNvBRXBSDOkNCulxoixrydqWD8sLc8AERQoWCUwSWITTS0YE/jFL8fH2zWupjJ510JmoIf2L2MJsiFFUCtRIRTWSIHs1/cXZiIEvhQIDAQAB';
 
+  /// APKAM private key for `@alice🛠`
+  static const String _aliceAPKAMPrivateKey =
+      'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmeLQL28BNyIOYotfSnWfjLtdIKNLTdlla17SmnLdq7xmWIozoup35T7dkDWdP2jDJAYBDTpw1wwIz393t1fuB0Y8newERBfyYV0QYRnvCMDH5XLXZN6g5Ec74Z4kP/hv7PUWh+ZdOSoYCpeM2f6kJw7lBBwtM7xTheSlCIeCYmA7/JT+QeAcHLMIexdnOE/HPzXGL6Uu7bZQGoe9E4esnGv9qhhBiu/gBauh7LRGumL1SgCEVSx0BS1WYSYoy0nxQVOVf6pMfsKai6ERE+OjANQa+s4nKrJ0w+ESMeXQa38ZglJaGFbu4on27TvDpgGsEMtK0JyeFri5v3MNXq7lxAgMBAAECggEACZV3YBtlpdS+ZsIxRKnVOkoPENNw18W/fTBf8Ruin6BmS7Nvg1KDF8BUIYl4AivglSHl/XoAGkRA0zW3NCMWmLG02SQGurEqiqazf+ZG57YYmm+Q9JF0uNximwBy7p3FhKBRavLQmCxILMzaGOAenjZLawf5yZMWE6kDDBChOoemfuljHNM85FIeHZ+vgudeGi7sY9OG5+oa+RoG7axX+3Dj+BlFUV/o30LImt/Hg96cp1h2a7eCiaI1Cs3ALEM0oPlKbAj8Pg6D62+STSMkpd6z8v1LNSi3pOWqCgD+F/ur3+q7vdcQ4uV5Bd6FQv6EPb7PCnNaDbJBxSiPw0stFQKBgQDxFTslKml55O3OK36t9Yo8zPiH44p+VHMClMCkHH4QSGwQaODIIln63IdM2WfdlSsYfmoToljFOs2W39z7xpG0/g/L2Pe2nrSlFkhUB/PUSTyjnc9gS/w/v3jFxtj0EhGzNc7c2Tsu9WbisLYH7eod0NhvGWInCu9j8KL38M6KRwKBgQCwxZ9UiDrPHUrMEl31up/CEZ8RgMBSW/x5wD9VFZO2hD9KrFdckBd45FGaTFII5wG53XEOUaMCI2VXP2SNM15eaYxQ3v2y1z0k5xqhR7XG+oI0MmFVOkz6NEakC2AJGBZYZwzbFiu3tu1ygu1gBoauEsgMzmCMhQmZNZXfftHChwKBgQDmEbva8QmtsSKcwXdobk4ZTgbUL/sIKnGDghABzcskoOi4FE6Hz/iM5g4c8dEkbmmtO17iE+mhd0eh90u93zdIQbkzcYCdAAInFge6Ych4y9eZ0U2JeZpl/8UzAVwkOGY531zl+E15t+oS5k8hbBQjlh4mkFPSLKZeetQbx+xjmwKBgQCJZPDUCRZ8iG3sc5IoPieR9ZRHTGUvHmP8VZpkDWNEB0ISTiWQwkYcJonufcd9N9+1kRIgaP9j2BMaXyFORlDg3PS8nrVdXcIefqnKFSyKPYcZ/tZ8IdZW2m7Vbin0p44mo+HwHylXn4yq5myNqETh46MtoPKWBYlSVb3pem6a3QKBgEyy3E24xqxVNcto9+euhTBvtbPV4YmQIkvXQCLJwEF+Cljbo6xe6mTMZOR+xGVji3FUjbXjP/fPfjVuWaFfPd2WK0zlQWUesMatMTa0Kq3XohUiViTUWlZTV0mzn5Mq2+inE5srLi7+eSHV4bI0FzjRXVDpv3zWIvQJrLtJ51LA';
+
+  /// APKAM public key for `@alice🛠`
+  static const String _aliceAPKAMPublicKey =
+      'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApni0C9vATciDmKLX0p1n4y7XSCjS03ZZWte0ppy3au8ZliKM6Lqd+U+3ZA1nT9owyQGAQ06cNcMCM9/d7dX7gdGPJ3sBEQX8mFdEGEZ7wjAx+Vy12TeoORHO+GeJD/4b+z1FofmXTkqGAqXjNn+pCcO5QQcLTO8U4XkpQiHgmJgO/yU/kHgHByzCHsXZzhPxz81xi+lLu22UBqHvROHrJxr/aoYQYrv4AWroey0Rrpi9UoAhFUsdAUtVmEmKMtJ8UFTlX+qTH7CmouhERPjowDUGvrOJyqydMPhEjHl0Gt/GYJSWhhW7uKJ9u07w6YBrBDLStCcnha4ub9zDV6u5cQIDAQAB';
+
   /// Public encryption key for `@alice🛠`
   static const String _aliceEncryptionPublicKey =
       'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0sYjWt6TTikajY3HjvdN3sn2Ve3O+i84/gBrWPqhGNSdImz3W2l9dMSHm4wyixsxMSQaL+rECjwnvp3sRdW3M51sDCvWa06MLptvdrtnMjzDrvP45hUJY/i6WeDW8qeEOf9zuo+BLcQ3pkV1KZyhBj80OndLS/y00T8fYB9KnS5Z/iN7KW7Hxuv0isMPXxL1i8AZos7m5GuWq7CfRFKJIZ6vqYBUJCVSQCUVo1llyjElodSywcf1KjCvBOKuMPnUQCs+pKJt3QMFI0U7D+yinnlEdr6TBfOzMMPS3Du1LHpTGt7rqyxZrX8p4kpVb/CyL6wkelMuahHDOeNFBNyF0wIDAQAB';
@@ -798,4 +806,14 @@ Map<String, String> apkamSymmetricKeyMap = <String, String>{
   '@sitaram🛠': SitaramKeys._sitaramApkamSymmetricKey,
   '@srie': SrieKeys._srieApkamSymmetricKey,
   '@sachin': SachinKeys._sachinApkamSymmetricKey
+};
+
+// APKAM Private Keys
+Map<String, String> apkamPrivateKeyMap = <String, String>{
+  '@alice🛠': AliceKeys._aliceAPKAMPrivateKey
+};
+
+// APKAM Public Keys
+Map<String, String> apkamPublicKeyMap = <String, String>{
+  '@alice🛠': AliceKeys._aliceAPKAMPublicKey
 };
