@@ -38,7 +38,6 @@ Column {
                 padding: 0
                 Item {
                     id: menuItem
-
                     width: internal.delegateWidth
                     height: internal.delegateHeight
 
@@ -99,25 +98,12 @@ Column {
                         id: themeItem
                         width: internal.delegateWidth
                         height: 44
-                        RowLayout {
-                            id: row
 
-                            width: Constants.isBigDesktopLayout ? 190 : 18
-                            spacing: 6
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.horizontalCenter: parent.horizontalCenter
-
-                            Image {
-                                source: AppSettings.isDarkTheme ? "Images/sun" : "Images/moon"
-                            }
-                            Label {
-                                text: "Switch to "
-                                      + (AppSettings.isDarkTheme ? "Light Mode" : "Dark Mode")
-                                Layout.fillWidth: true
-                                color: Constants.primaryTextColor
-                                visible: internal.isNameVisible
-                            }
+                        Image {
+                            anchors.centerIn: parent
+                            source: AppSettings.isDarkTheme ? "Images/sun" : "Images/moon"
                         }
+
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
@@ -164,34 +150,19 @@ Column {
                                    }
                         }
 
-                        RowLayout {
-                            id: graphRowLayout
-
-                            width: Constants.isBigDesktopLayout ? 190 : 18
+                        Item {
+                            id: iconAndLabel
                             anchors.centerIn: parent
-                            Item {
-                                id: iconAndLabel
-                                Layout.preferredWidth: internal.iconWidth
-                                Layout.preferredHeight: internal.iconWidth
-                                Layout.alignment: Qt.AlignVCenter
-                                Image {
-                                    id: graphOptionIcon
-                                    source: iconSource
-                                }
-                                MultiEffect {
-                                    anchors.fill: graphOptionIcon
-                                    source: graphOptionIcon
-                                    colorization: 1
-                                    colorizationColor: Constants.iconColor
-                                }
+                            Image {
+                                anchors.centerIn: parent
+                                id: graphOptionIcon
+                                source: iconSource
                             }
-
-                            Label {
-                                text: label
-                                Layout.fillWidth: true
-                                color: Constants.primaryTextColor
-                                visible: internal.isNameVisible
-                                Layout.alignment: Qt.AlignVCenter
+                            MultiEffect {
+                                anchors.fill: graphOptionIcon
+                                source: graphOptionIcon
+                                colorization: 1
+                                colorizationColor: Constants.iconColor
                             }
                         }
 
@@ -225,6 +196,16 @@ Column {
                             case "Stats":
                                 if (!(stackView.currentItem instanceof Stats))
                                     stackView.replace("Stats.qml",
+                                                      StackView.Immediate)
+                                break
+                            case "About":
+                                if (!(stackView.currentItem instanceof About))
+                                    stackView.replace("About.qml",
+                                                      StackView.Immediate)
+                                break
+                            case "Water":
+                                if (!(stackView.currentItem instanceof Water))
+                                    stackView.replace("Water.qml",
                                                       StackView.Immediate)
                                 break
                             }
@@ -296,7 +277,7 @@ Column {
     QtObject {
         id: internal
 
-        property int delegateWidth: 290
+        property int delegateWidth: 145
         property int delegateHeight: 60
         property int iconWidth: 34
         property bool isNameVisible: true

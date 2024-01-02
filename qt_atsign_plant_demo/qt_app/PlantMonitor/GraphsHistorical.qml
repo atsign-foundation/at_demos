@@ -33,17 +33,10 @@ Item {
                     plotAreaColor: Constants.accentColor
                     legend.labelColor: AppSettings.isDarkTheme ? "white" : "black"
 
-                    //                     X-axis definition
-                    //                                        ValueAxis {
-                    //                                            id: xAxis
-                    //                                            min: 0
-                    //                                            max: 50
-                    //                                            labelsColor: AppSettings.isDarkTheme ? "white" : "black"
-                    //                                        }
                     DateTimeAxis {
                         id: xAxis
                         labelsColor: AppSettings.isDarkTheme ? "white" : "black"
-                        format: "dd/MM"
+                        format: "MM/dd"
                     }
 
                     // Y-axis definition
@@ -64,27 +57,17 @@ Item {
                             target: MyMonitor
 
                             function onModel_changed() {
-                                //log MyMonitor.dataSize
-                                //console.log("MyMonitor.dataSize: " + MyMonitor.dataSize)
-                                //                            console.log("plotting historicals")
-                                //time the function
-                                //                            var start = new Date().getTime()
 
                                 // clear the lineSeries
                                 lineSeries.clear()
                                 var min = 100
                                 var max = 0
-                                //                                xAxis.min = 1
-                                //                                xAxis.max = MyMonitor.dataSize
                                 for (var i = 0; i < dateRange; i++) {
-                                    // update min and max compared with MyMonitor.model[modelData][i][1]
-                                    //                                console.log("x is " + MyMonitor.model[modelData][i][0])
-                                    //                                console.log("y is " + MyMonitor.model[modelData][i][1])
-                                    var y = MyMonitor.model[modelData][i][1]
 
-                                    //                                    var day = MyMonitor.model[modelData][i][0]
+                                    var y = MyMonitor.model[modelData][i][1]
                                     var minDate = new Date()
                                     var maxDate = new Date()
+
                                     maxDate.setDate(maxDate.getDate() - 1)
 
                                     minDate.setDate(minDate.getDate(
@@ -92,33 +75,28 @@ Item {
                                     xAxis.min = minDate
                                     xAxis.max = maxDate
 
-                                    var dateOfData = new Date()
+                                    var dateOfData = maxDate
 
-                                    // js is weird.
-                                    if (dateRange == 7) {
-                                        dateOfData.setDate(
-                                                    minDate.getDate() + (i))
-                                    } else {
-                                        dateOfData.setDate(
-                                                    minDate.getDate(
-                                                        ) - (dateRange - i))
-                                    }
-
-                                    console.log(dateOfData)
+                                    dateOfData.setDate(
+                                                maxDate.getDate(
+                                                    ) - (dateRange - (i + 1)))
 
                                     if (y < min) {
                                         min = y
-                                        yAxis.min = min
+                                        yAxis.min = (min * 0.95)
                                     }
                                     if (y > max) {
                                         max = y
-                                        yAxis.max = max
+                                        yAxis.max = (max * 1.05)
                                     }
                                     if (max === min) {
                                         yAxis.min = min - 5
                                         yAxis.max = max + 5
                                     }
 
+                                    xAxis.tickCount = 7
+
+                                    // console.log(dateOfData)
                                     lineSeries.append(dateOfData, y)
                                 }
                             }
@@ -133,45 +111,75 @@ Item {
         }
     }
 
-    RowLayout {
-        id: rowLayout
+    GridLayout {
+        id: columnLayout
         //verically centered
         anchors.horizontalCenter: parent.horizontalCenter
+        columns: 2
+        rows: 2
+
         Button {
             id: pastWeekButton
-            text: "Past 7 Days"
             Layout.fillWidth: true
             Layout.fillHeight: true
+            contentItem: Text {
+                text: "Past 7 Days"
+                font.bold: !enabled
+                color: AppSettings.isDarkTheme ? "white" : "black"
+            }
+
+            background: Rectangle {
+                color: Constants.accentColor
+                radius: 5
+            }
+
             onClicked: {
                 dateRange = 7
                 MyMonitor.get_past_7()
                 enabled = false
                 pastMonthButton.enabled = true
             }
-            background: Rectangle {
-                color: pastWeekButton.enabled ? Constants.accentColor : "green"
-                radius: 5
-                border.color: "black"
-            }
         }
+
         Button {
             id: pastMonthButton
-            text: "Last Month"
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            contentItem: Text {
+                text: "Past 30 Days"
+                font.bold: !enabled
+                color: AppSettings.isDarkTheme ? "white" : "black"
+            }
+
+            background: Rectangle {
+                color: Constants.accentColor
+                radius: 5
+                // border.color: AppSettings.isDarkTheme ? "white" : "black"
+            }
             onClicked: {
                 dateRange = 30
                 MyMonitor.get_past_30()
                 enabled = false
                 pastWeekButton.enabled = true
             }
+        }
+        Rectangle {
+            id: past7Indicator
+            property bool selected: !pastWeekButton.enabled
+            color: "#FF5C35"
+            opacity: selected ? 1 : 0
+            height: 3
+            Layout.fillWidth: true
+        }
 
-            background: Rectangle {
-                color: pastMonthButton.enabled ? Constants.accentColor : "green"
-                radius: 5
-
-                border.color: "black"
-            }
+        Rectangle {
+            id: past30Indicator
+            property bool selected: !pastMonthButton.enabled
+            color: "#FF5C35"
+            opacity: selected ? 1 : 0
+            height: 3
+            Layout.fillWidth: true
         }
     }
 }

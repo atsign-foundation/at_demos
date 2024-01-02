@@ -67,25 +67,16 @@ Pane {
 
             Label {
                 id: currentValue
-                text: "Current Value: " + (root.name === "Temperature" ? MyMonitor.notificationModel[root.name][0] : MyMonitor.notificationModel[root.name][0] + "%")
+                text: "Current Value: " + (root.name === "Temperature" ? MyMonitor.notificationModel[root.name][0] + "°C" : MyMonitor.notificationModel[root.name][0] + "%")
                 font.pixelSize: internal.fontSize
                 font.weight: 300
                 font.family: "Liberation Mono"
                 //top padding of 10
                 topPadding: 20
                 color: Constants.primaryTextColor
-                //                //on component complete print done
-                //                onTextChanged: {
-                //                    // print the type of MyMonitor.model[root.name][0]
-                //                    console.log(typeof MyMonitor.model[root.name][0])
-                //                    //print the type of MyMonitor.model[root.name][0][0]
-                //                    console.log(typeof MyMonitor.model[root.name][0][0])
-                //                    //print the type of MyMonitor.model[root.name][0][1]
-                //                    console.log(typeof MyMonitor.model[root.name][0][1])
-                //                }
             }
             Label {
-                text: "7 Day Average: "
+                text: "7 Day Average: " + get7DayAvg(root.name)
                 font.pixelSize: internal.fontSize
                 font.family: "Liberation Mono"
                 color: Constants.primaryTextColor
@@ -93,7 +84,7 @@ Pane {
             }
 
             Label {
-                text: "30 Day Average: "
+                text: "30 Day Average: " + get30DayAvg(root.name)
                 font.pixelSize: internal.fontSize
                 font.family: "Liberation Mono"
                 color: Constants.primaryTextColor
@@ -138,9 +129,6 @@ Pane {
                 fontSize: 24
                 switchMargin: 9
             }
-            //            StateChangeScript {
-            //                script: console.log("DataTile entered desktopLayout")
-            //            }
         },
         State {
             name: "mobileLayout"
@@ -162,9 +150,6 @@ Pane {
                 target: root
                 isSmallLayout: true
             }
-            //            StateChangeScript {
-            //                script: console.log("DataTile entered mobileLayout")
-            //            }
         },
         State {
             name: "smallLayout"
@@ -186,27 +171,45 @@ Pane {
                 fontSize: 12
                 switchMargin: 9
             }
-            //            StateChangeScript {
-            //                script: console.log("DataTile entered smallLayout")
-            //            }
         }
     ]
 
     function getIcon(name) {
-        //switch on name
         switch (name) {
         case "Humidity":
             return "Images/humidity.svg"
-        case "Light Level":
-            return "Images/sun.svg"
         case "Soil Moisture":
             return "Images/moisture.svg"
         case "Temperature":
             return "Images/thermometer.svg"
-        case "Water Delivered":
-            return "Images/watering-can.svg"
         case "Water Level":
             return "Images/water-tank.svg"
+        }
+    }
+
+    function get30DayAvg(name) {
+        switch (name) {
+        case "Humidity":
+            return "70.38%"
+        case "Soil Moisture":
+            return "40.11%"
+        case "Temperature":
+            return "22.67°C"
+        case "Water Level":
+            return "63.03%"
+        }
+    }
+
+    function get7DayAvg(name) {
+        switch (name) {
+        case "Humidity":
+            return "70.73%"
+        case "Soil Moisture":
+            return "40.56%"
+        case "Temperature":
+            return "22.35°C"
+        case "Water Level":
+            return "48.86%"
         }
     }
 }

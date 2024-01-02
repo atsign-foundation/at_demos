@@ -68,6 +68,8 @@ Page {
         }
 
         initialItem: Stats {}
+
+
     }
 
     SideBar {
@@ -107,6 +109,11 @@ Page {
             name: qsTr("Graphs")
             view: "Graphs"
             iconSource: "stats.svg"
+        }
+        ListElement {
+            name: qsTr("Water")
+            view: "Water"
+            iconSource: "watering-can.svg"
         }
         ListElement {
             name: qsTr("Settings")
@@ -204,19 +211,6 @@ Page {
                 target: stackView
                 anchors.left: sideMenu.right
                 anchors.bottom: parent.bottom
-            }
-
-            StateChangeScript {
-                name: "enteringDesktopLayout"
-
-                script: {
-                    if (Constants.isSmallDesktopLayout) {
-
-                        console.log("entering small desktop state")
-                    } else if (Constants.isBigDesktopLayout) {
-                        console.log("entering big desktop state")
-                    }
-                }
             }
         },
         State {

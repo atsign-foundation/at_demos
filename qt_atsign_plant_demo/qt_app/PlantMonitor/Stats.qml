@@ -41,58 +41,6 @@ Pane {
                 color: Constants.accentTextColor
                 elide: Text.ElideRight
             }
-            Button {
-                id: requestWaterButton
-                text: "Feed Plant"
-                width: 100
-                height: 50
-                onClicked: {
-                    MyMonitor.run_pump_for_seconds()
-                    enabled = false
-                    text = "Watering..."
-                    cooldown.start()
-                }
-
-                // animation blink
-                SequentialAnimation {
-                    id: blink
-                    loops: Animation.Infinite
-                    running: !requestWaterButton.enabled
-                    PauseAnimation {
-                        duration: 1000
-                    }
-                    PropertyAnimation {
-                        target: requestWaterButton
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: 1000
-                    }
-                    PauseAnimation {
-                        duration: 1000
-                    }
-                    PropertyAnimation {
-                        target: requestWaterButton
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 1000
-                    }
-                }
-
-                Timer {
-                    id: cooldown
-                    interval: 10000
-                    running: false
-                    repeat: false
-                    onTriggered: {
-                        console.log("timer finished")
-                        requestWaterButton.enabled = true
-                        requestWaterButton.text = "Feed Plant"
-                        requestWaterButton.opacity = 1
-                    }
-                }
-            }
         }
     }
 

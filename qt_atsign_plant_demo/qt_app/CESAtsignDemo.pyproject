@@ -15,7 +15,6 @@
         "PlantMonitor/qmldir",
         "PlantMonitor/SideBar.qml",
         "PlantMonitor/Stats.qml",
-        "PlantMonitor/December.json",
         "PlantMonitor/Images/arrow.svg",
         "PlantMonitor/Images/atsign-logo-dark.svg",
         "PlantMonitor/Images/atsign-logo-light.svg",
@@ -39,7 +38,11 @@
         "PlantMonitor/Images/thermometer.svg",
         "PlantMonitor/Images/water-tank.svg",
         "PlantMonitor/Images/watering-can.svg",
+        "PlantMonitor/Images/CES-slides.pdf",
         "TODO.md",
-        "Past7.json"
+        "Past7.json",
+        "Past30.json",
+        "PlantMonitor/About.qml",
+        "PlantMonitor/Water.qml"
     ]
 }

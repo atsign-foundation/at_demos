@@ -36,12 +36,9 @@ class PlantMonitor(QObject):
         self.local = AtSign("@39gorilla")
         self.local_atclient = AtClient(self.local, queue=queue.Queue(maxsize=100), verbose=False)
 
-#        # the AtSign of the plant monitor
-        self.remote = AtSign("@standardcheetah")
-#        self.remote = AtSign("@qt_plant")
+        # the AtSign of the plant monitor
 
-#        # a key shared with the remote device to request watering
-#        self.shared_water_key = SharedKey("water", self.local, self.remote)
+        self.remote = AtSign("@standardcheetah")
 
         # a key shared with us that contains plant information
         self.shared_plant_info_key = SharedKey("stats", self.remote, self.local)
