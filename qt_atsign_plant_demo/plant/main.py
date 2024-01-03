@@ -18,6 +18,7 @@ DC_WATER_PUMP = 4 # GPIO PIN = 4
 
 PLANT_ATSIGN_STR = '@qt_plant'
 QT_APP_ATSIGN_STR = '@qt_app'
+# QT_APP_ATSIGN_STR = '@39gorilla'
 
 plant_atsign = AtSign(PLANT_ATSIGN_STR)
 qt_app_atsign = AtSign(QT_APP_ATSIGN_STR)
@@ -32,12 +33,55 @@ def run_pump_for_seconds(seconds: int, verbose: bool = True):
     # run pump for `q_seconds`
     if(verbose):
         print('Running pump for %s seconds' % seconds)
-        print('HIGH')
+        print('Pump ON HIGH')
     GPIO.output(DC_WATER_PUMP, GPIO.HIGH)
     sleep(seconds)
     if(verbose):
-        print('LOW')
+        print('Pump OFF LOW')
     GPIO.output(DC_WATER_PUMP, GPIO.LOW)
+    
+# flushes `notify:list` `
+def clear_all_notifications(atclient: AtClient, regex: str = 'qtplant'):
+    notifications = atclient.secondary_connection.execute_command('notify:list %s' %(regex), retry_on_exception=3)
+    # strip `data:` from string
+    notifications = str(notifications)[5:]
+    print('notifications: %s' % notifications)
+    # split by ,
+    if notifications != 'null':
+        notifications = json.loads(notifications)
+        for notification in notifications:
+            notification_id = notification['id']
+            print('Removing notification with id `%s`' % notification_id)
+            response = atclient.secondary_connection.execute_command('notify:remove:' + str(notification_id), retry_on_exception=3)
+            print(response)
+    else:
+        return 0
+    
+def notify_data(client: AtClient, payload):
+    timestamp = time()
+    #print type of data and value
+#    print("Type (%s): %s" %(type(payload), payload))
+    data = {
+        'type': 'sensorData',
+        'timestamp': timestamp,
+        'data': payload
+    }
+
+    data = json.dumps(data)
+    sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':sensors.qtplant' + str(plant_atsign))
+    iv_nonce = EncryptionUtil.generate_iv_nonce()
+    metadata = Metadata(
+    #ttl = 3 second in miliseconds
+        ttl=3000,
+        ttr=-1,
+        iv_nonce=iv_nonce,
+    )
+    sharedkey.metadata = metadata
+    sleep(0.5)
+    res = client.notify(sharedkey, data)
+    print('Notification ID: %s' % res)
+    print('SharedKey: %s' % sharedkey)
+    print('Data: %s' % data)
     
 def log_data(client: AtClient):
     values = [0]*4
@@ -63,8 +107,10 @@ def log_data(client: AtClient):
         'water_level': water_level,
         'soil_moisture': soil_moisture,
         'temperature': temperature,
-        'humidity': humidity
+        'humidity': humidity,
+        'timestamp': str(timestamp)
     }
+    notify_data(client, timestamp_sharedkey_data)
     timestamp_sharedkey_data = json.dumps(timestamp_sharedkey_data)
     timestamp_sharedkey.metadata = Metadata(
         ttr = -1, # do not refersh, this data will never change
@@ -76,6 +122,8 @@ def log_data(client: AtClient):
         ttr = -1, # do not refersh, this data will never change
         ccd = True, # if plant deletes it, the app will not be able to read it
     )
+    
+        
     try:
         day_timestamps_sharedkey_data = client.get(day_timestamps_sharedkey)
         day_timestamps_sharedkey_data = day_timestamps_sharedkey_data[1:-1] # remove brackets
@@ -115,6 +163,7 @@ def main():
                     print('executing \'%s\'' %(cmd))
                     atclient.secondary_connection.execute_command(cmd, retry_on_exception=3)
                     print('executed \'%s\'' %(cmd))
+                    pass
             if event_type != AtEventType.DECRYPTED_UPDATE_NOTIFICATION:
                     continue
             try:
@@ -134,16 +183,19 @@ def main():
                     q_seconds: int = q_data['seconds']
                     print("Seconds (%s): %s\n" %(type(q_seconds), str(q_seconds)))
                     run_pump_for_seconds(q_seconds)
+                    clear_all_notifications(atclient)
             except Exception as e:
                 # print(e)
                 pass
         except Exception as e:
-            # print(e)
+            # print(e)p
+            print('No events in queue.')
             pass
         ss = datetime.datetime.now().second
         # log_data every 5 seconds
         if ss % 5 == 0:
             log_data(atclient)
+            pass
         sleep(1)
 
 if __name__ == '__main__':
