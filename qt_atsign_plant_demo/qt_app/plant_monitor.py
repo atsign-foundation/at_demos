@@ -356,7 +356,9 @@ class PlantMonitor(QObject):
 
     def runNmapInBackground(self):
         try:
-            result = subprocess.run(['nmap', '-p' '1-65535', 'localhost'], capture_output=True, text=True)
+            ipADDR = self.get_ipv4_addresses()[0]
+            print(f"ipADDR is {ipADDR}")
+            result = subprocess.run(['nmap', '-p' '1-65535', f"{ipADDR}"], capture_output=True, text=True)
             output_text = result.stdout.strip()
             # print(f"output text is {output_text}")
             self.set_output(output_text)
@@ -371,6 +373,15 @@ class PlantMonitor(QObject):
     def runNmap(self):
         thread = threading.Thread(target=self.runNmapInBackground)
         thread.start()
+
+    def get_ipv4_addresses(self):
+        try:
+            result = subprocess.run(['hostname', '-I'], capture_output=True, text=True)
+            output = result.stdout.strip()
+            return output.split()
+
+        except subprocess.CalledProcessError as e:
+            return f"Error executing command: {e}"
 
 
     model = Property(dict, get_model, set_model, notify=model_changed)
