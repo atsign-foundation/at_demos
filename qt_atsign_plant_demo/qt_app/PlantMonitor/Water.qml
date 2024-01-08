@@ -8,23 +8,35 @@ Pane {
     background: Rectangle {
         color: Constants.accentColor
     }
-
     Button {
         id: requestWaterButton
+        property alias buttonText: buttonText.text
         anchors.centerIn: parent
+        // width: parent.width / 5
+        height: parent.height / 8
+
         contentItem: Text {
-            color: AppSettings.isDarkTheme ? "#000000" : "#ffffff"
-            text: "Feed Plant"
+            id: buttonText
+            color: "#ffffff"
+            text: enabled ? "Water The Plant For " + waterLevelSlider.value + " Second"
+                            + (waterLevelSlider.value > 1 ? "s" : "") : "Watering..."
+            font.pixelSize: 24
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            anchors.centerIn: parent
         }
+
         background: Rectangle {
-            color: AppSettings.isDarkTheme ? "#ffffff" : "#000000"
+            color: "#FF5C35"
+            radius: 5
         }
         onClicked: {
-            MyMonitor.run_pump_for_seconds()
+            MyMonitor.run_pump_for_seconds(waterLevelSlider.value)
             enabled = false
-            text = "Watering..."
+
             cooldown.start()
             rainRepeater.model = 30
+            waterLevelSlider.visible = false
         }
 
         // animation blink
@@ -56,16 +68,63 @@ Pane {
 
         Timer {
             id: cooldown
-            interval: 10000
+            // 8 second cooldown
+            interval: 8000
             running: false
             repeat: false
             onTriggered: {
-                console.log("timer finished")
                 requestWaterButton.enabled = true
-                requestWaterButton.text = "Feed Plant"
                 requestWaterButton.opacity = 1
                 rainRepeater.model = 0
+                waterLevelSlider.visible = true
             }
+        }
+    }
+
+    // a slider that goes from 1 to 5
+    Slider {
+        id: waterLevelSlider
+
+        anchors {
+            top: requestWaterButton.bottom
+            horizontalCenter: parent.horizontalCenter
+            topMargin: requestWaterButton.height
+        }
+        width: requestWaterButton.width
+        height: parent.height / 8
+        from: 1
+        to: 5
+        stepSize: 1
+        value: 3
+        snapMode: Slider.SnapAlways
+
+        background: Rectangle {
+            x: waterLevelSlider.leftPadding
+            y: waterLevelSlider.topPadding + waterLevelSlider.availableHeight / 2 - height / 2
+            implicitWidth: 200
+            implicitHeight: 4
+            width: waterLevelSlider.availableWidth
+            height: implicitHeight
+            radius: 2
+            color: "#bdbebf"
+
+            Rectangle {
+                width: waterLevelSlider.visualPosition * parent.width
+                height: parent.height
+                color: "blue"
+                radius: 2
+            }
+        }
+
+        handle: Rectangle {
+            x: waterLevelSlider.leftPadding + waterLevelSlider.visualPosition
+               * (waterLevelSlider.availableWidth - width)
+            y: waterLevelSlider.topPadding + waterLevelSlider.availableHeight / 2 - height / 2
+            implicitWidth: 26
+            implicitHeight: 26
+            radius: 13
+            color: "#FF5C35"
+            border.color: "#FF5C35"
         }
     }
 

@@ -208,6 +208,11 @@ Column {
                                     stackView.replace("Water.qml",
                                                       StackView.Immediate)
                                 break
+                            case "Terminal":
+                                if (!(stackView.currentItem instanceof Terminal))
+                                    stackView.replace("Terminal.qml",
+                                                      StackView.Immediate)
+                                break
                             }
                         } else if (columnItem.view != Constants.currentView) {
                             if (columnItem.view != "Graphs") {

@@ -2,28 +2,32 @@
 
 ## Current Tasks
 
-- [ ] **Add notifications for live graphs**
+- [x] **Add notifications for live graphs**
   - Implement a notification system to alert users about updates in live graphs.
 
-- [ ] **Add separate view for historical graphs**
+- [x] **Add separate view for historical graphs**
   - Create a dedicated page or view to display historical graphs.
 
 - [ ] **Use VXYModelMapper for historical graphs**
   - Refactor the code to utilize VXYModelMapper for mapping data in historical graphs.
-
-- [ ] **Add button to activate the water pump**
+  - Not necessary or time permitting
+- [x] **Add button to activate the water pump**
   - Include a button in the user interface to activate the water pump.
 
-- [ ] **Add "About" page**
+- [x] **Add "About" page**
   - Create an "About" page to provide information about the project, its purpose, and contributors.
 
+- [x] **Truncate Current Water Level**
+  - Current water level flies off the page
+  
 - [ ] **Cleanup the code**
   - Tidy up the code, modularize, and add comments
 ## Completed Tasks
 
-- [ ] Task1
-- [ ] Task2
+- [x] Task1
+- [x] Task2
 - [ ] Task3
-- [ ] Task4
-- [ ] Task5
-- [ ] Task6
+- [x] Task4
+- [x] Task5
+- [x] Task6
+- [ ] Task7

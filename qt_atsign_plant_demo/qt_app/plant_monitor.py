@@ -11,7 +11,7 @@ import queue
 import datetime
 import json
 import random
-
+import subprocess
 
 QML_IMPORT_NAME = "io.qt.plantinfo"
 QML_IMPORT_MAJOR_VERSION = 1
@@ -35,10 +35,10 @@ class PlantMonitor(QObject):
 
         self.local = AtSign("@39gorilla")
         self.local_atclient = AtClient(self.local, queue=queue.Queue(maxsize=100), verbose=False)
-
         # the AtSign of the plant monitor
-
         self.remote = AtSign("@standardcheetah")
+
+        self._output_text = ""
 
         # a key shared with us that contains plant information
         self.shared_plant_info_key = SharedKey("stats", self.remote, self.local)
@@ -108,6 +108,11 @@ class PlantMonitor(QObject):
     def datasize_changed(self):
         pass
 
+    @Signal
+    def output_changed(self, output_text):
+        #emit output_text to QML
+        pass
+
     def start_listen_thread(self):
         # Create a thread to run listen_for_data
         self.listen_thread = threading.Thread(target=self.listen_for_data)
@@ -117,6 +122,12 @@ class PlantMonitor(QObject):
     def stop_listen_thread(self):
         self.listen_thread.join()
 
+    def get_output(self):
+        return self._output_text
+
+    def set_output(self, output_text):
+        self._output_text = output_text
+        self.output_changed.emit()
 
     @Slot()
     def get_past_30(self):
@@ -237,8 +248,8 @@ class PlantMonitor(QObject):
         atkeys: list[AtKey] = atclient.get_at_keys(regex='.datapoints.qtplant', fetch_metadata=False)
         return atkeys
 
-    @Slot()
-    def run_pump_for_seconds(self, seconds: int = 5):
+    @Slot(int)
+    def run_pump_for_seconds(self, seconds):
         atclient = self.local_atclient
         qt_app_atsign = self.local
         plant_atsign = self.remote
@@ -316,10 +327,10 @@ class PlantMonitor(QObject):
                         # Capitalize the keys (GUI will display the keys as they come)
 #                        print(f"received data: {q_data}")
 #                        print("premature emit")
-                        q_data["Temperature"] = q_data.pop("temperature")
-                        q_data["Humidity"] = q_data.pop("humidity")
-                        q_data["Soil Moisture"] = q_data.pop("soil_moisture")
-                        q_data["Water Level"] = q_data.pop("water_level")
+                        q_data["Temperature"] = round(q_data.pop("temperature"),2)
+                        q_data["Humidity"] = round(q_data.pop("humidity"),2)
+                        q_data["Soil Moisture"] = round(q_data.pop("soil_moisture"),2)
+                        q_data["Water Level"] = round(q_data.pop("water_level"),2)
                         q_data["Timestamp"] = q_data.pop("timestamp")
 
                         timestamp = q_data.pop("Timestamp", None)
@@ -329,8 +340,8 @@ class PlantMonitor(QObject):
                                 q_data[key] = [value, timestamp]
 
 
-#                        print(f"changed q_data to {q_data}")
-#                        print("setting model from notification")
+                        # print(f"changed q_data to {q_data}")
+                        # print("setting model from notification")
                         self.set_notification_model(q_data)
 
                 except Exception as e:
@@ -343,8 +354,26 @@ class PlantMonitor(QObject):
             sleep(1)
 
 
+    def runNmapInBackground(self):
+        try:
+            result = subprocess.run(['nmap', '-p' '1-65535', 'localhost'], capture_output=True, text=True)
+            output_text = result.stdout.strip()
+            # print(f"output text is {output_text}")
+            self.set_output(output_text)
+            # self.output_changed.emit(output_text)
+            self.output_changed.emit()
+        except subprocess.CalledProcessError as e:
+            # self.output_changed.emit(f"Error executing command: {e}")
+            self.output_changed.emit()
+            # Create a thread and run runNmap in that thread
+
+    @Slot()
+    def runNmap(self):
+        thread = threading.Thread(target=self.runNmapInBackground)
+        thread.start()
 
 
     model = Property(dict, get_model, set_model, notify=model_changed)
     notificationModel = Property(dict, get_notification_model, set_notification_model, notify=notification_received)
     dataSize = Property(int, get_datasize, set_datasize, notify=datasize_changed)
+    terminalOutput = Property(str, get_output, set_output, notify=output_changed)

@@ -67,8 +67,8 @@ def notify_data(client: AtClient, payload):
     sleep(0.5)
     res = atclient.notify(sharedkey, data)
     print('Notification ID: %s' % res)
-#    print('SharedKey: %s' % sharedkey)
-#    print('Data: %s' % data)
+    print('SharedKey: %s' % sharedkey)
+    print('Data: %s' % data)
 
 
 def log_data(client: AtClient):
@@ -92,10 +92,10 @@ def log_data(client: AtClient):
     
     timestamp_sharedkey = SharedKey.from_string(str(qt_app_atsign) + ':' + str(timestamp) + '.datapoints.qtplant' + str(plant_atsign))
     timestamp_sharedkey_data = {
-        'water_level': random.randint(0, 10), #water_level,
-        'soil_moisture': random.randint(0, 10), #soil_moisture,
-        'temperature': random.randint(14, 25), # temperature,
-        'humidity': random.randint(0, 10), #humidity,
+        'water_level': round(random.uniform(0,10),2), #water_level,
+        'soil_moisture': round(random.uniform(0, 10), 2), #soil_moisture,
+        'temperature': round(random.uniform(14, 25), 2),# temperature,
+        'humidity': round(random.uniform(0,10),2), #humidity,
         'timestamp': str(timestamp)
     }
 

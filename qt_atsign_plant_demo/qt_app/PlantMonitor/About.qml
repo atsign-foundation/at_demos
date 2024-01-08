@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Pdf
+import PlantMonitor
 
 Pane {
     id: root
@@ -9,15 +10,15 @@ Pane {
         color: Constants.accentColor
     }
 
-    PdfDocument {
-        id: doc
-        source: "Images/CES-slides.pdf"
-    }
-
     PdfMultiPageView {
         id: view
         anchors.fill: parent
-        document: doc
+
+        //fill height with content
+        document: PdfDocument {
+            id: doc
+            source: "Images/CES-slides.pdf"
+        }
         //shrink pdf to fit in parent
 
         // next page when bottom half is tapped
@@ -42,6 +43,14 @@ Pane {
                 var cur = view.currentPage
                 cur ? view.goToPage(cur - 1) : {}
             }
+        }
+
+        Component.onCompleted: {
+            view.scaleToPage(parent.width, parent.height)
+            //make a QQmlPointFValueType
+            var Point = Qt.point(1000, 0)
+            view.goToLocation(0, Point, .5)
+            // console.log(view.zoom)
         }
     }
 }

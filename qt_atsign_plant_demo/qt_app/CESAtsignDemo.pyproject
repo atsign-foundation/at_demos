@@ -15,6 +15,7 @@
         "PlantMonitor/qmldir",
         "PlantMonitor/SideBar.qml",
         "PlantMonitor/Stats.qml",
+        "PlantMonitor/Terminal.qml",
         "PlantMonitor/Images/arrow.svg",
         "PlantMonitor/Images/atsign-logo-dark.svg",
         "PlantMonitor/Images/atsign-logo-light.svg",
@@ -34,6 +35,7 @@
         "PlantMonitor/Images/settings.svg",
         "PlantMonitor/Images/stats.svg",
         "PlantMonitor/Images/sun.svg",
+        "PlantMonitor/Images/terminal.svg",
         "PlantMonitor/Images/theme.svg",
         "PlantMonitor/Images/thermometer.svg",
         "PlantMonitor/Images/water-tank.svg",
@@ -43,6 +45,7 @@
         "Past7.json",
         "Past30.json",
         "PlantMonitor/About.qml",
-        "PlantMonitor/Water.qml"
+        "PlantMonitor/Water.qml",
+        "PlantMonitor/Terminal.qml"
     ]
 }

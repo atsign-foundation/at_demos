@@ -68,8 +68,6 @@ Page {
         }
 
         initialItem: Stats {}
-
-
     }
 
     SideBar {
@@ -124,6 +122,11 @@ Page {
             name: qsTr("About")
             view: "About"
             iconSource: "question.svg"
+        }
+        ListElement {
+            name: qsTr("Terminal")
+            view: "Terminal"
+            iconSource: "terminal.svg"
         }
     }
 
