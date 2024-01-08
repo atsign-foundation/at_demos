@@ -11,13 +11,23 @@ Pane {
     Button {
         id: run
         height: 50
-        width: 100
-        text: "Run nmap"
+        property alias buttonText: buttonText.text
+        //width adjusts to content
+        contentItem: Text {
+            id: buttonText
+            color: "#ffffff"
+            text: "Run nmap command"
+            font.pixelSize: 18
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            anchors.centerIn: parent
+        }
+
         anchors.horizontalCenter: parent.horizontalCenter
         // anchors.top: view.bottom
         // anchors.centerIn: parent
         onClicked: {
-            run.text = "Running..."
+            run.buttonText = "Running..."
             MyMonitor.runNmap()
         }
 
@@ -29,7 +39,7 @@ Pane {
 
     Text {
         id: text
-        text: "Terminal Ouput here"
+        text: "Terminal Ouput Here"
         font.pixelSize: 24
         width: parent.width
         //fill height as needed
@@ -45,7 +55,7 @@ Pane {
 
             function onOutput_changed() {
                 text.text = MyMonitor.terminalOutput
-                run.text = "Run nmap"
+                run.buttonText = "Run nmap command"
             }
         }
     }
