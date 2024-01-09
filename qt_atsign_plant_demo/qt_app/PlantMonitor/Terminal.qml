@@ -39,7 +39,7 @@ Pane {
 
     Text {
         id: text
-        text: "Terminal Ouput Here"
+        text: "Terminal Output Here"
         font.pixelSize: 24
         width: parent.width
         //fill height as needed
