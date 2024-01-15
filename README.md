@@ -37,6 +37,8 @@ order:
    shows how to build a simple end-to-end encrypted messaging app with the
    atPlatform.
 
+6. `qt_atsign_plant_demo` a demo of using Atsign's technology with Qt's QML in Python to remotely and securely control/monitor a plant from a Qt app involving 2 raspberry pis, 4 sensors, and 1 actuator. Check it out here: [qt_atsign_plant_demo](./qt_atsign_plant_demo/)
+
 We are super glad that you are beginning your journey as an atDev. We highly
 recommend that you join our discord dev community for troubleshooting, dev
 updates, and much more!
