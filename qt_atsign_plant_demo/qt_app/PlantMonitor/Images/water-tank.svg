@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style>
+            .cls-1 {
+                fill: none;
+                stroke: #FFFFFF;
+                stroke-miterlimit: 10;
+                stroke-width: 1.91px;
+            }
+        </style>
+    </defs>
+    <rect class="cls-1" x="4.36" y="1.5" width="15.27" height="21" fill="none" />
+    <path class="cls-1" d="M14.08,12.79a2.08,2.08,0,0,1-4.16,0C9.92,11,12,8.93,12,8.93S14.08,11,14.08,12.79Z" fill="none"/>
+    <line class="cls-1" x1="2.45" y1="1.5" x2="21.55" y2="1.5" fill="none"/>
+    <line class="cls-1" x1="4.36" y1="5.32" x2="19.64" y2="5.32" fill="none"/>
+    <line class="cls-1" x1="4.36" y1="18.68" x2="19.64" y2="18.68" fill="none"/>
+    <line class="cls-1" x1="2.45" y1="22.5" x2="21.55" y2="22.5" fill="none"/>
+    <line class="cls-1" x1="2.45" y1="12" x2="7.23" y2="12" fill="none"/>
+    <line class="cls-1" x1="16.77" y1="12" x2="21.55" y2="12" fill="none"/>
+</svg>
