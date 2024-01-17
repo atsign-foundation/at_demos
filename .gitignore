@@ -383,3 +383,8 @@ fabric.properties
 
 *.atKeys
 sshnp_docker_demo/*/.startup.sh
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
