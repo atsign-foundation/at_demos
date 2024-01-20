@@ -14,7 +14,7 @@ Once your Dart environment is installed and you are in the IDE or command line y
 
   
 
-Once you have your atSigns you can activate them with `at_activate.dart` using the command `dart run bin/at_activate.dart --atsign <@your atSign>`. Substitute your atSign and it will email you a one time password and cut your cryptographic keys. You will need to do this twice so you have two atSigns to send data from and too.
+Once you have your atSigns you can activate them with `at_activate.dart` using the command `dart run bin/at_activate.dart --atsign <@your atSign>`. Substitute your atSign and it will email you a one time password and cut your cryptographic keys. You will need to do this twice so you have two atSigns to send data from and to.
 
 here is my at_activate of @75colouring
 
