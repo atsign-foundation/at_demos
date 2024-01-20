@@ -12,7 +12,9 @@ To get this code on to you machine you can use [GitHub Desktop](https://desktop.
 
 Once your Dart environment is installed and you are in the IDE or command line you need to run `dart pub get` this will pull in the needed behind the scenes code and you are ready to go with the code. But first you will need at least two atSigns. These are free or purchased (if you want a personal name) at [Atsign.com](https://atsign.com).
 
-  
+Remember that you can activate and run atSDK code anywhere that can see the Internet and data will flow. So these examples can run on the same machine or machines on the other side of the world and things will still work without inbound firewall rules and no need for firewall/NAT rules. This seems like magic and it sort of is! There is also no backend to worry about the atSDK/atPlatform code take care of everything for you. 
+
+Just activate on two machines or migrate your atKeys to another machine and run there and communicate, privately..
 
 Once you have your atSigns you can activate them with `at_activate.dart` using the command `dart run bin/at_activate.dart --atsign <@your atSign>`. Substitute your atSign and it will email you a one time password and cut your cryptographic keys. You will need to do this twice so you have two atSigns to send data from and to.
 
