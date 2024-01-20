@@ -15,31 +15,30 @@ order:
    the use of the AtRpc library in the
    [at_client](https://pub.dev/packages/at_client) package.
 
-3. `sshnp_docker_demo`: A demo to establish an SSH connection between two
-   Docker containers without requiring any open ports on the host machine (not
-   even port 22). To begin, follow the steps outlined in
-   the [README](./sshnp_docker_demo/README.md) of sshnp_docker_demo to get
-   started!
-
-4. `at_notifications`: A demo using `.notify` and `.subscribe` to send/receive
+3. `at_notifications`: A demo using `.notify` and `.subscribe` to send/receive
    notifications in the atPlatform. Demo uses [at_client] as the core dependency
    to utilize the atProtocol and [at_onboarding_cli] to authenticate atSigns to
    their atServers. To begin, follow the steps outlined in
    the [README](./at_notifications/README.md) of at_notifications to get
    started!
+4. You should also definitely check out the
+   [at_talk](https://github.com/atsign-foundation/at_talk) repo which
+   shows how to build a simple end-to-end encrypted messaging app with the
+   atPlatform.
 
-5. `sshnp_raspberrypi_demo`: A demo establishing an SSH connection between a
+5. `qt_atsign_plant_demo` a demo of using Atsign's technology with Qt's QML in Python to remotely and securely control/monitor a plant from a Qt app involving 2 raspberry pis, 4 sensors, and 1 actuator. Check it out here: [qt_atsign_plant_demo](./qt_atsign_plant_demo/)
+
+6. `sshnp_raspberrypi_demo`: A demo establishing an SSH connection between a
    Raspberry Pi 4 Model B and a client device without requiring any open ports
    on the host machine (not even port 22). To begin, follow the steps outlined
    in the [README](./sshnp_raspberrypi_demo/README.md) of sshnp_raspberrypi_demo
    to get started!
 
-6. You should also definitely check out the
-   [at_talk](https://github.com/atsign-foundation/at_talk) repo which
-   shows how to build a simple end-to-end encrypted messaging app with the
-   atPlatform.
-
-7. `qt_atsign_plant_demo` a demo of using Atsign's technology with Qt's QML in Python to remotely and securely control/monitor a plant from a Qt app involving 2 raspberry pis, 4 sensors, and 1 actuator. Check it out here: [qt_atsign_plant_demo](./qt_atsign_plant_demo/)
+7. `sshnp_docker_demo`: A demo to establish an SSH connection between two
+   Docker containers without requiring any open ports on the host machine (not
+   even port 22). To begin, follow the steps outlined in
+   the [README](./sshnp_docker_demo/README.md) of sshnp_docker_demo to get
+   started!
 
 We are super glad that you are beginning your journey as an atDev. We highly
 recommend that you join our discord dev community for troubleshooting, dev
