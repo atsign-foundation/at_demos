@@ -1,9 +1,9 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
-import 'package:at_client/at_client.dart';
 import 'package:at_file_share/src/file_send_params.dart';
 import 'package:at_file_share/src/service/file_receiver.dart';
 import 'package:at_file_share/src/service/file_sender.dart';
-import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_cli_commons/at_cli_commons.dart';
 
 const String version = '0.0.1';
@@ -25,8 +25,8 @@ ArgParser buildParser() {
 }
 
 void printUsage(ArgParser argParser) {
-  print('Usage: dart at_file_share.dart <flags> [arguments]');
-  print(argParser.usage);
+  stderr.writeln('Usage: dart at_file_share.dart <flags> [arguments]');
+  stderr.writeln(argParser.usage);
 }
 
 void main(List<String> arguments) async {
@@ -40,7 +40,7 @@ void main(List<String> arguments) async {
     }
     String mode = results['mode'];
     var atClient = (await CLIBase.fromCommandLineArgs(arguments)).atClient;
-    print('mode: $mode');
+    stderr.writeln('mode: $mode');
     if (mode == 'send') {
       String receiver = results['receiver'];
       var params = FileSendParams()
@@ -49,13 +49,18 @@ void main(List<String> arguments) async {
         ..bucketName = results['bucketName'];
 
       await FileSender(atClient).sendFile(params);
+      exit(0);
     } else if (mode == 'receive') {
-      await FileReceiver(atClient).receiveFile(results['downloadDir']);
+      final receiver = FileReceiver(atClient, results['downloadDir']);
+      await receiver.startListening();
+      receiver.received.listen((filePath) {
+        stderr.writeln('Downloaded file: $filePath');
+      });
     }
   } on FormatException catch (e) {
     // Print usage information if an invalid argument was provided.
-    print(e.message);
-    print('');
+    stderr.writeln(e.message);
+    stderr.writeln('');
     printUsage(argParser);
   }
 }
