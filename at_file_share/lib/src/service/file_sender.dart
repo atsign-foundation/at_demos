@@ -20,7 +20,7 @@ class FileSender {
     var encryptedFile = await encryptionService.encryptFileInChunks(
         fileToSend, fileEncryptionKey, params.chunkSize);
     var storJShareUrl =
-        await _uploadToStorJ(encryptedFile, basename(params.filePath));
+        await _uploadToStorJ(encryptedFile, basename(params.filePath), params);
     print('storJShareUrl: $storJShareUrl');
     if (storJShareUrl == null) {
       throw Exception('upload to storJ failed');
@@ -47,18 +47,15 @@ class FileSender {
     print('file share send notification: $notificationResult');
   }
 
-  Future<String?> _uploadToStorJ(File encryptedFile, String fileName) async {
+  Future<String?> _uploadToStorJ(
+      File encryptedFile, String fileName, FileSendParams sendParams) async {
     try {
-      // final s3Storage = S3Storage(
-      //   endPoint: 'gateway.storjshare.io',
-      //   accessKey: Platform.environment['STORJ_ACCESS_KEY']!,
-      //   secretKey: Platform.environment['STORJ_SECRET_KEY']!,
-      // );
-      // var putResult = await s3Storage.fPutObject(
-      //     'demo-bucket', fileName, encryptedFile.path);
-      // print('putResult: $putResult');
       String command = 'uplink';
-      List<String> arguments = ['cp', encryptedFile.path, 'sj://demo-bucket'];
+      List<String> arguments = [
+        'cp',
+        encryptedFile.path,
+        'sj://${sendParams.bucketName}'
+      ];
 
       // Create a ProcessResult object by running the command
       var startTime = DateTime.now();

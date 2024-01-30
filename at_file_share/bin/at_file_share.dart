@@ -31,7 +31,15 @@ ArgParser buildParser() {
         abbr: 'f', mandatory: false, help: 'path of file in local to share')
     ..addOption('downloadDir',
         abbr: 'd', mandatory: false, help: 'download dir when receiving files')
-  ..addOption('privateKey',abbr: 'p',mandatory: true, help: 'private key of sender atsign');
+    ..addOption('bucketName',
+        abbr: 'b',
+        mandatory: false,
+        help: 'bucket name of storj to upload the file')
+    ..addOption('env',
+        abbr: 'e',
+        mandatory: false,
+        defaultsTo: 'root.atsign.org',
+        help: 'environment to share the file (dev/prod)');
 }
 
 void printUsage(ArgParser argParser) {
@@ -53,15 +61,19 @@ void main(List<String> arguments) async {
     AtOnboardingPreference atOnboardingPreference = AtOnboardingPreference()
       ..namespace =
           'zetta' // unique identifier that can be used to identify data from your app
-      ..atKeysFilePath = results['atKeysFilePath']
-      ..rootDomain = 'vip.ve.atsign.zone';
+      ..atKeysFilePath = results['atKeysFilePath'];
+
+    if (results['env'] == 'dev') {
+      atOnboardingPreference.rootDomain = 'vip.ve.atsign.zone';
+    }
 
     if (mode == 'send') {
       String receiver = results['receiver'];
       String sender = results['sender'];
       var params = FileSendParams()
         ..receiverAtSign = receiver
-        ..filePath = results['filePath'];
+        ..filePath = results['filePath']
+        ..bucketName = results['bucketName'];
       AtOnboardingService? onboardingService =
           AtOnboardingServiceImpl(sender, atOnboardingPreference);
       await onboardingService.authenticate(); // when authenticating

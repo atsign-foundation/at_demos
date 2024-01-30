@@ -24,42 +24,52 @@ class FileReceiver {
           var valueJson = jsonDecode(atValue.value);
           var storjUrl = valueJson['fileUrl'];
           fileName = valueJson['fileName'];
-          var fileDecryptionKey = valueJson['fileEncryptionKey'];
-          var chunkSize = valueJson['chunkSize'];
-          await downloadFile(storjUrl,
-              '$downloadPath${Platform.pathSeparator}encrypted_$fileName');
-          var startTime = DateTime.now();
-          var encryptionService = _atClient.encryptionService!;
-          var encryptedFile =
-              File('$downloadPath${Platform.pathSeparator}encrypted_$fileName');
-          await encryptionService.decryptFileInChunks(
-              encryptedFile, fileDecryptionKey, chunkSize);
-          var endTime = DateTime.now();
-          print(
-              'Time taken to decrypt file: ${endTime.difference(startTime).inSeconds}');
-          var decryptedFile = File(
-              "$downloadPath${Platform.pathSeparator}decrypted_encrypted_$fileName");
-          if (decryptedFile.existsSync()) {
-            decryptedFile
-                .renameSync(downloadPath + Platform.pathSeparator + fileName);
-          } else {
-            throw Exception('could not decrypt downloaded file');
-          }
+          await downloadFileWithProgress(
+              storjUrl, downloadPath, fileName, valueJson);
         } on Exception catch (e, trace) {
           print(e);
           print(trace);
         } on Error catch (e, trace) {
           print(e);
           print(trace);
-        } finally {
-          var encryptedFile =
-              File("$downloadPath${Platform.pathSeparator}encrypted_$fileName");
-          if (encryptedFile.existsSync()) {
-            encryptedFile.deleteSync();
-          }
         }
       }
     });
+  }
+
+  Future<void> _decryptFile(
+      String downloadPath, String fileName, dynamic valueJson) async {
+    try {
+      var startTime = DateTime.now();
+      var encryptionService = _atClient.encryptionService!;
+      var encryptedFile =
+          File('$downloadPath${Platform.pathSeparator}encrypted_$fileName');
+      await encryptionService.decryptFileInChunks(encryptedFile,
+          valueJson['fileEncryptionKey'], valueJson['chunkSize']);
+      var endTime = DateTime.now();
+      print(
+          'Time taken to decrypt file: ${endTime.difference(startTime).inSeconds}');
+      var decryptedFile = File(
+          "$downloadPath${Platform.pathSeparator}decrypted_encrypted_$fileName");
+      if (decryptedFile.existsSync()) {
+        decryptedFile
+            .renameSync(downloadPath + Platform.pathSeparator + fileName);
+      } else {
+        throw Exception('could not decrypt downloaded file');
+      }
+    } on Exception catch (e, trace) {
+      print(e);
+      print(trace);
+    } on Error catch (e, trace) {
+      print(e);
+      print(trace);
+    } finally {
+      var encryptedFile =
+          File("$downloadPath${Platform.pathSeparator}encrypted_$fileName");
+      if (encryptedFile.existsSync()) {
+        encryptedFile.deleteSync();
+      }
+    }
   }
 
   Future<File> downloadFile(String fileUrl, String localFilePath) async {
@@ -70,8 +80,8 @@ class FileReceiver {
     return File(localFilePath);
   }
 
-  Future<void> downloadFileWithProgress(
-      String fileUrl, String localFilePath) async {
+  Future<void> downloadFileWithProgress(String fileUrl, String downloadPath,
+      String fileName, dynamic valueJson) async {
     var httpClient = http.Client();
     var request = http.Request('GET', Uri.parse('$fileUrl?download=1'));
     var response = httpClient.send(request);
@@ -82,16 +92,19 @@ class FileReceiver {
     response.asStream().listen((http.StreamedResponse r) {
       r.stream.listen((List<int> chunk) {
         // Display percentage of completion
-        print('downloadPercentage: ${downloaded / r.contentLength! * 100}');
+        var percentage = downloaded / r.contentLength! * 100;
+        int roundedPercent = percentage.round();
+        updateProgress(roundedPercent);
 
         chunks.add(chunk);
         downloaded += chunk.length;
       }, onDone: () async {
         // Display percentage of completion
-        print('downloadPercentage: ${downloaded / r.contentLength! * 100}');
+        // print('downloadPercentage: ${downloaded / r.contentLength! * 100}');
 
         // Save the file
-        File file = File(localFilePath);
+        File file =
+            File('$downloadPath${Platform.pathSeparator}encrypted_$fileName');
         final Uint8List bytes = Uint8List(r.contentLength!);
         int offset = 0;
         for (List<int> chunk in chunks) {
@@ -99,8 +112,17 @@ class FileReceiver {
           offset += chunk.length;
         }
         await file.writeAsBytes(bytes);
-        return;
+        await _decryptFile(downloadPath, fileName, valueJson);
       });
     });
+  }
+
+  void updateProgress(int progress) {
+    // Move cursor to the beginning of the line
+    stdout.write('\r');
+
+    // Print the progress in percentage
+    stdout.write('Download progress: $progress%');
+    stdout.flush();
   }
 }
