@@ -1,7 +1,7 @@
 #TODO
 
 Prerequisite:
-1. Storj account and s3 access/secret keys
+1. Storj account and access grant
    1. Login/signup to https://www.storj.io/
    2. Create new project e.g zetta_demo
    3. Open the newly created project
