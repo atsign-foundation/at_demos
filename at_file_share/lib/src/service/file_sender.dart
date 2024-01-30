@@ -17,8 +17,10 @@ class FileSender {
     var fileEncryptionKey =
         AtChopsUtil.generateSymmetricKey(EncryptionKeyType.aes256).key;
     var encryptionService = _atClient.encryptionService!;
+    String iv = EncryptionUtil.generateIV();
     var encryptedFile = await encryptionService.encryptFileInChunks(
-        fileToSend, fileEncryptionKey, params.chunkSize);
+        fileToSend, fileEncryptionKey, params.chunkSize,
+        ivBase64: iv);
     var storJShareUrl =
         await _uploadToStorJ(encryptedFile, basename(params.filePath), params);
     print('storJShareUrl: $storJShareUrl');
@@ -26,15 +28,16 @@ class FileSender {
       throw Exception('upload to storJ failed');
     }
     var fileTransferObject = FileTransferObject(
-        'test_transfer',
+        'zetta_transfer',
         fileEncryptionKey,
         storJShareUrl,
         basename(fileToSend.path),
         params.receiverAtSign,
-        params.chunkSize);
+        params.chunkSize,
+        iv);
     //$TODO replace test_transfer with key name required for demo
     var atKey = AtKey()
-      ..key = 'test_transfer'
+      ..key = 'zetta_transfer'
       ..sharedWith = params.receiverAtSign
       ..metadata = Metadata()
       ..metadata.ttr = -1;
@@ -95,27 +98,6 @@ class FileSender {
     }
     return null;
   }
-  // Future<String> getInitialUrl(String atsign, String fileName,String privateKey) async {
-  //   var atBuzzKey = Platform.environment['ATBUZZKEY'];
-  //   print('$atBuzzKey: $atBuzzKey');
-  //   var nonce = await getnonce();
-  //   var signedNonce = await signNonce(nonce, privateKey);
-  //   String url =
-  //       "https://tokengateway-bg7d74s2.uc.gateway.dev/gettoken?key=$atBuzzKey&atsign=$atsign&nonce=$nonce&signednonce=$signedNonce&filename=$fileName";
-  //   return url;
-  // }
-  //
-  // Future<String> getnonce() async {
-  //   var atBuzzKey = Platform.environment['ATBUZZKEY'];
-  //   String url = "https://noncegateway-bg7d74s2.uc.gateway.dev/getnonce?key=$atBuzzKey";
-  //   var res = await http.get(Uri.parse(url));
-  //   return res.body;
-  // }
-  //
-  // Future<String> signNonce(String nonce,String atSignPrivateKey) async {
-  //   var signature = RSAPrivateKey.fromString(atSignPrivateKey).createSHA256Signature(utf8.encode(nonce));
-  //   return base64UrlEncode(signature);
-  // }
 }
 
 // add any additional params if required
@@ -127,12 +109,12 @@ class FileTransferObject {
   final String fileName;
   final String sharedWith;
   String? notes;
-  //bool? sharedStatus;
+  final String iv;
   DateTime? date;
   int chunkSize;
 
   FileTransferObject(this.transferId, this.fileEncryptionKey, this.fileUrl,
-      this.fileName, this.sharedWith, this.chunkSize,
+      this.fileName, this.sharedWith, this.chunkSize, this.iv,
       {this.date}) {
     date ??= DateTime.now().toUtc();
   }
@@ -150,8 +132,7 @@ class FileTransferObject {
     map['fileName'] = fileName;
     map['sharedWith'] = sharedWith;
     map['chunkSize'] = chunkSize;
-    //map['sharedStatus'] = sharedStatus;
-    //map['fileStatus'] = fileStatus;
+    map['iv'] = iv;
     map['date'] = date!.toUtc().toString();
     map['notes'] = notes;
     return map;

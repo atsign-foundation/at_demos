@@ -44,8 +44,9 @@ class FileReceiver {
       var encryptionService = _atClient.encryptionService!;
       var encryptedFile =
           File('$downloadPath${Platform.pathSeparator}encrypted_$fileName');
-      await encryptionService.decryptFileInChunks(encryptedFile,
-          valueJson['fileEncryptionKey'], valueJson['chunkSize']);
+      await encryptionService.decryptFileInChunks(
+          encryptedFile, valueJson['fileEncryptionKey'], valueJson['chunkSize'],
+          ivBase64: valueJson['iv']);
       var endTime = DateTime.now();
       print(
           'Time taken to decrypt file: ${endTime.difference(startTime).inSeconds}');
@@ -72,14 +73,6 @@ class FileReceiver {
     }
   }
 
-  Future<File> downloadFile(String fileUrl, String localFilePath) async {
-    //TODO implement progress
-    final request = await HttpClient().getUrl(Uri.parse('$fileUrl?download=1'));
-    final response = await request.close();
-    await response.pipe(File(localFilePath).openWrite());
-    return File(localFilePath);
-  }
-
   Future<void> downloadFileWithProgress(String fileUrl, String downloadPath,
       String fileName, dynamic valueJson) async {
     var httpClient = http.Client();
@@ -91,6 +84,10 @@ class FileReceiver {
 
     response.asStream().listen((http.StreamedResponse r) {
       r.stream.listen((List<int> chunk) {
+        if (r.contentLength == null) {
+          print('content length is null.');
+          return;
+        }
         // Display percentage of completion
         var percentage = downloaded / r.contentLength! * 100;
         int roundedPercent = percentage.round();
