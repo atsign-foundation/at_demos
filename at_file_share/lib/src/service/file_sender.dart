@@ -28,16 +28,16 @@ class FileSender {
       throw Exception('upload to storJ failed');
     }
     var fileTransferObject = FileTransferObject(
-        'zetta_transfer',
+        'acme_transfer',
         fileEncryptionKey,
         storJShareUrl,
         basename(fileToSend.path),
         params.receiverAtSign,
         params.chunkSize,
         iv);
-    //$TODO replace test_transfer with key name required for demo
+    //$TODO replace acme_transfer with key name required for demo
     var atKey = AtKey()
-      ..key = 'zetta_transfer'
+      ..key = 'acme_transfer'
       ..sharedWith = params.receiverAtSign
       ..metadata = Metadata()
       ..metadata.ttr = -1;

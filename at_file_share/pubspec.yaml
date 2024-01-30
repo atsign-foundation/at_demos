@@ -13,6 +13,7 @@ dependencies:
   http: ^1.0.0
   at_client: ^3.0.75
   at_chops: ^2.0.0
+  at_cli_commons: ^1.0.4
 
 dev_dependencies:
   lints: ^2.1.0
