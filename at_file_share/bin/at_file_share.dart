@@ -22,15 +22,16 @@ ArgParser buildParser() {
       help: 'File sharing mode - send or receive',
     )
     ..addOption('atKeysFilePath',
-        abbr: 'k', mandatory: false, help: 'atKeys file of the current atsign')
+        abbr: 'k', mandatory: true, help: 'atKeys file of the current atsign')
     ..addOption('sender',
-        abbr: 's', mandatory: false, help: 'atsign sending the file')
+        abbr: 's', mandatory: true, help: 'atsign sending the file')
     ..addOption('receiver',
-        abbr: 'r', mandatory: false, help: 'atsign receiving the shared file')
+        abbr: 'r', mandatory: true, help: 'atsign receiving the shared file')
     ..addOption('filePath',
         abbr: 'f', mandatory: false, help: 'path of file in local to share')
     ..addOption('downloadDir',
-        abbr: 'd', mandatory: false, help: 'download dir when receiving files');
+        abbr: 'd', mandatory: false, help: 'download dir when receiving files')
+  ..addOption('privateKey',abbr: 'p',mandatory: true, help: 'private key of sender atsign');
 }
 
 void printUsage(ArgParser argParser) {

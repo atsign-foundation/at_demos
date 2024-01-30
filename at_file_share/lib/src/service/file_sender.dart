@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
-
+import 'dart:convert';
 import 'package:at_client/at_client.dart';
 import 'package:at_chops/at_chops.dart';
 import 'package:path/path.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:at_file_share/src/file_send_params.dart';
 
 class FileSender {
@@ -20,76 +19,106 @@ class FileSender {
     var encryptionService = _atClient.encryptionService!;
     var encryptedFile = await encryptionService.encryptFileInChunks(
         fileToSend, fileEncryptionKey, params.chunkSize);
-    var storJShareUrl = await _uploadToStorJ(encryptedFile,
-        _atClient.getCurrentAtSign()!, basename(fileToSend.path));
-    // var fileTransferObject = FileTransferObject(
-    //     'test_transfer',
-    //     fileEncryptionKey,
-    //     storJShareUrl,
-    //     basename(fileToSend.path),
-    //     params.receiverAtSign,
-    //     params.chunkSize);
-    // //$TODO replace test_transfer with key name required for demo
-    // var atKey = AtKey()
-    //   ..key = 'test_transfer'
-    //   ..sharedWith = params.receiverAtSign
-    //   ..metadata = Metadata()
-    //   ..metadata.ttr = -1;
-    // var notificationResult = await _atClient.notificationService.notify(
-    //   NotificationParams.forUpdate(
-    //     atKey,
-    //     value: jsonEncode(fileTransferObject.toJson()),
-    //   ),
-    // );
-    // print('file share send notification: $notificationResult');
+    var storJShareUrl =
+        await _uploadToStorJ(encryptedFile, basename(params.filePath));
+    print('storJShareUrl: $storJShareUrl');
+    if (storJShareUrl == null) {
+      throw Exception('upload to storJ failed');
+    }
+    var fileTransferObject = FileTransferObject(
+        'test_transfer',
+        fileEncryptionKey,
+        storJShareUrl,
+        basename(fileToSend.path),
+        params.receiverAtSign,
+        params.chunkSize);
+    //$TODO replace test_transfer with key name required for demo
+    var atKey = AtKey()
+      ..key = 'test_transfer'
+      ..sharedWith = params.receiverAtSign
+      ..metadata = Metadata()
+      ..metadata.ttr = -1;
+    var notificationResult = await _atClient.notificationService.notify(
+      NotificationParams.forUpdate(
+        atKey,
+        value: jsonEncode(fileTransferObject.toJson()),
+      ),
+    );
+    print('file share send notification: $notificationResult');
   }
 
-  Future<String?> _uploadToStorJ(
-      File encryptedFile, String atSign, String fileName) async {
+  Future<String?> _uploadToStorJ(File encryptedFile, String fileName) async {
     try {
-      var storjUrl = await _getStorjUrl(atSign, fileName);
-      print('storjUrl: $storjUrl');
-      var res = await http.post(Uri.parse(storjUrl), headers: {
-        "Content-Length": "0",
-      });
+      // final s3Storage = S3Storage(
+      //   endPoint: 'gateway.storjshare.io',
+      //   accessKey: Platform.environment['STORJ_ACCESS_KEY']!,
+      //   secretKey: Platform.environment['STORJ_SECRET_KEY']!,
+      // );
+      // var putResult = await s3Storage.fPutObject(
+      //     'demo-bucket', fileName, encryptedFile.path);
+      // print('putResult: $putResult');
+      String command = 'uplink';
+      List<String> arguments = ['cp', encryptedFile.path, 'sj://demo-bucket'];
 
-      var putUri = Uri.parse(res.body);
-      final streamedRequest = http.StreamedRequest('PUT', putUri);
-
-      var imageLength = await encryptedFile.length();
-      streamedRequest.contentLength = imageLength;
-
-      encryptedFile.openRead().listen((chunk) {
-        streamedRequest.sink.add(chunk);
-      }, onDone: () {
-        streamedRequest.sink.close();
-      });
-
-      http.StreamedResponse response = await streamedRequest.send();
-      print('http response: $response');
-
-      var shareableLink = await http.get(Uri.parse(storjUrl));
-      if (shareableLink.statusCode == 200) {
-        print('sharable line: $shareableLink');
-        return shareableLink.body;
-      } else {
-        print('status code: ${shareableLink.statusCode}');
-      }
+      // Create a ProcessResult object by running the command
+      var startTime = DateTime.now();
+      ProcessResult result = await Process.run(command, arguments);
+      var endTime = DateTime.now();
+      print(
+          'upload time taken in seconds: ${endTime.difference(startTime).inSeconds}');
+      // Print the output of the command
+      print('upload Exit code: ${result.exitCode}');
+      print('upload Stdout: ${result.stdout}');
+      arguments = [
+        'share',
+        '--url',
+        '--register',
+        'sj://demo-bucket/${basename(encryptedFile.path)}',
+        '--not-after=24h'
+      ];
+      result = await Process.run(command, arguments);
+      // Print the output of the command
+      print('share Exit code: ${result.exitCode}');
+      print('share stdout: ${result.stdout}');
+      var resultString = result.stdout.toString();
+      var shareUrl =
+          resultString.substring(resultString.indexOf('URL       :') + 12);
+      print('shareUrl: $shareUrl');
+      return shareUrl.trim();
     } on Exception catch (e, trace) {
+      print('inside exception');
+      print(e.toString());
       print(trace);
     } on Error catch (e, trace) {
+      print('inside error');
+      print(e.toString());
       print(trace);
+    } finally {
+      File(encryptedFile.path).deleteSync();
     }
+    return null;
   }
-
-  Future<String> _getStorjUrl(String atSign, String fileName) async {
-    var buzzKey = Platform.environment['ATBUZZKEY'];
-    var nonce = "test_nonce"; //TODO - replace with impl
-    var signedNonce = "test_signed_nonce"; //TODO - replace with impl
-    String url =
-        "https://tokengateway-bg7d74s2.uc.gateway.dev/gettoken?key=$buzzKey&atsign=$atSign&nonce=$nonce&signednonce=$signedNonce&filename=$fileName";
-    return url;
-  }
+  // Future<String> getInitialUrl(String atsign, String fileName,String privateKey) async {
+  //   var atBuzzKey = Platform.environment['ATBUZZKEY'];
+  //   print('$atBuzzKey: $atBuzzKey');
+  //   var nonce = await getnonce();
+  //   var signedNonce = await signNonce(nonce, privateKey);
+  //   String url =
+  //       "https://tokengateway-bg7d74s2.uc.gateway.dev/gettoken?key=$atBuzzKey&atsign=$atsign&nonce=$nonce&signednonce=$signedNonce&filename=$fileName";
+  //   return url;
+  // }
+  //
+  // Future<String> getnonce() async {
+  //   var atBuzzKey = Platform.environment['ATBUZZKEY'];
+  //   String url = "https://noncegateway-bg7d74s2.uc.gateway.dev/getnonce?key=$atBuzzKey";
+  //   var res = await http.get(Uri.parse(url));
+  //   return res.body;
+  // }
+  //
+  // Future<String> signNonce(String nonce,String atSignPrivateKey) async {
+  //   var signature = RSAPrivateKey.fromString(atSignPrivateKey).createSHA256Signature(utf8.encode(nonce));
+  //   return base64UrlEncode(signature);
+  // }
 }
 
 // add any additional params if required
