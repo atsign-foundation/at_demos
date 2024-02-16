@@ -39,10 +39,10 @@ Select Interfacing Options > SSH > Yes
 #### Using command line rather than Desktop OS
 If you are using the command line rather than the Desktop OS, you can follow the instructions [here](https://www.raspberrypi.com/documentation/computers/remote-access.html#boot-output).
 
-### 3. Installing sshnp
-Once you have set up the Raspberry Pi, you can install sshnp by following the instructions [here](https://www.noports.com). Once you have purchased a license (or have obtained a free trial), you can follow the installation instructions [here](https://www.noports.com/sshnoports-installation).
+### 4. Installing SSH No Ports
+Once you have set up the Raspberry Pi, you can install sshnp by following the instructions [here](https://www.noports.com). Once you have purchased a license (or have obtained a free trial), you can follow the installation instructions [here](https://docs.noports.com/ssh-no-ports/guides/installation-guide).
 
-*note* If you already have the keys to your atSigns and the atSigns are activated, proceed with the instructions below (same steps as 3.5 on [noports.com/installation](https://www.noports.com/sshnoports-installation)):
+*note* If you already have the keys to your atSigns and the atSigns are activated, proceed with the instructions below on [noports.com/installation](https://docs.noports.com/ssh-no-ports/guides/installation-guide)):
 #### What you will need for this step
 - atKeys files (on your client machine)
 - IP address of your device
@@ -57,13 +57,9 @@ or click on the network icon on the top right corner of the screen and select "C
 ![](wifi-info.png)
 
 #### On your device
-The device home directory is typically '/home/<username>'. Double check by running the following command:
+Make the folder to store the keys:
 ```bash
-echo $HOME
-```
-
-```bash
-mkdir -p <device home directory>/.atsign/keys
+mkdir -p $HOME/.atsign/keys
 ```
 
 #### On your client machine
@@ -75,33 +71,10 @@ scp ~/.atsign/keys/<device address>_key.atKeys <user>@<host>:<device home direct
 ### 4. Running the demo
 You can connect to your device from any machine with the following commands:
 ```
-killall -u "$(whoami)" -r "sshnpd$"
-$(sshnp@<device address> -d <device name>)
+sshnp -f <client atsign> -t <device atSign> -d <device name> -h @rv_am -i <your ssh key>
 ```
 
 **Example**
 ```
-$(sshnp@alice_device -d raspberry_pi)
+sshnp -f @alice_client -t @alice_device -d raspberry_pi -h @rv_am -i ~/.ssh/id_ed25519
 ```
-
-### Updating your installation
-Updating your installation
-#### Device
-To update the device, run the following command:
-
-```
-bash -c "$(curl -fsSL https://getsshnpd.noports.com)" -- --update
-```
-
-This will update all services installed under the current user.
-
-#### Client
-To update the client, run the following command:
-
-```
-bash -c "$(curl -fsSL https://getsshnp.noports.com)" -- --update
-```
-
-This will update the sshnp client for the current user.
-
-
