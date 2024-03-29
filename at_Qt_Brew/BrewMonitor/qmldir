@@ -1,0 +1,7 @@
+module BrewMonitor
+singleton AppSettings 1.0 AppSettings.qml
+singleton Constants 1.0 Constants.qml
+Beer 1.0 Beer.qml
+Home 1.0 Home.qml
+Main 1.0 Main.qml
+BottomBar 1.0 BottomBar.qml
