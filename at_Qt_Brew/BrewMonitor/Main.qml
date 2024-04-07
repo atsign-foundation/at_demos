@@ -6,7 +6,7 @@ import QtQuick.Pdf
 
 Window {
     width: Constants.width
-    height: Constants.height
+    height: Constants.height - 50
     visible: true
     title: qsTr("Beer!")
 
@@ -14,7 +14,7 @@ Window {
     StackView {
         id: stackView
         width: Constants.width
-        height: Constants.height - 75
+        height: Constants.height - 50
         initialItem: Beer {
             id: beer
             anchors.fill: parent

@@ -19,7 +19,6 @@ QML_IMPORT_MAJOR_VERSION = 1
 #@QmlElement
 @QmlSingleton
 class BeerTap(QObject):
-
     def __init__(self):
         QObject.__init__(self)
         self.local = AtSign("@qt_app_2")
@@ -27,8 +26,8 @@ class BeerTap(QObject):
 
         self.remote = AtSign("@qt_beer")
 
-    @Slot()
-    def run_pump_for_seconds(self, seconds: int = 0.5):
+    @Slot(int)
+    def run_pump_for_seconds(self, seconds: float = 0.5):
         atclient = self.local_atclient
         qt_app_atsign = self.local
         beer_atsign = self.remote
@@ -50,5 +49,6 @@ class BeerTap(QObject):
         )
         sharedkey.metadata = metadata
         sleep(1)
-        res = atclient.notify(sharedkey, data)
+        res = atclient.notify(sharedkey, payload)
+
 

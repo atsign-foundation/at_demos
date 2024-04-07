@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 
 Item {
     width: Constants.width
-    height: 75
+    height: 50
     Rectangle {
         //background color
         color: "#002125"

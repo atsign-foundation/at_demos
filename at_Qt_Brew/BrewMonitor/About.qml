@@ -6,7 +6,7 @@ import QtQuick.Pdf
 Pane {
     id: root
     width: Constants.width
-    height: Constants.height - 75
+    height: Constants.height - 50
     background: Rectangle {
         id: back
         // color: "#002125"

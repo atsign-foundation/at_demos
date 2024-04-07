@@ -18,7 +18,7 @@ Page {
     anchors.left: parent.left
     anchors.right: parent.right
     width: Constants.width
-    height: Constants.height - 75
+    height: Constants.height - 50
     property color tileColor: "black"
     property color glowColor: "#55ff55" //add orange glow in light mode
     property real tileGlowRadius: 5
@@ -134,7 +134,7 @@ Page {
         id: nutritionInfo
         // calories
         x: 40
-        y: 265
+        y: 240
         width: 150
         height: 211
         color: tileColor
@@ -221,12 +221,11 @@ Page {
 
     RoundButton {
         id: beer1
-        y: 14
         radius: 25
         anchors.centerIn: parent
         width: 180
         height: 260
-        anchors.verticalCenterOffset: -75
+        anchors.verticalCenterOffset: -100
         anchors.horizontalCenterOffset: -125
         // opacity: selectedBeer === 0 ? 1 : 0.5
         property int calories: 173
@@ -300,11 +299,10 @@ Page {
 
     RoundButton {
         id: beer2
-        y: 14
         radius: 25
         width: 180
         height: 260
-        anchors.verticalCenterOffset: -75
+        anchors.verticalCenterOffset: -100
         anchors.horizontalCenterOffset: 125
         anchors.centerIn: parent
         // opacity: selectedBeer === 1 ? 1 : 0.5
@@ -420,7 +418,7 @@ Page {
     Rectangle {
         id: caloriesInfo
         x: 40
-        anchors.verticalCenter: beer1.verticalCenter
+        anchors.top: beer1.top
         width: 150
         height: 150
         color: tileColor
@@ -460,7 +458,7 @@ Page {
         id: abvInfo
         //ABV %
         x: 822
-        y: 265
+        y: 240
         width: 150
         height: 150
         color: tileColor
@@ -496,7 +494,7 @@ Page {
     Rectangle {
         id: pouredInfo
         x: 822
-        anchors.verticalCenter: beer2.verticalCenter
+        anchors.top: beer2.top
         width: 150
         height: 150
         color: tileColor
@@ -649,7 +647,7 @@ Page {
     RoundButton {
         id: pourButton
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 430
+        anchors.bottom: nutritionInfo.bottom
         width: 180
         height: 65
         // radius: 25
@@ -681,7 +679,7 @@ Page {
             displaySodium = 0
             displayCarbs = 0
 
-            BeerTap.run_pump_for_seconds(0.5)
+            MyTap.run_pump_for_seconds(0.5)
         }
     }
 

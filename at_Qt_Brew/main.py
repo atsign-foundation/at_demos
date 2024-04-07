@@ -13,7 +13,7 @@ if __name__ == "__main__":
     QApplication.setOrganizationName("QtProject");
 
     engine = QQmlApplicationEngine()
-    qmlRegisterSingletonType(beerTap_controller.BeerTap, "BeerTap", 1, 0, "BeerTap")
+    qmlRegisterSingletonType(beerTap_controller.BeerTap, "BeerTap", 1, 0, "MyTap")
 
     engine.addImportPath(Path(__file__).parent)
     engine.loadFromModule("BrewMonitor", "Main")
