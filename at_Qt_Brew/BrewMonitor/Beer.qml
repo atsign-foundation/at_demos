@@ -681,7 +681,7 @@ Page {
             displaySodium = 0
             displayCarbs = 0
 
-            BeerTap.run_pump_for_seconds(3)
+            BeerTap.run_pump_for_seconds(0.5)
         }
     }
 

@@ -28,7 +28,7 @@ class BeerTap(QObject):
         # self.remote = AtSign("@qt_beer")
 
     @Slot()
-    def run_pump_for_seconds(self, seconds: int = 5):
+    def run_pump_for_seconds(self, seconds: int = 0.5):
         atclient = self.local_atclient
         qt_app_atsign = self.local
         beer_atsign = self.remote
