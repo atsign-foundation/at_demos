@@ -8,6 +8,11 @@ import threading
 import json
 import queue
 from time import sleep, time
+import RPi.GPIO as GPIO
+
+DC_WATER_PUMP = 4 # GPIO PIN = 4
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(DC_WATER_PUMP, GPIO.OUT)
 
 beer_atsign = '@qt_beer'
 app_atsign = '@qt_app_2'
@@ -23,7 +28,7 @@ def send_ack(atclient: AtClient, timestamp: int):
         'type': 'ack',
         'timestamp': int(time()),
         'data': data
-	}
+        }
 
     data_to_send = json.dumps(payload)
 
@@ -42,9 +47,19 @@ def send_ack(atclient: AtClient, timestamp: int):
     res = atclient.notify(sharedkey, data_to_send)
     return res
 
+def run_pump(seconds: float):
+    GPIO.output(DC_WATER_PUMP, GPIO.HIGH)
+    sleep(seconds)
+    GPIO.output(DC_WATER_PUMP, GPIO.LOW)
+
 def main():
-    atclient = AtClient(AtSign(beer_atsign), queue=queue.Queue(maxsize=100), verbose=False)
+    print('Authenticating...')
+    atclient = AtClient(AtSign(beer_atsign), queue=queue.Queue(maxsize=100), verbose=True)
+    if atclient == None:
+        print('Failed to authenticate.')
+        return
     threading.Thread(target=atclient.start_monitor, args=(namespace,)).start()
+    
 
     while True:
         at_event = atclient.queue.get()
@@ -74,7 +89,8 @@ def main():
 
         if type == 'pumpWithSeconds':
             seconds = data['seconds']
-            print('Pumping for %d seconds' % seconds)
+            print('Pumping for %f seconds' % seconds)
+            run_pump(float(seconds))
         sleep(1)
 
 if __name__ == '__main__':

@@ -63,7 +63,7 @@ def main():
     thread = threading.Thread(target=atclient.start_monitor, args=(namespace,))
     thread.start()
 
-    (notification_id, timestamp) = send_run_pump_with_seconds(atclient, 3)
+    (notification_id, timestamp) = send_run_pump_with_seconds(atclient, 0.5)
     print('Sent Notification ID: %s' % notification_id)
 
     # go through queue
