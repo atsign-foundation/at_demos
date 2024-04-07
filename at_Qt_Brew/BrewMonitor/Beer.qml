@@ -652,8 +652,7 @@ Page {
         height: 65
         // radius: 25
         enabled: sizeSelected > 0
-        opacity: enabled ? 1 : 0.5
-
+        opacity: enabled ? 1 : 0.75
         Text {
             text: "Give me beer!"
             font.pointSize: 16

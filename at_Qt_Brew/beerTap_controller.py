@@ -50,5 +50,3 @@ class BeerTap(QObject):
         sharedkey.metadata = metadata
         sleep(1)
         res = atclient.notify(sharedkey, payload)
-
-
