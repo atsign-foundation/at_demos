@@ -39,4 +39,10 @@ QtObject {
                                                    "pixelSize": 24,
                                                    "weight": 600
                                                })
+
+    property color backgroundColor: AppSettings.isDarkTheme ? "#000000" : "#EFFCF6"
+    property color accentColor: "#002125"
+    property color primaryTextColor: "#FFFFFF"
+    property color accentTextColor: AppSettings.isDarkTheme ? "#D9D9D9" : "#898989"
+    property color iconColor: AppSettings.isDarkTheme ? "#D9D9D9" : "#00414A"
 }

@@ -9,7 +9,7 @@ Pane {
     height: Constants.height - 75
     background: Rectangle {
         id: back
-        // color: AppSettings.accentColor
+        // color: "#002125"
     }
 
     PdfDocument {

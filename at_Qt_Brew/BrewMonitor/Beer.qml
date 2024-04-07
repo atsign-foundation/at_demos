@@ -86,7 +86,7 @@ Page {
 
     Rectangle {
         id: background
-        color: AppSettings.accentColor
+        color: "#002125"
         anchors.fill: parent
     }
 
@@ -146,7 +146,7 @@ Page {
             font.pointSize: 14
             width: contentWidth
             anchors.horizontalCenter: parent.horizontalCenter
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         GridLayout {
@@ -154,57 +154,57 @@ Page {
             anchors.bottom: parent.bottom
             columns: 2
             rows: 5
-            columnSpacing: 35
+            columnSpacing: 20
             rowSpacing: 0
 
             Text {
                 text: "Total Fat"
-                color: AppSettings.primaryTextColor
+                color: "#FFFFFF"
                 Layout.leftMargin: 15
             }
             Text {
-                text: Math.round(displayFat * 100) / 100 + "g"
-                color: AppSettings.primaryTextColor
+                text: Math.round(displayFat * 10) / 10 + "g"
+                color: "#FFFFFF"
             }
 
             Text {
                 text: "Cholesterol"
-                color: AppSettings.primaryTextColor
+                color: "#FFFFFF"
                 Layout.leftMargin: 15
             }
             Text {
-                text: Math.round(displayCholesterol * 100) / 100 + "g"
-                color: AppSettings.primaryTextColor
+                text: Math.round(displayCholesterol * 10) / 10 + "g"
+                color: "#FFFFFF"
             }
 
             Text {
                 text: "Sodium"
-                color: AppSettings.primaryTextColor
+                color: "#FFFFFF"
                 Layout.leftMargin: 15
             }
             Text {
-                text: Math.round(displaySodium * 100) / 100 + "g"
-                color: AppSettings.primaryTextColor
+                text: Math.round(displaySodium * 10) / 10 + "g"
+                color: "#FFFFFF"
             }
 
             Text {
                 text: "Total Carbs"
-                color: AppSettings.primaryTextColor
+                color: "#FFFFFF"
                 Layout.leftMargin: 15
             }
             Text {
-                text: Math.round(displayCarbs * 100) / 100 + "g"
-                color: AppSettings.primaryTextColor
+                text: Math.round(displayCarbs * 10) / 10 + "g"
+                color: "#FFFFFF"
             }
 
             Text {
                 text: "Protein"
-                color: AppSettings.primaryTextColor
+                color: "#FFFFFF"
                 Layout.leftMargin: 15
             }
             Text {
-                text: Math.round(displayProtein * 100) / 100 + "g"
-                color: AppSettings.primaryTextColor
+                text: Math.round(displayProtein * 10) / 10 + "g"
+                color: "#FFFFFF"
             }
         }
     }
@@ -261,7 +261,7 @@ Page {
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         background: Rectangle {
@@ -341,7 +341,7 @@ Page {
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         background: Rectangle {
@@ -435,7 +435,7 @@ Page {
             anchors.verticalCenterOffset: -20
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 48
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         Text {
@@ -443,7 +443,7 @@ Page {
             anchors.top: caloriesNum.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
     }
 
@@ -472,7 +472,7 @@ Page {
             anchors.verticalCenterOffset: -20
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 48
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         Text {
@@ -480,7 +480,7 @@ Page {
             anchors.top: abvNum.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
     }
 
@@ -510,7 +510,7 @@ Page {
             anchors.verticalCenterOffset: -20
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 48
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         Text {
@@ -518,7 +518,7 @@ Page {
             anchors.top: pouredNum.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
     }
 
@@ -547,7 +547,7 @@ Page {
             text: "0,33L"
             anchors.centerIn: parent
             font.pointSize: 16
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         background: Rectangle {
@@ -604,7 +604,7 @@ Page {
             text: "0,5L"
             font.pointSize: 16
             anchors.centerIn: parent
-            color: AppSettings.primaryTextColor
+            color: "#FFFFFF"
         }
 
         background: Rectangle {
@@ -660,7 +660,7 @@ Page {
             text: "Give me beer!"
             font.pointSize: 16
             anchors.centerIn: parent
-            // color: AppSettings.primaryTextColor
+            // color: "#FFFFFF"
         }
 
         onClicked: {

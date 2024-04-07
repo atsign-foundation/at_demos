@@ -2,11 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Item {
-    width: 1024
+    width: Constants.width
     height: 75
     Rectangle {
         //background color
-        color: AppSettings.accentColor
+        color: "#002125"
         anchors.fill: parent
     }
 
@@ -17,10 +17,8 @@ Item {
         anchors.leftMargin: 10
         anchors.bottomMargin: 10
         sourceSize.height: 50
-        source: AppSettings.isDarkTheme ? "Images/atsign-logo-light.svg" : "Images/atsign-logo-dark.svg"
+        source: "Images/atsign-logo-light.svg"
     }
-
-
 
     Button {
         id: homeButton
@@ -58,6 +56,6 @@ Item {
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
         sourceSize.height: 50
-        source: AppSettings.isDarkTheme ? "Images/Qt-logo-white.svg" : "Images/Qt-logo-black.svg"
+        source: "Images/Qt-logo-white.svg"
     }
 }

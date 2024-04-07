@@ -10,7 +10,7 @@ Window {
     visible: true
     title: qsTr("Beer!")
 
-    // color: AppSettings.accentColor
+    // color: "#002125"
     StackView {
         id: stackView
         width: Constants.width
