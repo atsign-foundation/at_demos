@@ -39,7 +39,7 @@ class BeerTap(QObject):
             'type': 'pumpWithSeconds',
             'data': data
         }
-        data = json.dumps(data)
+        payload = json.dumps(payload)
         sharedkey = SharedKey.from_string(str(beer_atsign) + ':pump.qtbeer' + str(qt_app_atsign))
         iv_nonce = EncryptionUtil.generate_iv_nonce()
         metadata = Metadata(
