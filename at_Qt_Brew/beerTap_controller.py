@@ -22,10 +22,10 @@ class BeerTap(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        # self.local = AtSign("@qt_app_2")
-        # self.local_atclient = AtClient(self.local, queue=queue.Queue(maxsize=100), verbose=False)
+        self.local = AtSign("@qt_app_2")
+        self.local_atclient = AtClient(self.local, queue=queue.Queue(maxsize=100), verbose=False)
 
-        # self.remote = AtSign("@qt_beer")
+        self.remote = AtSign("@qt_beer")
 
     @Slot()
     def run_pump_for_seconds(self, seconds: int = 0.5):
