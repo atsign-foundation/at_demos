@@ -9,7 +9,9 @@ import QtQuick
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import QtQuick.Layouts
+import BeerTap
 
+//this is a design studio file that should be refactored
 Page {
     id: pane
     anchors.top: parent.top
@@ -17,17 +19,16 @@ Page {
     anchors.right: parent.right
     width: Constants.width
     height: Constants.height - 75
-    property color tileColor: "black" //Qt.lighter(AppSettings.accentColor,3.5)
+    property color tileColor: "black"
     property color glowColor: "#55ff55" //add orange glow in light mode
     property real tileGlowRadius: 5
-    property int beer1Count: 15
-    property int beer2Count: 18
-    property int selectedBeer: 0
-    property int sizeSelected: -1
-    property int selectedSize: 16
-    property int displayCalories: beer1.calories
-    property real displayABV: beer1.abv
-    property int displayCount: beer1Count
+    property int beer1Count: 5
+    property int beer2Count: 14
+    property int selectedBeer: -1
+    property int sizeSelected: 0
+    property int displayCalories: 0
+    property real displayABV: 0
+    property int displayCount: 0
     property real displayFat: 0
     property real displayCholesterol: 0
     property real displaySodium: 0
@@ -213,9 +214,9 @@ Page {
         anchors.fill: beer1
         glowRadius: tileGlowRadius
         spread: 0.1
-        color: Qt.lighter(glowColor, 2)
+        color: "white"
         cornerRadius: beer1.radius + glowRadius
-        visible: selectedBeer === 0
+        visible: selectedBeer === 0 || selectedBeer === -1
     }
 
     RoundButton {
@@ -271,18 +272,18 @@ Page {
             color: tileColor
         }
         onClicked: {
-            if (selectedBeer === 1) {
+            if (selectedBeer === 1 || selectedBeer < 0) {
                 selectedBeer = 0
-                displayCalories = calories
-                beer1Count += 1
                 displayCount = beer1Count
                 displayABV = abv
-                displayFat = fat
-                displayCholesterol = cholesterol
-                displaySodium = sodium
-                displayCarbs = carbs
-                displayProtein = protein
-                sizeSelected = -1
+                displayFat = 0
+                displayCalories = 0
+                displayCholesterol = 0
+                displaySodium = 0
+                displayCarbs = 0
+                displayProtein = 0
+                sizeSelected = 0
+                //6a98c9
             }
         }
     }
@@ -292,9 +293,9 @@ Page {
         anchors.fill: beer2
         glowRadius: tileGlowRadius
         spread: 0.1
-        color: Qt.lighter(glowColor, 2)
+        color: "white"
         cornerRadius: beer2.radius + glowRadius
-        visible: selectedBeer === 1
+        visible: selectedBeer === 1 || selectedBeer === -1
     }
 
     RoundButton {
@@ -351,18 +352,18 @@ Page {
             color: tileColor
         }
         onClicked: {
-            if (selectedBeer === 0) {
+            if (selectedBeer === 0 || selectedBeer < 0) {
                 selectedBeer = 1
-                displayCalories = calories
-                beer2Count += 1
                 displayCount = beer2Count
                 displayABV = abv
-                displayFat = fat
-                displayCholesterol = cholesterol
-                displaySodium = sodium
-                displayCarbs = carbs
-                displayProtein = protein
-                sizeSelected = -1
+                displayFat = 0
+                displayCalories = 0
+                displayCholesterol = 0
+                displaySodium = 0
+                displayCarbs = 0
+                displayProtein = 0
+                sizeSelected = 0
+                //6a98c9
             }
         }
     }
@@ -374,6 +375,46 @@ Page {
         spread: 0.1
         color: glowColor
         cornerRadius: caloriesInfo.radius + glowRadius
+    }
+
+    Behavior on glowColor {
+        ColorAnimation {
+            duration: 2000
+        }
+    }
+
+    Timer {
+        id: colorTimer
+        interval: 5000
+        repeat: true
+        running: true
+        property int colorIndex: 0
+        // Define a list of colors representing the RGB spectrum
+        property var colorList: ["#ff0000", // Red
+            "#ff7f00", // Orange
+            "#ffff00", // Yellow
+            "#00ff00", // Green
+            "#00ffff", // Cyan
+            "#0000ff", // Blue
+            "#8a2be2", // Blue Violet
+            "#4b0082", // Indigo
+            "#9400d3", // Violet
+            "#ff1493", // Deep Pink
+            "#ff69b4", // Hot Pink
+            "#ffc0cb", // Pink
+            "#ff4500", // Orange Red
+            "#ff8c00", // Dark Orange
+            "#ffd700", // Gold
+            "#adff2f", // Green Yellow
+            "#32cd32", // Lime Green
+            "#20b2aa", // Light Sea Green
+            "#00fa9a", // Medium Spring Green
+            "#00ced1" // Dark Turquoise
+        ]
+        onTriggered: {
+            glowColor = colorList[colorIndex]
+            colorIndex = (colorIndex + 1) % colorList.length
+        }
     }
 
     Rectangle {
@@ -488,7 +529,7 @@ Page {
         spread: 0.1
         color: "white"
         cornerRadius: shortOptionButton.radius + glowRadius
-        visible: sizeSelected === 0
+        visible: sizeSelected === 1 || sizeSelected === -1
     }
 
     RoundButton {
@@ -501,6 +542,7 @@ Page {
         anchors.verticalCenterOffset: 30
         width: 180 / 2
         height: 65 / 2
+        enabled: selectedBeer === 0 || selectedBeer === 1
         Text {
             text: "0,33L"
             anchors.centerIn: parent
@@ -516,7 +558,22 @@ Page {
             color: tileColor
         }
         onClicked: {
-            sizeSelected = 0
+            sizeSelected = 1
+            if (selectedBeer === 0) {
+                displayCalories = beer1.calories * (1 - .34)
+                displayFat = beer1.fat * (1 - .34)
+                displayCholesterol = beer1.cholesterol * (1 - .34)
+                displaySodium = beer1.sodium * (1 - .34)
+                displayCarbs = beer1.carbs * (1 - .34)
+                displayProtein = beer1.protein * (1 - .34)
+            } else if (selectedBeer === 1) {
+                displayCalories = beer2.calories * (1 - .34)
+                displayFat = beer2.fat * (1 - .34)
+                displayCholesterol = beer2.cholesterol * (1 - .34)
+                displaySodium = beer2.sodium * (1 - .34)
+                displayCarbs = beer2.carbs * (1 - .34)
+                displayProtein = beer2.protein * (1 - .34)
+            }
         }
     }
 
@@ -527,7 +584,7 @@ Page {
         spread: 0.1
         color: "white"
         cornerRadius: tallOptionButton.radius + glowRadius
-        visible: sizeSelected === 1
+        visible: sizeSelected === 2 || sizeSelected === -1
     }
 
     RoundButton {
@@ -536,6 +593,7 @@ Page {
         y: 314
         width: 180 / 2
         height: 65 / 2
+        enabled: (selectedBeer >= 0)
         anchors.verticalCenter: abvInfo.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: 75
@@ -557,7 +615,24 @@ Page {
             color: tileColor
         }
         onClicked: {
-            sizeSelected = 1
+            sizeSelected = 2
+            if (selectedBeer === 0) {
+                displayCalories = beer1.calories
+                displayABV = beer1.abv
+                displayFat = beer1.fat
+                displayCholesterol = beer1.cholesterol
+                displaySodium = beer1.sodium
+                displayCarbs = beer1.carbs
+                displayProtein = beer1.protein
+            } else if (selectedBeer === 1) {
+                displayCalories = beer2.calories
+                displayABV = beer2.abv
+                displayFat = beer2.fat
+                displayCholesterol = beer2.cholesterol
+                displaySodium = beer2.sodium
+                displayCarbs = beer2.carbs
+                displayProtein = beer2.protein
+            }
         }
     }
 
@@ -571,14 +646,14 @@ Page {
         visible: pourButton.enabled
     }
 
-    DelayButton {
+    RoundButton {
         id: pourButton
         anchors.horizontalCenter: parent.horizontalCenter
         y: 430
         width: 180
         height: 65
         // radius: 25
-        enabled: sizeSelected != -1
+        enabled: sizeSelected > 0
         opacity: enabled ? 1 : 0.5
 
         Text {
@@ -587,6 +662,56 @@ Page {
             anchors.centerIn: parent
             // color: AppSettings.primaryTextColor
         }
-        //make the button look pressed when pressed
+
+        onClicked: {
+            if (selectedBeer) {
+                beer2Count += 1
+            } else {
+                beer1Count += 1
+            }
+
+            selectedBeer = -1
+            sizeSelected = 0
+            displayCount = 0
+            displayABV = 0
+            displayCalories = 0
+            displayCholesterol = 0
+            displayProtein = 0
+            displayFat = 0
+            displaySodium = 0
+            displayCarbs = 0
+
+            BeerTap.run_pump_for_seconds(3)
+        }
+    }
+
+    Timer {
+        property bool on: true
+        running: selectedBeer < 0
+        repeat: true
+        interval: 750
+        onTriggered: {
+            if (on) {
+                selectedBeer = -1
+            } else {
+                selectedBeer = -2
+            }
+            on = !on
+        }
+    }
+
+    Timer {
+        property bool on: true
+        running: sizeSelected <= 0 && selectedBeer >= 0
+        repeat: true
+        interval: 750
+        onTriggered: {
+            if (on) {
+                sizeSelected = -1
+            } else {
+                sizeSelected = 0
+            }
+            on = !on
+        }
     }
 }

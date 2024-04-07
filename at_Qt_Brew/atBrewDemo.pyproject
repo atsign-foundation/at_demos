@@ -17,6 +17,6 @@
         "Images/Tucher-helles.png",
         "Images/Budweiser.png",
         "BrewMonitor/TODO",
-        "BrewMonitor/InfoGlow.qml"
+        "beerTap_controller.py"
     ]
 }

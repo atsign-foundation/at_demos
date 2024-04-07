@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import Qt.labs.platform
 
 Item {
     width: 1024
@@ -21,33 +20,16 @@ Item {
         source: AppSettings.isDarkTheme ? "Images/atsign-logo-light.svg" : "Images/atsign-logo-dark.svg"
     }
 
-    Button {
-        text: "Beer Request"
-        font.pointSize: 16
-        anchors.right: homeButton.left
-        anchors.verticalCenter: homeButton.verticalCenter
-        anchors.rightMargin: 20
-        width: 100
-        onClicked: {
 
-            //show color dialog
-            colorDialog.open()
-        }
-    }
-    ColorDialog {
-        id: colorDialog
-        onAccepted: {
-            AppSettings.accentColor = colorDialog.color
-            AppSettings.backgroundColor = colorDialog.color
-        }
-    }
 
     Button {
         id: homeButton
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenterOffset: -85
+        anchors.verticalCenter: parent.verticalCenter
         text: "Home"
         font.pointSize: 16
-        width: 100
+        width: 150
         onClicked: {
             if (!(stackView.currentItem instanceof Beer)) {
                 stackView.replace("Beer.qml", StackView.PopTransition)
@@ -56,12 +38,12 @@ Item {
     }
 
     Button {
-        text: "noports"
+        text: "SSH No Ports"
         font.pointSize: 16
         anchors.left: homeButton.right
         anchors.verticalCenter: homeButton.verticalCenter
         anchors.leftMargin: 20
-        width: 100
+        width: 150
         onClicked: {
             if (!(stackView.currentItem instanceof About)) {
                 stackView.replace("About.qml", StackView.PushTransition)
