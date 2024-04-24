@@ -11,6 +11,14 @@ else
   _grep='grep'
 fi
 
+sedi() {
+  if [ $(uname) = 'Darwin' ]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
 # the normalized hammer and wrench emoji is u1 followed by u2
 # unicode codepoints for grep
 u1='1F6E0' # hammer and wrench emoji
@@ -29,6 +37,7 @@ for d in ${dirs[@]}; do
   # echo $files
 
   for f in ${files}; do
+    echo $f
     # Additional guard against creating $u1$u1$u2 situation
     if echo $f | $_grep -q -P "[\x{$u1}][\x{$u2}]"; then
       echo "detected $f which possibly contains multiple unicode codepoints... skipping"
@@ -39,13 +48,23 @@ for d in ${dirs[@]}; do
         if echo $f | $_grep -q -P '[^_key].atKeys$'; then
           echo 'adding _key'
           new_name=$(echo $new_name | sed -e 's/.atKeys/_key.atKeys/g')
-          echo $new_name
+          echo new name: $new_name
         fi
-        mv "$script_dir/$d/$f" "$script_dir/$d/$new_name"
+        # Explicitly disabled this so that it must be intentional to perform the migration
+        # mv "$script_dir/$d/$f" "$script_dir/$d/$new_name"
       fi
     fi
-  done
 
+  done
   files=$(ls "$script_dir/$d" | $_grep -P "[\x{$u1}][^\x{$u2}]")
   echo "files which failed to convert: $files"
+done
+
+atkeys_files=$(ls "$script_dir/atkeys")
+for f in $atkeys_files; do
+  if echo $f | $_grep -q '.atKeys'; then
+    # Explicitly disabled this so that it must be intentional to perform the migration
+    echo "modifying emojis in $d/$f"
+    sedi -e "s/$x1/$x1$x2/g" "$script_dir/atkeys/$f"
+  fi
 done
