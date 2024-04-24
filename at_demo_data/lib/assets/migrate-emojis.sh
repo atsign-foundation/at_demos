@@ -63,8 +63,8 @@ done
 atkeys_files=$(ls "$script_dir/atkeys")
 for f in $atkeys_files; do
   if echo $f | $_grep -q '.atKeys'; then
-    # Explicitly disabled this so that it must be intentional to perform the migration
     echo "modifying emojis in $d/$f"
-    sedi -e "s/$x1/$x1$x2/g" "$script_dir/atkeys/$f"
+    # Explicitly disabled this so that it must be intentional to perform the migration
+    # sedi -e "s/$x1/$x1$x2/g" "$script_dir/atkeys/$f"
   fi
 done
