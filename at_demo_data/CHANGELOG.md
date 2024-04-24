@@ -1,3 +1,7 @@
+## 2.0.0
+- BREAKING CHANGE: replaced unicode U+1F6E0 with U+1F6E0 U+FE0F for all :hammer_and_wrench: emojis 
+  (normalized the emojis by adding the variant selector)
+
 ## 1.0.3
 - **Fix**: Fixed duplicate cram keys for apkam atsigns
 ## 1.0.2
