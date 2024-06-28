@@ -1,0 +1,22 @@
+{
+    "files": [
+        "main.py",
+        "BrewMonitor/AppSettings.qml",
+        "BrewMonitor/Constants.qml",
+        "BrewMonitor/About.qml",
+        "BrewMonitor/BottomBar.qml",
+        "BrewMonitor/Beer.qml",
+        "BrewMonitor/Main.qml",
+        "tucher.jpg",
+        "Budweiser.svg",
+        "Images/Qt-logo-black.svg",
+        "Images/Qt-logo-white.svg",
+        "Images/atsign-logo-dark.svg",
+        "Images/atsign-logo-light.svg",
+        "Images/CES-slides.pdf",
+        "Images/Tucher-helles.png",
+        "Images/Budweiser.png",
+        "BrewMonitor/TODO",
+        "beerTap_controller.py"
+    ]
+}
