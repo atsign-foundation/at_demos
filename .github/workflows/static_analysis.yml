@@ -10,7 +10,7 @@ on:
     branches:
       - trunk
 
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions: # added using https://github.com/step-security/secure-workflows
   contents: read
 
 jobs:
@@ -24,41 +24,41 @@ jobs:
           sdk: stable
       - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
         with:
-          go-version: 'stable'
+          go-version: "stable"
           cache-dependency-path: tools/osv-scanner/go.sum
 
       # Runs dart lint rules
       - name: Install dependencies and run analyze - mwc_demo/dart/iot_sender
-        working-directory: ./mwc_demo/dart/iot_sender/
+        working-directory: ./demos/mwc_demo/dart/iot_sender/
         run: |
           dart pub get
           dart analyze
 
       - name: Install dependencies and run analyze - at_notifications
-        working-directory: ./at_notifications/
+        working-directory: ./demos/at_notifications/
         run: |
           dart pub get
           dart analyze
 
       - name: Install dependencies and run analyze - at_demo_data
-        working-directory: ./at_demo_data/
+        working-directory: ./packages/at_demo_data/
         run: |
           dart pub get
           dart analyze
 
       - name: Install dependencies and run analyze - at_data_share
-        working-directory: ./at_data_share/
+        working-directory: ./demos/at_data_share/
         run: |
           dart pub get
           dart analyze
 
       # Runs osv-scanner to find any vulnerable Dart dependencies
-      # It needs to look at pubspec.lock files, which is why it's
+      # It needs to look at pubspec.lock ranls, which is why it's
       # placed here, as the `dart pub get` above will create them
       - name: Run osv-scanner
         run: |
           go install github.com/google/osv-scanner/cmd/osv-scanner@6316373e47d7e3e4b4fd3630c4bbc10987738de6 # v1.4.3
-          osv-scanner --lockfile=./mwc_demo/dart/iot_sender/pubspec.lock
-          osv-scanner --lockfile=./at_notifications/pubspec.lock
-          osv-scanner --lockfile=./at_demo_data/pubspec.lock
-          osv-scanner --lockfile=./at_data_share/pubspec.lock
+          osv-scanner --lockfile=./demos/mwc_demo/dart/iot_sender/pubspec.lock
+          osv-scanner --lockfile=./demos/at_notifications/pubspec.lock
+          osv-scanner --lockfile=./packages/at_demo_data/pubspec.lock
+          osv-scanner --lockfile=./demos/at_data_share/pubspec.lock
