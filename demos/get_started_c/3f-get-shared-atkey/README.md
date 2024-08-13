@@ -1,8 +1,8 @@
-# 3e - Get Self AtKey
+# 3f - Get Shared AtKey
 
 ## Description
 
-
+In this example, we are getting the value of a Shared AtKey using the `atclient_get_shared_key` function. This function will return the value of the Shared AtKey that is shared with the atSign that is calling the function. This is useful for when you want to read a value that is shared with you by another atSign or when you are reading a value that you have shared with another atSign. Since the value is encrypted for the both of you, you can both read the data.
 
 ## Files
 
