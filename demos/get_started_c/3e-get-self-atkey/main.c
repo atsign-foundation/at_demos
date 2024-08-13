@@ -23,8 +23,14 @@ int main()
     atclient atclient;
     atclient_init(&atclient);
 
-    atclient_atkey my_shared_atkey;
-    atclient_atkey_init(&my_shared_atkey);
+    atclient_atkey my_self_atkey;
+    atclient_atkey_init(&my_self_atkey);
+
+    /*
+     * Let's declare a null pointer which will later be allocated by our `atclient_get_public_key` function. It is our responsibility to free it once we are
+     * done with it.
+     */
+    char *value = NULL;
 
     if ((exit_code = atclient_utils_find_atserver_address(ATSERVER_HOST, ATSERVER_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
     {
@@ -43,26 +49,23 @@ int main()
 
     const char *atkey_key = "phone";
     const char *atkey_shared_by = ATSIGN;
-    const char *atkey_shared_with = "@soccer0";
     const char *atkey_namespace = "c_demos";
 
-    if ((exit_code = atclient_atkey_create_shared_key(&my_shared_atkey, atkey_key, atkey_shared_by, atkey_shared_with, atkey_namespace)) != 0)
+    if ((exit_code = atclient_atkey_create_self_key(&my_self_atkey, atkey_key, atkey_shared_by, atkey_namespace)) != 0)
     {
         goto exit;
     }
-
-    const char *atkey_value = "123-456-7890";
 
     /*
-     * atclient_put_self_key lets you put a key-value pair in your atSign's atServer.
-     * For our purposes, we will pass `NULL` for the request options and the commit id. 
-     * We want to use the default options and we don't want to receive and
-     * store the commit id.
+     * `atclient_get_self_key` will allocate memory for the `value` pointer. It is our responsibility to free it once we are done with it.
+     * We will pass `NULL` into the request_options argument for now and just use the default request options.
      */
-    if ((exit_code = atclient_put_shared_key(&atclient, &my_shared_atkey, atkey_value, NULL, NULL)) != 0)
+    if ((exit_code = atclient_get_self_key(&atclient, &my_self_atkey, &value, NULL)) != 0)
     {
         goto exit;
     }
+
+    atlogger_log("3E-get-self-atkey", ATLOGGER_LOGGING_LEVEL_INFO, "value: \"%s\"\n", value);
 
     exit_code = 0;
 exit:
@@ -70,7 +73,8 @@ exit:
     free(atserver_host);
     atclient_atkeys_free(&atkeys);
     atclient_free(&atclient);
-    atclient_atkey_free(&my_shared_atkey);
+    atclient_atkey_free(&my_self_atkey);
+    free(value);
     return exit_code;
 }
 }
