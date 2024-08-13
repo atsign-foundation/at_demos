@@ -45,9 +45,8 @@ int main()
      * with the atServer's address and port.
      * Don't forget to free the `atserver_host` variable after use, when using this function.
      */
-    if (atclient_utils_find_atserver_address(ATSERVER_HOST, ATSERVER_PORT, ATSIGN, &atserver_host, &atserver_port) != 0)
+    if ((exit_code = atclient_utils_find_atserver_address(ATSERVER_HOST, ATSERVER_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
     {
-        exit_code = -1;
         goto exit;
     }
 
@@ -55,9 +54,8 @@ int main()
      * my keys are assumed to be set up in ~/.atsign/keys/@soccer99_key.atKeys
      * this function will read the keys from the file and populate the `atkeys` variable
      */
-    if (atclient_utils_populate_atkeys_from_homedir(&atkeys, ATSIGN) != 0)
+    if ((exit_code = atclient_utils_populate_atkeys_from_homedir(&atkeys, ATSIGN)) != 0)
     {
-        exit_code = -1;
         goto exit;
     }
 
@@ -66,9 +64,8 @@ int main()
      * then authenticate to the atServer and establish an authenticated connection
      * using the populated `atkeys` variable.
      */
-    if (atclient_pkam_authenticate(&atclient, atserver_host, atserver_port, &atkeys, ATSIGN) != 0)
+    if ((exit_code = atclient_pkam_authenticate(&atclient, atserver_host, atserver_port, &atkeys, ATSIGN)) != 0)
     {
-        exit_code = -1;
         goto exit;
     }
 

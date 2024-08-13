@@ -1,10 +1,10 @@
-# 2a-public-atkey
+# 2d-atkey-with-metadata
 
 ## Description
 
-In this example, we learn how to create a public AtKey.
+In this example, we learn how to set the metadata of a particular AtKey.
 
-A public AtKey is an AtKey whose value is non-encrypted and can be accessed by any atSign.
+Metadata is a way to store additional information about an AtKey. Metadata holds many things about the AtKey such as the data type of the value, time stamps regarding the value, information on how to store it, information on how it behaves. Metadata can be useful for things like: controlling the lifetime of your AtKey (ttl), or controlling how often it gets updated on other atSign's atServers (ttr), or controlling when it becomes available (ttb = time to birth).
 
 ## Files
 
@@ -30,7 +30,7 @@ The following instructions are for running the example on a Linux/MacOS machine.
 1. Navigate to the `get_started_c` directory.
 
     ```sh
-    cd at_demos/demos/get_started_c/2a-public-atkey
+    cd at_demos/demos/get_started_c/2d-create-atkey-with-metadata
     ```
 
 1. CMake configure

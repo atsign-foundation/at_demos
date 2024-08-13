@@ -14,15 +14,15 @@ int main()
 
     atlogger_set_logging_level(ATLOGGER_LOGGING_LEVEL_DEBUG);
 
-    atclient_atkey my_shared_key;
-    atclient_atkey_init(&my_shared_key);
+    atclient_atkey my_shared_atkey;
+    atclient_atkey_init(&my_shared_atkey);
 
     const char *atkey_key = "phone";
-    const char *atkey_sharedby = ATSIGN;
-    const char *atkey_sharedwith = "@soccer99";
+    const char *atkey_shared_by = ATSIGN;
+    const char *atkey_shared_with = "@soccer99";
     const char *atkey_namespace = "wavi";
 
-    if ((exit_code = atclient_atkey_create_shared_key(&my_shared_key, atkey_key, atkey_sharedby, atkey_sharedwith, atkey_namespace)) != 0)
+    if ((exit_code = atclient_atkey_create_shared_key(&my_shared_atkey, atkey_key, atkey_shared_by, atkey_shared_with, atkey_namespace)) != 0)
     {
         goto exit;
     }
@@ -31,7 +31,7 @@ int main()
      * Now that the AtKey is properly set up, we can set the metadata of that AtKey like this.
      * Since we called the `atclient_atkey_init` function earlier, we can feel safe knowing that the metadata is also already initialized.
      */
-    atclient_atkey_metadata *metadata = &(my_shared_key.metadata);
+    atclient_atkey_metadata *metadata = &(my_shared_atkey.metadata);
 
     /*
      * Set the ttl (time to live) of the AtKey. Once this AtKey is put into the atServer, it will only live for 1000 milliseconds.
@@ -53,7 +53,7 @@ int main()
     exit_code = 0;
 exit:
 {
-    atclient_atkey_free(&my_shared_key);
+    atclient_atkey_free(&my_shared_atkey); // this _free command will automatically free the metadata as well
     return exit_code;
 }
 }

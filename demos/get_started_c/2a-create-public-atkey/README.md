@@ -1,10 +1,10 @@
-# 2c-shared-atkey
+# 2a-public-atkey
 
 ## Description
 
-In this example, we learn how to create a shared AtKey.
+In this example, we learn how to create a public AtKey.
 
-A shared AtKey is an AtKey that points to a value that is specially encrypted only for the specified `shared_with` atSign. That means, as @soccer0, I can create a Shared AtKey that is shared with @soccer99 and only me and @soccer99 will be able to read the value that the AtKey points to. This is an important concept when writing your own end-to-end encrypted Atsign applications.
+A public AtKey is an AtKey whose value is non-encrypted and can be accessed by any atSign.
 
 ## Files
 
@@ -30,7 +30,7 @@ The following instructions are for running the example on a Linux/MacOS machine.
 1. Navigate to the `get_started_c` directory.
 
     ```sh
-    cd at_demos/demos/get_started_c/2c-shared-atkey
+    cd at_demos/demos/get_started_c/2a-create-public-atkey
     ```
 
 1. CMake configure

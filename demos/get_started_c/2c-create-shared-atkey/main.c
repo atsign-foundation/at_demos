@@ -14,18 +14,18 @@ int main()
     /*
      * Create an atkey struct
      */
-    atclient_atkey my_shared_key;
-    atclient_atkey_init(&my_shared_key);
+    atclient_atkey my_shared_atkey;
+    atclient_atkey_init(&my_shared_atkey);
 
     const char *atkey_key = "phone";
-    const char *atkey_sharedby = ATSIGN;
-    const char *atkey_sharedwith = "@soccer99";
+    const char *atkey_shared_by = ATSIGN;
+    const char *atkey_shared_with = "@soccer99";
     const char *atkey_namespace = "wavi";
 
     /*
      * Use the dandy atkey_create_shared_key function to populate the struct for you with your desired values.
      */
-    if((exit_code = atclient_atkey_create_shared_key(&my_shared_key, atkey_key, atkey_sharedby, atkey_sharedwith, atkey_namespace)) != 0) {
+    if((exit_code = atclient_atkey_create_shared_key(&my_shared_atkey, atkey_key, atkey_shared_by, atkey_shared_with, atkey_namespace)) != 0) {
         goto exit;
     }
 
@@ -33,7 +33,7 @@ int main()
     exit_code = 0;
 exit:
 {
-    atclient_atkey_free(&my_shared_key);
+    atclient_atkey_free(&my_shared_atkey);
     return exit_code;
 }
 }

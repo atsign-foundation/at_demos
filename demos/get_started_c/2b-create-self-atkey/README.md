@@ -1,10 +1,10 @@
-# 2d-atkey-with-metadata
+# 2b-self-atkey
 
 ## Description
 
-In this example, we learn how to set the metadata of a particular AtKey.
+In this example, we learn how to create a self AtKey.
 
-Metadata is a way to store additional information about an AtKey. Metadata holds many things about the AtKey such as the data type of the value, time stamps regarding the value, information on how to store it, information on how it behaves. Metadata can be useful for things like: controlling the lifetime of your AtKey (ttl), or controlling how often it gets updated on other atSign's atServers (ttr), or controlling when it becomes available (ttb = time to birth).
+A self AtKey is an AtKey that points to a value that is encrypted with our own atSign's self encryption key (which is an AES-256 symmetric encryption key). That means when you use the AtKey to put a value into your atServer, the value will be encrypted with your own encryption key and you can feel safe knowing that the data is secure and only accessible by you (with the corresponding decryption key).
 
 ## Files
 
@@ -30,7 +30,7 @@ The following instructions are for running the example on a Linux/MacOS machine.
 1. Navigate to the `get_started_c` directory.
 
     ```sh
-    cd at_demos/demos/get_started_c/2d-atkey-with-metadata
+    cd at_demos/demos/get_started_c/2b-create-self-atkey
     ```
 
 1. CMake configure

@@ -1,10 +1,10 @@
-# 2b-self-atkey
+# 2c-shared-atkey
 
 ## Description
 
-In this example, we learn how to create a self AtKey.
+In this example, we learn how to create a shared AtKey.
 
-A self AtKey is an AtKey that points to a value that is encrypted with our own atSign's self encryption key (which is an AES-256 symmetric encryption key). That means when you use the AtKey to put a value into your atServer, the value will be encrypted with your own encryption key and you can feel safe knowing that the data is secure and only accessible by you (with the corresponding decryption key).
+A shared AtKey is an AtKey that points to a value that is specially encrypted only for the specified `shared_with` atSign. That means, as @soccer0, I can create a Shared AtKey that is shared with @soccer99 and only me and @soccer99 will be able to read the value that the AtKey points to. This is an important concept when writing your own end-to-end encrypted Atsign applications.
 
 ## Files
 
@@ -30,7 +30,7 @@ The following instructions are for running the example on a Linux/MacOS machine.
 1. Navigate to the `get_started_c` directory.
 
     ```sh
-    cd at_demos/demos/get_started_c/2b-self-atkey
+    cd at_demos/demos/get_started_c/2c-create-shared-atkey
     ```
 
 1. CMake configure
