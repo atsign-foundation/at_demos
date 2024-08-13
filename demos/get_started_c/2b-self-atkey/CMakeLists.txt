@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(2-atkey)
+project(2b-self-atkey)
 
 include(FetchContent)
 

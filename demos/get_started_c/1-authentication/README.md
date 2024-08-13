@@ -2,7 +2,9 @@
 
 ## Description
 
-In this first example, we will show you how to authenticate with your atSign's atServer. This application is a barebones application with nothing but the authentication process. 
+In this first example, we will show you how to PKAM authenticate with your atSign's atServer. This application is a barebones application with nothing but the authentication process. The application will authenticate with the atServer and print out a message saying that it has authenticated successfully.
+
+PKAM Authentication will require you to already have your atSign activated, which consequently means that you have the atSign's atKeys already generated and are stored in the `~/.atsign/keys/` directory. If you do not have your atSign's keys already, you will need to activate your atSign using at_activate.
 
 ## Files
 
