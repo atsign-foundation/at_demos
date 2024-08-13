@@ -1,4 +1,4 @@
-## 1.0.4
+## 1.1.0
 - **Fix** Added "apkamPrivateKeyMap" and "apkamPublicKeyMap" to fetch APKAM keys
 ## 1.0.3
 - **Fix**: Fixed duplicate cram keys for apkam atsigns
