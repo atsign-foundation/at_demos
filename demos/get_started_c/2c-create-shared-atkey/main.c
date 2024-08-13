@@ -9,8 +9,6 @@ int main()
 {
     int exit_code = -1;
 
-    atlogger_set_logging_level(ATLOGGER_LOGGING_LEVEL_DEBUG);
-
     /*
      * Create an atkey struct
      */
