@@ -5,12 +5,14 @@ project(4b-notify)
 include(FetchContent)
 
 FetchContent_Declare(
-  atsdk
-  URL https://github.com/atsign-foundation/at_c/archive/refs/tags/v0.1.0.tar.gz
-  URL_HASH SHA256=7ca4215a473037ca07bef362b852291b0a1cf4e975d24d373d58ae9c1df832bc
+  atclient
+  URL https://github.com/atsign-foundation/at_c/releases/download/v0.1.0/at_c-v0.1.0.tar.gz
+  URL_HASH SHA256=494a4960dedc45484a0078db4c388cd592efdebde45e40bdded5c2b9c587b146
+  SOURCE_SUBDIR packages/atclient
 )
-FetchContent_MakeAvailable(atsdk)
+
+FetchContent_MakeAvailable(atclient)
 
 add_executable(main ${CMAKE_CURRENT_LIST_DIR}/main.c)
 
-target_link_libraries(main PRIVATE atclient)
+target_link_libraries(main PRIVATE atclient atlogger atchops mbedtls mbedcrypto mbedx509 cjson)
