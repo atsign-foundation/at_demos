@@ -1,12 +1,10 @@
 #include <atclient/atclient.h>
 #include <atclient/atclient_utils.h>
+#include <atclient/constants.h>
 #include <atlogger/atlogger.h>
 #include <stdlib.h>
 
-#define ATSIGN "@soccer99"
-
-#define ATSERVER_HOST "root.atsign.org"
-#define ATSERVER_PORT 64
+#define ATSIGN "@jeremy_0"
 
 int main()
 {
@@ -45,7 +43,7 @@ int main()
      * with the atServer's address and port.
      * Don't forget to free the `atserver_host` variable after use, when using this function.
      */
-    if ((exit_code = atclient_utils_find_atserver_address(ATSERVER_HOST, ATSERVER_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
+    if ((exit_code = atclient_utils_find_atserver_address(ATCLIENT_ATDIRECTORY_PRODUCTION_HOST, ATCLIENT_ATDIRECTORY_PRODUCTION_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
     {
         goto exit;
     }
@@ -69,7 +67,7 @@ int main()
         goto exit;
     }
 
-    atlogger_log("1-authentication", ATLOGGER_LOGGING_LEVEL_INFO, "Authenticated to atServer successfully!\n");
+    atlogger_log("my_first_c_app", ATLOGGER_LOGGING_LEVEL_INFO, "Authenticated to atServer successfully!\n");
 
     exit_code = 0;
 exit:

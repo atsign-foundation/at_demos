@@ -1,13 +1,11 @@
 #include <atclient/atclient.h>
-#include <atclient/notify.h>
 #include <atclient/atclient_utils.h>
+#include <atclient/constants.h>
+#include <atclient/notify.h>
 #include <atlogger/atlogger.h>
 #include <stdlib.h>
 
 #define ATSIGN "@soccer0"
-
-#define ATSERVER_HOST "root.atsign.org"
-#define ATSERVER_PORT 64
 
 int main()
 {
@@ -30,7 +28,7 @@ int main()
     atclient_notify_params notify_params;
     atclient_notify_params_init(&notify_params);
 
-    if ((exit_code = atclient_utils_find_atserver_address(ATSERVER_HOST, ATSERVER_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
+    if ((exit_code = atclient_utils_find_atserver_address(ATCLIENT_ATDIRECTORY_PRODUCTION_HOST, ATCLIENT_ATDIRECTORY_PRODUCTION_PORT, ATSIGN, &atserver_host, &atserver_port)) != 0)
     {
         goto exit;
     }
