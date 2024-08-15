@@ -12,6 +12,8 @@ int main()
 {
     int exit_code = -1;
 
+    atlogger_set_logging_level(ATLOGGER_LOGGING_LEVEL_DEBUG);
+
     atclient_atkey my_shared_atkey;
     atclient_atkey_init(&my_shared_atkey);
 
@@ -46,6 +48,11 @@ int main()
     if ((exit_code = atclient_atkey_metadata_set_ttr(metadata, 1 * 1000)) != 0)
     {
         goto exit;
+    }
+
+    if(atclient_atkey_metadata_is_ttl_initialized(metadata)) {
+        // metadata->ttl is safe to read and we know it is populated.
+        atlogger_log("main", ATLOGGER_LOGGING_LEVEL_DEBUG, "metadata->ttl: %d\n", metadata->ttl); // [DEBG] 2024-08-15 01:52:09.596055 | main | metadata->ttl: 1000
     }
 
     exit_code = 0;
