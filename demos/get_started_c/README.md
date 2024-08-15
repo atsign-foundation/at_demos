@@ -22,4 +22,3 @@ In this directory, you will find demos that show you how to use the C SDK. The "
 - [4a-monitor](4a-monitor/README.md)
 - [4b-notify](4b-notify/README.md)
 - [5a-hooks](5a-hooks/README.md)
-
