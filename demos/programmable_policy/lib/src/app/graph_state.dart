@@ -11,4 +11,13 @@ enum LineType {
 
 class Node {}
 
-class GraphState {}
+class GraphState {
+  final Stream<String> events;
+  GraphState(this.events) {
+    handleStream();
+  }
+
+  void handleStream() {
+    // TODO
+  }
+}

@@ -23,7 +23,9 @@ class GreenNode extends ServerNode {
   void handleArgResults(ArgResults results) {
     if (results['dice-size'] is String) {
       var newSize = int.tryParse(results['dice-size']);
-      diceSize = newSize ?? diceSize;
+      if (newSize is int && newSize > 0) {
+        diceSize = newSize;
+      }
     }
   }
 
@@ -33,7 +35,7 @@ class GreenNode extends ServerNode {
     sendLogMessage("client: $fromAtSign - rolling dice, sending result: $roll");
     return AtRpcResp(
       reqId: request.reqId,
-      respType: AtRpcRespType.error,
+      respType: AtRpcRespType.success,
       payload: {'result': roll},
     );
   }

@@ -1,30 +1,23 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:args/args.dart';
 import 'package:at_cli_commons/at_cli_commons.dart';
 import 'package:at_client/at_client.dart';
-import 'package:meta/meta.dart';
 import 'package:programmable_policy/src/constants.dart';
 
-export 'package:at_client/at_client.dart' show AtClient, AtRpcReq, AtRpcResp, AtRpcRespType;
-export 'dart:async' show FutureOr;
-export 'package:args/args.dart' show ArgParser, ArgResults;
+class Client {
+  Client();
 
-abstract class ServerNode implements AtRpcCallbacks {
-  ServerNode();
-
-  String get color;
-  String get description;
+  final Random random = Random(DateTime.now().millisecondsSinceEpoch);
 
   // Set by run
   late AtClient atClient;
   late String atSign;
   late String policyAtsign;
   late String loggingAtsign;
-  late AtRpcClient policyClient;
 
-  @mustCallSuper
   ArgParser getArgParser() {
     ArgParser parser = ArgParser();
     parser.addOption(
@@ -39,10 +32,12 @@ abstract class ServerNode implements AtRpcCallbacks {
       help: "Atsign for logging (if omitted, uses the policy manager)",
       mandatory: false,
     );
+    parser.addMultiOption(
+      "color",
+      help: "Color that this client supports (comma separated)",
+    );
     return parser;
   }
-
-  void handleArgResults(ArgResults results) {}
 
   FutureOr<int> asMain(List<String> args) async {
     var parser = getArgParser();
@@ -50,12 +45,14 @@ abstract class ServerNode implements AtRpcCallbacks {
     String policyAtsign;
     String loggingAtsign;
     CLIBase cliBase;
+    List<String> colors;
     try {
       cliBase = await CLIBase.fromCommandLineArgs(args, parser: parser);
       results = parser.parse(args);
       policyAtsign = results["policy-manager"];
       loggingAtsign = results["logging-atsign"] ?? policyAtsign;
-      handleArgResults(results);
+      colors = results["color"] ?? [];
+      if (colors.isEmpty) throw "No colors specified";
     } catch (e) {
       stderr.writeln("Failed to start the program: $e");
       return 1;
@@ -67,6 +64,7 @@ abstract class ServerNode implements AtRpcCallbacks {
         atSign: cliBase.atSign,
         policyAtsign: policyAtsign,
         loggingAtsign: loggingAtsign,
+        colors: colors,
       );
       return 0;
     } catch (e, st) {
@@ -81,28 +79,27 @@ abstract class ServerNode implements AtRpcCallbacks {
     required String atSign,
     required String policyAtsign,
     required String loggingAtsign,
+    required List<String> colors,
   }) {
     this.atSign = atSign;
     this.atClient = atClient;
     this.policyAtsign = policyAtsign;
     this.loggingAtsign = loggingAtsign;
-    policyClient = AtRpcClient(
+    // var rpc = AtRpcClient(
+    //   atClient: atClient,
+    //   baseNameSpace: Constants.namespace,
+    //   domainNameSpace: Constants.policyDomain,
+    //   serverAtsign: policyAtsign,
+    // );
+    // make 1-10 requests
+    int numReqs = random.nextInt(10) + 1;
+    var policyClient = AtRpcClient(
       atClient: atClient,
       baseNameSpace: Constants.namespace,
       domainNameSpace: Constants.policyDomain,
       serverAtsign: policyAtsign,
     );
-
-    var thisServer = AtRpc(
-      atClient: atClient,
-      baseNameSpace: Constants.namespace,
-      domainNameSpace: color,
-      callbacks: this,
-      allowList: {},
-      allowAll: true,
-    );
-
-    thisServer.start();
+    // TODO
   }
 
   Future<void> sendLogMessage(String message) async {

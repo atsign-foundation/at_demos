@@ -31,7 +31,7 @@ class OrangeNode extends ServerNode {
     sendLogMessage("client: $fromAtSign - received expression: $expression, sending result: ${result.toString()}");
     return AtRpcResp(
       reqId: request.reqId,
-      respType: AtRpcRespType.error,
+      respType: AtRpcRespType.success,
       payload: {'result': result.toString()},
     );
   }

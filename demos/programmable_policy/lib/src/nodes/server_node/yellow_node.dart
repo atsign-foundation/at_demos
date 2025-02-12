@@ -19,7 +19,7 @@ class YellowNode extends ServerNode {
     sendLogMessage("client: $fromAtSign - data requested, sending temp: $temp, humidity: $humidity");
     return AtRpcResp(
       reqId: request.reqId,
-      respType: AtRpcRespType.error,
+      respType: AtRpcRespType.success,
       payload: {'temp': temp, 'humidity': humidity},
     );
   }

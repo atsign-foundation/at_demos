@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:programmable_policy/src/app/logs_page.dart';
+import 'package:programmable_policy/src/app/graph_state.dart';
 
 class GraphPage extends StatelessWidget {
-  const GraphPage({super.key});
+  final GraphState graphState;
+  const GraphPage(this.graphState, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Network graph"),
+        title: const Text("Real-time Graph"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => LogsPage()),
-            ),
+            onPressed: () => Navigator.of(context).pushNamed('logs'),
             child: const Text("Show logs"),
           )
         ],

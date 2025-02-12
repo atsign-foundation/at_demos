@@ -24,7 +24,7 @@ class RedNode extends ServerNode {
     sendLogMessage("client: $fromAtSign - received ping, sending pong");
     return AtRpcResp(
       reqId: request.reqId,
-      respType: AtRpcRespType.error,
+      respType: AtRpcRespType.success,
       payload: {'message': 'pong'},
     );
   }
