@@ -5,45 +5,45 @@ part 'at_demo_apkam_keys.dart';
 
 /// List of all demo At-Signs.
 List<String> allAtsigns = <String>[
-  'anonymous',
+  'anonymous',           // 0
   // Key cycle 1 (keys are reused across each cycle)
-  '@alice🛠',
-  '@ashish🛠',
-  '@barbara🛠',
-  '@bob🛠',
-  '@colin🛠',
-  '@egbiometric🛠',
-  '@egcovidlab🛠',
-  '@egcreditbureau🛠',
-  '@eggovagency🛠',
-  '@emoji🦄🛠',
-  '@eve🛠',
-  '@jagan🛠',
-  '@kevin🛠',
-  '@murali🛠',
-  '@naresh🛠',
-  '@purnima🛠',
-  '@sameeraja🛠',
-  '@sitaram🛠',
+  '@alice🛠',           // 1
+  '@ashish🛠',          // 2
+  '@barbara🛠',         // 3
+  '@bob🛠',             // 4
+  '@colin🛠',           // 5
+  '@egbiometric🛠',     // 6
+  '@egcovidlab🛠',      // 7
+  '@egcreditbureau🛠',  // 8
+  '@eggovagency🛠',     // 9
+  '@emoji🦄🛠',         // 10
+  '@eve🛠',             // 11
+  '@jagan🛠',           // 12
+  '@kevin🛠',           // 13
+  '@murali🛠',          // 14
+  '@naresh🛠',          // 15
+  '@purnima🛠',         // 16
+  '@sameeraja🛠',       // 17
+  '@sitaram🛠',         // 18
   // Key cycle 2
-  '@relay1',
-  '@relay2',
-  '@device1',
-  '@cloudvm1',
-  '@gateway1',
-  '@gateway2',
-  '@policy1',
-  '@policy2',
-  '@colin',
-  '@barbara',
-  '@chris',
-  '@gary',
-  '@xavier',
-  '@jeremy',
-  '@curtly',
-  '@gareth',
-  '@don',
-  '@denise',
+  '@relay1',            // 19
+  '@relay2',            // 20
+  '@device1',           // 21
+  '@cloudvm1',          // 22
+  '@gateway1',          // 23
+  '@gateway2',          // 24
+  '@policy1',           // 25
+  '@policy2',           // 26
+  '@colin',             // 27
+  '@barbara',           // 28
+  '@chris',             // 29
+  '@gary',              // 30
+  '@xavier',            // 31
+  '@jeremy',            // 32
+  '@curtly',            // 33
+  '@gareth',            // 34
+  '@don',               // 35
+  '@denise',            // 36
 ];
 
 /// List of atsigns to test APKAM feature
