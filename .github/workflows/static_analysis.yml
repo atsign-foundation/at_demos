@@ -22,10 +22,6 @@ jobs:
       - uses: dart-lang/setup-dart@e51d8e571e22473a2ddebf0ef8a2123f0ab2c02c # v1.7.1
         with:
           sdk: stable
-      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
-        with:
-          go-version: "stable"
-          cache-dependency-path: tools/osv-scanner/go.sum
 
       # Runs dart lint rules
       - name: Install dependencies and run analyze - mwc_demo/dart/iot_sender
@@ -56,9 +52,10 @@ jobs:
       # It needs to look at pubspec.lock files, which is why it's
       # placed here, as the `dart pub get` above will create them
       - name: Run osv-scanner
-        run: |
-          go install github.com/google/osv-scanner/v2/cmd/osv-scanner@04a8728383d8f286cf2b0f110e68482e8773df6e # v2.2.1
-          osv-scanner --lockfile=./demos/mwc_demo/dart/iot_sender/pubspec.lock
-          osv-scanner --lockfile=./demos/at_notifications/pubspec.lock
-          osv-scanner --lockfile=./packages/at_demo_data/pubspec.lock
-          osv-scanner --lockfile=./demos/at_data_share/pubspec.lock
+        uses: google/osv-scanner-action/osv-scanner-action@a0e5dd4ee828f4e99760a98cac452a29afe27cb8 # v2.2.1
+        with:
+          scan-args: |-
+            --lockfile=./demos/mwc_demo/dart/iot_sender/pubspec.lock
+            --lockfile=./demos/at_notifications/pubspec.lock
+            --lockfile=./packages/at_demo_data/pubspec.lock
+            --lockfile=./demos/at_data_share/pubspec.lock
