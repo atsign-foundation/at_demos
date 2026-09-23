@@ -8,8 +8,11 @@ List<String> allAtsigns = at_demo_data.allAtsigns;
 
 /// Get a random @sign
 final Random _random = Random();
+List<String> authenticatedAtsigns = at_demo_data.allAtsigns
+    .where((String atsign) => atsign != 'anonymous')
+    .toList();
 String randomAtsign =
-    at_demo_data.allAtsigns[_random.nextInt(at_demo_data.allAtsigns.length)];
+    authenticatedAtsigns[_random.nextInt(authenticatedAtsigns.length)];
 
 /// demo keys
 ///

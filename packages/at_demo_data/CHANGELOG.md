@@ -1,3 +1,21 @@
+## 2.0.0
+
+- **Feat**: Added legacy VE fixtures for `@client1`, `@client2`,
+  `@telemetry1`, `@telemetry2`, and `@producer1` through `@producer5`.
+- **Fix**: Bundled matching `.atKeys` files for every active Atsign, corrected
+  `@policy1`'s filename, and regenerated the stale `@device2` file from its
+  existing credential maps. Added asset and key-pair consistency tests.
+- **Feat**: Added a VE credential generator for private `.atKeys`, CRAM,
+  asymmetric and symmetric keys, and a per-Atsign Dart constants file. The
+  required legacy or APKAM mode records the intended VE provisioning path.
+- **Refactor**: Moved credential classes into `lib/src/constants/`, one file
+  per Atsign. Updated the example and usage instructions.
+- **BREAKING CHANGE**: Removed demo Atsigns with emoji, their credential entries,
+  bundled key files, QR codes, and emoji-only credential lists.
+- **BREAKING CHANGE**: Removed `@colin`, `@barbara`, `@curtly`, `@denise`,
+  `@don`, `@gareth`, `@gary`, `@jeremy`, `@xavier`, `@chris`, `@srie`, and
+  `@sachin` and their credentials.
+
 ## 1.2.0
 
 - **Feat**: Duplicated demo keys with different atSigns (cycle 2). If necessary,
