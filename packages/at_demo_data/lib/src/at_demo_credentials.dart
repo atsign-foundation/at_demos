@@ -20,7 +20,9 @@ part 'constants/producer3_keys.dart';
 part 'constants/producer4_keys.dart';
 part 'constants/producer5_keys.dart';
 
-/// List of all demo At-Signs.
+/// Legacy VE Atsigns (plus the unauthenticated `anonymous` entry).
+/// The VE installs each Atsign's CRAM secret, PKAM public key, and encryption
+/// public key on its Atsign Server. Private keys stay with the client.
 List<String> allAtsigns = <String>[
   'anonymous',
   '@relay1',
@@ -42,7 +44,10 @@ List<String> allAtsigns = <String>[
   '@producer5',
 ];
 
-/// List of atsigns to test APKAM feature
+/// APKAM-path VE Atsigns. The VE configures their CRAM secrets but does not
+/// preconfigure their public authentication keys on the Atsign Server. During
+/// onboarding, the client generates an APKAM keypair and enrolls its public
+/// key, as in production. The private key stays with the client.
 List<String> apkamAtsigns = <String>[
   '@device2',
   '@cloudvm2',
