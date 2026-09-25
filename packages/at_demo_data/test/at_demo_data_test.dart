@@ -50,24 +50,20 @@ void main() {
           unorderedEquals(<String>['@device2', '@cloudvm2']));
       expect(
           at_demo_data.allAtsigns,
-          containsAll(<String>[
-            '@relay1',
-            '@relay2',
+          unorderedEquals(<String>[
+            'anonymous',
+            for (int number = 1; number <= 6; number++) '@relay$number',
             '@device1',
+            for (int number = 3; number <= 6; number++) '@device$number',
             '@cloudvm1',
             '@gateway1',
             '@gateway2',
-            '@policy1',
-            '@policy2',
-            '@client1',
-            '@client2',
+            for (int number = 1; number <= 2; number++) '@policy$number',
+            for (int number = 1; number <= 2; number++) '@events$number',
+            for (int number = 1; number <= 6; number++) '@client$number',
             '@telemetry1',
             '@telemetry2',
-            '@producer1',
-            '@producer2',
-            '@producer3',
-            '@producer4',
-            '@producer5',
+            for (int number = 1; number <= 6; number++) '@producer$number',
           ]));
       expect(
           at_demo_data.allAtsigns
@@ -77,7 +73,14 @@ void main() {
       for (String atsign in at_demo_data.apkamAtsigns) {
         expect(at_demo_data.cramKeyMap[atsign], isNotEmpty);
       }
-      expect(at_demo_data.apkamPublicKeyMap.keys, contains('@relay1'));
+      expect(
+          at_demo_data.apkamPublicKeyMap.keys,
+          containsAll(<String>[
+            '@relay1',
+            for (int number = 3; number <= 6; number++) '@relay$number',
+            for (int number = 1; number <= 6; number++) '@client$number',
+            for (int number = 1; number <= 2; number++) '@events$number',
+          ]));
     });
 
     test('credentials are distinct for each Atsign', () {

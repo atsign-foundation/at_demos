@@ -104,10 +104,11 @@ String virtualRoot = at_demo_data.virtualRoot;
 int virtualPort = at_demo_data.virtualPort;
 ```
 
-The legacy VE fixtures include `@client1`, `@client2`, `@telemetry1`,
-`@telemetry2`, and `@producer1` through `@producer5`. Every listed Atsign
-except `anonymous`, including APKAM-only fixtures, has a matching file in
-`lib/assets/atkeys/`. The APKAM-only fixtures must still be enrolled before
+The legacy VE fixtures include `@relay3` through `@relay6`, `@device3`
+through `@device6`, `@client1` through `@client6`, `@events1`, `@events2`,
+`@telemetry1`, `@telemetry2`, and `@producer1` through `@producer6`. Every
+listed Atsign except `anonymous`, including APKAM-only fixtures, has a
+matching file in `lib/assets/atkeys/`. The APKAM-only fixtures must still be enrolled before
 those files can be used for APKAM authentication.
 
 #### How to access sample data:

@@ -1,7 +1,9 @@
 ## 2.0.0
 
-- **Feat**: Added legacy VE fixtures for `@client1`, `@client2`,
-  `@telemetry1`, `@telemetry2`, and `@producer1` through `@producer5`.
+- **Feat**: Added legacy VE fixtures for `@relay3` through `@relay6`,
+  `@device3` through `@device6`, `@client1` through `@client6`, `@events1`,
+  `@events2`, `@telemetry1`, `@telemetry2`, and `@producer1` through
+  `@producer6`.
 - **Fix**: Bundled matching `.atKeys` files for every active Atsign, corrected
   `@policy1`'s filename, and regenerated the stale `@device2` file from its
   existing credential maps. Added asset and key-pair consistency tests.
