@@ -21,7 +21,7 @@ your package name below and at_client_sdk with the name of the repo
 The README should be addressed to somebody who's never seen this before.
 But also don't assume that they're a novice.
 -->
-The at_demo_data package is for Flutter developers who would like use [The Virtual Environment (VE)](https://atsign.dev/docs/get-started/the-virtual-environment/) for running demo apps and testing on the atPlatform. The VE provides a full stack private atPlatform environment to build and test applications offline. A number preset atSigns are included in the VE and the secrets and keys are provided in this package for those test atSigns.
+The at_demo_data package provides credentials for demo Atsigns in the [Virtual Environment (VE)](https://atsign.dev/docs/get-started/the-virtual-environment/). The included Atsigns are ASCII-only. These credentials are test fixtures, not production secrets. A VE image must be provisioned with matching CRAM secrets and public keys; changing files in this package does not rotate an already-running VE.
 
 <!---
 Give some context and state the intent - we welcome contributions - we want
@@ -104,6 +104,13 @@ String virtualRoot = at_demo_data.virtualRoot;
 int virtualPort = at_demo_data.virtualPort;
 ```
 
+The legacy VE fixtures include `@relay3` through `@relay6`, `@device3`
+through `@device6`, `@client1` through `@client6`, `@events1`, `@events2`,
+`@telemetry1`, `@telemetry2`, and `@producer1` through `@producer6`. Every
+listed Atsign except `anonymous`, including APKAM-only fixtures, has a
+matching file in `lib/assets/atkeys/`. The APKAM-only fixtures must still be enrolled before
+those files can be used for APKAM authentication.
+
 #### How to access sample data:
 ```dart
 // List of all atsigns
@@ -111,21 +118,36 @@ List<String> atSigns = at_demo_data.allAtsigns;
 
 // PKAM public key String for a particular atSign can be retrieved from 
 // the pkamPublicKeyMap
-String pkamPublicKey = at_demo_data.pkamPublicKeyMap['@alice🛠'];
+String pkamPublicKey = at_demo_data.pkamPublicKeyMap['@relay1'];
 
 // PKAM private key String for a particular atSign can be retrieved from 
 // the pkamPrivateKeyMap
-String pkamPrivate = at_demo_data.pkamPrivateKeyMap['@alice🛠'];
+String pkamPrivate = at_demo_data.pkamPrivateKeyMap['@relay1'];
 
 // CRAM key String for a particular atSign can be retrieved from 
 // the cramKeyMap
-String cramKey = at_demo_data.cramKeyMap['@alice🛠'];
+String cramKey = at_demo_data.cramKeyMap['@relay1'];
 ```
 
 <!---
 You should include language like below if you would like others to contribute
 to your package.
 -->
+### Generate credentials for a new VE Atsign
+
+From `packages/at_demo_data`, run:
+
+```sh
+dart pub get
+dart run tools/generate_ve_atsign.dart @newdemo /path/to/new-private-directory legacy
+# For an APKAM identity instead, use a different Atsign and directory:
+dart run tools/generate_ve_atsign.dart @newapkam /path/to/another-private-directory apkam
+```
+
+The destination must not exist. The tool creates it with owner-only permissions and writes `@newdemo.atKeys`, `@newdemo.ve-credentials.json`, and `newdemo_keys.dart` with owner-only file permissions. It generates a new CRAM secret, separate RSA key pairs for PKAM, encryption, and APKAM, a self-encryption AES key, and symmetric keys. It never prints secrets to the terminal and refuses to overwrite an existing destination. Keep these files private and do not commit them unless they are intentionally public VE-only fixtures.
+
+To add the Atsign to this package, copy its generated `_keys.dart` file into `lib/src/constants/`, add the matching `part 'constants/<name>_keys.dart';` to `lib/src/at_demo_credentials.dart`, and add its class fields to the credential maps. The JSON bundle records the requested `authMode`. For `legacy`, put the Atsign in `allAtsigns`; VE setup authenticates with its `cramKey` and installs its `pkamPublicKey` and `encryptionPublicKey`. For `apkam`, put it in `apkamAtsigns` instead; VE setup creates the secondary and authenticates by CRAM only, leaving APKAM enrollment to the client. Both modes require the generated `cramKey` when the VE creates the secondary. The generated `.atKeys` does not itself enroll an APKAM identity or register an Atsign. The VE setup scripts read `at_demo_data` when building the image, so rebuild and restart with matching package credentials. An already-provisioned Atsign requires a coordinated rotation, not just this generation command.
+
 ## Open source usage and contributions
 This is open source code, so feel free to use it as is, suggest changes or 
 enhancements or create your own version. See [CONTRIBUTING.md](CONTRIBUTING.md) 
