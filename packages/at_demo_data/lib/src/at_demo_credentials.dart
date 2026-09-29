@@ -4,50 +4,50 @@ part 'at_demo_keys.dart';
 part 'at_demo_apkam_keys.dart';
 
 /// List of all demo At-Signs.
-List<String> allAtsigns = <String>[
-  'anonymous',
+const List<String> allAtsigns = <String>[
+  'anonymous',           // 0
   // Key cycle 1 (keys are reused across each cycle)
-  '@alice🛠',
-  '@ashish🛠',
-  '@barbara🛠',
-  '@bob🛠',
-  '@colin🛠',
-  '@egbiometric🛠',
-  '@egcovidlab🛠',
-  '@egcreditbureau🛠',
-  '@eggovagency🛠',
-  '@emoji🦄🛠',
-  '@eve🛠',
-  '@jagan🛠',
-  '@kevin🛠',
-  '@murali🛠',
-  '@naresh🛠',
-  '@purnima🛠',
-  '@sameeraja🛠',
-  '@sitaram🛠',
+  '@alice🛠',           // 1
+  '@ashish🛠',          // 2
+  '@barbara🛠',         // 3
+  '@bob🛠',             // 4
+  '@colin🛠',           // 5
+  '@egbiometric🛠',     // 6
+  '@egcovidlab🛠',      // 7
+  '@egcreditbureau🛠',  // 8
+  '@eggovagency🛠',     // 9
+  '@emoji🦄🛠',         // 10
+  '@eve🛠',             // 11
+  '@jagan🛠',           // 12
+  '@kevin🛠',           // 13
+  '@murali🛠',          // 14
+  '@naresh🛠',          // 15
+  '@purnima🛠',         // 16
+  '@sameeraja🛠',       // 17
+  '@sitaram🛠',         // 18
   // Key cycle 2
-  '@relay1',
-  '@relay2',
-  '@device1',
-  '@cloudvm1',
-  '@gateway1',
-  '@gateway2',
-  '@policy1',
-  '@policy2',
-  '@colin',
-  '@barbara',
-  '@chris',
-  '@gary',
-  '@xavier',
-  '@jeremy',
-  '@curtly',
-  '@gareth',
-  '@don',
-  '@denise',
+  '@relay1',            // 19
+  '@relay2',            // 20
+  '@device1',           // 21
+  '@cloudvm1',          // 22
+  '@gateway1',          // 23
+  '@gateway2',          // 24
+  '@policy1',           // 25
+  '@policy2',           // 26
+  '@colin',             // 27
+  '@barbara',           // 28
+  '@chris',             // 29
+  '@gary',              // 30
+  '@xavier',            // 31
+  '@jeremy',            // 32
+  '@curtly',            // 33
+  '@gareth',            // 34
+  '@don',               // 35
+  '@denise',            // 36
 ];
 
 /// List of atsigns to test APKAM feature
-List<String> apkamAtsigns = <String>[
+const List<String> apkamAtsigns = <String>[
   // Key cycle 1
   '@srie',
   '@sachin',
@@ -58,7 +58,7 @@ List<String> apkamAtsigns = <String>[
 
 /// A Map of cram (Challenge Response Authentication Mechanism) keys.
 /// For more information on CRAM, see: [here](https://atsign.dev/docs/functional_architecture/verbs/#cram)
-Map<String, String> cramKeyMap = <String, String>{
+const Map<String, String> cramKeyMap = <String, String>{
   'anonymous': '',
   // Cycle 1
   '@alice🛠': AliceKeys._cramKey,
@@ -106,7 +106,7 @@ Map<String, String> cramKeyMap = <String, String>{
 
 /// Map of user's public pkam( Public Key Authentication Mechanism) keys.
 /// For more information on PKAM, see: [here](https://atsign.dev/docs/functional_architecture/verbs/#pkam)
-Map<String, String> pkamPublicKeyMap = <String, String>{
+const Map<String, String> pkamPublicKeyMap = <String, String>{
   'anonymous': '',
   '@alice🛠': AliceKeys._pkamPublicKey,
   '@ashish🛠': AshishKeys._pkamPublicKey,
@@ -153,7 +153,7 @@ Map<String, String> pkamPublicKeyMap = <String, String>{
 
 /// Map of user's private pkam( Public Key Authentication Mechanism) keys.
 /// For more information on PKAM, see: [here](https://atsign.dev/docs/functional_architecture/verbs/#pkam)
-Map<String, String> pkamPrivateKeyMap = <String, String>{
+const Map<String, String> pkamPrivateKeyMap = <String, String>{
   'anonymous': '',
   '@alice🛠': AliceKeys._pkamPrivateKey,
   '@ashish🛠': AshishKeys._pkamPrivateKey,
@@ -199,7 +199,7 @@ Map<String, String> pkamPrivateKeyMap = <String, String>{
 };
 
 /// Map of user's private encryption keys.
-Map<String, String> encryptionPrivateKeyMap = <String, String>{
+const Map<String, String> encryptionPrivateKeyMap = <String, String>{
   'anonymous': '',
   '@alice🛠': AliceKeys._encryptionPrivateKey,
   '@ashish🛠': AshishKeys._encryptionPrivateKey,
@@ -245,7 +245,7 @@ Map<String, String> encryptionPrivateKeyMap = <String, String>{
 };
 
 /// Map of user's public encryption keys.
-Map<String, String> encryptionPublicKeyMap = <String, String>{
+const Map<String, String> encryptionPublicKeyMap = <String, String>{
   'anonymous': '',
   '@alice🛠': AliceKeys._encryptionPublicKey,
   '@ashish🛠': AshishKeys._encryptionPublicKey,
@@ -291,7 +291,7 @@ Map<String, String> encryptionPublicKeyMap = <String, String>{
 };
 
 /// Map of user's AES keys.
-Map<String, String> aesKeyMap = <String, String>{
+const Map<String, String> aesKeyMap = <String, String>{
   '@alice🛠': AliceKeys._aesKey,
   '@ashish🛠': AshishKeys._aesKey,
   '@barbara🛠': BarbaraKeys._aesKey,
@@ -336,7 +336,7 @@ Map<String, String> aesKeyMap = <String, String>{
 };
 
 // APKAM symmetric keys
-Map<String, String> apkamSymmetricKeyMap = <String, String>{
+const Map<String, String> apkamSymmetricKeyMap = <String, String>{
   '@alice🛠': AliceKeys._apkamSymmetricKey,
   '@ashish🛠': AshishKeys._apkamSymmetricKey,
   '@barbara🛠': BarbaraKeys._apkamSymmetricKey,
@@ -381,14 +381,14 @@ Map<String, String> apkamSymmetricKeyMap = <String, String>{
 };
 
 // APKAM Private Keys
-Map<String, String> apkamPrivateKeyMap = <String, String>{
+const Map<String, String> apkamPrivateKeyMap = <String, String>{
   '@alice🛠': AliceKeys._apkamPrivateKey,
   // Cycle 2
   '@relay1': Relay1Keys._apkamPrivateKey,
 };
 
 // APKAM Public Keys
-Map<String, String> apkamPublicKeyMap = <String, String>{
+const Map<String, String> apkamPublicKeyMap = <String, String>{
   '@alice🛠': AliceKeys._apkamPublicKey,
   // Cycle 2
   '@relay1': Relay1Keys._apkamPublicKey,
