@@ -1,0 +1,15 @@
+services:
+  virtualenv:
+    image: atsigncompany/dynamicvirtualenv:vip
+    volumes:
+      - ./setup_mount/:/mnt/setup
+    ports:
+      - "127.0.0.1:6379:6379"
+      - "64:64"
+      - "127.0.0.1:9001:9001"
+      - "25000-25019:25000-25019"
+      - "26000-26199:26000-26199"
+      - "27000-27009:27000-27009"
+      - "28000-28049:28000-28049"
+    extra_hosts:
+      - "vip.ve.atsign.zone:127.0.0.1"
